@@ -3,7 +3,7 @@ import { ref, watch, computed, reactive } from 'vue'
 import PreviewEditor from './components/PreviewEditor.vue'
 import ContentsListModal from './components/ContentsListModal.vue'
 import { useStudio } from './composables/useStudio'
-import PreviewToolbar from './components/PreviewToolbar.vue'
+import StudioToolbar from './components/StudioToolbar.vue'
 // import CommitPreviewModal from './components/CommitPreviewModal.vue'
 
 const { host, draftFiles } = useStudio()
@@ -112,7 +112,7 @@ host.on.mounted(() => {
         class="dark"
       >
         <div>
-          <PreviewToolbar>
+          <StudioToolbar>
             <template #left>
               <UDropdownMenu
                 :portal="false"
@@ -136,7 +136,7 @@ host.on.mounted(() => {
                 @click="ui.commitPreviewVisibility = true"
               />
             </template>
-          </PreviewToolbar>
+          </StudioToolbar>
 
           <PreviewEditor
             v-model="ui.editorVisibility"

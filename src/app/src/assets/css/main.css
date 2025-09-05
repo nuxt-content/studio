@@ -27,7 +27,7 @@
   --ui-primary: var(--ui-color-primary-500);
 }
 
-:host #__studio_toolbar {
+#__studio_toolbar {
   position: fixed;
   top: 0;
   left: 0;
