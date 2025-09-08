@@ -1,32 +1,19 @@
-import { defineOAuthGoogleEventHandler, setUserSession } from '#imports'
-import { sendRedirect } from 'h3'
+import { eventHandler, createError } from 'h3'
 
-export default defineOAuthGoogleEventHandler({
-  config: {
-    emailRequired: true,
-  },
-  async onSuccess(event, { user }) {
-    const moderators = (process.env.NUXT_ADMIN_CONTENT_MODERATORS || '').split(',').map(email => email.trim())
-    if (!moderators.includes(user.email)) {
-      return sendRedirect(event, '/')
-    }
-
-    await setUserSession(event, {
-      user: {
-        contentUser: true,
-        githubId: null,
-        githubToken: process.env.NUXT_ADMIN_CONTENT_GITHUB_TOKEN,
-        name: user.name,
-        avatar: user.picture,
-        email: user.email,
-        provider: 'google',
-      },
+export default eventHandler(async (event) => {
+  if (!process.env.STUDIO_GITHUB_TOKEN) {
+    throw createError({
+      statusCode: 500,
+      message: 'STUDIO_GITHUB_TOKEN is not set. Google authenticated user cannot push changes to the repository without a valid Github token.',
     })
-    return sendRedirect(event, '/')
-  },
-  // Optional, will return a json error and 401 status code by default
-  onError(event, error) {
-    console.error('Google OAuth error:', error)
-    return sendRedirect(event, '/')
-  },
+  }
+  throw createError({
+    statusCode: 500,
+    message: 'Google OAuth is not implemented',
+  })
 })
+
+function hasModeratorAccess(email: string) {
+  const moderators = (process.env.STUDIO_MODERATORS || '').split(',').map(email => email.trim())
+  return moderators.includes(email)
+}

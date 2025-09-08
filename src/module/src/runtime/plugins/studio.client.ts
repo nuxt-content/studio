@@ -1,11 +1,7 @@
-import { defineNuxtPlugin } from '#imports'
-import { checkStudioActivation } from '../utils/activation'
+import { ContentStudioUser } from 'nuxt-studio/app'
+import { defineStudioActivationPlugin } from '../utils/activation'
 
-export default defineNuxtPlugin(async () => {
-  checkStudioActivation(async () => {
-    window.useStudioHost = await import('../host').then(m => m.useStudioHost)
-
-    await import('nuxt-studio/app')
-    document.body.appendChild(document.createElement('nuxt-studio'))
-  })
+export default defineStudioActivationPlugin(async (_user: ContentStudioUser) => {
+  await import('nuxt-studio/app')
+  document.body.appendChild(document.createElement('nuxt-studio'))
 })

@@ -7,7 +7,10 @@
   "type": "module",
   "exports": {
     ".": "./dist/module/module.mjs",
-    "./app": "./dist/app/index.js"
+    "./app": {
+      "types": "./dist/app/index.d.ts",
+      "default": "./dist/app/index.js"
+    }
   },
   "main": "./dist/module/module.mjs",
   "scripts": {
@@ -31,8 +34,8 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.34.0",
     "monaco-editor": "^0.52.2",
-    "nuxt-auth-utils": "latest",
     "vite": "^7.1.3",
+    "vite-plugin-dts": "^4.5.4",
     "vite-plugin-libcss": "^1.1.2",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.6"

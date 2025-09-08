@@ -1,5 +1,15 @@
 import type { CollectionItemBase, PageCollectionItemBase, DataCollectionItemBase } from '@nuxt/content'
 
+export interface ContentStudioUser {
+  githubId: string,
+  githubToken: string,
+  name: string,
+  avatar: string,
+  email: string,
+  provider: 'github' | 'google',
+}
+
+
 export interface StudioHost {
   on: {
     routeChange: (fn: () => void) => void
@@ -26,9 +36,11 @@ export interface StudioHost {
   requestRerender: () => void
 }
 
+export type UseStudioHost = (user: ContentStudioUser) => StudioHost
+
 declare global {
   interface Window {
-    useStudioHost: () => StudioHost
+    useStudioHost: UseStudioHost
   }
 }
 

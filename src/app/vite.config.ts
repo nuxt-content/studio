@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import uiPro from '@nuxt/ui-pro/vite'
 import path from 'node:path'
 import libCss from 'vite-plugin-libcss'
+import dts from "vite-plugin-dts"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,6 +25,14 @@ export default defineConfig({
       },
     }),
     libCss(),
+    dts({
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.vue'],
+      insertTypesEntry: true,
+      rollupTypes: true,
+      entryRoot: 'src',
+      tsconfigPath: './tsconfig.app.json',
+    }),
   ],
   build: {
     cssCodeSplit: false,
