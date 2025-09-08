@@ -48,4 +48,5 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
   customElements.define('nuxt-studio', NuxtStudio)
 }
 
+export * from './types/index.ts'
 export default {}

@@ -1,31 +1,29 @@
-import type { Ref } from 'vue'
-import { watch } from 'vue'
-import { useUserSession, getAppManifest } from '#imports'
+import { getAppManifest, useState, defineNuxtPlugin } from '#imports'
+import type { ContentStudioUser } from 'nuxt-studio/app'
 
-interface User {
-  contentUser: any
-  name: string
-  email: string
-  avatar: string
-  githubId: string
-  githubToken: string
-  provider: 'google' | 'github'
-}
-export async function checkStudioActivation(onStudioActivation: (user: User) => Promise<void>) {
-  const user = useUserSession().user as unknown as Ref<User | null>
+export function defineStudioActivationPlugin(onStudioActivation: () => Promise<void>) {
+  return defineNuxtPlugin(async () => {
+    const user = useState<ContentStudioUser | null>('content-studio-session', () => null)
 
-  let mounted = false
-  watch(user, async (newUser) => {
-    if (newUser?.contentUser) {
+    await $fetch<{ user: ContentStudioUser }>('/__nuxt_content/studio/auth/session').then((session) => {
+      user.value = session?.user ?? null
+    })
+
+    let mounted = false
+    if (user.value?.email) {
+      // Initialize host
+      const host = await import('../host').then(m => m.useStudioHost)
+      window.useStudioHost = () => host(user.value)
+
       // Disable prerendering for Studio
       const manifest = await getAppManifest()
       manifest.prerendered = []
 
-      await onStudioActivation(newUser)
+      await onStudioActivation()
       mounted = true
     }
     else if (mounted) {
       window.location.reload()
     }
-  }, { immediate: true })
+  })
 }

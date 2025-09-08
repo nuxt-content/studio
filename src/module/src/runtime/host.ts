@@ -4,8 +4,16 @@ import type { CollectionItemBase, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter, ContentProvide } from '../types/content'
 import { createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collections'
 import { kebabCase } from 'lodash'
+import type { UseStudioHost, StudioHost, ContentStudioUser } from 'nuxt-studio/app'
 
-const hostStyles = {
+declare global {
+  interface Window {
+    useStudioHost: UseStudioHost
+  }
+}
+
+
+const hostStyles: Record<string, Record<string, string>> & { css?: string } = {
   'body[data-studio-active]': {
     transition: 'margin 0.3s ease',
   },
@@ -21,13 +29,7 @@ const hostStyles = {
   },
 }
 
-declare global {
-  interface Window {
-    useStudioHost: () => ReturnType<typeof useStudioHost>
-  }
-}
-
-export function useStudioHost() {
+export function useStudioHost(user: ContentStudioUser): StudioHost {
   const isMounted = ref(false)
 
   function useNuxtApp() {
@@ -50,7 +52,7 @@ export function useStudioHost() {
     return useContent().queryCollection(collection)
   }
 
-  const host = {
+  const host: StudioHost = {
     on: {
       routeChange: (fn: () => void) => {
         const router = useNuxtApp().$router;
@@ -96,8 +98,8 @@ export function useStudioHost() {
       },
       updateStyles: () => {
         const styles: string = Object.keys(hostStyles).map((selector) => {
-          if (selector === 'css') return hostStyles.css
-          const styleText = Object.entries(hostStyles[selector as keyof typeof hostStyles]).map(([key, value]) => `${kebabCase(key)}: ${value}`).join(';')
+          if (selector === 'css') return hostStyles.css || ''
+          const styleText = Object.entries(hostStyles[selector] as Record<string, string>).map(([key, value]) => `${kebabCase(key)}: ${value}`).join(';')
           return `${selector} { ${styleText} }`
         }).join('')
         let styleElement = document.querySelector('[data-studio-style]')
@@ -111,7 +113,7 @@ export function useStudioHost() {
     },
     // New API
     user: {
-      get: () => {},
+      get: () => user,
     },
 
     document: {
