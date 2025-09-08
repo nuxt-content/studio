@@ -1,15 +1,14 @@
 {
   "private": true,
-  "name": "my-module-playground",
-  "type": "module",
+  "name": "nuxt-studio-playground",
   "scripts": {
-    "dev": "nuxi dev",
-    "build": "nuxi build",
-    "generate": "nuxi generate"
+    "dev": "nuxt dev",
+    "build": "nuxt build --extends docus"
   },
   "dependencies": {
+    "docus": "https://pkg.pr.new/docus@0d23736",
+    "better-sqlite3": "^12.2.0",
     "nuxt": "latest",
-    "reka-ui": "^2.5.0",
     "nuxt-studio": "workspace:*"
   }
 }

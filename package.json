@@ -30,6 +30,7 @@
     "@tailwindcss/typography": "latest",
     "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.34.0",
+    "idb-keyval": "^6.2.2",
     "monaco-editor": "^0.52.2",
     "nuxt-auth-utils": "latest",
     "vite": "^7.1.3",

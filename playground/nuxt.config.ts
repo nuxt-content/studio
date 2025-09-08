@@ -1,11 +1,11 @@
 export default defineNuxtConfig({
+  extends: ['docus'],
   modules: [
     'nuxt-studio',
     '@nuxt/ui',
     '@nuxt/content',
   ],
   devtools: { enabled: true },
-  css: ['~/assets/css/main.css'],
   content: {
     experimental: {
       sqliteConnector: 'native',
