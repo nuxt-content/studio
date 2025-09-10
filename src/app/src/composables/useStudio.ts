@@ -5,6 +5,7 @@ import { useUi } from './useUi'
 import { useContext } from './useContext'
 import { useDraft } from './useDraft'
 import { ref } from 'vue'
+import { useTree } from './useTree'
 
 const storage = createStorage({
   driver: indexedDbDriver({
@@ -27,6 +28,7 @@ export const useStudio = () => {
   const ui = useUi(host)
   const context = useContext(host)
   const draft = useDraft(host, git, storage)
+  const tree = useTree(host, draft)
 
   host.on.mounted(async () => {
     // TODO: Mounted is triggered 6 times
@@ -60,6 +62,7 @@ export const useStudio = () => {
     ui,
     context,
     draft,
+    tree,
     // draftMedia: {
     //   get -> DraftMediaItem
     //   upsert

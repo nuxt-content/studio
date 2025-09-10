@@ -1,13 +1,11 @@
-import { ref, type Ref } from 'vue'
+import { ref } from 'vue'
 import type { StorageValue, Storage } from 'unstorage'
-import type { DatabaseItem, DraftFileItem, StudioHost, TreeItem } from '../types'
+import type { DatabaseItem, DraftFileItem, StudioHost } from '../types'
 import type { useGit } from './useGit'
 import { generateMarkdown } from '../utils/content'
-import { buildTree } from '../utils/draft'
 
 export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) {
   const draft = ref<DraftFileItem[]>([])
-  const tree = ref<TreeItem[]>([])
 
   async function get(id: string, { generateContent = false }: { generateContent?: boolean } = {}) {
     const item = await storage.getItem(id) as DraftFileItem
@@ -54,7 +52,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
     }
 
     await host.document.upsert(id, item.document!)
-    await refresh()
+    host.requestRerender()
   }
 
   async function remove(id: string) {
@@ -99,7 +97,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
     }
 
     draft.value = draft.value.filter(item => item.id !== id)
-    await refresh()
+    host.requestRerender()
   }
 
   async function revert(id: string) {
@@ -117,7 +115,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
     if (item.status === 'created') {
       await host.document.delete(id)
     }
-    await refresh()
+    host.requestRerender()
   }
 
   async function revertAll() {
@@ -131,7 +129,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
       }
     }
     draft.value = []
-    await refresh()
+    host.requestRerender()
   }
 
   async function load() {
@@ -151,13 +149,6 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
       }
     }))
 
-    await refresh()
-  }
-
-  async function refresh() {
-    // TODO: Optimize this
-    const dbItems = await host.document.list()
-    tree.value = buildTree(dbItems, draft.value)
     host.requestRerender()
   }
 
@@ -167,8 +158,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
     remove,
     revert,
     revertAll,
-    list: draft as Ref<Readonly<DraftFileItem[]>>,
+    list: draft,
     load,
-    tree,
   }
 }

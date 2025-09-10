@@ -2,10 +2,10 @@
 import { computed } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
 
-const { draft: { tree } } = useStudio()
+const { tree } = useStudio()
 
-const folderTree = computed(() => (tree.value || []).filter(f => f.type === 'directory'))
-const fileTree = computed(() => (tree.value || []).filter(f => f.type === 'file'))
+const folderTree = computed(() => (tree.current.value || []).filter(f => f.type === 'directory'))
+const fileTree = computed(() => (tree.current.value || []).filter(f => f.type === 'file'))
 </script>
 
 <template>

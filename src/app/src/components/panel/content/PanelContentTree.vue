@@ -2,6 +2,9 @@
 import type { DatabaseItem, TreeItem } from '../../../types'
 import type { PropType } from 'vue'
 import FileParentCard from '../../shared/file/FileParentCard.vue'
+import { useStudio } from '../../../composables/useStudio'
+
+const { tree: { selectItem } } = useStudio()
 
 defineProps({
   type: {
@@ -23,7 +26,7 @@ defineProps({
   <div class="flex flex-col @container">
     <ul
       ref="container"
-      class="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-6"
+      class="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4"
     >
       <li
         v-show="type === 'directory' && currentFile?.type === 'directory'"
@@ -50,6 +53,7 @@ defineProps({
       >
         <FileCard
           :file="file"
+          @click="selectItem(file)"
         />
       </li>
     </ul>

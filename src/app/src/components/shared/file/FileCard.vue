@@ -38,7 +38,6 @@ const name = computed(() => titleCase(props.file.name))
 
 const fileExtensionIcon = computed(() => {
   const ext = props.file.id.split('.').pop()?.toLowerCase() || ''
-  console.log(ext)
   return {
     md: 'i-ph-markdown-logo',
     yaml: 'i-fluent-document-yml-20-regular',
@@ -46,8 +45,6 @@ const fileExtensionIcon = computed(() => {
     json: 'i-lucide-file-json',
   }[ext] || 'i-mdi-file'
 })
-
-console.log(props.file)
 
 // Safelist status colors: ring-red-100, ring-green-100, ring-orange-100, ring-blue-100
 const statusColor = computed(() => props.file.status ? COLOR_STATUS_MAP[props.file.status] : 'gray')
