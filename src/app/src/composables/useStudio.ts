@@ -3,7 +3,7 @@ import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { useGit } from './useGit'
 import { useUi } from './useUi'
 import { useContext } from './useContext'
-import { useDraft } from './useDraft'
+import { useDraftFiles } from './useDraftFiles'
 import { ref } from 'vue'
 import { useTree } from './useTree'
 import { createSharedComposable } from '@vueuse/core'
@@ -28,11 +28,11 @@ export const useStudio = createSharedComposable(() => {
   const isReady = ref(false)
   const ui = useUi(host)
   const context = useContext(host, ui)
-  const draft = useDraft(host, git, storage)
-  const tree = useTree(host, draft)
+  const draftFiles = useDraftFiles(host, git, storage)
+  const tree = useTree(host, draftFiles)
 
   host.on.mounted(async () => {
-    await draft.load()
+    await draftFiles.load()
     host.requestRerender()
     isReady.value = true
   })
@@ -61,7 +61,7 @@ export const useStudio = createSharedComposable(() => {
     git,
     ui,
     context,
-    draft,
+    draftFiles,
     tree,
     // draftMedia: {
     //   get -> DraftMediaItem

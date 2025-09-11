@@ -1,10 +1,9 @@
 import type { StudioHost, TreeItem } from '../types'
 import { ref, watch, computed } from 'vue'
-import type { useDraft } from './useDraft'
-import { buildTree } from '../utils/draft'
-import { findParentFromId } from '../utils/tree'
+import type { useDraftFiles } from './useDraftFiles'
+import { findParentFromId, buildTree } from '../utils/tree'
 
-export function useTree(host: StudioHost, draft: ReturnType<typeof useDraft>) {
+export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraftFiles>) {
   const tree = ref<TreeItem[]>([])
   const currentItem = ref<TreeItem | null>(null)
 
@@ -38,7 +37,7 @@ export function useTree(host: StudioHost, draft: ReturnType<typeof useDraft>) {
     currentItem.value = item
   }
 
-  watch(draft.list, async (draftItems) => {
+  watch(draftFiles.list, async (draftItems) => {
     const list = await host.document.list()
     tree.value = buildTree(list, draftItems)
   })

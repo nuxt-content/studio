@@ -4,8 +4,8 @@ import type { DatabaseItem, DraftFileItem, StudioHost } from '../types'
 import type { useGit } from './useGit'
 import { generateMarkdown } from '../utils/content'
 
-export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) {
-  const draft = ref<DraftFileItem[]>([])
+export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) {
+  const draftFiles = ref<DraftFileItem[]>([])
 
   async function get(id: string, { generateContent = false }: { generateContent?: boolean } = {}) {
     const item = await storage.getItem(id) as DraftFileItem
@@ -43,12 +43,12 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
 
     await storage.setItem(id, item)
 
-    const existingItem = draft.value.find(item => item.id == id)
+    const existingItem = draftFiles.value.find(item => item.id == id)
     if (existingItem) {
       existingItem.document = document
     }
     else {
-      draft.value.push(item)
+      draftFiles.value.push(item)
     }
 
     await host.document.upsert(id, item.document!)
@@ -96,7 +96,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
       await host.document.delete(id)
     }
 
-    draft.value = draft.value.filter(item => item.id !== id)
+    draftFiles.value = draftFiles.value.filter(item => item.id !== id)
     host.requestRerender()
   }
 
@@ -106,7 +106,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
 
     await storage.removeItem(id)
 
-    draft.value = draft.value.filter(item => item.id !== id)
+    draftFiles.value = draftFiles.value.filter(item => item.id !== id)
 
     if (item.originalDatabaseItem) {
       await host.document.upsert(id, item.originalDatabaseItem)
@@ -120,7 +120,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
 
   async function revertAll() {
     await storage.clear()
-    for (const item of draft.value) {
+    for (const item of draftFiles.value) {
       if (item.originalDatabaseItem) {
         await host.document.upsert(item.id, item.originalDatabaseItem)
       }
@@ -128,7 +128,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
         await host.document.delete(item.id)
       }
     }
-    draft.value = []
+    draftFiles.value = []
     host.requestRerender()
   }
 
@@ -137,15 +137,15 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
       return Promise.all(keys.map(key => storage.getItem(key) as unknown as DraftFileItem))
     })
 
-    draft.value = list
+    draftFiles.value = list
 
     // Upsert/Delete draft files in database
-    await Promise.all(draft.value.map(async (draft) => {
-      if (draft.status === 'deleted') {
-        await host.document.delete(draft.id)
+    await Promise.all(draftFiles.value.map(async (draftFile) => {
+      if (draftFile.status === 'deleted') {
+        await host.document.delete(draftFile.id)
       }
       else {
-        await host.document.upsert(draft.id, draft.document!)
+        await host.document.upsert(draftFile.id, draftFile.document!)
       }
     }))
 
@@ -158,7 +158,7 @@ export function useDraft(host: StudioHost, git: ReturnType<typeof useGit>, stora
     remove,
     revert,
     revertAll,
-    list: draft,
+    list: draftFiles,
     load,
   }
 }
