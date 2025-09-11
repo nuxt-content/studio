@@ -6,6 +6,7 @@ import { useContext } from './useContext'
 import { useDraft } from './useDraft'
 import { ref } from 'vue'
 import { useTree } from './useTree'
+import { createSharedComposable } from '@vueuse/core'
 
 const storage = createStorage({
   driver: indexedDbDriver({
@@ -13,7 +14,7 @@ const storage = createStorage({
   }),
 })
 
-export const useStudio = () => {
+export const useStudio = createSharedComposable(() => {
   const host = window.useStudioHost()
   const git = useGit({
     owner: 'owner',
@@ -26,12 +27,11 @@ export const useStudio = () => {
 
   const isReady = ref(false)
   const ui = useUi(host)
-  const context = useContext(host)
+  const context = useContext(host, ui)
   const draft = useDraft(host, git, storage)
   const tree = useTree(host, draft)
 
   host.on.mounted(async () => {
-    // TODO: Mounted is triggered 6 times
     await draft.load()
     host.requestRerender()
     isReady.value = true
@@ -81,4 +81,4 @@ export const useStudio = () => {
     //   revert
     // }
   }
-}
+})

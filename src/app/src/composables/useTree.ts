@@ -2,13 +2,13 @@ import type { StudioHost, TreeItem } from '../types'
 import { ref, watch, computed } from 'vue'
 import type { useDraft } from './useDraft'
 import { buildTree } from '../utils/draft'
+import { findParentFromId } from '../utils/tree'
 
 export function useTree(host: StudioHost, draft: ReturnType<typeof useDraft>) {
   const tree = ref<TreeItem[]>([])
   const currentItem = ref<TreeItem | null>(null)
 
-  const currentTree = computed(() => {
-    console.log('🔍 currentTree computed triggered', { currentItem: currentItem.value, treeLength: tree.value.length })
+  const currentTree = computed<TreeItem[]>(() => {
     // If no files is selected
     if (!currentItem.value) {
       return tree.value
@@ -27,24 +27,26 @@ export function useTree(host: StudioHost, draft: ReturnType<typeof useDraft>) {
     return subTree
   })
 
-  function selectItem(item: TreeItem) {
-    console.log('🎯 selectItem', item)
+  const parentItem = computed<TreeItem | null>(() => {
+    if (!currentItem.value) return null
+
+    const parent = findParentFromId(tree.value, currentItem.value.id)
+    return parent || { name: 'content', path: '../', type: 'directory' } as TreeItem
+  })
+
+  function selectItem(item: TreeItem | null) {
     currentItem.value = item
   }
 
   watch(draft.list, async (draftItems) => {
-    console.log('🔍 draft.list watcher triggered', { draftItemsLength: draftItems.length })
     const list = await host.document.list()
     tree.value = buildTree(list, draftItems)
   })
 
-  // watch(currentTree, (newTree) => {
-  //   console.log('🌳 currentTree computed result changed:', newTree?.length)
-  // })
-
   return {
     current: currentTree,
     currentItem,
+    parentItem,
     selectItem,
   }
 }

@@ -48,64 +48,12 @@ const fileExtensionIcon = computed(() => {
 
 // Safelist status colors: ring-red-100, ring-green-100, ring-orange-100, ring-blue-100
 const statusColor = computed(() => props.file.status ? COLOR_STATUS_MAP[props.file.status] : 'gray')
-
-// const { computeFileActions } = useProjectContext(project.value)
-// const loaded = ref(false)
-
-// const { data: url } = useAsyncData<string>(`screenshot-url-${project.value.id}-${props.file.pathRoute}`, async () => {
-//   if (props.file.pathRoute && project.value.url) {
-//     const path = props.file.pathRoute.replace('index', '')
-//     return await client(`/screenshots/${project.value.id}/${encodeURIComponent(path)}`)
-//   }
-// })
-
-// const name = computed(() => {
-//   if (props.file.type === 'directory') {
-//     return titleCase(props.file.nameWithoutPrefix || props.file.name.replace(/^\d+\./, ''))
-//   }
-
-//   // Remove extension
-//   const fileName = (props.file.nameWithoutPrefix || props.file.name.replace(/^\d+\./, '')).split('.').slice(0, -1).join('.')
-
-//   // Handle index files
-//   if (fileName === 'index') {
-//     const pathParts = props.file.pathWithoutRoot.split('/')
-//     // Return home for index file
-//     if (pathParts.length === 1) {
-//       return 'Home.home'
-//     }
-
-//     // Else return parent name without prefix
-//     return titleCase(pathParts[pathParts.length - 2].replace(/^\d+\./, '')) + '.home'
-//   }
-
-//   return titleCase(fileName)
-// })
-
-// const imgUrl = computed(() => url.value ? `${url.value}?theme=${colorMode.value}` : null)
-
-// const isFolder = computed(() => props.file.type === 'directory')
-// const actionItems = computed(() => computeFileActions(props.file))
-
-// const ongoingFileRename = computed(() => props.ongoingFileAction?.action === 'rename-file' && props.ongoingFileAction.path === props.file.path)
-
-// const ring = computed(() => {
-//   const color = COLOR_STATUS_MAP[props.file.status] || 'gray'
-
-//   if (ongoingFileRename.value) return `ring-2 ring-primary-400 dark:ring-primary-600`
-
-//   const hover = props.disableHover ? '' : 'hover:ring-2 hover:ring-primary-400 dark:hover:ring-primary-600'
-//   const dragged = props.isDragged ? `ring-0 border-2 border-dashed border-${color}-200 dark:border-${color}-400` : ''
-//   const basic = color === 'gray' ? 'ring-gray-200 color-gray-800' : `ring-${color}-200 dark:ring-${color}-400`
-
-//   return `ring-1 ${basic} ${hover} ${dragged}`
-// })
 </script>
 
 <template>
   <UPageCard
     reverse
-    class="cursor-pointer hover:ring-gray-300 hover:dark:ring-gray-700 relative"
+    class="cursor-pointer hover:ring-gray-300 hover:dark:ring-gray-700 hover:bg-white relative w-full min-w-0"
   >
     <div
       v-if="!file.status"
@@ -173,67 +121,10 @@ const statusColor = computed(() => props.file.status ? COLOR_STATUS_MAP[props.fi
       </div>
 
       <UTooltip :text="file.path">
-        <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500">
+        <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
           {{ file.pagePath || file.path }}
         </span>
       </UTooltip>
     </template>
-    <!-- <template
-      v-if="file.type === 'file'"
-      #header
-    >
-      <div
-        v-if="url && file.status !== 'created'"
-        class="relative"
-      >
-        <USkeleton
-          v-if="!loaded"
-          class="absolute inset-0 rounded-none bg-gray-300 dark:bg-gray-700 rounded-t-lg"
-        />
-        <NuxtImg
-          v-if="url"
-          :src="imgUrl"
-          width="695"
-          height="390"
-          class="z-[-1] rounded-t-lg"
-          @error="url = null"
-          @load="loaded = true"
-        />
-      </div>
-      <div
-        v-else
-        class="relative"
-      >
-        <NuxtImg
-          :src="placeholder"
-          width="695"
-          height="390"
-          class="z-[-1] rounded-t-lg"
-        />
-        <div
-          class="absolute inset-0 flex items-center justify-center"
-        >
-          <UIcon
-            :name="icon"
-            class="w-8 h-8 text-gray-400 dark:text-gray-500"
-          />
-        </div>
-      </div>
-      <UDropdown
-        v-if="!readOnly"
-        :items="actionItems"
-        class="hidden group-hover:block absolute top-2 right-2"
-        :popper="{ strategy: 'absolute' }"
-        @click="$event.stopPropagation()"
-      >
-        <UButton
-          color="white"
-          variant="solid"
-          aria-label="Open actions"
-          icon="i-ph-dots-three-vertical"
-          square
-        />
-      </UDropdown>
-    </template> -->
   </UPageCard>
 </template>

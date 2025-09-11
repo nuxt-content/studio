@@ -23,18 +23,19 @@ export default defineConfig({
         },
         footer: {
           slots: {
-            container: 'py-2 lg:py-1 px-1 sm:px-2 lg:px-2',
+            container: 'py-2 lg:py-1 px-1 sm:px-4 lg:px-4',
           },
         },
         header: {
           slots: {
-            container: 'px-1 sm:px-2 lg:px-2',
+            container: 'px-1 sm:px-4 lg:px-4',
           },
         },
         pageCard: {
           slots: {
+            wrapper: 'min-w-0',
             container: 'p-0 sm:p-0 gap-y-0',
-            body: 'p-3 sm:p-3',
+            body: 'p-3 sm:p-3 w-full',
           },
         },
       },

@@ -1,26 +1,39 @@
 <script setup lang="ts">
 import { useStudio } from '../../../composables/useStudio'
 
-const studio = useStudio()
+const { ui, context, tree } = useStudio()
 
 const features = [{
   label: 'Content',
   icon: 'i-lucide-files',
   onClick: () => {
-    studio.ui.openPanel('content')
+    if (context.feature.value === 'content') {
+      tree.selectItem(null)
+      return
+    }
+
+    ui.openPanel('content')
   },
 }, {
   label: 'Media',
   icon: 'i-lucide-image',
   onClick: () => {
-    studio.ui.openPanel('media')
+    if (context.feature.value === 'media') {
+      return
+    }
+
+    ui.openPanel('media')
   },
 },
 {
   label: 'Config',
   icon: 'i-lucide-settings',
   onClick: () => {
-    studio.ui.openPanel('config')
+    if (context.feature.value === 'config') {
+      return
+    }
+
+    ui.openPanel('config')
   },
 }]
 </script>

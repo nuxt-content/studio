@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { DatabaseItem, TreeItem } from '../../../types'
+import type { TreeItem } from '../../../types'
 import type { PropType } from 'vue'
-import FileParentCard from '../../shared/file/FileParentCard.vue'
 import { useStudio } from '../../../composables/useStudio'
 
-const { tree: { selectItem } } = useStudio()
+const { tree: treeApi } = useStudio()
 
 defineProps({
   type: {
@@ -15,8 +14,12 @@ defineProps({
     type: Array as PropType<TreeItem[]>,
     default: () => [],
   },
-  currentFile: {
-    type: Object as PropType<DatabaseItem>,
+  currentTreeItem: {
+    type: Object as PropType<TreeItem | null>,
+    default: null,
+  },
+  parentItem: {
+    type: Object as PropType<TreeItem | null>,
     default: null,
   },
 })
@@ -28,32 +31,20 @@ defineProps({
       ref="container"
       class="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4"
     >
-      <li
-        v-show="type === 'directory' && currentFile?.type === 'directory'"
-        id="no-drag"
-        draggable="false"
-      >
-        <FileParentCard
-          :current-file="currentFile"
+      <li v-if="!!parentItem">
+        <!-- parent card -->
+        <FileCard
+          :file="parentItem!"
+          @click="treeApi.selectItem(parentItem?.id ? parentItem : null)"
         />
       </li>
-      <!-- <li
-        v-if="ongoingFileAction?.action === `create-${type}`"
-        draggable="false"
-      >
-        <ProjectFileFormItem
-          :current-file="currentFile"
-          :ongoing-file-action="ongoingFileAction"
-          @submit="emit('create', $event)"
-        />
-      </li> -->
       <li
-        v-for="(file, index) in tree"
-        :key="`${file.path}-${index}`"
+        v-for="(item, index) in tree"
+        :key="`${item.path}-${index}`"
       >
         <FileCard
-          :file="file"
-          @click="selectItem(file)"
+          :file="item"
+          @click="treeApi.selectItem(item)"
         />
       </li>
     </ul>
