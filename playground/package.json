@@ -6,7 +6,7 @@
     "build": "nuxt build --extends docus"
   },
   "dependencies": {
-    "docus": "https://pkg.pr.new/docus@0d23736",
+    "docus": "https://pkg.pr.new/docus@23d88e3",
     "better-sqlite3": "^12.2.0",
     "nuxt": "latest",
     "nuxt-studio": "workspace:*"

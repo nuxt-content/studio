@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, toRaw, computed, type PropType } from 'vue'
+import { computed, type PropType, toRaw } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
+import type { MarkdownRoot } from '@nuxt/content'
 import type { DatabasePageItem } from '../../../../types'
-// import { MDCEditorAST } from '@farnabaz/mdc-editor'
+import { useStudio } from '../../../../composables/useStudio'
 
 const props = defineProps({
   dbItem: {
@@ -11,81 +12,40 @@ const props = defineProps({
   },
 })
 
-// const emit = defineEmits<{
-//   'update:content': [content: DatabasePageItem]
-//   'revert': []
-// }>()
+const { draftFiles } = useStudio()
 
-// const originalContent = ref({})
-
-const document = computed({
+const document = computed<DatabasePageItem>({
   get() {
     if (!props.dbItem) {
       return {}
     }
+
+    let result: DatabasePageItem
+    // TODO: check mdcRoot and markdownRoot types with Ahad
     if (props.dbItem.body?.type === 'minimark') {
-      return {
+      result = {
         ...props.dbItem,
-        body: decompressTree(props.dbItem?.body),
-        id: undefined,
-        extension: undefined,
-        stem: undefined,
-        path: undefined,
-        __hash__: undefined,
+        body: decompressTree(props.dbItem?.body) as unknown as MarkdownRoot,
       }
     }
     else {
-      return {
-        ...props.dbItem,
-        id: undefined,
-        extension: undefined,
-        stem: undefined,
-        path: undefined,
-        __hash__: undefined,
-      }
+      result = props.dbItem
     }
+
+    return result
   },
-  set(_value) {
-    console.log('set', _value)
-    // This setter allows the computed to be writable if needed
-    // The actual content update will be handled by the watch below
+  set(value) {
+    draftFiles.upsert(props.dbItem.id, {
+      ...toRaw(document.value as DatabasePageItem),
+      ...toRaw(value),
+    })
   },
 })
-
-// watch(() => modelValue.value, (value) => {
-//   if (value) {
-//     originalContent.value = props.content
-//   }
-// })
-
-// watch(content, async (value) => {
-//   emit('update:content', {
-//     ...toRaw(props.content),
-//     ...toRaw(value),
-//   })
-// })
-
-// function discard() {
-//   emit('update:content', originalContent.value as DatabasePageItem)
-//   modelValue.value = false
-// }
-
-// function _revert() {
-//   emit('revert')
-// }
-
-// function confirm() {
-//   modelValue.value = false
-// }
 </script>
 
 <template>
-  <div>
-    <pre>
-      {{ dbItem }}
-    </pre>
-    <PanelContentEditorText v-model="document" />
+  <div class="h-full">
+    <PanelContentEditorText v-model="(document as DatabasePageItem)" />
   </div>
-  <!-- <MDCEditorAST v-model="content" /> -->
-  <!-- <SimpleTextEditor v-model:document="content" /> -->
+  <!-- <MDCEditorAST v-model="document" /> -->
 </template>

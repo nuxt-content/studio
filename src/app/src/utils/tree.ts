@@ -1,8 +1,9 @@
-import type { DatabaseItem, DraftFileItem, TreeItem } from '../types'
+import type { DatabaseItem, TreeItem } from '../types'
 import { withLeadingSlash } from 'ufo'
 import { stripNumericPrefix } from './string'
 
-export function buildTree(items: DatabaseItem[], _draft: DraftFileItem[]): TreeItem[] {
+export function buildTree(items: DatabaseItem[]):
+TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
 
@@ -139,14 +140,14 @@ export function findParentFromId(tree: TreeItem[], id: string): TreeItem | null 
 
 //       if (childStatuses.length > 0) {
 //         // Priority: deleted > created > updated
-//         if (childStatuses.includes('deleted')) {
-//           item.status = 'deleted'
+//         if (childStatuses.includes(DraftStatus.Deleted)) {
+//           item.status = DraftStatus.Deleted
 //         }
-//         else if (childStatuses.includes('created')) {
-//           item.status = 'created'
+//         else if (childStatuses.includes(DraftStatus.Created)) {
+//           item.status = DraftStatus.Created
 //         }
-//         else if (childStatuses.includes('updated')) {
-//           item.status = 'updated'
+//         else if (childStatuses.includes(DraftStatus.Updated)) {
+//           item.status = DraftStatus.Updated
 //         }
 //       }
 //     }

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
 import type { DatabasePageItem } from '../../../types'
 
-const { tree, draft } = useStudio()
+const { tree, draftFiles } = useStudio()
 
 const folderTree = computed(() => (tree.current.value || []).filter(f => f.type === 'directory'))
 const fileTree = computed(() => (tree.current.value || []).filter(f => f.type === 'file'))
@@ -11,10 +11,10 @@ const fileTree = computed(() => (tree.current.value || []).filter(f => f.type ==
 
 <template>
   <!-- TODO: TO check => Use flex-col-reverse to fix an issue of z-index with popover in absolute position (actions dropdwon) -->
-  <div class="flex flex-col">
+  <div class="flex flex-col h-full">
     <PanelContentEditor
-      v-if="tree.currentItem.value?.type === 'file' && draft.current.value"
-      :db-item="draft.current.value.originalDatabaseItem as DatabasePageItem"
+      v-if="tree.currentItem.value?.type === 'file' && draftFiles.current.value"
+      :db-item="draftFiles.current.value.document as DatabasePageItem"
     />
     <template v-else>
       <PanelContentTree

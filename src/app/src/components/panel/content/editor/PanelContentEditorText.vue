@@ -7,7 +7,7 @@ import type { MDCRoot } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
 import { withoutReservedKeys } from '../../../../utils/collections'
 
-const document = defineModel<DatabasePageItem>('document')
+const document = defineModel<DatabasePageItem>()
 const content = ref('')
 
 watch(() => document.value?.id, async () => {
@@ -35,5 +35,6 @@ watch(content, (newContent) => {
   <UTextarea
     v-model="content"
     class="h-full w-full"
+    :ui="{ base: 'h-full w-full' }"
   />
 </template>

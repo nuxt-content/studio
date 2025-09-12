@@ -1,13 +1,23 @@
-export type DraftStatus = 'created' | 'updated' | 'deleted' | 'renamed'
+import type { DatabaseItem } from '../types/database'
+import { DraftStatus } from '../types/draft'
 
 export const COLOR_STATUS_MAP: { [key in DraftStatus]?: string } = {
   created: 'green',
   updated: 'orange',
   deleted: 'red',
   renamed: 'blue',
+  opened: 'gray',
 }
 
-// function _getDraftStatus(draft: DraftFileItem[], id: string) {
-//   const draftItem = draft.find(item => item.id === id)
-//   return draftItem?.status
-// }
+export function getDraftStatus(draftedDocument: DatabaseItem, originalDatabaseItem: DatabaseItem | undefined) {
+  if (!originalDatabaseItem) {
+    return DraftStatus.Created
+  }
+  else {
+    if (JSON.stringify(originalDatabaseItem) !== JSON.stringify(draftedDocument)) {
+      return DraftStatus.Updated
+    }
+  }
+
+  return DraftStatus.Opened
+}

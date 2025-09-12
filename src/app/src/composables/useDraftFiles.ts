@@ -1,8 +1,10 @@
 import { ref } from 'vue'
 import type { StorageValue, Storage } from 'unstorage'
-import type { DatabaseItem, DraftFileItem, StudioHost } from '../types'
+import type { DatabaseItem, DraftFileItem, StudioHost, GithubFile } from '../types'
+import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { generateMarkdown } from '../utils/content'
+import { getDraftStatus } from '../utils/draft'
 
 export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) {
   const list = ref<DraftFileItem[]>([])
@@ -19,13 +21,13 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     return item
   }
 
-  async function upsert(id: string, document: DatabaseItem, isCurrent: boolean = false) {
+  async function upsert(id: string, document: DatabaseItem) {
     id = id.replace(/:/g, '/')
     let item = await storage.getItem(id) as DraftFileItem
     if (!item) {
       const path = host.document.getFileSystemPath(id)
 
-      const originalGithubFile = await git.fetchFile(path, { cached: true })
+      const originalGithubFile = await git.fetchFile(path, { cached: true }) as GithubFile
       const originalDatabaseItem = await host.document.get(id)
 
       item = {
@@ -33,13 +35,18 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
         path,
         originalDatabaseItem,
         originalGithubFile,
-        status: originalGithubFile || originalDatabaseItem ? 'updated' : 'created',
+        status: originalGithubFile || originalDatabaseItem ? DraftStatus.Opened : DraftStatus.Created,
         document,
       }
     }
     else {
       item.document = document
     }
+
+    // TODO: fix double call on open document
+    item.status = getDraftStatus(document, item.originalDatabaseItem)
+
+    console.log('status upserted', item.status)
 
     await storage.setItem(id, item)
 
@@ -54,9 +61,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     await host.document.upsert(id, item.document!)
     host.requestRerender()
 
-    if (isCurrent) {
-      select(item)
-    }
+    return item
   }
 
   async function remove(id: string) {
@@ -64,7 +69,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     const path = host.document.getFileSystemPath(id)
 
     if (item) {
-      if (item.status === 'deleted') return
+      if (item.status === DraftStatus.Deleted) return
 
       await storage.removeItem(id)
       await host.document.delete(id)
@@ -73,7 +78,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
         const deleteDraft: DraftFileItem = {
           id,
           path: item.path,
-          status: 'deleted',
+          status: DraftStatus.Deleted,
           originalDatabaseItem: item.originalDatabaseItem,
           originalGithubFile: item.originalGithubFile,
         }
@@ -84,13 +89,13 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     }
     else {
       // Fetch github file before creating draft to detect non deployed changes
-      const originalGithubFile = await git.fetchFile(path, { cached: true })
+      const originalGithubFile = await git.fetchFile(path, { cached: true }) as GithubFile
       const originalDatabaseItem = await host.document.get(id)
 
       const deleteItem: DraftFileItem = {
         id,
         path,
-        status: 'deleted',
+        status: DraftStatus.Deleted,
         originalDatabaseItem,
         originalGithubFile,
       }
@@ -116,7 +121,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
       await host.document.upsert(id, item.originalDatabaseItem)
     }
 
-    if (item.status === 'created') {
+    if (item.status === DraftStatus.Created) {
       await host.document.delete(id)
     }
     host.requestRerender()
@@ -128,7 +133,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
       if (item.originalDatabaseItem) {
         await host.document.upsert(item.id, item.originalDatabaseItem)
       }
-      else if (item.status === 'created') {
+      else if (item.status === DraftStatus.Created) {
         await host.document.delete(item.id)
       }
     }
@@ -137,19 +142,27 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
   }
 
   async function load() {
-    const storedList = await storage.getKeys().then((keys) => {
-      return Promise.all(keys.map(key => storage.getItem(key) as unknown as DraftFileItem))
+    const storedList = await storage.getKeys().then(async (keys) => {
+      return Promise.all(keys.map(async (key) => {
+        const item = await storage.getItem(key) as DraftFileItem
+        console.log('item', item)
+        if (item.status === DraftStatus.Opened) {
+          await storage.removeItem(key)
+          return null
+        }
+        return item
+      }))
     })
 
-    list.value = storedList
+    list.value = storedList.filter(Boolean) as DraftFileItem[]
 
     // Upsert/Delete draft files in database
-    await Promise.all(list.value.map(async (draft) => {
-      if (draft.status === 'deleted') {
-        await host.document.delete(draft.id)
+    await Promise.all(list.value.map(async (draftItem) => {
+      if (draftItem.status === DraftStatus.Deleted) {
+        await host.document.delete(draftItem.id)
       }
       else {
-        await host.document.upsert(draftFile.id, draftFile.document!)
+        await host.document.upsert(draftItem.id, draftItem.document!)
       }
     }))
 
@@ -169,5 +182,6 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     list,
     load,
     current,
+    select,
   }
 }

@@ -1,10 +1,17 @@
 import type { GithubFile } from './github'
 import type { DatabaseItem } from './database'
 
+export enum DraftStatus {
+  Deleted = 'deleted',
+  Created = 'created',
+  Updated = 'updated',
+  Renamed = 'renamed',
+  Opened = 'opened',
+}
 export interface DraftItem {
   id: string // nuxt/content id
   path: string // file path in content directory
-  status: 'deleted' | 'created' | 'updated' // Draft status
+  status: DraftStatus // status
 }
 
 export interface DraftFileItem extends DraftItem {

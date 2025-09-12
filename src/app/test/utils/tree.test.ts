@@ -5,8 +5,8 @@ import type { TreeItem } from '../../src/types/tree'
 import { dbItemsList } from '../mocks/database'
 
 describe('buildTree', () => {
-  it('should build a tree from a list of items without exisiting draft', () => {
-    const tree = buildTree(dbItemsList, [])
+  it('should build a tree from a list of database items', () => {
+    const tree = buildTree(dbItemsList)
     const result: TreeItem[] = [
       {
         id: 'landing/index.md',
