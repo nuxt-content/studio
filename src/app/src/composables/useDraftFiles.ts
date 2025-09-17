@@ -3,7 +3,7 @@ import type { StorageValue, Storage } from 'unstorage'
 import type { DatabaseItem, DraftFileItem, StudioHost, GithubFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
-import { generateMarkdown } from '../utils/content'
+import { stringifyDocument, parseContent } from '../utils/content'
 import { getDraftStatus } from '../utils/draft'
 
 export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) {
@@ -15,12 +15,29 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
     if (generateContent) {
       return {
         ...item,
-        content: await generateMarkdown(item.document!) || '',
+        content: await stringifyDocument(item.document!) || '',
       }
     }
     return item
   }
 
+  // Create a new draft file without exsiting document in database
+  async function create(id: string, content: string): Promise<DraftFileItem> {
+    id = id.replace(/:/g, '/')
+
+    const existingDocument = await host.document.get(id)
+    if (existingDocument) {
+      throw new Error(`Cannot create document with id "${id}": document already exists.`)
+    }
+
+    const document = await parseContent(content)
+
+    await host.document.upsert(id, document)
+
+    return await upsert(id, document)
+  }
+
+  // Update and create draft file with exsiting document in database
   async function upsert(id: string, document: DatabaseItem) {
     id = id.replace(/:/g, '/')
     let item = await storage.getItem(id) as DraftFileItem
@@ -173,6 +190,7 @@ export function useDraftFiles(host: StudioHost, git: ReturnType<typeof useGit>, 
 
   return {
     get,
+    create,
     upsert,
     remove,
     revert,

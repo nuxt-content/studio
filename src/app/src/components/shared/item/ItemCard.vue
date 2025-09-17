@@ -11,10 +11,6 @@ const props = defineProps({
     type: Object as PropType<TreeItem>,
     required: true,
   },
-  // ongoingFileAction: {
-  //   type: Object as PropType<FileAction>,
-  //   default: null,
-  // },
 })
 
 const isFolder = computed(() => props.item.type === 'directory')

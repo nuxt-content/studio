@@ -37,6 +37,7 @@
     "eslint": "^9.35.0",
     "idb-keyval": "^6.2.2",
     "monaco-editor": "^0.52.2",
+    "valibot": "^1.1.0",
     "vite": "^7.1.5",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-libcss": "^1.1.2",

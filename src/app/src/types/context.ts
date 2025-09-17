@@ -4,7 +4,7 @@ export enum StudioFeature {
   Config = 'config',
 }
 
-export enum StudioActionId {
+export enum StudioItemActionId {
   CreateFolder = 'create-folder',
   CreateFile = 'create-file',
   RevertItem = 'revert-item',
@@ -14,9 +14,9 @@ export enum StudioActionId {
 }
 
 export interface StudioAction {
-  id: StudioActionId
+  id: StudioItemActionId
   label: string
   icon: string
   tooltip: string
-  handler?: () => void
+  handler?: (...args: any) => void
 }

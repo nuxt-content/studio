@@ -1,45 +1,61 @@
 import { createSharedComposable } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { useUi } from './useUi'
-import { type StudioHost, type StudioAction, type TreeItem, StudioActionId } from '../types'
+import { type StudioHost, type StudioAction, type TreeItem, StudioItemActionId } from '../types'
 import { STUDIO_ITEM_ACTION_DEFINITIONS } from '../utils/context'
+import type { useDraftFiles } from './useDraftFiles'
 
-export const useContext = createSharedComposable((_host: StudioHost, ui: ReturnType<typeof useUi>) => {
-  const currentFeature = computed<keyof typeof ui.panels | null>(() => Object.keys(ui.panels).find(key => ui.panels[key as keyof typeof ui.panels]) as keyof typeof ui.panels)
+export const useContext = createSharedComposable((
+  _host: StudioHost, ui: ReturnType<typeof useUi>, _draftFiles: ReturnType<typeof useDraftFiles>) => {
+  const actionInProgress = ref<StudioItemActionId>()
+  const currentFeature = computed<keyof typeof ui.panels | null>(() =>
+    Object.keys(ui.panels).find(key => ui.panels[key as keyof typeof ui.panels]) as keyof typeof ui.panels,
+  )
 
   const itemActions = computed<StudioAction[]>(() => {
     return STUDIO_ITEM_ACTION_DEFINITIONS.map(action => ({
       ...action,
-      handler: async (...args: never) => {
-        await itemActionHandler[action.id](...args)
+      handler: async (...args: any) => {
+        if (actionInProgress.value === action.id) {
+          console.log('action already in progress')
+          return
+        }
+
+        console.log('action in progress', action.id, 'with args', args)
+
+        actionInProgress.value = action.id
+
+        // await itemActionHandler[action.id](...args)
       },
     }))
   })
 
-  const itemActionHandler: Record<StudioActionId, (...args: never) => Promise<void>> = {
-    [StudioActionId.CreateFolder]: async (id: string) => {
+  const itemActionHandler: Record<StudioItemActionId, (...args: any) => Promise<void>> = {
+    [StudioItemActionId.CreateFolder]: async (id: string) => {
       console.log('create folder', id)
       alert(`create folder ${id}`)
     },
-    [StudioActionId.CreateFile]: async ({ path, content }: { path: string, content?: string }) => {
-      alert(`create file ${path} ${content}`)
+    [StudioItemActionId.CreateFile]: async ({ id, content }: { id: string, content?: string }) => {
+      alert(`create file ${id} ${content}`)
     },
-    [StudioActionId.RevertItem]: async (id: string) => {
+    [StudioItemActionId.RevertItem]: async (id: string) => {
       alert(`revert file ${id}`)
     },
-    [StudioActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
+    [StudioItemActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
       alert(`rename file ${path} ${file.name}`)
     },
-    [StudioActionId.DeleteItem]: async (id: string) => {
+    [StudioItemActionId.DeleteItem]: async (id: string) => {
       alert(`delete file ${id}`)
     },
-    [StudioActionId.DuplicateItem]: async (id: string) => {
+    [StudioItemActionId.DuplicateItem]: async (id: string) => {
       alert(`duplicate file ${id}`)
     },
   }
 
   return {
     feature: currentFeature,
+    // itemActionHandler,
     itemActions,
+    actionInProgress,
   }
 })

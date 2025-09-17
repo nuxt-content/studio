@@ -8,6 +8,7 @@ export * from './user'
 export * from './tree'
 export * from './github'
 export * from './context'
+export * from './content'
 
 export interface StudioHost {
   on: {

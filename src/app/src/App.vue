@@ -51,7 +51,9 @@ watch(sidebarWidth, () => {
               :current-item="tree.currentItem.value"
               :tree="tree.root.value"
             />
-            <ItemActionsToolbar :item="tree.currentItem.value" />
+            <ItemActionsToolbar
+              :item="tree.currentItem.value"
+            />
           </div>
         </template>
 

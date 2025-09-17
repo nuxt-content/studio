@@ -1,6 +1,6 @@
 import { type StudioAction, StudioFeature, type TreeItem } from '../types'
 import { DraftStatus } from '../types/draft'
-import { StudioActionId } from '../types/context'
+import { StudioItemActionId } from '../types/context'
 
 export const FEATURE_DISPLAY_MAP = {
   [StudioFeature.Content]: 'Content files',
@@ -10,37 +10,37 @@ export const FEATURE_DISPLAY_MAP = {
 
 export const STUDIO_ITEM_ACTION_DEFINITIONS: StudioAction[] = [
   {
-    id: StudioActionId.CreateFolder,
+    id: StudioItemActionId.CreateFolder,
     label: 'Create folder',
     icon: 'i-lucide-folder-plus',
     tooltip: 'Create a new folder',
   },
   {
-    id: StudioActionId.CreateFile,
+    id: StudioItemActionId.CreateFile,
     label: 'Create file',
     icon: 'i-lucide-file-plus',
     tooltip: 'Create a new file',
   },
   {
-    id: StudioActionId.RevertItem,
+    id: StudioItemActionId.RevertItem,
     label: 'Revert changes',
     icon: 'i-lucide-rotate-ccw',
     tooltip: 'Revert changes',
   },
   {
-    id: StudioActionId.RenameItem,
+    id: StudioItemActionId.RenameItem,
     label: 'Rename',
     icon: 'i-lucide-pencil',
     tooltip: 'Rename file',
   },
   {
-    id: StudioActionId.DeleteItem,
+    id: StudioItemActionId.DeleteItem,
     label: 'Delete',
     icon: 'i-lucide-trash',
     tooltip: 'Delete file',
   },
   {
-    id: StudioActionId.DuplicateItem,
+    id: StudioItemActionId.DuplicateItem,
     label: 'Duplicate',
     icon: 'i-lucide-copy',
     tooltip: 'Duplicate file',
@@ -52,19 +52,19 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
     return itemActions
   }
 
-  const forbiddenActions: StudioActionId[] = []
+  const forbiddenActions: StudioItemActionId[] = []
 
   if (item.type === 'root') {
-    return itemActions.filter(action => ![StudioActionId.RenameItem, StudioActionId.DeleteItem, StudioActionId.DuplicateItem].includes(action.id))
+    return itemActions.filter(action => ![StudioItemActionId.RenameItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem].includes(action.id))
   }
 
   // Item type filtering
   switch (item.type) {
     case 'file':
-      forbiddenActions.push(StudioActionId.CreateFolder, StudioActionId.CreateFile)
+      forbiddenActions.push(StudioItemActionId.CreateFolder, StudioItemActionId.CreateFile)
       break
     case 'directory':
-      forbiddenActions.push(StudioActionId.DuplicateItem)
+      forbiddenActions.push(StudioItemActionId.DuplicateItem)
       break
   }
 
@@ -74,13 +74,13 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
     case DraftStatus.Created:
       break
     case DraftStatus.Deleted:
-      forbiddenActions.push(StudioActionId.DuplicateItem, StudioActionId.RenameItem, StudioActionId.DeleteItem)
+      forbiddenActions.push(StudioItemActionId.DuplicateItem, StudioItemActionId.RenameItem, StudioItemActionId.DeleteItem)
       break
     case DraftStatus.Renamed:
-      forbiddenActions.push(StudioActionId.RenameItem)
+      forbiddenActions.push(StudioItemActionId.RenameItem)
       break
     default:
-      forbiddenActions.push(StudioActionId.RevertItem)
+      forbiddenActions.push(StudioItemActionId.RevertItem)
       break
   }
 

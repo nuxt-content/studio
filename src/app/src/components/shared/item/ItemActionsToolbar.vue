@@ -16,6 +16,10 @@ const props = defineProps({
 const actions = computed(() => {
   return computeActionItems(context.itemActions.value, props.item)
 })
+
+// function handleAction(actionId: StudioItemActionId) {
+//   action
+// }
 </script>
 
 <template>
@@ -31,7 +35,7 @@ const actions = computed(() => {
         size="sm"
         color="neutral"
         variant="ghost"
-        @click="action.handler"
+        @click="action.handler!(props.item.id)"
       />
     </UTooltip>
   </div>

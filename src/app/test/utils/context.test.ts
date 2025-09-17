@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { computeActionItems, STUDIO_ITEM_ACTION_DEFINITIONS } from '../../src/utils/context'
-import { StudioActionId, type TreeItem } from '../../src/types'
+import { StudioItemActionId, type TreeItem } from '../../src/types'
 import { DraftStatus } from '../../src/types/draft'
 
 describe('computeActionItems', () => {
@@ -21,14 +21,14 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem)
 
-    expect(result.find(action => action.id === StudioActionId.RenameItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.DeleteItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DeleteItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.RenameItem
-      && action.id !== StudioActionId.DeleteItem
-      && action.id !== StudioActionId.DuplicateItem,
+      action.id !== StudioItemActionId.RenameItem
+      && action.id !== StudioItemActionId.DeleteItem
+      && action.id !== StudioItemActionId.DuplicateItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -45,14 +45,14 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RevertItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile
-      && action.id !== StudioActionId.RevertItem,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -67,14 +67,14 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RevertItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile
-      && action.id !== StudioActionId.RevertItem,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -89,12 +89,12 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -109,12 +109,12 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -129,18 +129,18 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RenameItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.DeleteItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DeleteItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile
-      && action.id !== StudioActionId.DuplicateItem
-      && action.id !== StudioActionId.RenameItem
-      && action.id !== StudioActionId.DeleteItem,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.RenameItem
+      && action.id !== StudioItemActionId.DeleteItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -155,14 +155,14 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
-    expect(result.find(action => action.id === StudioActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.CreateFile)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RenameItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.CreateFolder
-      && action.id !== StudioActionId.CreateFile
-      && action.id !== StudioActionId.RenameItem,
+      action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.RenameItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -180,12 +180,12 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RevertItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem
-      && action.id !== StudioActionId.RevertItem,
+      action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -200,12 +200,12 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RevertItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem
-      && action.id !== StudioActionId.RevertItem,
+      action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -220,10 +220,10 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem,
+      action.id !== StudioItemActionId.DuplicateItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -238,10 +238,10 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem,
+      action.id !== StudioItemActionId.DuplicateItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -256,14 +256,14 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RenameItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.DeleteItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DeleteItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem
-      && action.id !== StudioActionId.RenameItem
-      && action.id !== StudioActionId.DeleteItem,
+      action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.RenameItem
+      && action.id !== StudioItemActionId.DeleteItem,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -278,12 +278,12 @@ describe('computeActionItems', () => {
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
 
-    expect(result.find(action => action.id === StudioActionId.DuplicateItem)).toBeUndefined()
-    expect(result.find(action => action.id === StudioActionId.RenameItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
-      action.id !== StudioActionId.DuplicateItem
-      && action.id !== StudioActionId.RenameItem,
+      action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.RenameItem,
     )
     expect(result).toEqual(expectedActions)
   })
