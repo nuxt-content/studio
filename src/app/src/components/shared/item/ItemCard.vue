@@ -61,33 +61,35 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
     </div>
 
     <template #body>
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-1 min-w-0">
-          <UIcon
-            v-if="isFolder"
-            name="i-lucide-folder"
-            class="h-4 w-4 shrink-0"
-          />
-          <UIcon
-            v-else-if="name === 'home'"
-            name="i-lucide-house"
-            class="h-4 w-4 shrink-0"
-          />
-          <h3
-            class="text-sm font-semibold truncate"
-            :class="props.item.status === 'deleted' && 'line-through'"
-          >
-            {{ name }}
-          </h3>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1 min-w-0">
+            <UIcon
+              v-if="isFolder"
+              name="i-lucide-folder"
+              class="h-4 w-4 shrink-0"
+            />
+            <UIcon
+              v-else-if="name === 'Home'"
+              name="i-lucide-house"
+              class="h-4 w-4 shrink-0"
+            />
+            <h3
+              class="text-sm font-semibold truncate"
+              :class="props.item.status === 'deleted' && 'line-through'"
+            >
+              {{ name }}
+            </h3>
+          </div>
+          <ItemActionsDropdown :item="item" />
         </div>
-        <ItemActionsDropdown :item="item" />
-      </div>
 
-      <UTooltip :text="item.path">
-        <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
-          {{ item.routePath || item.path }}
-        </span>
-      </UTooltip>
+        <UTooltip :text="item.path">
+          <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
+            {{ item.routePath || item.path }}
+          </span>
+        </UTooltip>
+      </div>
     </template>
   </UPageCard>
 </template>

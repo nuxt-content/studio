@@ -74,6 +74,16 @@ export default defineConfig({
             size: 'sm',
           },
         },
+        input: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
+        select: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
       },
     }),
     libCss(),

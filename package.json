@@ -29,7 +29,7 @@
     "@nuxt/content": "https://pkg.pr.new/@nuxt/content@8488733",
     "@nuxt/eslint-config": "latest",
     "@nuxt/module-builder": "latest",
-    "@nuxt/ui": "4.0.0-alpha.1",
+    "@nuxt/ui": "4.0.0-alpha.2",
     "@octokit/types": "^14.1.0",
     "@tailwindcss/typography": "latest",
     "@unpic/vue": "^1.0.0",
@@ -37,12 +37,12 @@
     "eslint": "^9.35.0",
     "idb-keyval": "^6.2.2",
     "monaco-editor": "^0.52.2",
-    "valibot": "^1.1.0",
     "vite": "^7.1.5",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-libcss": "^1.1.2",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.7"
+    "vue-tsc": "^3.0.7",
+    "zod": "^4.1.9"
   },
   "resolutions": {
     "@nuxt/content": "https://pkg.pr.new/@nuxt/content@8488733"

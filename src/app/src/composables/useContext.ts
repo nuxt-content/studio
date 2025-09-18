@@ -52,10 +52,16 @@ export const useContext = createSharedComposable((
     },
   }
 
+  function unsetActionInProgress() {
+    actionInProgress.value = undefined
+  }
+
   return {
     feature: currentFeature,
     // itemActionHandler,
     itemActions,
     actionInProgress,
+
+    unsetActionInProgress,
   }
 })

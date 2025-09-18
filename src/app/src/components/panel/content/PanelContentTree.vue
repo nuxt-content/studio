@@ -3,7 +3,7 @@ import type { TreeItem } from '../../../types'
 import type { PropType } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
 
-const { tree: treeApi } = useStudio()
+const { tree: treeApi, context } = useStudio()
 
 defineProps({
   type: {
@@ -25,10 +25,13 @@ defineProps({
   <div class="flex flex-col @container">
     <ul
       ref="container"
-      class="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4"
+      class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4"
     >
       <li v-if="showCreationForm">
-        <ItemCardForm :parent-item="treeApi.currentItem.value" />
+        <ItemCardForm
+          :parent-item="treeApi.currentItem.value"
+          :action-id="context.actionInProgress.value!"
+        />
       </li>
       <li
         v-for="(item, index) in tree"
