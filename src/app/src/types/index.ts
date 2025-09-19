@@ -21,8 +21,6 @@ export interface StudioHost {
     deactivateStudio: () => void
     expandSidebar: () => void
     collapseSidebar: () => void
-    expandToolbar: () => void
-    collapseToolbar: () => void
     updateStyles: () => void
   }
   document: {
