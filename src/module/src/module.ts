@@ -1,8 +1,10 @@
 import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, extendPages, addServerHandler } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
+import { resolve } from 'node:path'
 
 interface ModuleOptions {
+  devStorage?: boolean
   auth?: {
     github?: {
       clientId: string
@@ -16,7 +18,9 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-studio',
     configKey: 'contentStudio',
-    defaults: {},
+  },
+  defaults: {
+    devStorage: true,
   },
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -39,7 +43,9 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
+    console.log(nuxt.options.dev, options.devStorage )
     nuxt.options.runtimeConfig.public.contentStudio = {
+      studioDevStorage: nuxt.options.dev && options.devStorage || false,
       studioDevServer: process.env.STUDIO_DEV_SERVER,
     }
     nuxt.options.runtimeConfig.contentStudio = {
@@ -75,6 +81,22 @@ export default defineNuxtModule<ModuleOptions>({
         'extend',
       ]
     })
+
+    if (nuxt.options.dev && options.devStorage) {
+      nuxt.options.runtimeConfig.public.contentStudio.studioDevStorage = true
+
+      nuxt.options.nitro.storage = {
+        ...nuxt.options.nitro.storage,
+        nuxt_content_studio: {
+          driver: 'fs',
+          base: resolve(nuxt.options.rootDir, 'content'),
+        },
+      }
+      addServerHandler({
+        route: '/__nuxt_content/studio/dev/fs/**',
+        handler: runtime('./server/routes/dev/fs/[...path]'),
+      })
+    }
 
     addServerHandler({
       route: '/__nuxt_content/studio/auth/github',

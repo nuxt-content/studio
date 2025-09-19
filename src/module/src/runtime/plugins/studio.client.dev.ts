@@ -2,7 +2,7 @@ import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
 import { defineStudioActivationPlugin } from '../utils/activation'
 
 export default defineNuxtPlugin(async () => {
-  await defineStudioActivationPlugin(async () => {
+  await defineStudioActivationPlugin(async (user) => {
     console.log(`
   ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗     ██████╗ ███████╗██╗   ██╗
   ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗    ██╔══██╗██╔════╝██║   ██║
@@ -11,6 +11,10 @@ export default defineNuxtPlugin(async () => {
   ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝    ██████╔╝███████╗ ╚████╔╝
   ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝     ╚═════╝ ╚══════╝  ╚═══╝
     `)
+
+    // Initialize host
+    const host = await import('../host.dev').then(m => m.useStudioHost)
+    window.useStudioHost = () => host(user)
 
     const config = useRuntimeConfig()
     const el = document.createElement('script')

@@ -26,7 +26,7 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "devDependencies": {
-    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@8488733",
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@22409fe",
     "@nuxt/eslint-config": "latest",
     "@nuxt/module-builder": "latest",
     "@nuxt/ui": "4.0.0-alpha.1",
@@ -45,7 +45,7 @@
     "vue-tsc": "^3.0.7"
   },
   "resolutions": {
-    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@8488733"
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@22409fe"
   },
   "packageManager": "pnpm@10.16.1",
   "dependencies": {

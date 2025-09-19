@@ -53,23 +53,26 @@ function getHostStyles(): Record<string, Record<string, string>> & { css?: strin
 
 export function useStudioHost(user: StudioUser): StudioHost {
   const isMounted = ref(false)
+  let localDatabaseAdapter: ContentDatabaseAdapter | null = null
 
   function useNuxtApp() {
     return window.useNuxtApp!()
   }
 
-  function useContentDatabaseAdapter(collection: string): DatabaseAdapter {
-    return (useNuxtApp().$contentLocalDatabase as ContentDatabaseAdapter)(collection)
-  }
-
   function useContent() {
+    const $content = useNuxtApp().$content as { loadLocalDatabase: () => ContentDatabaseAdapter } || {}
     return {
+      ...$content,
       queryCollection,
       queryCollectionItemSurroundings,
       queryCollectionNavigation,
       queryCollectionSearchSections,
       collections
     }
+  }
+
+  function useContentDatabaseAdapter(collection: string): DatabaseAdapter {
+    return localDatabaseAdapter!(collection)
   }
 
   function useContentCollections() {
@@ -203,9 +206,13 @@ export function useStudioHost(user: StudioUser): StudioHost {
     // Trigger dummy query to make sure content database is loaded on the client
     // TODO: browse collections and call one of them
     ensure(() => useContent().queryCollection !== void 0, 500)
-      .then(() =>useContentCollectionQuery("docs").first())
-      .then(() => ensure(() => useNuxtApp().$contentLocalDatabase !== void 0))
-      .then(() => { isMounted.value = true })
+      // .then(() => useContentCollectionQuery("docs").first())
+      .then(() => ensure(() => useContent().loadLocalDatabase !== void 0))
+      .then(() => useContent().loadLocalDatabase())
+      .then((_localDatabaseAdapter) => {
+        localDatabaseAdapter = _localDatabaseAdapter
+        isMounted.value = true
+      })
   })()
 
   return host
