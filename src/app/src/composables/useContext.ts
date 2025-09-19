@@ -1,10 +1,11 @@
 import { createSharedComposable } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import type { useUi } from './useUi'
 import { type CreateFileParams, type StudioHost, type StudioAction, type TreeItem, StudioItemActionId } from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
 import type { useDraftFiles } from './useDraftFiles'
 import type { useTree } from './useTree'
+import { useHooks } from './useHooks'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
@@ -12,6 +13,8 @@ export const useContext = createSharedComposable((
   draftFiles: ReturnType<typeof useDraftFiles>,
   tree: ReturnType<typeof useTree>,
 ) => {
+  const hooks = useHooks()
+
   const actionInProgress = ref<StudioItemActionId | null>(null)
   const currentFeature = computed<keyof typeof ui.panels | null>(() =>
     Object.keys(ui.panels).find(key => ui.panels[key as keyof typeof ui.panels]) as keyof typeof ui.panels,
@@ -53,13 +56,9 @@ export const useContext = createSharedComposable((
       const document = await host.document.create(fsPath, routePath, content)
       const draftItem = await draftFiles.upsert(document.id, document)
 
-      // Wait for tree to finish building, then select the new file
-      const waitForTreeToBeUpdated = watch(tree.isTreeBuilding, (isBuilding) => {
-        if (!isBuilding) {
-          tree.selectItemByDraftFile(draftItem)
-          waitForTreeToBeUpdated.stop()
-        }
-      }, { immediate: true })
+      await hooks.callHook('studio:draft:updated')
+
+      tree.selectItemById(draftItem.id)
     },
     [StudioItemActionId.RevertItem]: async (id: string) => {
       alert(`revert file ${id}`)

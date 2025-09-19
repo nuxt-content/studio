@@ -45,6 +45,7 @@ const userMenuItems = computed(() => [
         icon="i-lucide-panel-left-close"
         variant="link"
         color="neutral"
+        size="md"
         @click="studio.ui.closePanels()"
       />
     </template>

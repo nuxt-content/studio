@@ -1,13 +1,16 @@
-import type { DraftFileItem, StudioHost, TreeItem } from '../types'
-import { ref, watch, computed } from 'vue'
+import type { StudioHost, TreeItem } from '../types'
+import { ref, computed } from 'vue'
 import type { useDraftFiles } from './useDraftFiles'
 import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
+import { createSharedComposable } from '@vueuse/core'
+import { useHooks } from './useHooks'
 
-export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraftFiles>) {
+export const useTree = createSharedComposable((host: StudioHost, draftFiles: ReturnType<typeof useDraftFiles>) => {
+  const hooks = useHooks()
+
   const tree = ref<TreeItem[]>([])
   const currentItem = ref<TreeItem>(ROOT_ITEM)
-  const isTreeBuilding = ref<boolean>(false)
 
   const currentTree = computed<TreeItem[]>(() => {
     if (currentItem.value.id === ROOT_ITEM.id) {
@@ -45,6 +48,14 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     }
   }
 
+  async function selectItemById(id: string) {
+    console.log('tree.value', tree.value)
+    const treeItem = findItemFromId(tree.value, id)
+    if (treeItem) {
+      selectItem(treeItem)
+    }
+  }
+
   async function selectItemByRoute(route: RouteLocationNormalized) {
     const item = findItemFromRoute(tree.value, route)
     if (!item) return
@@ -58,15 +69,7 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     draftFiles.select(draftFileItem)
   }
 
-  async function selectItemByDraftFile(item: DraftFileItem) {
-    const treeItem = findItemFromId(tree.value, item.id)
-    if (treeItem) {
-      selectItem(treeItem)
-    }
-  }
-
-  watch(draftFiles.listHash, async () => {
-    isTreeBuilding.value = true
+  hooks.hook('studio:draft:updated', async () => {
     const list = await host.document.list()
     const listWithFsPath = list.map((item) => {
       const fsPath = host.document.getFileSystemPath(item.id)
@@ -77,17 +80,15 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     })
 
     tree.value = buildTree(listWithFsPath, draftFiles.list.value)
-    isTreeBuilding.value = false
-  }, { immediate: true })
+  })
 
   return {
     root: tree,
     current: currentTree,
     currentItem,
-    isTreeBuilding,
     // parentItem,
     selectItem,
     selectItemByRoute,
-    selectItemByDraftFile,
+    selectItemById,
   }
-}
+})
