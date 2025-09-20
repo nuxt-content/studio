@@ -5,7 +5,7 @@ import { parseMarkdown, stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import { decompressTree, compressTree } from '@nuxt/content/runtime'
 import type { MDCRoot } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
-import { withoutReservedKeys } from '../../../../utils/collections'
+import { removeReservedKeysFromDocument } from '../../../../utils/content'
 
 const document = defineModel<DatabasePageItem>()
 const content = ref('')
@@ -13,7 +13,7 @@ const content = ref('')
 watch(() => document.value?.id, async () => {
   if (document.value?.body) {
     const tree = document.value.body.type === 'minimark' ? decompressTree(document.value.body) : (document.value.body as unknown as MDCRoot)
-    const data = withoutReservedKeys(document.value)
+    const data = removeReservedKeysFromDocument(document.value)
     stringifyMarkdown(tree, data).then((md) => {
       content.value = md || ''
     })

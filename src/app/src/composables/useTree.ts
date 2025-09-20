@@ -1,23 +1,27 @@
 import type { StudioHost, TreeItem } from '../types'
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 import type { useDraftFiles } from './useDraftFiles'
-import { findParentFromId, buildTree, findItemFromRoute } from '../utils/tree'
+import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
+import { createSharedComposable } from '@vueuse/core'
+import { useHooks } from './useHooks'
 
-export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraftFiles>) {
+export const useTree = createSharedComposable((host: StudioHost, draftFiles: ReturnType<typeof useDraftFiles>) => {
+  const hooks = useHooks()
+
   const tree = ref<TreeItem[]>([])
-  const currentItem = ref<TreeItem | null>(null)
+  const currentItem = ref<TreeItem>(ROOT_ITEM)
 
   const currentTree = computed<TreeItem[]>(() => {
-    if (!currentItem.value) {
+    if (currentItem.value.id === ROOT_ITEM.id) {
       return tree.value
     }
 
     let subTree = tree.value
-    const parts = currentItem.value.path.split('/').filter(Boolean)
-    for (let i = 0; i < parts.length; i++) {
-      const fileName = parts[i]
-      const file = subTree.find(f => f.name === fileName) as TreeItem
+    const idSegments = currentItem.value.id.split('/').filter(Boolean)
+    for (let i = 0; i < idSegments.length; i++) {
+      const id = idSegments.slice(0, i + 1).join('/')
+      const file = subTree.find(item => item.id === id) as TreeItem
       if (file) {
         subTree = file.children!
       }
@@ -27,13 +31,13 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
   })
 
   // const parentItem = computed<TreeItem | null>(() => {
-  //   if (!currentItem.value) return null
+  //   if (currentItem.value.id === ROOT_ITEM.id) return null
 
   //   const parent = findParentFromId(tree.value, currentItem.value.id)
-  //   return parent || { name: 'content', path: '../', type: 'directory' } as TreeItem
+  //   return parent || ROOT_ITEM
   // })
 
-  async function selectItem(item: TreeItem | null) {
+  async function selectItem(item: TreeItem) {
     currentItem.value = item
     if (item?.type === 'file') {
       host.app.navigateTo(item.routePath!)
@@ -44,7 +48,14 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     }
   }
 
-  async function selectByRoute(route: RouteLocationNormalized) {
+  async function selectItemById(id: string) {
+    const treeItem = findItemFromId(tree.value, id)
+    if (treeItem) {
+      selectItem(treeItem)
+    }
+  }
+
+  async function selectItemByRoute(route: RouteLocationNormalized) {
     const item = findItemFromRoute(tree.value, route)
     if (!item) return
     currentItem.value = item
@@ -57,10 +68,18 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     draftFiles.select(draftFileItem)
   }
 
-  watch(draftFiles.list, async () => {
+  hooks.hook('studio:draft:updated', async () => {
     const list = await host.document.list()
-    tree.value = buildTree(list, draftFiles.list.value)
-  }, { deep: true })
+    const listWithFsPath = list.map((item) => {
+      const fsPath = host.document.getFileSystemPath(item.id)
+      return {
+        ...item,
+        fsPath,
+      }
+    })
+
+    tree.value = buildTree(listWithFsPath, draftFiles.list.value)
+  })
 
   return {
     root: tree,
@@ -68,6 +87,7 @@ export function useTree(host: StudioHost, draftFiles: ReturnType<typeof useDraft
     currentItem,
     // parentItem,
     selectItem,
-    selectByRoute,
+    selectItemByRoute,
+    selectItemById,
   }
-}
+})

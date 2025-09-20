@@ -5,7 +5,7 @@ import { parseMarkdown, stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import { decompressTree, compressTree } from '@nuxt/content/runtime'
 import type { MDCRoot } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
-import { withoutReservedKeys } from '../../../../utils/collections'
+import { removeReservedKeysFromDocument } from '../../../../utils/content'
 import { setupMonaco, type Editor } from '../../../../utils/monaco'
 
 const document = defineModel<DatabasePageItem>()
@@ -17,7 +17,7 @@ const content = ref<string>('')
 watch(() => document.value?.id, async () => {
   if (document.value?.body) {
     const tree = document.value.body.type === 'minimark' ? decompressTree(document.value.body) : (document.value.body as unknown as MDCRoot)
-    const data = withoutReservedKeys(document.value)
+    const data = removeReservedKeysFromDocument(document.value)
     stringifyMarkdown(tree, data).then((md) => {
       content.value = md || ''
 
@@ -45,10 +45,13 @@ onMounted(async () => {
   })
 
   // create and attach a model to the editor
-  editor.value.setModel(monaco.editor.createModel(content.value, "mdc"));
+  editor.value.setModel(monaco.editor.createModel(content.value, 'mdc'))
 })
 </script>
 
 <template>
-  <div class="h-full" ref="editorRef"></div>
+  <div
+    ref="editorRef"
+    class="h-full -m-4"
+  />
 </template>

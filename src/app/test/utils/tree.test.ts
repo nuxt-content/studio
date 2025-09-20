@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildTree, findParentFromId, findItemFromRoute } from '../../src/utils/tree'
+import { buildTree, findParentFromId, findItemFromRoute, findItemFromId } from '../../src/utils/tree'
 import { tree } from '../mocks/tree'
 import type { TreeItem } from '../../src/types/tree'
 import { dbItemsList } from '../mocks/database'
@@ -13,31 +13,29 @@ describe('buildTree', () => {
     {
       id: 'landing/index.md',
       name: 'home',
-      path: '/',
+      fsPath: 'index.md',
       type: 'file',
       routePath: '/',
-      fileType: 'page',
     },
     {
       id: 'docs/1.getting-started',
       name: 'getting-started',
-      path: '/getting-started',
+      fsPath: '1.getting-started',
+      routePath: '/getting-started',
       type: 'directory',
       children: [
         {
           id: 'docs/1.getting-started/2.introduction.md',
           name: 'introduction',
-          path: '/getting-started/introduction',
+          fsPath: '1.getting-started/2.introduction.md',
           type: 'file',
-          fileType: 'page',
           routePath: '/getting-started/introduction',
         },
         {
           id: 'docs/1.getting-started/3.installation.md',
           name: 'installation',
-          path: '/getting-started/installation',
+          fsPath: '1.getting-started/3.installation.md',
           type: 'file',
-          fileType: 'page',
           routePath: '/getting-started/installation',
         },
       ],
@@ -52,7 +50,7 @@ describe('buildTree', () => {
   it('should build a tree from a list of database items and set file status for root file based on draft', () => {
     const draftList: DraftFileItem[] = [{
       id: dbItemsList[0].id,
-      path: dbItemsList[0].path as string,
+      fsPath: 'index.md',
       status: DraftStatus.Created,
     }]
     const tree = buildTree(dbItemsList, draftList)
@@ -66,7 +64,7 @@ describe('buildTree', () => {
   it('should build a tree from a list of database items and set file status for nestedfile and parent directory based on draft', () => {
     const draftList: DraftFileItem[] = [{
       id: dbItemsList[1].id,
-      path: dbItemsList[1].path as string,
+      fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Updated,
     }]
     const tree = buildTree(dbItemsList, draftList)
@@ -89,7 +87,7 @@ describe('buildTree', () => {
   it('should build a tree from a list of database items and set file status for nestedfile and parent directory based on draft (status is always updated in directory)', () => {
     const draftList: DraftFileItem[] = [{
       id: dbItemsList[1].id,
-      path: dbItemsList[1].path as string,
+      fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Created,
     }]
     const tree = buildTree(dbItemsList, draftList)
@@ -175,6 +173,69 @@ describe('findItemFromRoute', () => {
   it('should return null for empty tree', () => {
     const route = mockRoute('/')
     const item = findItemFromRoute([], route)
+    expect(item).toBeNull()
+  })
+})
+
+describe('findItemFromId', () => {
+  it('should find root level item by id', () => {
+    const item = findItemFromId(tree, 'landing/index.md')
+    expect(item).toBeDefined()
+    expect(item?.id).toBe('landing/index.md')
+    expect(item?.name).toBe('home')
+    expect(item?.type).toBe('file')
+  })
+
+  it('should find nested file by id', () => {
+    const item = findItemFromId(tree, 'docs/1.getting-started/2.introduction.md')
+    expect(item).toBeDefined()
+    expect(item?.id).toBe('docs/1.getting-started/2.introduction.md')
+    expect(item?.name).toBe('introduction')
+    expect(item?.type).toBe('file')
+  })
+
+  it('should find directory by id', () => {
+    const item = findItemFromId(tree, 'docs/1.getting-started')
+    expect(item).toBeDefined()
+    expect(item?.id).toBe('docs/1.getting-started')
+    expect(item?.name).toBe('getting-started')
+    expect(item?.type).toBe('directory')
+    expect(item?.children).toBeDefined()
+  })
+
+  it('should find deeply nested item by id', () => {
+    const item = findItemFromId(tree, 'docs/1.getting-started/1.advanced/1.studio.md')
+    expect(item).toBeDefined()
+    expect(item?.id).toBe('docs/1.getting-started/1.advanced/1.studio.md')
+    expect(item?.name).toBe('studio')
+    expect(item?.type).toBe('file')
+  })
+
+  it('should find nested directory by id', () => {
+    const item = findItemFromId(tree, 'docs/1.getting-started/1.advanced')
+    expect(item).toBeDefined()
+    expect(item?.id).toBe('docs/1.getting-started/1.advanced')
+    expect(item?.name).toBe('advanced')
+    expect(item?.type).toBe('directory')
+  })
+
+  it('should return null for non-existent id', () => {
+    const item = findItemFromId(tree, 'non/existent/item.md')
+    expect(item).toBeNull()
+  })
+
+  it('should return null for partial id match', () => {
+    const item = findItemFromId(tree, 'docs/1.getting-started/2.introduction')
+    expect(item).toBeNull()
+  })
+
+  it('should return null for empty tree', () => {
+    const item = findItemFromId([], 'any/item.md')
+    expect(item).toBeNull()
+  })
+
+  it('should return null for empty id', () => {
+    const item = findItemFromId(tree, '')
     expect(item).toBeNull()
   })
 })

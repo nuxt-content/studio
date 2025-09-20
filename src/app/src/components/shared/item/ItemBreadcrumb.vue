@@ -4,15 +4,15 @@ import type { DropdownMenuItem } from '@nuxt/ui/components/DropdownMenu.vue.d.ts
 import { computed, type PropType, unref } from 'vue'
 import type { TreeItem } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
-import { upperFirst } from 'scule'
-import { findParentFromId } from '../../../utils/tree'
+import { findParentFromId, ROOT_ITEM } from '../../../utils/tree'
+import { FEATURE_DISPLAY_MAP } from '../../../utils/context'
 
 const { tree: treeApi, context } = useStudio()
 
 const props = defineProps({
   currentItem: {
-    type: Object as PropType<TreeItem | null>,
-    default: null,
+    type: Object as PropType<TreeItem>,
+    required: true,
   },
   tree: {
     type: Array as PropType<TreeItem[]>,
@@ -22,13 +22,13 @@ const props = defineProps({
 
 const items = computed<BreadcrumbItem[]>(() => {
   const rootItem = {
-    label: upperFirst(context.feature.value as string),
+    label: FEATURE_DISPLAY_MAP[context.feature.value as keyof typeof FEATURE_DISPLAY_MAP],
     onClick: () => {
-      treeApi.selectItem(null)
+      treeApi.selectItem(ROOT_ITEM)
     },
   }
 
-  if (!props.currentItem) {
+  if (props.currentItem.id === ROOT_ITEM.id) {
     return [rootItem]
   }
 

@@ -30,7 +30,7 @@
     "@nuxt/eslint-config": "latest",
     "@nuxt/kit": "^4.1.2",
     "@nuxt/module-builder": "latest",
-    "@nuxt/ui": "4.0.0-alpha.1",
+    "@nuxt/ui": "4.0.0-alpha.2",
     "@octokit/types": "^14.1.0",
     "@tailwindcss/typography": "latest",
     "@vitejs/plugin-vue": "^6.0.1",
@@ -43,7 +43,8 @@
     "vitest": "^3.2.4",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
-    "vue-tsc": "^3.0.7"
+    "vue-tsc": "^3.0.7",
+    "zod": "^4.1.9"
   },
   "resolutions": {
     "@nuxt/content": "https://pkg.pr.new/@nuxt/content@22409fe"

@@ -8,9 +8,10 @@ export enum DraftStatus {
   Renamed = 'renamed',
   Opened = 'opened',
 }
+
 export interface DraftItem {
   id: string // nuxt/content id
-  path: string // file path in content directory
+  fsPath: string // file path in content directory
   status: DraftStatus // status
 }
 

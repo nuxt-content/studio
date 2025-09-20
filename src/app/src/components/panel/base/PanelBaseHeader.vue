@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useStudio } from '../../../composables/useStudio'
 import { StudioFeature } from '../../../types'
+import { ROOT_ITEM } from '../../../utils/tree'
 
 const { ui, context, tree } = useStudio()
 
@@ -9,7 +10,7 @@ const features = [{
   icon: 'i-lucide-files',
   onClick: () => {
     if (context.feature.value === StudioFeature.Content) {
-      tree.selectItem(null)
+      tree.selectItem(ROOT_ITEM)
       return
     }
 
@@ -20,7 +21,7 @@ const features = [{
   icon: 'i-lucide-image',
   onClick: () => {
     if (context.feature.value === StudioFeature.Media) {
-      tree.selectItem(null)
+      tree.selectItem(ROOT_ITEM)
       return
     }
 
@@ -32,7 +33,7 @@ const features = [{
   icon: 'i-lucide-settings',
   onClick: () => {
     if (context.feature.value === StudioFeature.Config) {
-      tree.selectItem(null)
+      tree.selectItem(ROOT_ITEM)
       return
     }
 
@@ -46,7 +47,6 @@ const features = [{
     <template #title>
       <UNavigationMenu
         :items="features"
-        size="sm"
         highlight
       />
     </template>

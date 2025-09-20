@@ -62,7 +62,7 @@ function onLeave(el: Element, done: () => void) {
         <slot name="header" />
       </div>
 
-      <div class="h-[calc(100vh-var(--ui-header-height)-var(--ui-sub-header-height)-var(--ui-footer-height))]">
+      <div class="h-[calc(100vh-var(--ui-header-height)-var(--ui-sub-header-height)-var(--ui-footer-height))] p-4">
         <slot />
       </div>
 

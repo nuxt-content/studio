@@ -8,6 +8,7 @@ export * from './user'
 export * from './tree'
 export * from './github'
 export * from './context'
+export * from './content'
 
 export interface StudioHost {
   on: {
@@ -20,8 +21,6 @@ export interface StudioHost {
     deactivateStudio: () => void
     expandSidebar: () => void
     collapseSidebar: () => void
-    expandToolbar: () => void
-    collapseToolbar: () => void
     updateStyles: () => void
   }
   document: {
@@ -29,6 +28,7 @@ export interface StudioHost {
     getFileSystemPath: (id: string) => string
     list: () => Promise<DatabaseItem[]>
     upsert: (id: string, upsertedDocument: DatabaseItem) => Promise<void>
+    create: (fsPath: string, routePath: string, content: string) => Promise<DatabaseItem>
     delete: (id: string) => Promise<void>
     detectActives: () => Array<{ id: string, title: string }>
   }

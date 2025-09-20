@@ -18,7 +18,7 @@ export default defineConfig({
     ui({
       ui: {
         colors: {
-          primary: 'green',
+          primary: 'neutral',
           neutral: 'zinc',
         },
         footer: {
@@ -28,19 +28,22 @@ export default defineConfig({
         },
         header: {
           slots: {
-            container: 'px-1 sm:px-3 lg:px-3',
+            container: 'px-1 sm:px-4 lg:px-4',
           },
         },
         pageCard: {
           slots: {
             wrapper: 'min-w-0',
             container: 'p-0 sm:p-0 gap-y-0',
-            body: 'p-3 sm:p-3 w-full',
+            body: 'p-3  sm:p-3 w-full',
           },
         },
         navigationMenu: {
           slots: {
             link: 'cursor-pointer',
+          },
+          defaultVariants: {
+            size: 'sm',
           },
         },
         breadcrumb: {
@@ -48,7 +51,39 @@ export default defineConfig({
             link: 'cursor-pointer',
           },
         },
-
+        button: {
+          variants: {
+            size: {
+              xs: {
+                leadingIcon: 'size-3',
+                trailingIcon: 'size-3',
+              },
+            },
+          },
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
+        dropdownMenu: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
+        badge: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
+        input: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
+        select: {
+          defaultVariants: {
+            size: 'sm',
+          },
+        },
       },
     }),
     libCss(),

@@ -1,6 +1,6 @@
 import type { DatabaseItem } from '../../src/types/database'
 
-export const dbItemsList: DatabaseItem[] = [
+export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
   {
     id: 'landing/index.md',
     title: '',
@@ -10,6 +10,7 @@ export const dbItemsList: DatabaseItem[] = [
     meta: {},
     navigation: true,
     path: '/',
+    fsPath: 'index.md',
     seo: {
       title: 'Write beautiful docs with Markdown',
       description: 'Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box. Docus brings together the best of the Nuxt ecosystem. Powered by Nuxt UI Pro.',
@@ -30,6 +31,7 @@ export const dbItemsList: DatabaseItem[] = [
       icon: 'i-lucide-house',
     },
     path: '/getting-started/introduction',
+    fsPath: '1.getting-started/2.introduction.md',
     seo: {
       title: 'Introduction',
       description: 'Discover how to create, manage, and publish documentation effortlessly with Docus.',
@@ -48,6 +50,7 @@ export const dbItemsList: DatabaseItem[] = [
     meta: {},
     navigation: {},
     path: '/getting-started/installation',
+    fsPath: '1.getting-started/3.installation.md',
     seo: {
       title: 'Installation',
       description: 'Learn how to install Docus.',

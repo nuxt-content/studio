@@ -2,10 +2,11 @@ import { ref } from 'vue'
 import { ensure } from './utils/ensure'
 import type { CollectionItemBase, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
-import { createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collections'
+import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collections'
 import { kebabCase } from 'lodash'
 import type { UseStudioHost, StudioHost, StudioUser, DatabaseItem } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
+import { generateDocumentFromContent } from './utils/content'
 import { queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections } from '#imports'
 import { collections } from '#content/preview'
 
@@ -67,7 +68,7 @@ export function useStudioHost(user: StudioUser): StudioHost {
       queryCollectionItemSurroundings,
       queryCollectionNavigation,
       queryCollectionSearchSections,
-      collections
+      collections,
     }
   }
 
@@ -102,23 +103,12 @@ export function useStudioHost(user: StudioUser): StudioHost {
     ui: {
       activateStudio: () => {
         document.body.setAttribute('data-studio-active', 'true')
-        // host.ui.expandToolbar()
-        // host.ui.updateStyles()
       },
       deactivateStudio: () => {
         document.body.removeAttribute('data-studio-active')
-        // host.ui.collapseToolbar()
         host.ui.collapseSidebar()
         host.ui.updateStyles()
       },
-      // expandToolbar: () => {
-      //   document.body.setAttribute('data-expand-toolbar', 'true')
-      //   host.ui.updateStyles()
-      // },
-      // collapseToolbar: () => {
-      //   document.body.removeAttribute('data-expand-toolbar')
-      //   host.ui.updateStyles()
-      // },
       expandSidebar: () => {
         document.body.setAttribute('data-expand-sidebar', 'true')
         host.ui.updateStyles()
@@ -153,14 +143,33 @@ export function useStudioHost(user: StudioUser): StudioHost {
         return useContentCollectionQuery(id.split('/')[0] as string).where('id', '=', id).first() as unknown as Promise<DatabaseItem>
       },
       getFileSystemPath: (id: string) => {
-        return getCollectionInfo(id, useContentCollections()).path
+        return getCollectionInfo(id, useContentCollections()).fsPath
       },
       list: async (): Promise<DatabaseItem[]> => {
         const collections = Object.keys(useContentCollections()).filter(c => c !== 'info')
         const contents = await Promise.all(collections.map(async (collection) => {
           return await useContentCollectionQuery(collection).all() as DatabaseItem[]
         }))
+
         return contents.flat()
+      },
+      create: async (fsPath: string, routePath: string, content: string) => {
+        const collections = useContentCollections()
+
+        const collectionInfo = getCollectionByFilePath(fsPath, collections)
+
+        const id = generateIdFromFsPath(fsPath, collectionInfo!)
+
+        const existingDocument = await host.document.get(id)
+        if (existingDocument) {
+          throw new Error(`Cannot create document with id "${id}": document already exists.`)
+        }
+
+        const document = await generateDocumentFromContent(id, fsPath, routePath, content)
+
+        await host.document.upsert(id, document)
+
+        return document
       },
       upsert: async (id: string, upsertedDocument: CollectionItemBase) => {
         id = id.replace(/:/g, '/')
@@ -203,8 +212,7 @@ export function useStudioHost(user: StudioUser): StudioHost {
 
   ;(async () => {
     host.ui.activateStudio()
-    // Trigger dummy query to make sure content database is loaded on the client
-    // TODO: browse collections and call one of them
+    // TODO: ensure logic is enough and all collections are registerded
     ensure(() => useContent().queryCollection !== void 0, 500)
       // .then(() => useContentCollectionQuery("docs").first())
       .then(() => ensure(() => useContent().loadLocalDatabase !== void 0))

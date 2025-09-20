@@ -46,10 +46,15 @@ watch(sidebarWidth, () => {
     >
       <PanelBase v-model="ui.isPanelOpen.value">
         <template #header>
-          <ItemBreadcrumb
-            :current-item="tree.currentItem.value"
-            :tree="tree.root.value"
-          />
+          <div class="flex items-center justify-between gap-2">
+            <ItemBreadcrumb
+              :current-item="tree.currentItem.value"
+              :tree="tree.root.value"
+            />
+            <ItemActionsToolbar
+              :item="tree.currentItem.value"
+            />
+          </div>
         </template>
 
         <PanelContent v-if="ui.panels.content" />

@@ -12,8 +12,7 @@
 @source inline('ring-green-200 hover:ring-green-300 hover:dark:ring-green-700');
 
 @theme static {
-  --ui-header-height: 50px;
-  --ui-sub-header-height: 40px;
+  --ui-sub-header-height: 45px;
   --ui-footer-height: 40px;
 
   --font-sans: 'Public Sans', sans-serif;

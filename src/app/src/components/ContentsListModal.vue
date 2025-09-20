@@ -2,7 +2,7 @@
 import { ref, computed, watch, toRaw } from 'vue'
 import { useStudio } from '../composables/useStudio'
 // import { MDCEditorAST } from '@farnabaz/mdc-editor'
-import { withoutReservedKeys } from '../utils/collections'
+import { removeReservedKeysFromDocument } from '../utils/content'
 
 const modelValue = defineModel<boolean>()
 
@@ -57,7 +57,7 @@ const filtered = computed(() => {
 async function onSelect(id: string) {
   selectedContent.value = await preview.host.document.get(id)
   content.value = {
-    ...withoutReservedKeys(selectedContent.value),
+    ...removeReservedKeysFromDocument(selectedContent.value),
     body: selectedContent.value.body,
   }
 }

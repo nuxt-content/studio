@@ -20,7 +20,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'contentStudio',
   },
   defaults: {
-    devStorage: true,
+    devStorage: false,
   },
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)

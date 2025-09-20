@@ -1,9 +1,43 @@
-import type { CollectionInfo, CollectionSource, Draft07, ParsedContentFile, CollectionItemBase, PageCollectionItemBase } from '@nuxt/content'
+import type { CollectionInfo, CollectionSource, Draft07, CollectionItemBase, PageCollectionItemBase, ResolvedCollectionSource } from '@nuxt/content'
 import { hash } from 'ohash'
 import { pathMetaTransform } from './path-meta'
 import { minimatch } from 'minimatch'
-import { join } from 'pathe'
-import { omit } from './object'
+import { join, dirname, parse } from 'pathe'
+import type { DatabaseItem } from 'nuxt-studio/app'
+import { withoutLeadingSlash } from 'ufo'
+
+export const getCollectionByFilePath = (path: string, collections: Record<string, CollectionInfo>): CollectionInfo | undefined => {
+  let matchedSource: ResolvedCollectionSource | undefined
+  const collection = Object.values(collections).find((collection) => {
+    if (!collection.source || collection.source.length === 0) {
+      return
+    }
+
+    // const pathWithoutRoot = withoutRoot(path)
+    const paths = path === '/' ? ['index.yml', 'index.yaml', 'index.md', 'index.json'] : [path]
+    return paths.some((p) => {
+      matchedSource = collection.source.find((source) => {
+        const include = minimatch(p, source.include)
+        const exclude = source.exclude?.some(exclude => minimatch(p, exclude))
+
+        return include && !exclude
+      })
+
+      return matchedSource
+    })
+  })
+
+  return collection
+}
+
+export function generateStemFromFsPath(path: string) {
+  return withoutLeadingSlash(join(dirname(path), parse(path).name))
+}
+
+// TODO handle several sources case
+export function generateIdFromFsPath(path: string, collectionInfo: CollectionInfo) {
+  return join(collectionInfo.name, collectionInfo.source[0]?.prefix || '', path)
+}
 
 export function getOrderedSchemaKeys(schema: Draft07) {
   const shape = Object.values(schema.definitions)[0]?.properties || {}
@@ -29,7 +63,7 @@ export function getCollectionSource(id: string, collection: CollectionInfo) {
   const path = rest.join('/')
 
   const matchedSource = collection.source.find((source) => {
-    const include = minimatch(path, source.include)
+    const include = minimatch(path, source.include, { dot: true })
     const exclude = source.exclude?.some(exclude => minimatch(path, exclude))
 
     return include && !exclude
@@ -38,24 +72,25 @@ export function getCollectionSource(id: string, collection: CollectionInfo) {
   return matchedSource
 }
 
-export function getContentPath(id: string, collection: CollectionInfo['source'][0]) {
+export function getFsPath(id: string, source: CollectionInfo['source'][0]) {
   const [_, ...rest] = id.split(/[/:]/)
   const path = rest.join('/')
 
-  const { fixed } = parseSourceBase(collection)
+  const { fixed } = parseSourceBase(source)
 
-  return join('content', fixed, path)
+  return join(fixed, path)
 }
 
 export function getCollectionInfo(id: string, collections: Record<string, CollectionInfo>) {
   const collection = getCollection(id.split(/[/:]/)[0]!, collections)
   const source = getCollectionSource(id, collection)
-  const path = getContentPath(id, source!)
+
+  const fsPath = getFsPath(id, source!)
 
   return {
     collection,
     source,
-    path,
+    fsPath,
   }
 }
 
@@ -67,37 +102,11 @@ export function parseSourceBase(source: CollectionSource) {
   }
 }
 
-export function withoutReservedKeys(content: ParsedContentFile) {
-  const result = omit(content, ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta'])
-  // Default value of navigation is true, so we can safely remove it
-  if (result.navigation === true) {
-    Reflect.deleteProperty(result, 'navigation')
-  }
-
-  if (content.seo) {
-    const seo = content.seo as Record<string, unknown>
-    if (seo.title === content.title) {
-      Reflect.deleteProperty(result, 'seo')
-    }
-    if (seo.description === content.description) {
-      Reflect.deleteProperty(result, 'seo')
-    }
-  }
-
-  // expand meta to the root
-  for (const key in (content.meta || {})) {
-    if (key !== '__hash__') {
-      result[key] = (content.meta as Record<string, unknown>)[key]
-    }
-  }
-  return result
-}
-
 export function createCollectionDocument(collection: CollectionInfo, id: string, item: CollectionItemBase) {
   const parsedContent = [
     pathMetaTransform,
   ].reduce((acc, fn) => collection.type === 'page' ? fn(acc as unknown as PageCollectionItemBase) : acc, { ...item, id } as Record<string, unknown>)
-  const result = { id } as ParsedContentFile
+  const result = { id } as DatabaseItem
   const meta = {} as Record<string, unknown>
 
   const collectionKeys = getOrderedSchemaKeys(collection.schema as unknown as Draft07)

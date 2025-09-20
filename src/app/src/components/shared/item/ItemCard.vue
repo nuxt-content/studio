@@ -11,10 +11,6 @@ const props = defineProps({
     type: Object as PropType<TreeItem>,
     required: true,
   },
-  // ongoingFileAction: {
-  //   type: Object as PropType<FileAction>,
-  //   default: null,
-  // },
 })
 
 const isFolder = computed(() => props.item.type === 'directory')
@@ -56,54 +52,44 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
           class="w-8 h-8 text-gray-400 dark:text-gray-500"
         />
       </div>
+      <ItemBadge
+        v-if="item.status"
+        :status="item.status"
+        class="absolute top-2 right-2"
+        size="xs"
+      />
     </div>
 
     <template #body>
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-1 min-w-0">
-          <UIcon
-            v-if="isFolder"
-            name="i-lucide-folder"
-            class="h-4 w-4"
-          />
-          <UIcon
-            v-else-if="name === 'home'"
-            name="i-lucide-house"
-            class="h-4 w-4"
-          />
-          <h3
-            class="text-sm font-semibold truncate"
-            :class="props.item.status === 'deleted' && 'line-through'"
-          >
-            {{ name }}
-          </h3>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1 min-w-0">
+            <UIcon
+              v-if="isFolder"
+              name="i-lucide-folder"
+              class="h-4 w-4 shrink-0"
+            />
+            <UIcon
+              v-else-if="name === 'Home'"
+              name="i-lucide-house"
+              class="h-4 w-4 shrink-0"
+            />
+            <h3
+              class="text-sm font-semibold truncate"
+              :class="props.item.status === 'deleted' && 'line-through'"
+            >
+              {{ name }}
+            </h3>
+          </div>
+          <ItemActionsDropdown :item="item" />
         </div>
-        <ItemBadge
-          v-if="item.status"
-          :status="item.status"
-        />
-        <!-- <UDropdown
-          v-if="!readOnly && isFolder"
-          class="hidden group-hover:block"
-          :items="actionItems"
-          :popper="{ strategy: 'absolute' }"
-          @click="$event.stopPropagation()"
-        >
-          <UButton
-            color="gray"
-            variant="ghost"
-            aria-label="Open items"
-            icon="i-ph-dots-three-vertical"
-            square
-          />
-        </UDropdown> -->
-      </div>
 
-      <UTooltip :text="item.path">
-        <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
-          {{ item.routePath || item.path }}
-        </span>
-      </UTooltip>
+        <UTooltip :text="item.routePath">
+          <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
+            {{ item.routePath || item.fsPath }}
+          </span>
+        </UTooltip>
+      </div>
     </template>
   </UPageCard>
 </template>
