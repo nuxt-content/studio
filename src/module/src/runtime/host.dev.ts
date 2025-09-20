@@ -6,7 +6,6 @@ import httpDriver from 'unstorage/drivers/http'
 import { useRuntimeConfig } from '#imports'
 import { collections } from '#content/preview'
 
-
 export function useStudioHost(user: StudioUser) {
   const host = useStudioHostBased(user)
 
@@ -17,7 +16,7 @@ export function useStudioHost(user: StudioUser) {
   const devStorage = createStorage({
     driver: httpDriver({
       base: '/__nuxt_content/studio/dev/fs',
-    })
+    }),
   })
 
   host.app.requestRerender = () => {

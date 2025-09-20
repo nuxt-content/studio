@@ -22,6 +22,7 @@ export function getDraftStatus(draftedDocument: DatabaseItem, originalDatabaseIt
     return DraftStatus.Created
   }
   else {
+    // TODO: check and fix with ahad: items are different
     if (JSON.stringify(originalDatabaseItem) !== JSON.stringify(draftedDocument)) {
       return DraftStatus.Updated
     }

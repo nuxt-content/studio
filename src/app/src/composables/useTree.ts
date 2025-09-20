@@ -82,6 +82,10 @@ export const useTree = createSharedComposable((host: StudioHost, draftFiles: Ret
     })
 
     tree.value = buildTree(listWithFsPath, draftFiles.list.value)
+
+    if (currentItem.value && draftFiles.current.value) {
+      currentItem.value.status = draftFiles.current.value.status
+    }
   })
 
   return {

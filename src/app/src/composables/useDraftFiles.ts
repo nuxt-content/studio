@@ -50,7 +50,6 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
       item.document = document
     }
 
-    // TODO: fix double call on open document
     item.status = getDraftStatus(document, item.originalDatabaseItem)
 
     await storage.setItem(id, item)
@@ -123,17 +122,24 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
     const item = await storage.getItem(id) as DraftFileItem
     if (!item) return
 
-    await storage.removeItem(id)
-
-    list.value = list.value.filter(item => item.id !== id)
-
-    if (item.originalDatabaseItem) {
-      await host.document.upsert(id, item.originalDatabaseItem)
+    const existingItem = list.value.find(item => item.id === id)
+    if (!existingItem) {
+      return
     }
 
     if (item.status === DraftStatus.Created) {
+      await storage.removeItem(id)
+      list.value = list.value.filter(item => item.id !== id)
       await host.document.delete(id)
     }
+    else {
+      await host.document.upsert(id, item.originalDatabaseItem!)
+      existingItem.status = DraftStatus.Opened
+      existingItem.document = item.originalDatabaseItem
+    }
+
+    await hooks.callHook('studio:draft:updated')
+
     host.app.requestRerender()
   }
 

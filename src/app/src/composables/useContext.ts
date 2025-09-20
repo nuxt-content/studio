@@ -6,6 +6,7 @@ import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '
 import type { useDraftFiles } from './useDraftFiles'
 import type { useTree } from './useTree'
 import { useHooks } from './useHooks'
+import { useModal } from './useModal'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
@@ -14,6 +15,7 @@ export const useContext = createSharedComposable((
   tree: ReturnType<typeof useTree>,
 ) => {
   const hooks = useHooks()
+  const modal = useModal()
 
   const actionInProgress = ref<StudioItemActionId | null>(null)
   const currentFeature = computed<keyof typeof ui.panels | null>(() =>
@@ -61,7 +63,7 @@ export const useContext = createSharedComposable((
       tree.selectItemById(draftItem.id)
     },
     [StudioItemActionId.RevertItem]: async (id: string) => {
-      alert(`revert file ${id}`)
+      modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, () => draftFiles.revert(id))
     },
     [StudioItemActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
       alert(`rename file ${path} ${file.name}`)
