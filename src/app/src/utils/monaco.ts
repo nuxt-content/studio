@@ -18,7 +18,7 @@ export const setupMonaco = createSingletonPromise(async () => {
     window.document.head.appendChild(styleEl)
   }
 
-  const monaco = await init()
+  const monaco: Monaco = await init()
 
   return {
     editor: monaco.editor,
