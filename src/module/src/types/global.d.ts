@@ -5,3 +5,9 @@ declare module '#content/preview' {
   export const gitInfo: GitInfo
   export const appConfigSchema: Record<string, unknown>
 }
+
+declare module '#build/content-studio-public-assets' {
+  import type { Storage } from 'unstorage'
+
+  export const publicAssetsStorage: Storage
+}

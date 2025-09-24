@@ -4,12 +4,13 @@ import type { CollectionItemBase, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collections'
 import { kebabCase } from 'lodash'
-import type { UseStudioHost, StudioHost, StudioUser, DatabaseItem } from 'nuxt-studio/app'
+import type { UseStudioHost, StudioHost, StudioUser, DatabaseItem, MediaItem } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 import { generateDocumentFromContent } from './utils/content'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
 import { queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections } from '#imports'
 import { collections } from '#content/preview'
+import { publicAssetsStorage } from '#build/content-studio-public-assets'
 
 function getSidebarWidth(): number {
   let sidebarWidth = 440
@@ -202,6 +203,40 @@ export function useStudioHost(user: StudioUser): StudioHost {
             title,
           }
         })
+      },
+    },
+
+    media: {
+      get: async (id: string): Promise<MediaItem> => {
+        return await publicAssetsStorage.getItem(id) as MediaItem
+      },
+      getFileSystemPath: (id: string) => {
+        return id.split(':').slice(1).join('/')
+      },
+      list: async (): Promise<MediaItem[]> => {
+        return await Promise.all(await publicAssetsStorage.getKeys().then(keys => keys.map(key => publicAssetsStorage.getItem(key)))) as MediaItem[]
+      },
+      upsert: async (id: string, upsertedDocument: MediaItem) => {
+        await publicAssetsStorage.setItem(id, upsertedDocument)
+      },
+      create: async (fsPath: string, routePath: string, content: string) => {
+        await publicAssetsStorage.setItem(fsPath, {
+          id: fsPath,
+          fsPath,
+          routePath,
+          content,
+        })
+        return {
+          id: fsPath,
+          extension: fsPath.split('.').pop(),
+          stem: fsPath.split('.').slice(0, -1).join('.'),
+          fsPath,
+          routePath,
+          content,
+        } as MediaItem
+      },
+      delete: async (id: string) => {
+        await publicAssetsStorage.removeItem(id)
       },
     },
 

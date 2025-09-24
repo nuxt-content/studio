@@ -4,7 +4,7 @@ export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
   {
     id: 'landing/index.md',
     title: '',
-    body: {},
+    body: { type: 'minimark', value: [] },
     description: '',
     extension: 'md',
     meta: {},
@@ -21,7 +21,7 @@ export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
   {
     id: 'docs/1.getting-started/2.introduction.md',
     title: 'Introduction',
-    body: {},
+    body: { type: 'minimark', value: [] },
     description: 'Welcome to Docus theme documentation.',
     extension: 'md',
     layout: null,
@@ -42,7 +42,7 @@ export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
   {
     id: 'docs/1.getting-started/3.installation.md',
     title: 'Installation',
-    body: {},
+    body: { type: 'minimark', value: [] },
     description: 'Learn how to install Docus.',
     extension: 'md',
     layout: null,

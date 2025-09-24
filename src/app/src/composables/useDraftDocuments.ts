@@ -1,6 +1,7 @@
+import { createStorage } from 'unstorage'
+import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { ref } from 'vue'
-import type { StorageValue, Storage } from 'unstorage'
-import type { DatabaseItem, DraftFileItem, StudioHost, GithubFile, DatabasePageItem } from '../types'
+import type { DatabaseItem, DraftItem, StudioHost, GithubFile, DatabasePageItem } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { generateContentFromDocument } from '../utils/content'
@@ -8,9 +9,15 @@ import { getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
 
-export const useDraftFiles = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>, storage: Storage<StorageValue>) => {
-  const list = ref<DraftFileItem[]>([])
-  const current = ref<DraftFileItem | null>(null)
+const storage = createStorage({
+  driver: indexedDbDriver({
+    storeName: 'nuxt-content-studio-documents',
+  }),
+})
+
+export const useDraftDocuments = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
+  const list = ref<DraftItem<DatabaseItem>[]>([])
+  const current = ref<DraftItem<DatabaseItem> | null>(null)
 
   const hooks = useHooks()
 
@@ -19,7 +26,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
     if (item && generateContent) {
       return {
         ...item,
-        content: await generateContentFromDocument(item!.document as DatabasePageItem) || '',
+        content: await generateContentFromDocument(item!.modified as DatabasePageItem) || '',
       }
     }
     return item
@@ -32,15 +39,15 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
     }
 
     const fsPath = host.document.getFileSystemPath(document.id)
-    const originalGithubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+    const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
 
-    const item: DraftFileItem = {
+    const item: DraftItem<DatabaseItem> = {
       id: document.id,
       fsPath,
-      originalDatabaseItem: document,
-      originalGithubFile,
+      original: document,
+      githubFile,
       status,
-      document,
+      modified: document,
     }
 
     await storage.setItem(document.id, item)
@@ -59,15 +66,15 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
     }
 
     const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(document, existingItem.originalDatabaseItem)
-    existingItem.document = document
+    existingItem.status = getDraftStatus(document, existingItem.original)
+    existingItem.modified = document
 
     await storage.setItem(id, existingItem)
 
     list.value = list.value.map(item => item.id === id ? existingItem : item)
 
     // Upsert document in database
-    await host.document.upsert(id, existingItem.document)
+    await host.document.upsert(id, existingItem.modified)
 
     // Rerender host app
     host.app.requestRerender()
@@ -81,7 +88,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
   }
 
   async function remove(id: string) {
-    const item = await storage.getItem(id) as DraftFileItem
+    const item = await storage.getItem(id) as DraftItem<DatabaseItem>
     const fsPath = host.document.getFileSystemPath(id)
 
     if (item) {
@@ -90,30 +97,30 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
       await storage.removeItem(id)
       await host.document.delete(id)
 
-      if (item.originalDatabaseItem) {
-        const deleteDraft: DraftFileItem = {
+      if (item.original) {
+        const deleteDraft: DraftItem<DatabaseItem> = {
           id,
           fsPath: item.fsPath,
           status: DraftStatus.Deleted,
-          originalDatabaseItem: item.originalDatabaseItem,
-          originalGithubFile: item.originalGithubFile,
+          original: item.original,
+          githubFile: item.githubFile,
         }
 
         await storage.setItem(id, deleteDraft)
-        await host.document.upsert(id, item.originalDatabaseItem!)
+        await host.document.upsert(id, item.original!)
       }
     }
     else {
       // Fetch github file before creating draft to detect non deployed changes
-      const originalGithubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
-      const originalDatabaseItem = await host.document.get(id)
+      const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+      const original = await host.document.get(id)
 
-      const deleteItem: DraftFileItem = {
+      const deleteItem: DraftItem = {
         id,
         fsPath,
         status: DraftStatus.Deleted,
-        originalDatabaseItem,
-        originalGithubFile,
+        original,
+        githubFile,
       }
 
       await storage.setItem(id, deleteItem)
@@ -137,9 +144,9 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
       list.value = list.value.filter(item => item.id !== id)
     }
     else {
-      await host.document.upsert(id, existingItem.originalDatabaseItem!)
+      await host.document.upsert(id, existingItem.original!)
       existingItem.status = DraftStatus.Opened
-      existingItem.document = existingItem.originalDatabaseItem
+      existingItem.modified = existingItem.original
       await storage.setItem(id, existingItem)
     }
 
@@ -151,8 +158,8 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
   async function revertAll() {
     await storage.clear()
     for (const item of list.value) {
-      if (item.originalDatabaseItem) {
-        await host.document.upsert(item.id, item.originalDatabaseItem)
+      if (item.original) {
+        await host.document.upsert(item.id, item.original)
       }
       else if (item.status === DraftStatus.Created) {
         await host.document.delete(item.id)
@@ -165,7 +172,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
   async function load() {
     const storedList = await storage.getKeys().then(async (keys) => {
       return Promise.all(keys.map(async (key) => {
-        const item = await storage.getItem(key) as DraftFileItem
+        const item = await storage.getItem(key) as DraftItem
         if (item.status === DraftStatus.Opened) {
           await storage.removeItem(key)
           return null
@@ -174,7 +181,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
       }))
     })
 
-    list.value = storedList.filter(Boolean) as DraftFileItem[]
+    list.value = storedList.filter(Boolean) as DraftItem<DatabaseItem>[]
 
     // Upsert/Delete draft files in database
     await Promise.all(list.value.map(async (draftItem) => {
@@ -182,7 +189,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
         await host.document.delete(draftItem.id)
       }
       else {
-        await host.document.upsert(draftItem.id, draftItem.document!)
+        await host.document.upsert(draftItem.id, draftItem.modified!)
       }
     }))
 
@@ -191,7 +198,7 @@ export const useDraftFiles = createSharedComposable((host: StudioHost, git: Retu
     await hooks.callHook('studio:draft:updated')
   }
 
-  function select(draftItem: DraftFileItem | null) {
+  function select(draftItem: DraftItem<DatabaseItem> | null) {
     current.value = draftItem
   }
 

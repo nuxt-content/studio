@@ -16,7 +16,6 @@ describe('computeActionItems', () => {
     const rootItem: TreeItem = {
       type: 'root',
       name: 'content',
-      path: '/',
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem)
@@ -39,19 +38,18 @@ describe('computeActionItems', () => {
   it('should filter out actions for file items without draft status', () => {
     const fileItem: TreeItem = {
       type: 'file',
-      name: 'test.md',
-      path: '/test.md',
+      name: 'test.md'
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.CreateDocument
       && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
@@ -61,19 +59,18 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      path: '/test.md',
       status: DraftStatus.Opened,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.RevertItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.CreateDocument
       && action.id !== StudioItemActionId.RevertItem,
     )
     expect(result).toEqual(expectedActions)
@@ -83,18 +80,17 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      path: '/test.md',
       status: DraftStatus.Updated,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile,
+      && action.id !== StudioItemActionId.CreateDocument,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -103,18 +99,17 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      path: '/test.md',
       status: DraftStatus.Created,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile,
+      && action.id !== StudioItemActionId.CreateDocument,
     )
     expect(result).toEqual(expectedActions)
   })
@@ -123,21 +118,20 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      path: '/test.md',
       status: DraftStatus.Deleted,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.DuplicateItem)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.DeleteItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.CreateDocument
       && action.id !== StudioItemActionId.DuplicateItem
       && action.id !== StudioItemActionId.RenameItem
       && action.id !== StudioItemActionId.DeleteItem,
@@ -149,19 +143,18 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      path: '/test.md',
       status: DraftStatus.Renamed,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
 
     expect(result.find(action => action.id === StudioItemActionId.CreateFolder)).toBeUndefined()
-    expect(result.find(action => action.id === StudioItemActionId.CreateFile)).toBeUndefined()
+    expect(result.find(action => action.id === StudioItemActionId.CreateDocument)).toBeUndefined()
     expect(result.find(action => action.id === StudioItemActionId.RenameItem)).toBeUndefined()
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateFolder
-      && action.id !== StudioItemActionId.CreateFile
+      && action.id !== StudioItemActionId.CreateDocument
       && action.id !== StudioItemActionId.RenameItem,
     )
     expect(result).toEqual(expectedActions)
@@ -175,7 +168,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
@@ -194,7 +186,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
       status: DraftStatus.Opened,
     } as TreeItem
 
@@ -214,7 +205,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
       status: DraftStatus.Updated,
     } as TreeItem
 
@@ -232,7 +222,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
       status: DraftStatus.Created,
     } as TreeItem
 
@@ -250,7 +239,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
       status: DraftStatus.Deleted,
     } as TreeItem
 
@@ -272,7 +260,6 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      path: '/folder',
       status: DraftStatus.Renamed,
     } as TreeItem
 

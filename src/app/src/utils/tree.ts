@@ -1,23 +1,24 @@
-import { DraftStatus, type DatabaseItem, type DraftFileItem, type TreeItem } from '../types'
+import { DraftStatus, type DraftItem, type TreeItem } from '../types'
 import { withLeadingSlash } from 'ufo'
 import { stripNumericPrefix } from './string'
 import type { RouteLocationNormalized } from 'vue-router'
+import type { BaseItem } from '../types/item'
 
 export const ROOT_ITEM: TreeItem = { id: 'root', name: 'content', fsPath: '/', type: 'root' }
 
-export function buildTree(dbItems: (DatabaseItem & { fsPath: string })[], draftList: DraftFileItem[] | null):
+export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
 
   for (const dbItem of dbItems) {
-    const collectionType = dbItem.path ? 'page' : 'data'
+    const itemHasPathField = 'path' in dbItem && dbItem.path
     const fsPathSegments = dbItem.fsPath.split('/')
     const directorySegments = fsPathSegments.slice(0, -1)
     let fileName = fsPathSegments[fsPathSegments.length - 1].replace(/\.[^/.]+$/, '')
 
     let routePathSegments: string[] | undefined
-    if (collectionType === 'page') {
+    if (itemHasPathField) {
       routePathSegments = (dbItem.path as string).split('/').slice(0, -1).filter(Boolean)
     }
 
@@ -34,7 +35,7 @@ TreeItem[] {
         type: 'file',
       }
 
-      if (collectionType === 'page') {
+      if (itemHasPathField) {
         fileItem.routePath = dbItem.path as string
       }
 
@@ -81,7 +82,7 @@ TreeItem[] {
           children: [],
         }
 
-        if (collectionType === 'page') {
+        if (itemHasPathField) {
           directory.routePath = dirRoutePathBuilder(i)
         }
 

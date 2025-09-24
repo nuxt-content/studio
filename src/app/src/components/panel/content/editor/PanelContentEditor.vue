@@ -2,17 +2,17 @@
 import { computed, type PropType, toRaw } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
-import type { DatabasePageItem, DraftFileItem } from '../../../../types'
+import type { DatabasePageItem, DraftItem } from '../../../../types'
 import { useStudio } from '../../../../composables/useStudio'
 
 const props = defineProps({
   draftItem: {
-    type: Object as PropType<DraftFileItem>,
+    type: Object as PropType<DraftItem>,
     required: true,
   },
 })
 
-const { draftFiles } = useStudio()
+const { draftDocuments } = useStudio()
 
 const document = computed<DatabasePageItem>({
   get() {
@@ -20,13 +20,13 @@ const document = computed<DatabasePageItem>({
       return {} as DatabasePageItem
     }
 
-    const dbItem = props.draftItem.document as DatabasePageItem
+    const dbItem = props.draftItem.modified as DatabasePageItem
 
     let result: DatabasePageItem
     // TODO: check mdcRoot and markdownRoot types with Ahad
     if (dbItem.body?.type === 'minimark') {
       result = {
-        ...props.draftItem.document as DatabasePageItem,
+        ...props.draftItem.modified as DatabasePageItem,
         // @ts-expect-error todo fix MarkdownRoot/MDCRoot conversion in MDC module
         body: decompressTree(dbItem.body) as MarkdownRoot,
       }
@@ -38,7 +38,7 @@ const document = computed<DatabasePageItem>({
     return result
   },
   set(value) {
-    draftFiles.update(props.draftItem.id, {
+    draftDocuments.update(props.draftItem.id, {
       ...toRaw(document.value as DatabasePageItem),
       ...toRaw(value),
     })

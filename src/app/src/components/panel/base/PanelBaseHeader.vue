@@ -3,14 +3,14 @@ import { useStudio } from '../../../composables/useStudio'
 import { StudioFeature } from '../../../types'
 import { ROOT_ITEM } from '../../../utils/tree'
 
-const { ui, context, tree } = useStudio()
+const { ui, context, documentTree, mediaTree } = useStudio()
 
 const features = [{
   label: 'Content',
   icon: 'i-lucide-files',
   onClick: () => {
     if (context.feature.value === StudioFeature.Content) {
-      tree.select(ROOT_ITEM)
+      documentTree.select(ROOT_ITEM)
       return
     }
 
@@ -21,23 +21,11 @@ const features = [{
   icon: 'i-lucide-image',
   onClick: () => {
     if (context.feature.value === StudioFeature.Media) {
-      tree.select(ROOT_ITEM)
+      mediaTree.select(ROOT_ITEM)
       return
     }
 
     ui.openPanel(StudioFeature.Media)
-  },
-},
-{
-  label: 'Config',
-  icon: 'i-lucide-settings',
-  onClick: () => {
-    if (context.feature.value === StudioFeature.Config) {
-      tree.select(ROOT_ITEM)
-      return
-    }
-
-    ui.openPanel(StudioFeature.Config)
   },
 }]
 </script>

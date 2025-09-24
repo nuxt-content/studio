@@ -1,9 +1,12 @@
 import type { StudioUser } from './user'
 import type { DatabaseItem } from './database'
 import type { RouteLocationNormalized } from 'vue-router'
+import type { MediaItem } from './media'
 
+export * from './item'
 export * from './draft'
 export * from './database'
+export * from './media'
 export * from './user'
 export * from './tree'
 export * from './github'
@@ -31,6 +34,14 @@ export interface StudioHost {
     create: (fsPath: string, routePath: string, content: string) => Promise<DatabaseItem>
     delete: (id: string) => Promise<void>
     detectActives: () => Array<{ id: string, title: string }>
+  }
+  media: {
+    get: (id: string) => Promise<MediaItem>
+    getFileSystemPath: (id: string) => string
+    list: () => Promise<MediaItem[]>
+    upsert: (id: string, upsertedDocument: MediaItem) => Promise<void>
+    create: (fsPath: string, routePath: string, content: string) => Promise<MediaItem>
+    delete: (id: string) => Promise<void>
   }
   user: {
     get: () => StudioUser

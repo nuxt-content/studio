@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef, watch } from 'vue'
-import type { DatabasePageItem, DraftFileItem } from '../../../../types'
+import type { DatabasePageItem, DraftItem } from '../../../../types'
 import type { PropType } from 'vue'
 import { setupMonaco, type Editor } from '../../../../utils/monaco'
 import { generateContentFromDocument, generateDocumentFromContent, pickReservedKeysFromDocument } from '../../../../utils/content'
 
 const props = defineProps({
   draftItem: {
-    type: Object as PropType<DraftFileItem>,
+    type: Object as PropType<DraftItem>,
     required: true,
   },
 })
@@ -22,7 +22,7 @@ const currentDocumentId = ref<string | null>(null)
 // Trigger on action events
 watch(() => props.draftItem.status, () => {
   if (editor.value) {
-    setContent(props.draftItem.document as DatabasePageItem)
+    setContent(props.draftItem.modified as DatabasePageItem)
   }
 })
 
@@ -53,7 +53,7 @@ onMounted(async () => {
 
     generateDocumentFromContent(document.value!.id, content.value).then((doc) => {
       document.value = {
-        ...pickReservedKeysFromDocument(props.draftItem.originalDatabaseItem as DatabasePageItem || document.value!),
+        ...pickReservedKeysFromDocument(props.draftItem.original as DatabasePageItem || document.value!),
         ...doc,
       } as DatabasePageItem
     })

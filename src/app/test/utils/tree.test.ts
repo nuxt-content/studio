@@ -3,7 +3,7 @@ import { buildTree, findParentFromId, findItemFromRoute, findItemFromId } from '
 import { tree } from '../mocks/tree'
 import type { TreeItem } from '../../src/types/tree'
 import { dbItemsList } from '../mocks/database'
-import type { DraftFileItem } from '../../src/types/draft'
+import type { DraftItem } from '../../src/types/draft'
 import { DraftStatus } from '../../src/types/draft'
 import type { RouteLocationNormalized } from 'vue-router'
 
@@ -48,7 +48,7 @@ describe('buildTree', () => {
   })
 
   it('should build a tree from a list of database items and set file status for root file based on draft', () => {
-    const draftList: DraftFileItem[] = [{
+    const draftList: DraftItem[] = [{
       id: dbItemsList[0].id,
       fsPath: 'index.md',
       status: DraftStatus.Created,
@@ -62,7 +62,7 @@ describe('buildTree', () => {
   })
 
   it('should build a tree from a list of database items and set file status for nestedfile and parent directory based on draft', () => {
-    const draftList: DraftFileItem[] = [{
+    const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Updated,
@@ -85,7 +85,7 @@ describe('buildTree', () => {
   })
 
   it('should build a tree from a list of database items and set file status for nestedfile and parent directory based on draft (status is always updated in directory)', () => {
-    const draftList: DraftFileItem[] = [{
+    const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Created,

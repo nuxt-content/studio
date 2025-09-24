@@ -5,11 +5,10 @@ import { StudioItemActionId } from '../types/context'
 export const FEATURE_DISPLAY_MAP = {
   [StudioFeature.Content]: 'Content files',
   [StudioFeature.Media]: 'Media library',
-  [StudioFeature.Config]: 'Application configuration',
 } as const
 
 export const oneStepActions: StudioItemActionId[] = [StudioItemActionId.RevertItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem]
-export const twoStepActions: StudioItemActionId[] = [StudioItemActionId.CreateFile, StudioItemActionId.CreateFolder, StudioItemActionId.RenameItem]
+export const twoStepActions: StudioItemActionId[] = [StudioItemActionId.CreateDocument, StudioItemActionId.CreateFolder, StudioItemActionId.RenameItem]
 
 export const STUDIO_ITEM_ACTION_DEFINITIONS: StudioAction[] = [
   {
@@ -19,7 +18,7 @@ export const STUDIO_ITEM_ACTION_DEFINITIONS: StudioAction[] = [
     tooltip: 'Create a new folder',
   },
   {
-    id: StudioItemActionId.CreateFile,
+    id: StudioItemActionId.CreateDocument,
     label: 'Create file',
     icon: 'i-lucide-file-plus',
     tooltip: 'Create a new file',
@@ -64,7 +63,7 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
   // Item type filtering
   switch (item.type) {
     case 'file':
-      forbiddenActions.push(StudioItemActionId.CreateFolder, StudioItemActionId.CreateFile)
+      forbiddenActions.push(StudioItemActionId.CreateFolder, StudioItemActionId.CreateDocument)
       break
     case 'directory':
       forbiddenActions.push(StudioItemActionId.DuplicateItem)

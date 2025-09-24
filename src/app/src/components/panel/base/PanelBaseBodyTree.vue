@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type { TreeItem } from '../../../types'
-import type { PropType } from 'vue'
+import { StudioFeature, type TreeItem } from '../../../types'
+import { computed, type PropType } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
 
-const { tree: treeApi, context } = useStudio()
+const { documentTree, mediaTree, context } = useStudio()
+
+const treeApi = computed(() => context.feature.value === StudioFeature.Content ? documentTree : mediaTree)
 
 defineProps({
   type: {

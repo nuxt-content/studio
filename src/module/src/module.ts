@@ -1,7 +1,9 @@
-import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler, addTemplate } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
 import { resolve } from 'node:path'
+import fsDriver from 'unstorage/drivers/fs'
+import { createStorage } from 'unstorage'
 
 interface ModuleOptions {
   devStorage?: boolean
@@ -98,6 +100,40 @@ export default defineNuxtModule<ModuleOptions>({
         handler: runtime('./server/routes/dev/fs/[...path]'),
       })
     }
+
+    const assetsStorage = createStorage({
+      driver: fsDriver({
+        base: resolve(nuxt.options.rootDir, 'public'),
+      }),
+    })
+    assetsStorage.getKeys()
+      .then((keys) => {
+        addTemplate({
+          filename: 'content-studio-public-assets.mjs',
+          getContents: () => {
+            return [
+              'import { createStorage } from \'unstorage\'',
+              'const storage = createStorage({})',
+              '',
+              ...keys.map((key) => {
+                key = `public-assets:${key}`
+                const value = {
+                  id: key,
+                  extension: key.split('.').pop(),
+                  stem: key.split('.').slice(0, -1).join('.'),
+                  path: '/' + key.replace(/:/g, '/'),
+                }
+                return `storage.setItem('${key}', ${JSON.stringify(value)})`
+              }),
+              '',
+              'export const publicAssetsStorage = storage',
+            ].join('\n')
+          },
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
 
     addServerHandler({
       route: '/__nuxt_content/studio/auth/github',

@@ -10,7 +10,10 @@ describe('getDraftStatus', () => {
     const draft: DatabaseItem = {
       id: 'landing/index.md',
       title: 'Home',
-      body: {},
+      body: {
+        type: 'minimark',
+        value: [],
+      },
       description: 'Home page',
       extension: 'md',
       stem: 'index',

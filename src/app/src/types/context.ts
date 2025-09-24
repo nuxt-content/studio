@@ -3,12 +3,11 @@ import type { TreeItem } from './tree'
 export enum StudioFeature {
   Content = 'content',
   Media = 'media',
-  Config = 'config',
 }
 
 export enum StudioItemActionId {
   CreateFolder = 'create-folder',
-  CreateFile = 'create-file',
+  CreateDocument = 'create-document',
   RevertItem = 'revert-item',
   RenameItem = 'rename-item',
   DeleteItem = 'delete-item',
@@ -36,7 +35,7 @@ export interface RenameFileParams {
 
 export type ActionHandlerParams = {
   [StudioItemActionId.CreateFolder]: string
-  [StudioItemActionId.CreateFile]: CreateFileParams
+  [StudioItemActionId.CreateDocument]: CreateFileParams
   [StudioItemActionId.RevertItem]: string
   [StudioItemActionId.RenameItem]: RenameFileParams
   [StudioItemActionId.DeleteItem]: string

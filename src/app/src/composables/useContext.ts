@@ -3,14 +3,16 @@ import { computed, ref } from 'vue'
 import type { useUi } from './useUi'
 import { type CreateFileParams, type StudioHost, type StudioAction, type TreeItem, StudioItemActionId, type ActionHandlerParams } from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
-import type { useDraftFiles } from './useDraftFiles'
+import type { useDraftDocuments } from './useDraftDocuments'
 import { useModal } from './useModal'
 import type { useTree } from './useTree'
+import type { useDraftMedias } from './useDraftMedias'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
   ui: ReturnType<typeof useUi>,
-  draftFiles: ReturnType<typeof useDraftFiles>,
+  draftDocuments: ReturnType<typeof useDraftDocuments>,
+  draftMedias: ReturnType<typeof useDraftMedias>,
   tree: ReturnType<typeof useTree>,
 ) => {
   const modal = useModal()
@@ -52,13 +54,13 @@ export const useContext = createSharedComposable((
     [StudioItemActionId.CreateFolder]: async (args: string) => {
       alert(`create folder ${args}`)
     },
-    [StudioItemActionId.CreateFile]: async ({ fsPath, routePath, content }: CreateFileParams) => {
+    [StudioItemActionId.CreateDocument]: async ({ fsPath, routePath, content }: CreateFileParams) => {
       const document = await host.document.create(fsPath, routePath, content)
-      const draftItem = await draftFiles.create(document)
+      const draftItem = await draftDocuments.create(document)
       tree.selectItemById(draftItem.id)
     },
     [StudioItemActionId.RevertItem]: async (id: string) => {
-      modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, () => draftFiles.revert(id))
+      modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, () => draftDocuments.revert(id))
     },
     [StudioItemActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
       alert(`rename file ${path} ${file.name}`)

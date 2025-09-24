@@ -1,6 +1,4 @@
-import type { DatabaseItem, DatabasePageItem } from '../types/database'
-import { DraftStatus } from '../types/draft'
-import { ContentFileExtension } from '../types/content'
+import { type BaseItem, type DatabasePageItem, ContentFileExtension, DraftStatus } from '../types'
 import { stringify } from 'minimark/stringify'
 
 export const COLOR_STATUS_MAP: { [key in DraftStatus]?: string } = {
@@ -19,18 +17,18 @@ export const COLOR_UI_STATUS_MAP: { [key in DraftStatus]?: string } = {
   [DraftStatus.Opened]: 'neutral',
 } as const
 
-export function getDraftStatus(draftedDocument: DatabaseItem, originalDatabaseItem: DatabaseItem | undefined) {
-  if (!originalDatabaseItem) {
+export function getDraftStatus(modified: BaseItem, original: BaseItem | undefined) {
+  if (!original) {
     return DraftStatus.Created
   }
 
-  if (originalDatabaseItem.extension === ContentFileExtension.Markdown) {
-    if (!isEqual(originalDatabaseItem as DatabasePageItem, draftedDocument as DatabasePageItem)) {
+  if (original.extension === ContentFileExtension.Markdown) {
+    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
       return DraftStatus.Updated
     }
   }
   else {
-    if (JSON.stringify(originalDatabaseItem) !== JSON.stringify(draftedDocument)) {
+    if (JSON.stringify(original) !== JSON.stringify(modified)) {
       return DraftStatus.Updated
     }
   }
@@ -40,7 +38,7 @@ export function getDraftStatus(draftedDocument: DatabaseItem, originalDatabaseIt
 
 function isEqual(document1: DatabasePageItem, document2: DatabasePageItem) {
   function removeLastStyle(document: DatabasePageItem) {
-    if (document.body?.value[document.body?.value.length - 1][0] === 'style') {
+    if (document.body?.value[document.body?.value.length - 1]?.[0] === 'style') {
       return { ...document, body: { ...document.body, value: document.body?.value.slice(0, -1) } }
     }
     return document

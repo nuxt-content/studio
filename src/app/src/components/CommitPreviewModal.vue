@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import ReviewPanel from './ReviewPanel.vue'
 import { useStudio } from '../composables/useStudio'
-import type { DraftFileItem } from '../types'
+import type { DraftItem } from '../types'
 // import { useToast } from '@nuxt/ui/composables/useToast'
 
 const modelValue = defineModel<any>()
@@ -17,7 +17,7 @@ const preview = useStudio()
 // const toast = useToast()
 
 const loading = ref(false)
-const filesToReview = ref<DraftFileItem[]>([])
+const filesToReview = ref<DraftItem[]>([])
 
 async function prepareReview() {
   loading.value = true

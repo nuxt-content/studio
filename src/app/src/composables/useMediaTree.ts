@@ -1,12 +1,12 @@
-import { StudioFeature, type StudioHost, type TreeItem } from '../types'
+import type { StudioHost, TreeItem } from '../types'
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
-import type { useDraftMedias } from './useDraftMedias'
 import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
+import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
 
-export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
+export const useTree = createSharedComposable((host: StudioHost, draftDocuments: ReturnType<typeof useDraftDocuments>) => {
   const hooks = useHooks()
 
   const tree = ref<TreeItem[]>([])
@@ -40,14 +40,11 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
   async function select(item: TreeItem) {
     currentItem.value = item || ROOT_ITEM
     if (item?.type === 'file') {
-      if (type === StudioFeature.Content) {
-        host.app.navigateTo(item.routePath!)
-      }
-
-      await draft.selectById(item.id)
+      host.app.navigateTo(item.routePath!)
+      await draftDocuments.selectById(item.id)
     }
     else {
-      draft.select(null)
+      draftDocuments.select(null)
     }
   }
 
@@ -68,12 +65,9 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
   }
 
   hooks.hook('studio:draft:updated', async () => {
-    const hostList = type === 'content' ? host.document : host.media
-    const hostGetFileSystemPath = type === 'content' ? host.document.getFileSystemPath : host.media.getFileSystemPath
-    const list = await hostList.list()
-
+    const list = await host.document.list()
     const listWithFsPath = list.map((item) => {
-      const fsPath = hostGetFileSystemPath(item.id)
+      const fsPath = host.document.getFileSystemPath(item.id)
       return {
         ...item,
         fsPath,
@@ -81,7 +75,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     })
 
     // Trigger tree rebuild to update files status
-    tree.value = buildTree(listWithFsPath, draft.list.value)
+    tree.value = buildTree(listWithFsPath, draftDocuments.list.value)
 
     // Reselect current item to update status
     select(findItemFromId(tree.value, currentItem.value.id)!)
@@ -96,4 +90,4 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     selectByRoute,
     selectItemById,
   }
-}
+})
