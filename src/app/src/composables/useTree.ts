@@ -67,17 +67,12 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     select(treeItem)
   }
 
-  hooks.hook('studio:draft:updated', async () => {
-    const hostList = type === StudioFeature.Content ? host.document : host.media
-    const hostGetFileSystemPath = type === StudioFeature.Content ? host.document.getFileSystemPath : host.media.getFileSystemPath
-    const list = await hostList.list()
-
+  async function handleDraftUpdate() {
+    const api = type === StudioFeature.Content ? host.document : host.media
+    const list = await api.list()
     const listWithFsPath = list.map((item) => {
-      const fsPath = hostGetFileSystemPath(item.id)
-      return {
-        ...item,
-        fsPath,
-      }
+      const fsPath = api.getFileSystemPath(item.id)
+      return { ...item, fsPath }
     })
 
     // Trigger tree rebuild to update files status
@@ -85,6 +80,18 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
 
     // Reselect current item to update status
     select(findItemFromId(tree.value, currentItem.value.id)!)
+  }
+
+  hooks.hook('studio:draft:document:updated', async () => {
+    if (type !== StudioFeature.Content) return
+
+    await handleDraftUpdate()
+  })
+
+  hooks.hook('studio:draft:media:updated', async () => {
+    if (type !== StudioFeature.Media) return
+
+    await handleDraftUpdate()
   })
 
   return {

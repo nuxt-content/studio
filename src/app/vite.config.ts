@@ -18,7 +18,6 @@ export default defineConfig({
     ui({
       ui: {
         colors: {
-          primary: 'neutral',
           neutral: 'zinc',
         },
         footer: {

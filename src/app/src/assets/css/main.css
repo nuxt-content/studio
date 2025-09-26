@@ -11,6 +11,14 @@
 @source inline('ring-red-200 hover:ring-red-300 hover:dark:ring-red-700');
 @source inline('ring-green-200 hover:ring-green-300 hover:dark:ring-green-700');
 
+:root {
+  --ui-primary: black;
+}
+
+.dark {
+  --ui-primary: white;
+}
+
 @theme static {
   --ui-sub-header-height: 45px;
   --ui-footer-height: 40px;

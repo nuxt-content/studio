@@ -33,6 +33,7 @@ export const useStudio = createSharedComposable(() => {
   host.on.mounted(async () => {
     await draftDocuments.load()
     await draftMedias.load()
+
     host.app.requestRerender()
     isReady.value = true
 

@@ -5,7 +5,8 @@ import { watch, ref } from 'vue'
 import { StudioFeature } from './types'
 
 const { sidebarWidth } = useSidebar()
-const { ui, host, isReady } = useStudio()
+const { ui, host, isReady, documentTree } = useStudio()
+
 watch(sidebarWidth, () => {
   if (ui.isPanelOpen.value) {
     host.ui.updateStyles()
@@ -23,7 +24,7 @@ function detectActiveDocuments() {
 }
 
 function onContentSelect(id: string) {
-  tree.selectItemById(id)
+  documentTree.selectItemById(id)
   ui.openPanel(StudioFeature.Content)
 }
 
@@ -54,7 +55,7 @@ host.on.mounted(() => {
       <!-- Floating Files Panel Toggle -->
       <div
         v-if="!ui.isPanelOpen.value"
-        class="fixed bottom-4 left-4 z-50 shadow-lg flex gap-2"
+        class="fixed bottom-4 left-4 z-50 flex gap-2"
       >
         <UButton
           icon="i-lucide-panel-left-open"
@@ -67,7 +68,7 @@ host.on.mounted(() => {
           v-if="activeDocuments.length === 1"
           icon="i-lucide-file-text"
           size="lg"
-          color="secondary"
+          variant="outline"
           label="Edit This Page"
           class="shadow-lg"
           @click="onContentSelect(activeDocuments[0].id)"

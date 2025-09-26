@@ -42,7 +42,7 @@ const userMenuItems = computed(() => [
     </template>
 
     <template #right>
-      <UTooltip :text="uiConfig.syncEditorAndRoute ? 'Sync editor and route' : 'Don\'t sync editor and route'">
+      <UTooltip :text="uiConfig.syncEditorAndRoute ? 'Disable synchronization between editor and host' : 'Enable synchronization between editor and host'">
         <UButton
           icon="i-lucide-arrow-left-right"
           variant="link"

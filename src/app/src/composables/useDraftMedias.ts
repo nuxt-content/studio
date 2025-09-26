@@ -49,7 +49,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
     list.value.push(item)
 
-    await hooks.callHook('studio:draft:updated')
+    await hooks.callHook('studio:draft:media:updated')
 
     return item
   }
@@ -76,7 +76,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
     // Trigger hook to warn that draft list has changed
     if (existingItem.status !== oldStatus) {
-      await hooks.callHook('studio:draft:updated')
+      await hooks.callHook('studio:draft:media:updated')
     }
 
     return existingItem
@@ -132,7 +132,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       await storage.setItem(id, existingItem)
     }
 
-    await hooks.callHook('studio:draft:updated')
+    await hooks.callHook('studio:draft:media:updated')
 
     host.app.requestRerender()
   }
@@ -177,12 +177,11 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
     host.app.requestRerender()
 
-    await hooks.callHook('studio:draft:updated')
+    await hooks.callHook('studio:draft:media:updated')
   }
 
   function select(draftItem: DraftItem | null) {
     current.value = draftItem
-    console.log('select', draftItem)
   }
 
   async function selectById(id: string) {
