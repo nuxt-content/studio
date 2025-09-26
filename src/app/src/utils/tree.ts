@@ -12,7 +12,8 @@ export const EXTENSIONS_WITH_PREVIEW = new Set([
   'png',
   'gif',
   'webp',
-  'ico'
+  'ico',
+  'avif',
 ])
 
 export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):

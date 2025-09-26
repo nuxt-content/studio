@@ -1,4 +1,13 @@
 export const serviceWorker = () => `
+const EXTENSIONS_WITH_PREVIEW = new Set([
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'webp',
+  'ico',
+  'avif',
+])
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const isSameDomain = url.origin === self.location.origin;
@@ -7,7 +16,7 @@ self.addEventListener('fetch', event => {
     return event.respondWith(fetch(event.request));
   }
 
-  if (url.pathname.startsWith('/_ipx/_/') || ['jpg', 'png', 'jpeg', 'gif', 'webp'].includes(url.pathname.split('.').pop())) {
+  if (url.pathname.startsWith('/_ipx/_/') || EXTENSIONS_WITH_PREVIEW.has(url.pathname.split('.').pop())) {
     console.log('Fetching from IndexedDB:', url.pathname);
     return event.respondWith(fetchFromIndexedDB(event, url));
   }
@@ -15,10 +24,11 @@ self.addEventListener('fetch', event => {
   event.respondWith(fetch(event.request))
 })
 
-function fetchFromIndexedDB(event,url) {
-  const dbKey = ['public-assets:', url.pathname.replace('/_ipx/_/', '').replace('/', ':')].join('')
+function fetchFromIndexedDB(event, url) {
+  const dbKey = ['public-assets:', url.pathname.replace(/^\\/+(_ipx\\/_\\/)?/, '').replace('/', ':')].join('')
   return getData(dbKey).then(data => {
     if (!data) {
+      console.log('No data found in IndexedDB:', url.pathnam, dbKey);
       return fetch(event.request);
     }
 
