@@ -6,6 +6,15 @@ import type { BaseItem } from '../types/item'
 
 export const ROOT_ITEM: TreeItem = { id: 'root', name: 'content', fsPath: '/', type: 'root' }
 
+export const EXTENSIONS_WITH_PREVIEW = new Set([
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'webp',
+  'ico'
+])
+
 export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):
 TreeItem[] {
   const tree: TreeItem[] = []
@@ -33,6 +42,7 @@ TreeItem[] {
         name: fileName,
         fsPath: dbItem.fsPath,
         type: 'file',
+        preview: EXTENSIONS_WITH_PREVIEW.has(dbItem.extension) ? dbItem.path : undefined,
       }
 
       if (itemHasPathField) {

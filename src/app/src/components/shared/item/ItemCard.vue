@@ -17,6 +17,9 @@ const isFolder = computed(() => props.item.type === 'directory')
 const name = computed(() => titleCase(props.item.name))
 
 const itemExtensionIcon = computed(() => {
+  if (props.item.preview) {
+    return ''
+  }
   const ext = props.item.id.split('.').pop()?.toLowerCase() || ''
   return {
     md: 'i-ph-markdown-logo',
@@ -26,31 +29,40 @@ const itemExtensionIcon = computed(() => {
   }[ext] || 'i-mdi-file'
 })
 
+const imageSrc = computed(() => {
+  if (props.item.preview) {
+    return props.item.preview
+  }
+  return 'https://placehold.co/1920x1080/f9fafc/f9fafc'
+})
+
 const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_MAP[props.item.status]}-200 hover:ring-${COLOR_STATUS_MAP[props.item.status]}-300 hover:dark:ring-${COLOR_STATUS_MAP[props.item.status]}-700` : 'ring-gray-200 hover:ring-gray-300 hover:dark:ring-gray-700')
 </script>
 
 <template>
   <UPageCard
     reverse
-    class="cursor-pointer hover:bg-white relative w-full min-w-0"
+    class="cursor-pointer hover:bg-white relative w-full min-w-0 overflow-hidden"
     :class="statusRingColor"
   >
     <div
       v-if="item.type === 'file'"
       class="relative"
     >
-      <Image
-        src="https://placehold.co/1920x1080/f9fafc/f9fafc"
-        width="426"
-        height="240"
-        alt="Card placeholder"
-        class="z-[-1] rounded-t-lg"
-      />
-      <div class="absolute inset-0 flex items-center justify-center">
-        <UIcon
-          :name="itemExtensionIcon"
-          class="w-8 h-8 text-gray-400 dark:text-gray-500"
+      <div class="bg-[#f7f9fa] bg-[linear-gradient(45deg,#e6e9ea_25%,transparent_0),linear-gradient(-45deg,#e6e9ea_25%,transparent_0),linear-gradient(45deg,transparent_75%,#e6e9ea_0),linear-gradient(-45deg,transparent_75%,#e6e9ea_0)] bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0]">
+        <Image
+          :src="imageSrc"
+          width="426"
+          height="240"
+          alt="Card placeholder"
+          class="z-[-1] rounded-t-lg aspect-video object-cover"
         />
+        <div v-if="itemExtensionIcon" class="absolute inset-0 flex items-center justify-center">
+          <UIcon
+            :name="itemExtensionIcon"
+            class="w-8 h-8 text-gray-400 dark:text-gray-500"
+          />
+        </div>
       </div>
       <ItemBadge
         v-if="item.status"

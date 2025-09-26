@@ -9,13 +9,13 @@ self.addEventListener('fetch', event => {
 
   if (url.pathname.startsWith('/_ipx/_/') || ['jpg', 'png', 'jpeg', 'gif', 'webp'].includes(url.pathname.split('.').pop())) {
     console.log('Fetching from IndexedDB:', url.pathname);
-    return event.respondWith(fetchFromIndexedDB(url));
+    return event.respondWith(fetchFromIndexedDB(event, url));
   }
 
   event.respondWith(fetch(event.request))
 })
 
-function fetchFromIndexedDB(url) {
+function fetchFromIndexedDB(event,url) {
   const dbKey = ['public-assets:', url.pathname.replace('/_ipx/_/', '').replace('/', ':')].join('')
   return getData(dbKey).then(data => {
     if (!data) {

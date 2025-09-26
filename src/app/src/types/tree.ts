@@ -8,4 +8,8 @@ export interface TreeItem {
   status?: DraftStatus
   routePath?: string
   children?: TreeItem[]
+  /**
+   * Preview image for the item inside the tree
+   */
+  preview?: string
 }
