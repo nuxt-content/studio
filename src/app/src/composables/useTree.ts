@@ -68,8 +68,8 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
   }
 
   hooks.hook('studio:draft:updated', async () => {
-    const hostList = type === 'content' ? host.document : host.media
-    const hostGetFileSystemPath = type === 'content' ? host.document.getFileSystemPath : host.media.getFileSystemPath
+    const hostList = type === StudioFeature.Content ? host.document : host.media
+    const hostGetFileSystemPath = type === StudioFeature.Content ? host.document.getFileSystemPath : host.media.getFileSystemPath
     const list = await hostList.list()
 
     const listWithFsPath = list.map((item) => {

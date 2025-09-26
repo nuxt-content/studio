@@ -11,7 +11,8 @@ import { useHooks } from './useHooks'
 
 const storage = createStorage({
   driver: indexedDbDriver({
-    storeName: 'nuxt-content-studio-documents',
+    dbName: 'nuxt-content-studio-document',
+    storeName: 'drafts',
   }),
 })
 

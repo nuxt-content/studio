@@ -211,7 +211,7 @@ export function useStudioHost(user: StudioUser): StudioHost {
         return await publicAssetsStorage.getItem(id) as MediaItem
       },
       getFileSystemPath: (id: string) => {
-        return id.split(':').slice(1).join('/')
+        return id.split('/').slice(1).join('/')
       },
       list: async (): Promise<MediaItem[]> => {
         return await Promise.all(await publicAssetsStorage.getKeys().then(keys => keys.map(key => publicAssetsStorage.getItem(key)))) as MediaItem[]

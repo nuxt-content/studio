@@ -116,14 +116,13 @@ export default defineNuxtModule<ModuleOptions>({
               'const storage = createStorage({})',
               '',
               ...keys.map((key) => {
-                key = `public-assets:${key}`
                 const value = {
-                  id: key,
+                  id: `public-assets/${key.replace(/:/g, '/')}`,
                   extension: key.split('.').pop(),
-                  stem: key.split('.').slice(0, -1).join('.'),
+                  stem: key.split('.').join('.'),
                   path: '/' + key.replace(/:/g, '/'),
                 }
-                return `storage.setItem('${key}', ${JSON.stringify(value)})`
+                return `storage.setItem('${value.id}', ${JSON.stringify(value)})`
               }),
               '',
               'export const publicAssetsStorage = storage',

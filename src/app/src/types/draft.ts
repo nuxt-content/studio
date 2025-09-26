@@ -15,7 +15,7 @@ export interface DraftItem<T = DatabaseItem | MediaItem> {
   fsPath: string // file path in content directory
   status: DraftStatus // status
 
-  githubFile: GithubFile // file fetched on gh
+  githubFile?: GithubFile // file fetched on gh
   original?: T
   modified?: T
   /**

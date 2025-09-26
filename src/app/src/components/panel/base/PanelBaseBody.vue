@@ -14,6 +14,15 @@ const fileTree = computed(() => (tree.value.current.value || []).filter(f => f.t
 
 const isFileCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateDocument)
 const isFolderCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateFolder)
+
+async function onFileDrop(event: DragEvent) {
+  if (event.dataTransfer?.files) {
+    for (const file of event.dataTransfer.files) {
+      await draftMedias.upload(tree.value.currentItem.value.fsPath,file)
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -23,7 +32,9 @@ const isFolderCreationInProgress = computed(() => context.actionInProgress.value
   />
   <div
     v-else
-    class="flex flex-col"
+    class="flex flex-col min-h-full"
+    @drop.prevent.sop="onFileDrop"
+    @dragover.prevent.stop
   >
     <PanelBaseBodyTree
       v-if="folderTree?.length > 0 || isFolderCreationInProgress"

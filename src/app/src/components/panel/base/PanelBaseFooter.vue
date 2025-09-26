@@ -19,7 +19,7 @@ const userMenuItems = computed(() => [
 </script>
 
 <template>
-  <UFooter class="h-var(--ui-footer-height)">
+  <UFooter class="h-var(--ui-footer-height) sticky bottom-0 bg-white">
     <template #left>
       <UDropdownMenu
         :portal="false"
