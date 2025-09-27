@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildTree, findParentFromId, findItemFromRoute, findItemFromId } from '../../src/utils/tree'
+import { buildTree, findParentFromId, findItemFromRoute, findItemFromId, findDescendantsFileItemsFromId } from '../../src/utils/tree'
 import { tree } from '../mocks/tree'
 import type { TreeItem } from '../../src/types/tree'
 import { dbItemsList } from '../mocks/database'
@@ -42,12 +42,12 @@ describe('buildTree', () => {
     },
   ]
 
-  it('should build a tree from a list of database items with empty draft', () => {
+  it('Db items list without draft', () => {
     const tree = buildTree(dbItemsList, null)
     expect(tree).toStrictEqual(result)
   })
 
-  it('should build a tree from a list of database items and set file status for root file based on draft', () => {
+  it('Db items list with draft', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[0].id,
       fsPath: 'index.md',
@@ -63,7 +63,100 @@ describe('buildTree', () => {
       ...result.slice(1)])
   })
 
-  it('should build a tree from a list of database items and set status for nested file and parent directory based on draft', () => {
+  it('Db items list with DELETED file in exsiting directory in draft (directory status is set)', () => {
+    const draftList: DraftItem[] = [{
+      id: 'docs/1.getting-started/2.deleted.md',
+      fsPath: '1.getting-started/2.deleted.md',
+      status: DraftStatus.Deleted,
+    }]
+
+    const tree = buildTree(dbItemsList, draftList)
+
+    expect(tree).toStrictEqual([
+      { ...result[0] },
+      {
+        ...result[1],
+        status: DraftStatus.Updated,
+        children: [
+          ...result[1].children!,
+          {
+            id: 'docs/1.getting-started/2.deleted.md',
+            name: 'deleted',
+            fsPath: '1.getting-started/2.deleted.md',
+            type: 'file',
+            routePath: '/getting-started/deleted',
+            status: DraftStatus.Deleted,
+          },
+        ],
+      },
+    ])
+  })
+
+  it('Db items list with DELETED file in non existing directory in draft', () => {
+    const draftList: DraftItem[] = [{
+      id: 'docs/1.deleted-directory/2.deleted-file.md',
+      fsPath: '1.deleted-directory/2.deleted-file.md',
+      status: DraftStatus.Deleted,
+    }]
+
+    const tree = buildTree(dbItemsList, draftList)
+
+    expect(tree).toStrictEqual([
+      ...result,
+      {
+        id: 'docs/1.deleted-directory',
+        name: 'deleted-directory',
+        fsPath: '1.deleted-directory',
+        type: 'directory',
+        status: DraftStatus.Updated,
+        children: [
+          {
+            id: 'docs/1.deleted-directory/2.deleted-file.md',
+            name: 'deleted-file',
+            fsPath: '1.deleted-directory/2.deleted-file.md',
+            type: 'file',
+            status: DraftStatus.Deleted,
+          },
+        ],
+      },
+    ])
+  })
+
+  it('Db items list with all DELETED files in existing directory in draft (directory status is set to DELETED)', () => {
+    const draftList: DraftItem[] = [{
+      id: dbItemsList[1].id,
+      fsPath: '1.getting-started/2.introduction.md',
+      status: DraftStatus.Deleted,
+    }, {
+      id: dbItemsList[2].id,
+      fsPath: '1.getting-started/3.installation.md',
+      status: DraftStatus.Deleted,
+    }]
+
+    const tree = buildTree(dbItemsList, draftList)
+
+    console.log('Tree', tree)
+
+    expect(tree).toStrictEqual([
+      result[0],
+      {
+        ...result[1],
+        status: DraftStatus.Deleted,
+        children: [
+          {
+            ...result[1].children![0],
+            status: DraftStatus.Deleted,
+          },
+          {
+            ...result[1].children![1],
+            status: DraftStatus.Deleted,
+          },
+        ],
+      },
+    ])
+  })
+
+  it('Db items list with UPDATED file in exsiting directory in draft (directory status is set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
@@ -89,7 +182,7 @@ describe('buildTree', () => {
     expect(tree).toStrictEqual(expectedTree)
   })
 
-  it('should build a tree from a list of database items and set status for nested files. Directory status is always UPDATED if at least one child is other then OPENED', () => {
+  it('Db items list with UPDATED and OPENED files in exsiting directory in draft (directory status is set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
@@ -118,7 +211,7 @@ describe('buildTree', () => {
     expect(tree).toStrictEqual(expectedTree)
   })
 
-  it('should build a tree from a list of database items and set OPENED status for nestedfile. Parent directory status is not set if all children are OPENED', () => {
+  it('Db items list with OPENED files in exsiting directory in draft (directory status is not set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
@@ -277,5 +370,50 @@ describe('findItemFromId', () => {
   it('should return null for empty id', () => {
     const item = findItemFromId(tree, '')
     expect(item).toBeNull()
+  })
+})
+
+describe('findDescendantsFileItemsFromId', () => {
+  it('returns exact match for a root level file', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'landing/index.md')
+    expect(descendants).toHaveLength(1)
+    expect(descendants[0].id).toBe('landing/index.md')
+  })
+
+  it('returns empty array for non-existent id', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'non-existent/file.md')
+    expect(descendants).toHaveLength(0)
+  })
+
+  it('returns all descendants files for directory id', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'docs/1.getting-started')
+
+    expect(descendants).toHaveLength(3)
+
+    expect(descendants.some(item => item.id === 'docs/1.getting-started/2.introduction.md')).toBe(true)
+    expect(descendants.some(item => item.id === 'docs/1.getting-started/3.installation.md')).toBe(true)
+    expect(descendants.some(item => item.id === 'docs/1.getting-started/1.advanced/1.studio.md')).toBe(true)
+  })
+
+  it('returns all descendants files for nested directory id', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'docs/1.getting-started/1.advanced')
+
+    expect(descendants).toHaveLength(1)
+
+    expect(descendants.some(item => item.id === 'docs/1.getting-started/1.advanced/1.studio.md')).toBe(true)
+  })
+
+  it('returns only the file itself when searching for a specific file', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'docs/1.getting-started/2.introduction.md')
+
+    expect(descendants).toHaveLength(1)
+    expect(descendants[0].id).toBe('docs/1.getting-started/2.introduction.md')
+  })
+
+  it('returns deeply nested file when searching by specific file id', () => {
+    const descendants = findDescendantsFileItemsFromId(tree, 'docs/1.getting-started/1.advanced/1.studio.md')
+
+    expect(descendants).toHaveLength(1)
+    expect(descendants[0].id).toBe('docs/1.getting-started/1.advanced/1.studio.md')
   })
 })

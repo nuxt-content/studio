@@ -37,9 +37,9 @@ export const useStudio = createSharedComposable(() => {
     host.app.requestRerender()
     isReady.value = true
 
-    host.on.routeChange((to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
+    host.on.routeChange(async (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
       if (ui.isPanelOpen.value && ui.config.value.syncEditorAndRoute) {
-        documentTree.selectByRoute(to)
+        await documentTree.selectByRoute(to)
       }
       // setTimeout(() => {
       //   host.document.detectActives()

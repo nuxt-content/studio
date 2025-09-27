@@ -82,36 +82,38 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     return existingItem
   }
 
-  async function remove(id: string) {
-    const item = await storage.getItem(id) as DraftItem
-    const fsPath = host.media.getFileSystemPath(id)
+  async function remove(ids: string[]) {
+    for (const id of ids) {
+      const item = await storage.getItem(id) as DraftItem
+      const fsPath = host.media.getFileSystemPath(id)
 
-    if (item) {
-      if (item.status === DraftStatus.Deleted) return
+      if (item) {
+        if (item.status === DraftStatus.Deleted) return
 
-      await storage.removeItem(id)
-      await host.media.delete(id)
-    }
-    else {
+        await storage.removeItem(id)
+        await host.media.delete(id)
+      }
+      else {
       // Fetch github file before creating draft to detect non deployed changes
-      const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
-      const original = await host.media.get(id)
+        const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+        const original = await host.media.get(id)
 
-      const deleteItem: DraftItem = {
-        id,
-        fsPath,
-        status: DraftStatus.Deleted,
-        original,
-        githubFile,
+        const deleteItem: DraftItem = {
+          id,
+          fsPath,
+          status: DraftStatus.Deleted,
+          original,
+          githubFile,
+        }
+
+        await storage.setItem(id, deleteItem)
+
+        await host.media.delete(id)
       }
 
-      await storage.setItem(id, deleteItem)
-
-      await host.media.delete(id)
+      list.value = list.value.filter(item => item.id !== id)
+      host.app.requestRerender()
     }
-
-    list.value = list.value.filter(item => item.id !== id)
-    host.app.requestRerender()
   }
 
   async function revert(id: string) {

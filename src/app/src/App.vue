@@ -23,8 +23,8 @@ function detectActiveDocuments() {
   })
 }
 
-function onContentSelect(id: string) {
-  documentTree.selectItemById(id)
+async function onContentSelect(id: string) {
+  await documentTree.selectItemById(id)
   ui.openPanel(StudioFeature.Content)
 }
 
@@ -70,7 +70,7 @@ host.on.mounted(() => {
           size="lg"
           variant="outline"
           label="Edit This Page"
-          class="shadow-lg"
+          class="shadow-lg bg-white hover:bg-gray-100"
           @click="onContentSelect(activeDocuments[0].id)"
         />
       </div>

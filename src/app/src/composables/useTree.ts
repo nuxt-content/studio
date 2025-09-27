@@ -2,7 +2,7 @@ import { StudioFeature, type StudioHost, type TreeItem } from '../types'
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
 import type { useDraftMedias } from './useDraftMedias'
-import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM } from '../utils/tree'
+import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM, findParentFromId } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
 import { useHooks } from './useHooks'
 
@@ -56,7 +56,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
 
     if (!item || item.id === currentItem.value.id) return
 
-    select(item)
+    await select(item)
   }
 
   async function selectItemById(id: string) {
@@ -64,7 +64,14 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
 
     if (!treeItem || treeItem.id === currentItem.value.id) return
 
-    select(treeItem)
+    await select(treeItem)
+  }
+
+  async function selectParentById(id: string) {
+    const parent = findParentFromId(tree.value, id)
+    if (parent) {
+      await select(parent)
+    }
   }
 
   async function handleDraftUpdate() {
@@ -102,5 +109,6 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     select,
     selectByRoute,
     selectItemById,
+    selectParentById,
   }
 }

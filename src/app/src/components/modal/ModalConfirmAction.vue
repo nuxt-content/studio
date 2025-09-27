@@ -27,22 +27,27 @@ const emit = defineEmits<{ close: [] }>()
 
 const titleMap = {
   [StudioItemActionId.RevertItem]: `Reverting ${name.value}`,
+  [StudioItemActionId.DeleteItem]: `Deleting ${name.value}`,
 } as Record<StudioItemActionId, string>
 
 const descriptionMap = {
   [StudioItemActionId.RevertItem]: `Are you sure you want to revert ${name.value} back to its original version?`,
+  [StudioItemActionId.DeleteItem]: `Are you sure you want to delete ${name.value}?`,
 } as Record<StudioItemActionId, string>
 
 const successLabelMap = {
   [StudioItemActionId.RevertItem]: 'Revert changes',
+  [StudioItemActionId.DeleteItem]: 'Delete',
 } as Record<StudioItemActionId, string>
 
 const successMessageMap = {
-  [StudioItemActionId.RevertItem]: 'Changes reverted successfully!',
+  [StudioItemActionId.RevertItem]: 'Revert successful!',
+  [StudioItemActionId.DeleteItem]: 'Deletion successful!',
 } as Record<StudioItemActionId, string>
 
 const errorMessageMap = {
   [StudioItemActionId.RevertItem]: 'Something went wrong while reverting your file.',
+  [StudioItemActionId.DeleteItem]: 'Something went wrong while deleting your file.',
 } as Record<StudioItemActionId, string>
 
 const handleConfirm = async () => {

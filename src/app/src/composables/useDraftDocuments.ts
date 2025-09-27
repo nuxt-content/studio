@@ -88,55 +88,64 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     return existingItem
   }
 
-  async function remove(id: string) {
-    const item = await storage.getItem(id) as DraftItem<DatabaseItem>
-    const fsPath = host.document.getFileSystemPath(id)
-
-    if (item) {
-      if (item.status === DraftStatus.Deleted) return
+  async function remove(ids: string[]) {
+    for (const id of ids) {
+      const existingItem = list.value.find(item => item.id === id)
+      const fsPath = host.document.getFileSystemPath(id)
 
       await storage.removeItem(id)
       await host.document.delete(id)
 
-      if (item.original) {
-        const deleteDraft: DraftItem<DatabaseItem> = {
+      let deleteDraftItem: DraftItem<DatabaseItem> | null = null
+      if (existingItem) {
+        if (existingItem.status === DraftStatus.Deleted) return
+
+        if (existingItem.status === DraftStatus.Created) {
+          list.value = list.value.filter(item => item.id !== id)
+        }
+        else {
+          deleteDraftItem = {
+            id,
+            fsPath: existingItem.fsPath,
+            status: DraftStatus.Deleted,
+            original: existingItem.original,
+            githubFile: existingItem.githubFile,
+          }
+
+          list.value = list.value.map(item => item.id === id ? deleteDraftItem! : item)
+        }
+      }
+      else {
+      // TODO: check if gh file has been updated
+        const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+        const original = await host.document.get(id)
+
+        deleteDraftItem = {
           id,
-          fsPath: item.fsPath,
+          fsPath,
           status: DraftStatus.Deleted,
-          original: item.original,
-          githubFile: item.githubFile,
+          original,
+          githubFile,
         }
 
-        await storage.setItem(id, deleteDraft)
-        await host.document.upsert(id, item.original!)
-      }
-    }
-    else {
-      // Fetch github file before creating draft to detect non deployed changes
-      const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
-      const original = await host.document.get(id)
-
-      const deleteItem: DraftItem = {
-        id,
-        fsPath,
-        status: DraftStatus.Deleted,
-        original,
-        githubFile,
+        list.value.push(deleteDraftItem)
       }
 
-      await storage.setItem(id, deleteItem)
+      console.log('List value', list.value)
 
-      await host.document.delete(id)
+      if (deleteDraftItem) {
+        console.log('Set delete draft item in storage', deleteDraftItem)
+        await storage.setItem(id, deleteDraftItem)
+      }
+
+      host.app.requestRerender()
+
+      await hooks.callHook('studio:draft:document:updated')
     }
-
-    list.value = list.value.filter(item => item.id !== id)
-    host.app.requestRerender()
   }
 
   async function revert(id: string) {
     const draftItems = findDescendantsFromId(list.value, id)
-
-    console.log('draftItems', draftItems)
 
     for (const draftItem of draftItems) {
       const existingItem = list.value.find(item => item.id === draftItem.id)
@@ -206,6 +215,11 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
   }
 
   function select(draftItem: DraftItem<DatabaseItem> | null) {
+    // TODO: Handle editor with deleted file
+    if (draftItem?.status === DraftStatus.Deleted) {
+      return
+    }
+
     current.value = draftItem
   }
 

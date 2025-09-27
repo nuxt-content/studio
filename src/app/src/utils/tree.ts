@@ -21,6 +21,9 @@ TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
 
+  const deletedDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Deleted) || []
+  const updatedDraftItems = draftList?.filter(draft => draft.status !== DraftStatus.Deleted) || []
+
   for (const dbItem of dbItems) {
     const itemHasPathField = 'path' in dbItem && dbItem.path
     const fsPathSegments = dbItem.fsPath.split('/')
@@ -54,7 +57,7 @@ TreeItem[] {
         fileItem.routePath = dbItem.path as string
       }
 
-      const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+      const draftFileItem = updatedDraftItems?.find(draft => draft.id === dbItem.id)
       if (draftFileItem) {
         fileItem.status = draftFileItem.status
       }
@@ -121,7 +124,7 @@ TreeItem[] {
       type: 'file',
     }
 
-    const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+    const draftFileItem = updatedDraftItems?.find(draft => draft.id === dbItem.id)
     if (draftFileItem) {
       fileItem.status = draftFileItem.status
     }
@@ -132,6 +135,8 @@ TreeItem[] {
 
     directoryChildren.push(fileItem)
   }
+
+  addDeletedDraftItems(tree, deletedDraftItems)
 
   calculateDirectoryStatuses(tree)
 
@@ -192,13 +197,42 @@ export function findItemFromRoute(tree: TreeItem[], route: RouteLocationNormaliz
   return null
 }
 
-export function findDescendantsFromId(tree: TreeItem[], id: string): TreeItem[] {
+export function findDescendantsFileItemsFromId(tree: TreeItem[], id: string): TreeItem[] {
   const descendants: TreeItem[] = []
-  for (const item of tree) {
-    if (item.id === id) {
-      descendants.push(item)
+
+  function traverse(items: TreeItem[]) {
+    for (const item of items) {
+      // Check if this item matches the id or is a descendant of it
+      if (item.id === id || item.id.startsWith(id + '/')) {
+        if (item.type === 'file') {
+          descendants.push(item)
+        }
+
+        // If this item has children, add all of them as descendants
+        if (item.children) {
+          getAllDescendants(item.children, descendants)
+        }
+      }
+      else if (item.children) {
+        // Continue searching in children
+        traverse(item.children)
+      }
     }
   }
+
+  function getAllDescendants(items: TreeItem[], result: TreeItem[]) {
+    for (const item of items) {
+      if (item.type === 'file') {
+        result.push(item)
+      }
+
+      if (item.children) {
+        getAllDescendants(item.children, result)
+      }
+    }
+  }
+
+  traverse(tree)
 
   return descendants
 }
@@ -214,6 +248,53 @@ function calculateDirectoryStatuses(items: TreeItem[]) {
           break
         }
       }
+    }
+  }
+}
+
+function addDeletedDraftItems(tree: TreeItem[], deletedItems: DraftItem[]) {
+  for (const deletedItem of deletedItems) {
+    const idSegments = deletedItem.id.split('/')
+    const fileName = idSegments[idSegments.length - 1]
+    const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, '')
+
+    const parentId = idSegments.slice(0, -1).join('/')
+    const parentDir = findItemFromId(tree, parentId)
+
+    if (parentDir) {
+      const deletedTreeItem: TreeItem = {
+        id: deletedItem.id,
+        name: stripNumericPrefix(fileNameWithoutExtension),
+        fsPath: deletedItem.fsPath,
+        type: 'file',
+        status: DraftStatus.Deleted,
+      }
+
+      if (parentDir.routePath) {
+        deletedTreeItem.routePath = `${parentDir.routePath}/${stripNumericPrefix(fileNameWithoutExtension)}`
+      }
+
+      // Add to parent's children
+      parentDir.children!.push(deletedTreeItem)
+    }
+    else {
+      const parentFsPath = deletedItem.fsPath.split('/').slice(0, -1).join('/')
+
+      const newDir: TreeItem = {
+        id: parentId,
+        name: stripNumericPrefix(parentFsPath.split('/').pop()!),
+        fsPath: parentFsPath,
+        type: 'directory',
+        children: [{
+          id: deletedItem.id,
+          name: stripNumericPrefix(fileNameWithoutExtension),
+          fsPath: deletedItem.fsPath,
+          type: 'file',
+          status: DraftStatus.Deleted,
+        }],
+      }
+
+      tree.push(newDir)
     }
   }
 }

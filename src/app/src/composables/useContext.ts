@@ -7,6 +7,7 @@ import type { useDraftDocuments } from './useDraftDocuments'
 import { useModal } from './useModal'
 import type { useTree } from './useTree'
 import type { useDraftMedias } from './useDraftMedias'
+import { findDescendantsFileItemsFromId } from '../utils/tree'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
@@ -58,7 +59,7 @@ export const useContext = createSharedComposable((
     [StudioItemActionId.CreateDocument]: async ({ fsPath, routePath, content }: CreateFileParams) => {
       const document = await host.document.create(fsPath, routePath, content)
       const draftItem = await draft.value.create(document)
-      tree.selectItemById(draftItem.id)
+      await tree.selectItemById(draftItem.id)
     },
     [StudioItemActionId.UploadMedia]: async ({ directory, files }: UploadMediaParams) => {
       for (const file of files) {
@@ -66,7 +67,6 @@ export const useContext = createSharedComposable((
       }
     },
     [StudioItemActionId.RevertItem]: async (id: string) => {
-      console.log('revert item', id)
       modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, async () => {
         await draft.value.revert(id)
       })
@@ -75,7 +75,11 @@ export const useContext = createSharedComposable((
       alert(`rename file ${path} ${file.name}`)
     },
     [StudioItemActionId.DeleteItem]: async (id: string) => {
-      alert(`delete file ${id}`)
+      modal.openConfirmActionModal(id, StudioItemActionId.DeleteItem, async () => {
+        const ids: string[] = findDescendantsFileItemsFromId(tree.root.value, id).map(item => item.id)
+        await draft.value.remove(ids)
+        await tree.selectParentById(id)
+      })
     },
     [StudioItemActionId.DuplicateItem]: async (id: string) => {
       alert(`duplicate file ${id}`)

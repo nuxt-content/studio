@@ -93,6 +93,7 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
 export function computeActionParams(action: StudioItemActionId, { item }: { item: TreeItem }): ActionHandlerParams[typeof action] {
   switch (action) {
     case StudioItemActionId.RevertItem:
+    case StudioItemActionId.DeleteItem:
       return item.id
     default:
       return {}

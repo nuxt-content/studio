@@ -13,7 +13,7 @@ export const COLOR_STATUS_MAP: { [key in DraftStatus]?: string } = {
 export const COLOR_UI_STATUS_MAP: { [key in DraftStatus]?: string } = {
   [DraftStatus.Created]: 'success',
   [DraftStatus.Updated]: 'warning',
-  [DraftStatus.Deleted]: 'danger',
+  [DraftStatus.Deleted]: 'error',
   [DraftStatus.Renamed]: 'info',
   [DraftStatus.Opened]: 'neutral',
 } as const
