@@ -131,10 +131,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
         list.value.push(deleteDraftItem)
       }
 
-      console.log('List value', list.value)
-
       if (deleteDraftItem) {
-        console.log('Set delete draft item in storage', deleteDraftItem)
         await storage.setItem(id, deleteDraftItem)
       }
 

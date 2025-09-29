@@ -59,3 +59,44 @@ export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
     __hash__: 'EXAMPLE_HASH_FOR_INSTALLATION',
   },
 ]
+
+export const nestedDbItemsList: (DatabaseItem & { fsPath: string })[] = [
+  {
+    id: 'docs/1.essentials/2.configuration.md',
+    title: 'Configuration',
+    body: { type: 'minimark', value: [] },
+    description: 'Learn how to configure Docus.',
+    extension: 'md',
+    layout: null,
+    links: null,
+    meta: {},
+    navigation: {},
+    path: '/essentials/configuration',
+    fsPath: '1.essentials/2.configuration.md',
+    seo: {
+      title: 'Configuration',
+      description: 'Learn how to configure Docus.',
+    },
+    stem: '1.essentials/2.configuration',
+    __hash__: 'EXAMPLE_HASH_FOR_CONFIGURATION',
+  },
+  {
+    id: 'docs/1.essentials/1.nested/2.advanced.md',
+    title: 'Advanced',
+    body: { type: 'minimark', value: [] },
+    description: 'Learn how to configure Docus.',
+    extension: 'md',
+    layout: null,
+    links: null,
+    meta: {},
+    navigation: {},
+    path: '/essentials/nested/advanced',
+    fsPath: '1.essentials/1.nested/2.advanced.md',
+    seo: {
+      title: 'Advanced',
+      description: 'Learn how to use advanced features in Docus.',
+    },
+    stem: '1.essentials/1.nested/2.advanced',
+    __hash__: 'EXAMPLE_HASH_FOR_ADVANCED',
+  },
+]
