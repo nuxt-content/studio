@@ -68,6 +68,7 @@ function isEqual(document1: DatabasePageItem, document2: DatabasePageItem) {
     if (document1.body?.type === 'minimark') {
       document1 = removeLastStyle(document1)
     }
+
     if (document2.body?.type === 'minimark') {
       document2 = removeLastStyle(document2)
     }

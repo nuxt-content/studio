@@ -139,18 +139,72 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     host.app.requestRerender()
   }
 
-  async function revertAll() {
-    await storage.clear()
-    for (const item of list.value) {
-      if (item.original) {
-        await host.media.upsert(item.id, item.original)
-      }
-      else if (item.status === DraftStatus.Created) {
-        await host.media.delete(item.id)
-      }
-    }
-    list.value = []
-    host.app.requestRerender()
+  // async function revertAll() {
+  //   await storage.clear()
+  //   for (const item of list.value) {
+  //     if (item.original) {
+  //       await host.media.upsert(item.id, item.original)
+  //     }
+  //     else if (item.status === DraftStatus.Created) {
+  //       await host.media.delete(item.id)
+  //     }
+  //   }
+  //   list.value = []
+  //   host.app.requestRerender()
+  // }
+
+  async function rename(_id: string, _newNameWithExtension: string) {
+    // let currentDbItem: MediaItem = await host.document.get(id)
+    // if (!currentDbItem) {
+    //   throw new Error(`Database item not found for document ${id}`)
+    // }
+
+    // const currentDraftItem: DraftItem<MediaItem> | undefined = list.value.find(item => item.id === id)
+    // if (currentDraftItem) {
+    //   currentDbItem = currentDraftItem.modified as DatabasePageItem
+    // }
+
+    // const newNameWithoutExtension = newNameWithExtension.split('.').slice(0, -1).join('.')
+    // const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
+    // const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
+    // const newStem = `${currentDbItem.stem.split('/').slice(0, -1).join('/')}/${newNameWithoutExtension}`
+    // const newExtension = newNameWithExtension.split('.').pop()!
+
+    // const newDbItem = {
+    //   ...currentDbItem,
+    //   id: newId,
+    //   path: newPath,
+    //   stem: newStem,
+    //   extension: newExtension,
+    // }
+
+    // return await update(id, newDbItem)
+  }
+
+  async function duplicate(_id: string): Promise<DraftItem<MediaItem>> {
+    return { } as DraftItem<MediaItem>
+    // let currentDbItem = await host.media.get(id)
+    // if (!currentDbItem) {
+    //   throw new Error(`Database item not found for document ${id}`)
+    // }
+
+    // const currentDraftItem = list.value.find(item => item.id === id)
+    // if (currentDraftItem) {
+    //   currentDbItem = currentDraftItem.modified!
+    // }
+
+    // const currentFsPath = currentDraftItem?.fsPath || host.document.getFileSystemPath(id)
+    // const currentRoutePath = currentDbItem.path!
+    // const currentContent = ''
+    // const currentName = currentFsPath.split('/').pop()!
+    // const currentExtension = currentName.split('.').pop()!
+    // const currentNameWithoutExtension = currentName.split('.').slice(0, -1).join('.')
+
+    // const newFsPath = `${currentFsPath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy.${currentExtension}`
+    // const newRoutePath = `${currentRoutePath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy`
+
+    // const newDbItem = await host.media.create(newFsPath, newRoutePath, currentContent)
+    // return await create(newDbItem, DraftStatus.Created)
   }
 
   async function load() {
@@ -264,7 +318,8 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     update,
     remove,
     revert,
-    revertAll,
+    rename,
+    duplicate,
     list,
     load,
     current,

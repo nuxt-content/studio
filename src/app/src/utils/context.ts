@@ -94,6 +94,7 @@ export function computeActionParams(action: StudioItemActionId, { item }: { item
   switch (action) {
     case StudioItemActionId.RevertItem:
     case StudioItemActionId.DeleteItem:
+    case StudioItemActionId.DuplicateItem:
       return item.id
     default:
       return {}

@@ -8,6 +8,7 @@ import { generateContentFromDocument } from '../utils/content'
 import { getDraftStatus, findDescendantsFromId } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
+import { stripNumericPrefix } from '../utils/string'
 
 const storage = createStorage({
   driver: indexedDbDriver({
@@ -22,15 +23,15 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
   const hooks = useHooks()
 
-  async function get(id: string, { generateContent = false }: { generateContent?: boolean } = {}) {
-    const item = list.value.find(item => item.id === id)
-    if (item && generateContent) {
-      return {
-        ...item,
-        content: await generateContentFromDocument(item!.modified as DatabasePageItem) || '',
-      }
-    }
-    return item
+  async function get(id: string): Promise<DraftItem<DatabaseItem> | undefined> {
+    return list.value.find(item => item.id === id)
+    // if (item && generateContent) {
+    //   return {
+    //     ...item,
+    //     content: await generateContentFromDocument(item!.modified as DatabasePageItem) || '',
+    //   }
+    // }
+    // return item
   }
 
   async function create(document: DatabaseItem, status: DraftStatus = DraftStatus.Created) {
@@ -60,7 +61,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     return item
   }
 
-  async function update(id: string, document: DatabaseItem) {
+  async function update(id: string, document: DatabaseItem): Promise<DraftItem<DatabaseItem>> {
     const existingItem = list.value.find(item => item.id === id)
     if (!existingItem) {
       throw new Error(`Draft file not found for document ${id}`)
@@ -168,18 +169,58 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     host.app.requestRerender()
   }
 
-  async function revertAll() {
-    await storage.clear()
-    for (const item of list.value) {
-      if (item.original) {
-        await host.document.upsert(item.id, item.original)
-      }
-      else if (item.status === DraftStatus.Created) {
-        await host.document.delete(item.id)
-      }
+  async function rename(id: string, newNameWithExtension: string) {
+    let currentDbItem: DatabaseItem = await host.document.get(id)
+    if (!currentDbItem) {
+      throw new Error(`Database item not found for document ${id}`)
     }
-    list.value = []
-    host.app.requestRerender()
+
+    const currentDraftItem: DraftItem<DatabaseItem> | undefined = list.value.find(item => item.id === id)
+    if (currentDraftItem) {
+      currentDbItem = currentDraftItem.modified as DatabasePageItem
+    }
+
+    const newNameWithoutExtension = newNameWithExtension.split('.').slice(0, -1).join('.')
+    const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
+    const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
+    const newStem = `${currentDbItem.stem.split('/').slice(0, -1).join('/')}/${newNameWithoutExtension}`
+    const newExtension = newNameWithExtension.split('.').pop()!
+
+    const newDbItem: DatabaseItem = {
+      ...currentDbItem,
+      id: newId,
+      path: newPath,
+      stem: newStem,
+      extension: newExtension,
+    }
+
+    return await update(id, newDbItem)
+  }
+
+  async function duplicate(id: string): Promise<DraftItem<DatabaseItem>> {
+    let currentDbItem = await host.document.get(id)
+    if (!currentDbItem) {
+      throw new Error(`Database item not found for document ${id}`)
+    }
+
+    const currentDraftItem = list.value.find(item => item.id === id)
+    if (currentDraftItem) {
+      currentDbItem = currentDraftItem.modified!
+    }
+
+    const currentFsPath = currentDraftItem?.fsPath || host.document.getFileSystemPath(id)
+    const currentRoutePath = currentDbItem.path!
+    const currentContent = await generateContentFromDocument(currentDbItem) || ''
+    const currentName = currentFsPath.split('/').pop()!
+    const currentExtension = currentName.split('.').pop()!
+    const currentNameWithoutExtension = currentName.split('.').slice(0, -1).join('.')
+
+    const newFsPath = `${currentFsPath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy.${currentExtension}`
+    const newRoutePath = `${currentRoutePath.split('/').slice(0, -1).join('/')}/${stripNumericPrefix(currentNameWithoutExtension)}-copy`
+
+    const newDbItem = await host.document.create(newFsPath, newRoutePath, currentContent)
+
+    return await create(newDbItem, DraftStatus.Created)
   }
 
   async function load() {
@@ -242,7 +283,8 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     update,
     remove,
     revert,
-    revertAll,
+    rename,
+    duplicate,
     list,
     load,
     current,

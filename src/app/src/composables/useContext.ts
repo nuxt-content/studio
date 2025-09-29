@@ -82,7 +82,8 @@ export const useContext = createSharedComposable((
       })
     },
     [StudioItemActionId.DuplicateItem]: async (id: string) => {
-      alert(`duplicate file ${id}`)
+      const draftItem = await draft.value.duplicate(id)
+      await tree.selectItemById(draftItem.id)
     },
   }
 
