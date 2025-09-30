@@ -1,20 +1,8 @@
 import { ofetch } from 'ofetch'
-import type { GithubFile } from '../types/github'
 import { createSharedComposable } from '@vueuse/core'
-import type { RawFile } from '../types'
+import type { RawFile, GithubFile, GitOptions } from '../types'
 
 import { joinURL } from 'ufo'
-
-interface GitOptions {
-  owner: string
-  repo: string
-  branch: string
-  rootDir: string
-  token: string
-  authorName: string
-  authorEmail: string
-
-}
 
 export const useGit = createSharedComposable(({ owner, repo, token, branch, rootDir, authorName, authorEmail }: GitOptions) => {
   const gitFiles: Record<string, GithubFile> = {}
