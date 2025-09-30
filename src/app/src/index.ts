@@ -16,7 +16,10 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
       shadowRoot: true,
       configureApp(app) {
         const router = createRouter({
-          routes: [],
+          routes: [
+            // Dummy route
+            { path: '/', component: { template: '<div>Nuxt Studio Home</div>' } },
+          ],
           history: createWebHistory(),
         })
 

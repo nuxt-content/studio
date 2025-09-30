@@ -10,6 +10,11 @@ const props = defineProps({
     type: Object as PropType<DraftItem>,
     required: true,
   },
+  readOnly: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 })
 
 const { draftDocuments } = useStudio()
@@ -38,6 +43,10 @@ const document = computed<DatabasePageItem>({
     return result
   },
   set(value) {
+    if (props.readOnly) {
+      return
+    }
+
     draftDocuments.update(props.draftItem.id, {
       ...toRaw(document.value as DatabasePageItem),
       ...toRaw(value),
@@ -51,6 +60,7 @@ const document = computed<DatabasePageItem>({
     <PanelContentEditorCode
       v-model="document"
       :draft-item="draftItem"
+      :read-only="readOnly"
     />
   </div>
   <!-- <MDCEditorAST v-model="document" /> -->

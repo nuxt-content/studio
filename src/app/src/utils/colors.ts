@@ -11,10 +11,11 @@ export function generateColors() {
   function generateColor(key: string, shade: number) {
     return `--ui-${key}: var(--ui-color-${key}-${shade});`
   }
-  const { neutral, ...colors } = appConfig.ui.colors
+  const uiColors = appConfig.ui.colors as Record<string, string>
+  const { neutral, ...colors } = uiColors
   return `@layer base {
     :host {
-    ${Object.entries(appConfig.ui.colors).map(([key, value]) => generateShades(key, value)).join('\n  ')}
+    ${Object.entries(uiColors).map(([key, value]) => generateShades(key, value)).join('\n  ')}
     }
     :host, .light {
     ${Object.keys(colors).map(key => generateColor(key, 500)).join('\n  ')}

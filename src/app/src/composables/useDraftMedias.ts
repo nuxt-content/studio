@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { createStorage } from 'unstorage'
 import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { joinURL, withLeadingSlash } from 'ufo'
-import type { DraftItem, StudioHost, GithubFile, MediaItem } from '../types'
+import type { DraftItem, StudioHost, GithubFile, MediaItem, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { getDraftStatus } from '../utils/draft'
@@ -11,7 +11,7 @@ import { useHooks } from './useHooks'
 
 const storage = createStorage({
   driver: indexedDbDriver({
-    dbName: 'nuxt-content-studio-media',
+    dbName: 'content-studio-media',
     storeName: 'drafts',
   }),
 })
@@ -34,7 +34,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     }
 
     const fsPath = host.media.getFileSystemPath(media.id)
-    const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+    const githubFile = await git.fetchFile(joinURL('public', fsPath), { cached: true }) as GithubFile
 
     const item: DraftItem = {
       id: media.id,
@@ -95,7 +95,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       }
       else {
       // Fetch github file before creating draft to detect non deployed changes
-        const githubFile = await git.fetchFile(fsPath, { cached: true }) as GithubFile
+        const githubFile = await git.fetchFile(joinURL('public', fsPath), { cached: true }) as GithubFile
         const original = await host.media.get(id)
 
         const deleteItem: DraftItem = {
@@ -312,6 +312,21 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     })
   }
 
+  async function generateRawFiles(): Promise<RawFile[]> {
+    const files = [] as RawFile[]
+    for (const draftItem of list.value) {
+      if (draftItem.status === DraftStatus.Deleted) {
+        files.push({ path: joinURL('public', draftItem.fsPath), content: null, status: draftItem.status, encoding: 'base64' })
+        continue
+      }
+
+      const content = (await draftItem.modified?.raw as string).replace(/^data:\w+\/\w+;base64,/, '')
+      files.push({ path: joinURL('public', draftItem.fsPath), content, status: draftItem.status, encoding: 'base64' })
+    }
+
+    return files
+  }
+
   return {
     get,
     create,
@@ -326,5 +341,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     select,
     selectById,
     upload,
+    generateRawFiles,
   }
 })

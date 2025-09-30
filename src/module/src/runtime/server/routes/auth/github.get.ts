@@ -117,6 +117,9 @@ export default eventHandler(async (event: H3Event) => {
     if (config.emailRequired && !config.scope.includes('user:email')) {
       config.scope.push('user:email')
     }
+    if (config.emailRequired && !config.scope.includes('repo')) {
+      config.scope.push('repo')
+    }
 
     return sendRedirect(
       event,

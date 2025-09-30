@@ -1,6 +1,7 @@
 import { createSingletonPromise } from '@vueuse/core'
 import type { editor as Editor } from 'modern-monaco/editor-core'
 
+export { setupSuggestion } from './mdc-compilation'
 export type { editor as Editor } from 'modern-monaco/editor-core'
 export type Monaco = Awaited<ReturnType<typeof import('modern-monaco')['init']>>
 
@@ -21,6 +22,7 @@ export const setupMonaco = createSingletonPromise(async () => {
   const monaco: Monaco = await init()
 
   return {
+    monaco,
     editor: monaco.editor,
     createEditor: ((domElement, options, override) => {
       // Inject the CSS bundle into the DOM

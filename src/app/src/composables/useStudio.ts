@@ -12,12 +12,13 @@ import { StudioFeature } from '../types'
 export const useStudio = createSharedComposable(() => {
   const host = window.useStudioHost()
   const git = useGit({
-    owner: 'owner',
-    repo: 'repo',
-    branch: 'main',
-    token: '',
-    authorName: 'Name',
-    authorEmail: 'email@example.com',
+    owner: host.repository.owner,
+    repo: host.repository.repo,
+    branch: host.repository.branch,
+    rootDir: host.repository.rootDir,
+    token: host.user.get().githubToken,
+    authorName: host.user.get().name,
+    authorEmail: host.user.get().email,
   })
 
   const isReady = ref(false)

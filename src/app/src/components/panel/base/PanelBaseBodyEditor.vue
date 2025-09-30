@@ -8,6 +8,11 @@ defineProps({
     type: Object as PropType<DraftItem>,
     required: true,
   },
+  readOnly: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 })
 
 const { context } = useStudio()
@@ -17,9 +22,11 @@ const { context } = useStudio()
   <PanelContentEditor
     v-if="context.feature.value === StudioFeature.Content"
     :draft-item="draftItem"
+    :read-only="readOnly"
   />
   <PanelMediaEditor
     v-else
     :draft-item="draftItem"
+    :read-only="readOnly"
   />
 </template>

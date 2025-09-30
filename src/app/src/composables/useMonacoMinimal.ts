@@ -2,7 +2,7 @@
 // import type { editor as Editor } from 'modern-monaco/editor-core'
 // import type { Ref } from 'vue'
 // import { omit } from '../utils/object'
-// import { setupMonaco, setupTheme, baseEditorOptions } from '../utils/monaco'
+// import { setupMonaco, setupTheme, baseEditorOptions } from '../utils/monaco/index'
 
 // export function useMonacoMinimal(target: Ref, options: {
 //   code: string

@@ -1,4 +1,4 @@
-import type { GithubFile } from './github'
+import type { GithubFile } from './git'
 import type { DatabaseItem } from './database'
 import type { MediaItem } from './media'
 

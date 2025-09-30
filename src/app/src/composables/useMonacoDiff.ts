@@ -1,7 +1,7 @@
 // import { computed, watch, unref } from 'vue'
 // import type { Ref } from 'vue'
 // import type { editor as Editor } from 'modern-monaco/editor-core'
-// import { setupMonaco, setupTheme, baseEditorOptions } from '../utils/monaco'
+// import { setupMonaco, setupTheme, baseEditorOptions } from '../utils/monaco/index'
 
 // export function useMonacoDiff(target: Ref, options: { original: string, modified: string, language: string, renderSideBySide?: boolean }) {
 //   let monaco: Awaited<ReturnType<typeof setupMonaco>>

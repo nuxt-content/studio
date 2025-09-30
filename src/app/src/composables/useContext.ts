@@ -76,7 +76,7 @@ export const useContext = createSharedComposable((
     },
     [StudioItemActionId.DeleteItem]: async (id: string) => {
       modal.openConfirmActionModal(id, StudioItemActionId.DeleteItem, async () => {
-        const ids: string[] = findDescendantsFileItemsFromId(tree.root.value, id).map(item => item.id)
+        const ids = findDescendantsFileItemsFromId(tree.root.value, id).map(item => item.id)
         await draft.value.remove(ids)
         await tree.selectParentById(id)
       })

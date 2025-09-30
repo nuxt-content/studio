@@ -13,6 +13,22 @@ interface ModuleOptions {
       clientSecret: string
     }
   }
+  repository?: {
+    /**
+     * @default 'github'
+     */
+    provider?: 'github'
+    owner: string
+    repo: string
+    /**
+     * @default 'main'
+     */
+    branch?: string
+    /**
+     * @default ''
+     */
+    rootDir?: string
+  }
 }
 
 const logger = useLogger('nuxt-studio')
@@ -28,6 +44,11 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(import.meta.url)
     const runtime = (...args: string[]) => resolver.resolve('./runtime', ...args)
     options = defu(options, {
+      repository: {
+        provider: 'github',
+        branch: 'main',
+        rootDir: '',
+      },
       auth: {
         github: {
           clientId: process.env.STUDIO_GITHUB_CLIENT_ID,
@@ -48,6 +69,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public.contentStudio = {
       studioDevStorage: (nuxt.options.dev && options.devStorage) || false,
       studioDevServer: process.env.STUDIO_DEV_SERVER,
+      repository: options.repository,
     }
 
     nuxt.options.runtimeConfig.contentStudio = {

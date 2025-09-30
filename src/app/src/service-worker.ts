@@ -1,4 +1,6 @@
 export const serviceWorker = () => `
+const DB_NAME = 'content-studio-media'
+const STORE_NAME = 'drafts'
 const EXTENSIONS_WITH_PREVIEW = new Set([
   'jpg',
   'jpeg',
@@ -65,10 +67,10 @@ function base64ToUint8Array(base64) {
 // IndexedDB
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('nuxt-content-studio-media', 1);
+    const request = indexedDB.open(DB_NAME, 1);
     request.onupgradeneeded = event => {
       const db = event.target.result;
-      db.createObjectStore('drafts', { keyPath: 'id' });
+      db.createObjectStore(STORE_NAME, { keyPath: 'id' });
     };
     request.onsuccess = event => resolve(event.target.result);
     request.onerror = event => reject(event.target.error);
