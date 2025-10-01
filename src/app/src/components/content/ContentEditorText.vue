@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { DatabasePageItem } from '../../../../types'
+import type { DatabasePageItem } from '../../types'
 import { parseMarkdown, stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import { decompressTree, compressTree } from '@nuxt/content/runtime'
 import type { MDCRoot } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
-import { removeReservedKeysFromDocument } from '../../../../utils/content'
+import { removeReservedKeysFromDocument } from '../../utils/content'
 
 const document = defineModel<DatabasePageItem>()
 const content = ref('')

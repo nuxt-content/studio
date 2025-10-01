@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useStudio } from '../../../composables/useStudio'
+import { useStudio } from '../composables/useStudio'
 
 const { ui, host } = useStudio()
 
@@ -12,36 +12,35 @@ const userMenuItems = computed(() => [
     label: 'Sign out',
     icon: 'i-lucide-log-out',
     onClick: () => {
-      alert('TODO: delete cookie manually')
+      fetch('/__nuxt_content/studio/auth/session', { method: 'delete' }).then(() => {
+        document.location.reload()
+      })
     },
   },
 ])
 </script>
 
 <template>
-  <UFooter
-    class="h-var(--ui-footer-height) sticky bottom-0 bg-white"
-    :ui="{ container: 'px-2 sm:px-2 lg:px-2', right: 'gap-0' }"
+  <div
+    class="bg-muted/50 border-default border-t-[0.5px] flex items-center justify-between gap-1.5 px-2 py-2"
   >
-    <template #left>
-      <UDropdownMenu
-        :portal="false"
-        :items="userMenuItems"
-        :ui="{ content: 'w-full' }"
-        size="xs"
-      >
-        <UButton
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          :avatar="{ src: user?.avatar, alt: user?.name, size: '2xs' }"
-          class="px-2 font-medium"
-          :label="user?.name"
-        />
-      </UDropdownMenu>
-    </template>
+    <UDropdownMenu
+      :portal="false"
+      :items="userMenuItems"
+      :ui="{ content: 'w-full' }"
+      size="xs"
+    >
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="sm"
+        :avatar="{ src: user?.avatar, alt: user?.name, size: '2xs' }"
+        class="px-2 py-1 font-medium"
+        :label="user?.name"
+      />
+    </UDropdownMenu>
 
-    <template #right>
+    <div class="flex items-center">
       <UTooltip
         :text="uiConfig.syncEditorAndRoute ? 'Unlink editor and preview' : 'Link editor and preview'"
         :delay-duration="0"
@@ -51,7 +50,6 @@ const userMenuItems = computed(() => [
           variant="ghost"
           :color="uiConfig.syncEditorAndRoute ? 'info' : 'neutral'"
           :class="!uiConfig.syncEditorAndRoute && 'opacity-50'"
-          size="sm"
           @click="uiConfig.syncEditorAndRoute = !uiConfig.syncEditorAndRoute"
         />
       </UTooltip>
@@ -59,9 +57,8 @@ const userMenuItems = computed(() => [
         icon="i-lucide-panel-left-close"
         variant="ghost"
         color="neutral"
-        size="sm"
-        @click="ui.closePanels()"
+        @click="ui.close()"
       />
-    </template>
-  </UFooter>
+    </div>
+  </div>
 </template>

@@ -18,8 +18,10 @@ export interface StudioHost {
     routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => void
     mounted: (fn: () => void) => void
     beforeUnload: (fn: (event: BeforeUnloadEvent) => void) => void
+    colorModeChange: (fn: (colorMode: 'light' | 'dark') => void) => void
   }
   ui: {
+    colorMode: 'light' | 'dark'
     activateStudio: () => void
     deactivateStudio: () => void
     expandSidebar: () => void
@@ -52,7 +54,7 @@ export interface StudioHost {
   }
 }
 
-export type UseStudioHost = (user: StudioUser) => StudioHost
+export type UseStudioHost = (user?: StudioUser) => StudioHost
 
 declare global {
   interface Window {

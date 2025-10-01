@@ -16,19 +16,14 @@ export default defineConfig({
   plugins: [
     vue(),
     ui({
+      theme: {
+        defaultVariants: {
+          size: 'sm'
+        }
+      },
       ui: {
         colors: {
           neutral: 'zinc',
-        },
-        footer: {
-          slots: {
-            container: 'py-2 lg:py-1 px-1 sm:px-4 lg:px-4',
-          },
-        },
-        header: {
-          slots: {
-            container: 'px-1 sm:px-4 lg:px-4',
-          },
         },
         pageCard: {
           slots: {
@@ -40,9 +35,6 @@ export default defineConfig({
         navigationMenu: {
           slots: {
             link: 'cursor-pointer',
-          },
-          defaultVariants: {
-            size: 'sm',
           },
         },
         breadcrumb: {
@@ -58,29 +50,6 @@ export default defineConfig({
                 trailingIcon: 'size-3',
               },
             },
-          },
-          defaultVariants: {
-            size: 'sm',
-          },
-        },
-        dropdownMenu: {
-          defaultVariants: {
-            size: 'sm',
-          },
-        },
-        badge: {
-          defaultVariants: {
-            size: 'sm',
-          },
-        },
-        input: {
-          defaultVariants: {
-            size: 'sm',
-          },
-        },
-        select: {
-          defaultVariants: {
-            size: 'sm',
           },
         },
       },
@@ -99,7 +68,7 @@ export default defineConfig({
     cssCodeSplit: false,
     outDir: '../../dist/app',
     lib: {
-      entry: ['./src/index.ts', './src/utils.ts', './src/service-worker.ts'],
+      entry: ['./src/main.ts', './src/utils.ts', './src/service-worker.ts'],
       formats: ['es'],
     },
     sourcemap: false,

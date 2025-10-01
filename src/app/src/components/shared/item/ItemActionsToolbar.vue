@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
-import type { TreeItem } from '../../../types'
+import { computed } from 'vue'
 import { computeActionItems } from '../../../utils/context'
 import { useStudio } from '../../../composables/useStudio'
 
 const { context } = useStudio()
 
-const props = defineProps({
-  item: {
-    type: Object as PropType<TreeItem>,
-    required: true,
-  },
-})
-
+const item = computed(() => context.featureTree.value.currentItem.value)
 const actions = computed(() => {
-  return computeActionItems(context.itemActions.value, props.item)
+  return computeActionItems(context.itemActions.value, item.value)
 })
 </script>
 
@@ -31,7 +24,7 @@ const actions = computed(() => {
         size="sm"
         color="neutral"
         variant="ghost"
-        @click="action.handler!(props.item.id)"
+        @click="action.handler!(item.id)"
       />
     </UTooltip>
   </div>

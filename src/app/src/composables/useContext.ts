@@ -1,28 +1,28 @@
 import { createSharedComposable } from '@vueuse/core'
 import { computed, ref } from 'vue'
-import type { useUi } from './useUi'
 import { type UploadMediaParams, type CreateFileParams, type StudioHost, type StudioAction, type TreeItem, StudioItemActionId, type ActionHandlerParams, StudioFeature } from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
-import type { useDraftDocuments } from './useDraftDocuments'
 import { useModal } from './useModal'
 import type { useTree } from './useTree'
-import type { useDraftMedias } from './useDraftMedias'
+import { useRoute } from 'vue-router'
 import { findDescendantsFileItemsFromId } from '../utils/tree'
+import { useDraftMedias } from './useDraftMedias'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
-  ui: ReturnType<typeof useUi>,
-  draftDocuments: ReturnType<typeof useDraftDocuments>,
-  draftMedias: ReturnType<typeof useDraftMedias>,
-  tree: ReturnType<typeof useTree>,
+  documentTree: ReturnType<typeof useTree>,
+  mediaTree: ReturnType<typeof useTree>,
 ) => {
   const modal = useModal()
+  const route = useRoute()
 
   const actionInProgress = ref<StudioItemActionId | null>(null)
-  const currentFeature = computed<keyof typeof ui.panels | null>(() =>
-    Object.keys(ui.panels).find(key => ui.panels[key as keyof typeof ui.panels]) as keyof typeof ui.panels,
-  )
-  const draft = computed(() => currentFeature.value === StudioFeature.Content ? draftDocuments : draftMedias)
+  const featureTree = computed(() => {
+    if (route.name === 'media') {
+      return mediaTree
+    }
+    return documentTree
+  })
 
   const itemActions = computed<StudioAction[]>(() => {
     return STUDIO_ITEM_ACTION_DEFINITIONS.map(action => ({
@@ -58,17 +58,17 @@ export const useContext = createSharedComposable((
     },
     [StudioItemActionId.CreateDocument]: async ({ fsPath, routePath, content }: CreateFileParams) => {
       const document = await host.document.create(fsPath, routePath, content)
-      const draftItem = await draft.value.create(document)
-      await tree.selectItemById(draftItem.id)
+      const draftItem = await featureTree.value.draft.create(document)
+      await featureTree.value.selectItemById(draftItem.id)
     },
     [StudioItemActionId.UploadMedia]: async ({ directory, files }: UploadMediaParams) => {
       for (const file of files) {
-        await (draft.value as ReturnType<typeof useDraftMedias>).upload(directory, file)
+        await (featureTree.value.draft as ReturnType<typeof useDraftMedias>).upload(directory, file)
       }
     },
     [StudioItemActionId.RevertItem]: async (id: string) => {
       modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, async () => {
-        await draft.value.revert(id)
+        await featureTree.value.draft.revert(id)
       })
     },
     [StudioItemActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
@@ -76,9 +76,9 @@ export const useContext = createSharedComposable((
     },
     [StudioItemActionId.DeleteItem]: async (id: string) => {
       modal.openConfirmActionModal(id, StudioItemActionId.DeleteItem, async () => {
-        const ids: string[] = findDescendantsFileItemsFromId(tree.root.value, id).map(item => item.id)
-        await draft.value.remove(ids)
-        await tree.selectParentById(id)
+        const ids: string[] = findDescendantsFileItemsFromId(featureTree.value.root.value, id).map(item => item.id)
+        await featureTree.value.draft.remove(ids)
+        await featureTree.value.selectParentById(id)
       })
     },
     [StudioItemActionId.DuplicateItem]: async (id: string) => {
@@ -91,8 +91,7 @@ export const useContext = createSharedComposable((
   }
 
   return {
-    feature: currentFeature,
-    // itemActionHandler,
+    featureTree,
     itemActions,
     actionInProgress,
 

@@ -1,13 +1,16 @@
 import type { VueElementConstructor } from 'vue'
 import { defineCustomElement } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router'
 
+// @ts-ignore
 import styles from './assets/css/main.css?inline'
 
 import { createHead } from '@unhead/vue/client'
 import { generateColors, tailwindColors } from './utils/colors'
 
-import App from './App.vue'
+import App from './app.vue'
+import Content from './pages/content.vue'
+import Media from './pages/media.vue'
 
 if (typeof window !== 'undefined' && 'customElements' in window) {
   const NuxtStudio = defineCustomElement(
@@ -16,8 +19,20 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
       shadowRoot: true,
       configureApp(app) {
         const router = createRouter({
-          routes: [],
-          history: createWebHistory(),
+          routes: [
+            {
+              name: 'content',
+              path: '/content',
+              alias: '/',
+              component: Content,
+            },
+            {
+              name: 'media',
+              path: '/media',
+              component: Media,
+            },
+          ],
+          history: createMemoryHistory(),
         })
 
         app.use(router)

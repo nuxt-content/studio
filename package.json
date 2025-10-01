@@ -8,8 +8,8 @@
   "exports": {
     ".": "./dist/module/module.mjs",
     "./app": {
-      "types": "./dist/app/index.d.ts",
-      "default": "./dist/app/index.js"
+      "types": "./dist/app/main.d.ts",
+      "default": "./dist/app/main.js"
     },
     "./app/utils": {
       "types": "./dist/app/utils.d.ts",

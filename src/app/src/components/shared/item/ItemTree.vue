@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { StudioFeature, type TreeItem } from '../../../types'
-import { computed, type PropType } from 'vue'
+import type { TreeItem } from '../../../types'
+import type { PropType } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
 
-const { documentTree, mediaTree, context } = useStudio()
-
-const treeApi = computed(() => context.feature.value === StudioFeature.Content ? documentTree : mediaTree)
+const { context } = useStudio()
 
 defineProps({
   type: {
@@ -27,11 +25,11 @@ defineProps({
   <div class="flex flex-col @container">
     <ul
       ref="container"
-      class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4"
+      class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-2"
     >
       <li v-if="showCreationForm">
         <ItemCardForm
-          :parent-item="treeApi.currentItem.value"
+          :parent-item="context.featureTree.value.currentItem.value"
           :action-id="context.actionInProgress.value!"
         />
       </li>
@@ -41,7 +39,7 @@ defineProps({
       >
         <ItemCard
           :item="item"
-          @click="treeApi.select(item)"
+          @click="context.featureTree.value.select(item)"
         />
       </li>
     </ul>

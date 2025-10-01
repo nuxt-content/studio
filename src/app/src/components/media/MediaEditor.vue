@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import type { DraftItem } from '../../../types'
+import type { DraftItem } from '../../types'
 
 defineProps({
   draftItem: {

@@ -39,7 +39,7 @@ function getHostStyles(): Record<string, Record<string, string>> & { css?: strin
   const currentWidth = getSidebarWidth()
   return {
     'body[data-studio-active]': {
-      transition: 'margin 0.3s ease',
+      transition: 'margin 0.2s ease',
     },
     'body[data-studio-active][data-expand-sidebar]': {
       marginLeft: `${currentWidth}px`,
@@ -54,9 +54,14 @@ function getHostStyles(): Record<string, Record<string, string>> & { css?: strin
   }
 }
 
-export function useStudioHost(user: StudioUser): StudioHost {
+function getLocalColorMode(): 'light' | 'dark' {
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+}
+
+export function useStudioHost(user?: StudioUser): StudioHost {
   const isMounted = ref(false)
   let localDatabaseAdapter: ContentDatabaseAdapter | null = null
+  let colorMode = getLocalColorMode()
 
   function useNuxtApp() {
     return window.useNuxtApp!()
@@ -105,8 +110,20 @@ export function useStudioHost(user: StudioUser): StudioHost {
           window.addEventListener('beforeunload', fn)
         })
       },
+      colorModeChange: (fn: (colorMode: 'light' | 'dark') => void) => {
+        // Watch for changes to the color mode
+        const localColorModeObserver = new MutationObserver(() => {
+          colorMode = getLocalColorMode()
+          fn(colorMode)
+        })
+        localColorModeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        })
+      },
     },
     ui: {
+      colorMode,
       activateStudio: () => {
         document.body.setAttribute('data-studio-active', 'true')
       },

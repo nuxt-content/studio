@@ -4,8 +4,8 @@ import type { ActionHandlerParams } from '../types/context'
 import { StudioItemActionId } from '../types/context'
 
 export const FEATURE_DISPLAY_MAP = {
-  [StudioFeature.Content]: 'Content files',
-  [StudioFeature.Media]: 'Media library',
+  [StudioFeature.Content]: '/',
+  [StudioFeature.Media]: '/',
 } as const
 
 export const oneStepActions: StudioItemActionId[] = [StudioItemActionId.RevertItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem]

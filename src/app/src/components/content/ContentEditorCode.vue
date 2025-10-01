@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef, watch } from 'vue'
-import type { DatabasePageItem, DraftItem } from '../../../../types'
+import type { DatabasePageItem, DraftItem } from '../../types'
 import type { PropType } from 'vue'
-import { setupMonaco, type Editor } from '../../../../utils/monaco'
-import { generateContentFromDocument, generateDocumentFromContent, pickReservedKeysFromDocument } from '../../../../utils/content'
+import { setupMonaco, type Editor } from '../../utils/monaco'
+import { generateContentFromDocument, generateDocumentFromContent, pickReservedKeysFromDocument } from '../../utils/content'
 
 const props = defineProps({
   draftItem: {
@@ -79,6 +79,6 @@ function setContent(document: DatabasePageItem) {
 <template>
   <div
     ref="editorRef"
-    class="h-full -m-4"
+    class="h-full -ml-3"
   />
 </template>

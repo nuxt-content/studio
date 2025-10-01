@@ -1,8 +1,9 @@
 import { defineNuxtPlugin } from '#imports'
 import { defineStudioActivationPlugin } from '../utils/activation'
 
-export default defineNuxtPlugin(async () => {
-  await defineStudioActivationPlugin(async (user) => {
+export default defineNuxtPlugin(() => {
+  // Don't await this to avoid blocking the main thread
+  defineStudioActivationPlugin(async (user) => {
     // Initialize host
     const host = await import('../host').then(m => m.useStudioHost)
     window.useStudioHost = () => host(user)

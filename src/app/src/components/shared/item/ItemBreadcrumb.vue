@@ -1,54 +1,44 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@nuxt/ui/components/Breadcrumb.vue.d.ts'
 import type { DropdownMenuItem } from '@nuxt/ui/components/DropdownMenu.vue.d.ts'
-import { computed, type PropType, unref } from 'vue'
-import { StudioFeature, type TreeItem } from '../../../types'
+import { computed, unref } from 'vue'
+import type { TreeItem } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
 import { findParentFromId, ROOT_ITEM } from '../../../utils/tree'
 import { FEATURE_DISPLAY_MAP } from '../../../utils/context'
 import { DraftStatus } from '../../../types/draft'
 
-const { documentTree, mediaTree, context } = useStudio()
+const { context } = useStudio()
 
-const props = defineProps({
-  currentItem: {
-    type: Object as PropType<TreeItem>,
-    required: true,
-  },
-  tree: {
-    type: Array as PropType<TreeItem[]>,
-    default: () => [],
-  },
-})
-
-const treeApi = computed(() => context.feature.value === StudioFeature.Content ? documentTree : mediaTree)
+const currentItem = computed(() => context.featureTree.value.currentItem.value)
+const tree = computed(() => context.featureTree.value.root.value)
 
 const items = computed<BreadcrumbItem[]>(() => {
   const rootItem = {
-    label: FEATURE_DISPLAY_MAP[context.feature.value as keyof typeof FEATURE_DISPLAY_MAP],
+    label: FEATURE_DISPLAY_MAP[context.featureTree.value.type as keyof typeof FEATURE_DISPLAY_MAP],
     onClick: () => {
       // TODO: update for ROOT_DOCUMENT_ITEM and ROOT_MEDIA_ITEM
-      treeApi.value.select(ROOT_ITEM)
+      context.featureTree.value.select(ROOT_ITEM)
     },
   }
 
-  if (props.currentItem.id === ROOT_ITEM.id) {
+  if (currentItem.value.id === ROOT_ITEM.id) {
     return [rootItem]
   }
 
   const breadcrumbItems: BreadcrumbItem[] = []
 
-  let currentTreeItem: TreeItem | null = unref(props.currentItem)
+  let currentTreeItem: TreeItem | null = unref(currentItem.value)
   while (currentTreeItem) {
     const itemToSelect = currentTreeItem
     breadcrumbItems.unshift({
       label: currentTreeItem.name,
       onClick: async () => {
-        await treeApi.value.select(itemToSelect)
+        await context.featureTree.value.select(itemToSelect)
       },
     })
 
-    currentTreeItem = findParentFromId(props.tree, currentTreeItem.id)
+    currentTreeItem = findParentFromId(tree.value, currentTreeItem.id)
   }
 
   const allItems = [rootItem, ...breadcrumbItems]
@@ -81,7 +71,10 @@ const items = computed<BreadcrumbItem[]>(() => {
 
 <template>
   <div class="flex gap-2">
-    <UBreadcrumb :items="items">
+    <UBreadcrumb
+      :items="items"
+      color="neutral"
+    >
       <template #ellipsis="{ item }">
         <UDropdownMenu :items="item.children">
           <UButton
