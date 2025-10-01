@@ -37,7 +37,7 @@ const filteredTree = computed(() => {
       <li v-if="showForm">
         <ItemCardForm
           :parent-item="context.activeTree.value.currentItem.value"
-          :action-id="context.actionInProgress.value!.id"
+          :action-id="context.actionInProgress.value!.id as never"
           :renamed-item="context.actionInProgress.value!.item"
         />
       </li>

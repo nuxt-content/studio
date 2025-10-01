@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { TreeItem } from '../../../types'
+import { TreeStatus, type TreeItem } from '../../../types'
 import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Image } from '@unpic/vue'
 import { titleCase } from 'scule'
-import { COLOR_STATUS_MAP } from '../../../utils/draft'
+import { COLOR_STATUS_MAP } from '../../../utils/tree'
 
 const props = defineProps({
   item: {
@@ -90,7 +90,7 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
             />
             <h3
               class="text-sm font-semibold truncate"
-              :class="props.item.status === 'deleted' && 'line-through'"
+              :class="props.item.status === TreeStatus.Deleted && 'line-through'"
             >
               {{ name }}
             </h3>

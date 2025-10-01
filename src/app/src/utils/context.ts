@@ -1,6 +1,5 @@
 import { type StudioAction, StudioFeature, type TreeItem } from '../types'
-import { DraftStatus } from '../types/draft'
-import type { ActionHandlerParams } from '../types/context'
+import { TreeStatus } from '../types'
 import { StudioItemActionId } from '../types/context'
 
 export const FEATURE_DISPLAY_MAP = {
@@ -73,13 +72,13 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
 
   // Draft status filtering
   switch (item.status) {
-    case DraftStatus.Updated:
-    case DraftStatus.Created:
+    case TreeStatus.Updated:
+    case TreeStatus.Created:
       break
-    case DraftStatus.Deleted:
+    case TreeStatus.Deleted:
       forbiddenActions.push(StudioItemActionId.DuplicateItem, StudioItemActionId.RenameItem, StudioItemActionId.DeleteItem)
       break
-    case DraftStatus.Renamed:
+    case TreeStatus.Renamed:
       forbiddenActions.push(StudioItemActionId.RenameItem)
       break
     default:
@@ -88,20 +87,4 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
   }
 
   return itemActions.filter(action => !forbiddenActions.includes(action.id))
-}
-
-export function computeActionParams(action: StudioItemActionId, { item }: { item: TreeItem }): ActionHandlerParams[typeof action] {
-  switch (action) {
-    case StudioItemActionId.RevertItem:
-    case StudioItemActionId.DeleteItem:
-    case StudioItemActionId.DuplicateItem:
-      return item.id
-    case StudioItemActionId.RenameItem:
-      return {
-        id: item.id,
-        item
-      }
-    default:
-      return item.id
-  }
 }

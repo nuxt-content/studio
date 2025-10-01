@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { computeActionItems, STUDIO_ITEM_ACTION_DEFINITIONS } from '../../src/utils/context'
 import { StudioItemActionId, type TreeItem } from '../../src/types'
-import { DraftStatus } from '../../src/types/draft'
+import { TreeStatus } from '../../src/types'
 
 describe('computeActionItems', () => {
   it('should return all actions when item is undefined', () => {
@@ -59,7 +59,7 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      status: DraftStatus.Opened,
+      status: TreeStatus.Opened,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
@@ -80,7 +80,7 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
@@ -99,7 +99,7 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      status: DraftStatus.Created,
+      status: TreeStatus.Created,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
@@ -118,7 +118,7 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      status: DraftStatus.Deleted,
+      status: TreeStatus.Deleted,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
@@ -143,7 +143,7 @@ describe('computeActionItems', () => {
     const fileItem: TreeItem = {
       type: 'file',
       name: 'test.md',
-      status: DraftStatus.Renamed,
+      status: TreeStatus.Renamed,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
@@ -186,7 +186,7 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      status: DraftStatus.Opened,
+      status: TreeStatus.Opened,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
@@ -205,7 +205,7 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
@@ -222,7 +222,7 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      status: DraftStatus.Created,
+      status: TreeStatus.Created,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
@@ -239,7 +239,7 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      status: DraftStatus.Deleted,
+      status: TreeStatus.Deleted,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
@@ -260,7 +260,7 @@ describe('computeActionItems', () => {
     const directoryItem: TreeItem = {
       type: 'directory',
       name: 'folder',
-      status: DraftStatus.Renamed,
+      status: TreeStatus.Renamed,
     } as TreeItem
 
     const result = computeActionItems(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)

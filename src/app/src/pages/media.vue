@@ -8,8 +8,8 @@ const { mediaTree, context } = useStudio()
 const folderTree = computed(() => (mediaTree.current.value || []).filter(f => f.type === 'directory'))
 const fileTree = computed(() => (mediaTree.current.value || []).filter(f => f.type === 'file'))
 
-const isFileCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateDocument)
-const isFolderCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateFolder)
+const isFileCreationInProgress = computed(() => context.actionInProgress.value?.id === StudioItemActionId.CreateDocument)
+const isFolderCreationInProgress = computed(() => context.actionInProgress.value?.id === StudioItemActionId.CreateFolder)
 
 async function onFileDrop(event: DragEvent) {
   if (event.dataTransfer?.files) {

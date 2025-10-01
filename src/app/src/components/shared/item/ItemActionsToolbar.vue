@@ -24,7 +24,7 @@ const actions = computed(() => {
         size="sm"
         color="neutral"
         variant="ghost"
-        @click="action.handler!(item.id)"
+        @click="action.handler!(item)"
       />
     </UTooltip>
   </div>

@@ -5,7 +5,7 @@ import { joinURL, withLeadingSlash } from 'ufo'
 import type { DraftItem, StudioHost, GithubFile, MediaItem, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
-import { getDraftStatus } from '../utils/draft'
+import { getUpdatedDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
 
@@ -61,7 +61,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     }
 
     const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(media, existingItem.original)
+    existingItem.status = getUpdatedDraftStatus(media, existingItem.original)
     existingItem.modified = media
 
     await storage.setItem(id, existingItem)
@@ -153,7 +153,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
   //   host.app.requestRerender()
   // }
 
-  async function rename(_id: string, _newNameWithExtension: string) {
+  async function rename(_id: string, _newFsPath: string) {
     // let currentDbItem: MediaItem = await host.document.get(id)
     // if (!currentDbItem) {
     //   throw new Error(`Database item not found for document ${id}`)
@@ -164,11 +164,11 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     //   currentDbItem = currentDraftItem.modified as DatabasePageItem
     // }
 
-    // const newNameWithoutExtension = newNameWithExtension.split('.').slice(0, -1).join('.')
-    // const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
-    // const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
+    // const newNameWithoutExtension = newFsPath.split('.').slice(0, -1).join('.')
+    // const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newFsPath}`
+    // const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newFsPath}`
     // const newStem = `${currentDbItem.stem.split('/').slice(0, -1).join('/')}/${newNameWithoutExtension}`
-    // const newExtension = newNameWithExtension.split('.').pop()!
+    // const newExtension = newFsPath.split('.').pop()!
 
     // const newDbItem = {
     //   ...currentDbItem,

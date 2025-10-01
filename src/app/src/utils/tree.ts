@@ -1,8 +1,9 @@
-import { DraftStatus, type DraftItem, type TreeItem } from '../types'
+import { type DatabasePageItem, DraftStatus, TreeStatus, type DraftItem, type TreeItem, ContentFileExtension } from '../types'
 import { withLeadingSlash } from 'ufo'
 import { stripNumericPrefix } from './string'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
+import { isEqual } from './database'
 
 export const ROOT_ITEM: TreeItem = { id: 'root', name: 'content', fsPath: '/', type: 'root' }
 
@@ -16,16 +17,67 @@ export const EXTENSIONS_WITH_PREVIEW = new Set([
   'avif',
 ])
 
+export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
+  [TreeStatus.Created]: 'green',
+  [TreeStatus.Updated]: 'orange',
+  [TreeStatus.Deleted]: 'red',
+  [TreeStatus.Renamed]: 'blue',
+  [TreeStatus.Opened]: 'gray',
+} as const
+
+export const COLOR_UI_STATUS_MAP: { [key in TreeStatus]?: string } = {
+  [TreeStatus.Created]: 'success',
+  [TreeStatus.Updated]: 'warning',
+  [TreeStatus.Deleted]: 'error',
+  [TreeStatus.Renamed]: 'info',
+  [TreeStatus.Opened]: 'neutral',
+} as const
+
+export function getTreeStatus(modified: BaseItem, original: BaseItem | undefined): TreeStatus {
+  if (!original) {
+    return TreeStatus.Created
+  }
+
+  if (!modified) {
+    return TreeStatus.Deleted
+  }
+
+  if (modified.id !== original.id) {
+    return TreeStatus.Renamed
+  }
+
+  if (original.extension === ContentFileExtension.Markdown) {
+    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
+      return TreeStatus.Updated
+    }
+  }
+  else {
+    if (JSON.stringify(original) !== JSON.stringify(modified)) {
+      return TreeStatus.Updated
+    }
+  }
+
+  return TreeStatus.Opened
+}
+
 export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
 
   const deletedDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Deleted) || []
+  const createdDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Created) || []
 
   function addDeletedDraftItemsInDbItems(dbItems: ((BaseItem) & { fsPath: string })[], deletedItems: DraftItem[]) {
     dbItems = [...dbItems]
     for (const deletedItem of deletedItems) {
+      // Files in both deleted and original created draft are considered as renamed
+      // We don't want to add them to the tree and duplicate them
+      const renamedDraftItem = createdDraftItems.find(createdDraftItem => createdDraftItem.original?.id === deletedItem.id)
+      if (renamedDraftItem) {
+        continue
+      }
+
       const virtualDbItems: BaseItem & { fsPath: string } = {
         id: deletedItem.id,
         extension: deletedItem.id.split('.').pop()!,
@@ -77,7 +129,7 @@ TreeItem[] {
 
       const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
       if (draftFileItem) {
-        fileItem.status = draftFileItem.status
+        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
       }
 
       tree.push(fileItem)
@@ -144,7 +196,7 @@ TreeItem[] {
 
     const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
     if (draftFileItem) {
-      fileItem.status = draftFileItem.status
+      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
     }
 
     if (dbItem.path) {
@@ -258,19 +310,19 @@ function calculateDirectoryStatuses(items: TreeItem[]) {
     if (item.type === 'directory' && item.children) {
       calculateDirectoryStatuses(item.children)
 
-      const childrenWithStatus = item.children.filter(child => child.status && child.status !== DraftStatus.Opened)
+      const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
 
       if (childrenWithStatus.length > 0) {
         // Check if ALL children with status are deleted
-        const allDeleted = childrenWithStatus.every(child => child.status === DraftStatus.Deleted)
+        const allDeleted = childrenWithStatus.every(child => child.status === TreeStatus.Deleted)
 
         if (allDeleted && childrenWithStatus.length === item.children.length) {
           // If all children are deleted, mark directory as deleted
-          item.status = DraftStatus.Deleted
+          item.status = TreeStatus.Deleted
         }
         else {
           // Otherwise, mark as updated
-          item.status = DraftStatus.Updated
+          item.status = TreeStatus.Updated
         }
       }
     }

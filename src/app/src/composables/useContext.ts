@@ -1,12 +1,15 @@
 import { createSharedComposable } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import {
+  type RenameFileParams,
+  type TreeItem,
   type UploadMediaParams,
   type CreateFileParams,
   type StudioHost,
   type StudioAction,
   type ActionHandlerParams,
   type StudioActionInProgress,
+  type CreateFolderParams,
   StudioItemActionId,
 } from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
@@ -33,13 +36,13 @@ export const useContext = createSharedComposable((
   })
 
   const itemActions = computed<StudioAction[]>(() => {
-    return STUDIO_ITEM_ACTION_DEFINITIONS.map(action => ({
+    return STUDIO_ITEM_ACTION_DEFINITIONS.map(<K extends StudioItemActionId>(action: StudioAction<K>) => ({
       ...action,
-      handler: async (args) => {
+      handler: async (args: ActionHandlerParams[K]) => {
+        // Two steps actions need to be already in progress to be executed
         if (actionInProgress.value?.id === action.id) {
-          // Two steps actions need to be already in progress to be executed
           if (twoStepActions.includes(action.id)) {
-            await itemActionHandler[action.id](args as never)
+            await itemActionHandler[action.id](args)
             unsetActionInProgress()
             return
           }
@@ -49,11 +52,19 @@ export const useContext = createSharedComposable((
           }
         }
 
-        actionInProgress.value = { id: action.id, item: args.item }
+        actionInProgress.value = { id: action.id }
+
+        if (action.id === StudioItemActionId.RenameItem) {
+          if (activeTree.value.currentItem.value) {
+            const itemToRename = args as TreeItem
+            await activeTree.value.selectParentById(itemToRename.id)
+            actionInProgress.value.item = itemToRename
+          }
+        }
 
         // One step actions can be executed immediately
         if (oneStepActions.includes(action.id)) {
-          await itemActionHandler[action.id](args as never)
+          await itemActionHandler[action.id](args)
           unsetActionInProgress()
         }
       },
@@ -61,10 +72,11 @@ export const useContext = createSharedComposable((
   })
 
   const itemActionHandler: { [K in StudioItemActionId]: (args: ActionHandlerParams[K]) => Promise<void> } = {
-    [StudioItemActionId.CreateFolder]: async (args: string) => {
-      alert(`create folder ${args}`)
+    [StudioItemActionId.CreateFolder]: async (params: CreateFolderParams) => {
+      alert(`create folder in ${params.fsPath}`)
     },
-    [StudioItemActionId.CreateDocument]: async ({ fsPath, routePath, content }: CreateFileParams) => {
+    [StudioItemActionId.CreateDocument]: async (params: CreateFileParams) => {
+      const { fsPath, routePath, content } = params
       const document = await host.document.create(fsPath, routePath, content)
       const draftItem = await activeTree.value.draft.create(document)
       await activeTree.value.selectItemById(draftItem.id)
@@ -74,23 +86,23 @@ export const useContext = createSharedComposable((
         await (activeTree.value.draft as ReturnType<typeof useDraftMedias>).upload(directory, file)
       }
     },
-    [StudioItemActionId.RevertItem]: async (id: string) => {
-      modal.openConfirmActionModal(id, StudioItemActionId.RevertItem, async () => {
-        await activeTree.value.draft.revert(id)
+    [StudioItemActionId.RevertItem]: async (item: TreeItem) => {
+      modal.openConfirmActionModal(item.id, StudioItemActionId.RevertItem, async () => {
+        await activeTree.value.draft.revert(item.id)
       })
     },
-    [StudioItemActionId.RenameItem]: async ({ id, newNameWithExtension }: { id: string, newNameWithExtension: string }) => {
-      alert(`rename file ${id} ${newNameWithExtension}`)
+    [StudioItemActionId.RenameItem]: async (params: TreeItem | RenameFileParams) => {
+      const { id, newFsPath } = params as RenameFileParams
+      await activeTree.value.draft.rename(id, newFsPath)
     },
-    [StudioItemActionId.DeleteItem]: async (id: string) => {
-      modal.openConfirmActionModal(id, StudioItemActionId.DeleteItem, async () => {
-        const ids: string[] = findDescendantsFileItemsFromId(activeTree.value.root.value, id).map(item => item.id)
+    [StudioItemActionId.DeleteItem]: async (item: TreeItem) => {
+      modal.openConfirmActionModal(item.id, StudioItemActionId.DeleteItem, async () => {
+        const ids: string[] = findDescendantsFileItemsFromId(activeTree.value.root.value, item.id).map(item => item.id)
         await activeTree.value.draft.remove(ids)
-        await activeTree.value.selectParentById(id)
       })
     },
-    [StudioItemActionId.DuplicateItem]: async (id: string) => {
-      const draftItem = await activeTree.value.draft.duplicate(id)
+    [StudioItemActionId.DuplicateItem]: async (item: TreeItem) => {
+      const draftItem = await activeTree.value.draft.duplicate(item.id)
       await activeTree.value.selectItemById(draftItem.id)
     },
   }
@@ -103,7 +115,6 @@ export const useContext = createSharedComposable((
     activeTree,
     itemActions,
     actionInProgress,
-
     unsetActionInProgress,
     itemActionHandler,
   }

@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useStudio } from '../composables/useStudio'
-import { StudioItemActionId } from '../types'
+import { StudioItemActionId, TreeStatus } from '../types'
 
 const { documentTree, context } = useStudio()
 
 const folderTree = computed(() => (documentTree.current.value || []).filter(f => f.type === 'directory'))
 const fileTree = computed(() => (documentTree.current.value || []).filter(f => f.type === 'file'))
 
-const isFileCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateDocument)
-const isFolderCreationInProgress = computed(() => context.actionInProgress.value === StudioItemActionId.CreateFolder)
+const showFolderForm = computed(() => {
+  return context.actionInProgress.value?.id === StudioItemActionId.CreateFolder
+    || (
+      context.actionInProgress.value?.id === StudioItemActionId.RenameItem
+      && context.actionInProgress.value?.item?.type === 'directory'
+    )
+})
+
+const showFileForm = computed(() => {
+  return context.actionInProgress.value?.id === StudioItemActionId.CreateDocument
+    || (
+      context.actionInProgress.value?.id === StudioItemActionId.RenameItem
+      && context.actionInProgress.value?.item?.type === 'file')
+})
 </script>
 
 <template>
@@ -20,23 +32,24 @@ const isFolderCreationInProgress = computed(() => context.actionInProgress.value
     </div>
     <ContentEditor
       v-if="documentTree.currentItem.value.type === 'file' && documentTree.draft.current.value"
-      :draft-item="documentTree.draft.current.value"
+      :draft-item="documentTree.draft.current.value!"
+      :read-only="documentTree.currentItem.value.status === TreeStatus.Deleted"
     />
     <div
       v-else
       class="flex flex-col p-4"
     >
       <ItemTree
-        v-if="folderTree?.length > 0 || isFolderCreationInProgress"
+        v-if="folderTree?.length > 0 || showFolderForm"
         class="mb-2"
         :tree="folderTree"
-        :show-creation-form="isFolderCreationInProgress"
+        :show-form="showFolderForm"
         type="directory"
       />
       <ItemTree
-        v-if="fileTree?.length > 0 || isFileCreationInProgress"
+        v-if="fileTree?.length > 0 || showFileForm"
         :tree="fileTree"
-        :show-creation-form="isFileCreationInProgress"
+        :show-form="showFileForm"
         type="file"
       />
     </div>

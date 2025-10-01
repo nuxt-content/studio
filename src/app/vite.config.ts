@@ -41,7 +41,7 @@ export default defineConfig({
           slots: {
             link: 'cursor-pointer',
           },
-        }
+        },
       },
     }),
     libCss(),

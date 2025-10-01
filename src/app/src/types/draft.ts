@@ -6,7 +6,6 @@ export enum DraftStatus {
   Deleted = 'deleted',
   Created = 'created',
   Updated = 'updated',
-  Renamed = 'renamed',
   Opened = 'opened',
 }
 

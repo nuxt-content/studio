@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { buildTree, findParentFromId, findItemFromRoute, findItemFromId, findDescendantsFileItemsFromId } from '../../src/utils/tree'
+import { buildTree, findParentFromId, findItemFromRoute, findItemFromId, findDescendantsFileItemsFromId, getTreeStatus } from '../../src/utils/tree'
 import { tree } from '../mocks/tree'
 import type { TreeItem } from '../../src/types/tree'
 import { dbItemsList, nestedDbItemsList } from '../mocks/database'
 import type { DraftItem } from '../../src/types/draft'
-import { DraftStatus } from '../../src/types/draft'
+import { DraftStatus, TreeStatus, ContentFileExtension } from '../../src/types'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { DatabaseItem } from '../../src/types/database'
 
@@ -43,35 +43,59 @@ describe('buildTree with one level of depth', () => {
     },
   ]
 
-  it('Db items list without draft', () => {
+  it('Without draft', () => {
     const tree = buildTree(dbItemsList, null)
     expect(tree).toStrictEqual(result)
   })
 
-  it('Db items list with draft', () => {
+  it('With draft', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[0].id,
       fsPath: 'index.md',
       status: DraftStatus.Created,
+      original: {
+        id: dbItemsList[0].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Created']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[0].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Created']],
+        },
+      } as unknown as DatabaseItem,
     }]
+
     const tree = buildTree(dbItemsList, draftList)
 
     expect(tree).toStrictEqual([
       {
         ...result[0],
-        status: DraftStatus.Created,
+        status: TreeStatus.Created,
       },
       ...result.slice(1)])
   })
 
-  it('Db items list with DELETED non existing file in existing directory in draft', () => {
+  it('With DELETED draft file in existing directory', () => {
     const draftList: DraftItem[] = [{
       id: 'docs/1.getting-started/2.deleted.md',
       fsPath: '1.getting-started/2.deleted.md',
       status: DraftStatus.Deleted,
+      modified: undefined,
       original: {
+        id: 'docs/1.getting-started/2.deleted.md',
         path: '/getting-started/deleted',
-      } as DatabaseItem,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Deleted']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(dbItemsList, draftList)
@@ -80,7 +104,7 @@ describe('buildTree with one level of depth', () => {
       { ...result[0] },
       {
         ...result[1],
-        status: DraftStatus.Updated,
+        status: TreeStatus.Updated,
         children: [
           ...result[1].children!,
           {
@@ -89,21 +113,28 @@ describe('buildTree with one level of depth', () => {
             fsPath: '1.getting-started/2.deleted.md',
             type: 'file',
             routePath: '/getting-started/deleted',
-            status: DraftStatus.Deleted,
+            status: TreeStatus.Deleted,
           },
         ],
       },
     ])
   })
 
-  it('Db items list with DELETED non existing file in non existing directory in draft', () => {
+  it('With DELETED draft file in non existing directory', () => {
     const draftList: DraftItem[] = [{
       id: 'docs/1.deleted-directory/2.deleted-file.md',
       fsPath: '1.deleted-directory/2.deleted-file.md',
       status: DraftStatus.Deleted,
+      modified: undefined,
       original: {
+        id: 'docs/1.deleted-directory/2.deleted-file.md',
         path: '/deleted-directory/deleted-file',
-      } as DatabaseItem,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Deleted']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(dbItemsList, draftList)
@@ -116,7 +147,7 @@ describe('buildTree with one level of depth', () => {
         fsPath: '1.deleted-directory',
         routePath: '/deleted-directory',
         type: 'directory',
-        status: DraftStatus.Deleted,
+        status: TreeStatus.Deleted,
         children: [
           {
             id: 'docs/1.deleted-directory/2.deleted-file.md',
@@ -124,68 +155,47 @@ describe('buildTree with one level of depth', () => {
             fsPath: '1.deleted-directory/2.deleted-file.md',
             routePath: '/deleted-directory/deleted-file',
             type: 'file',
-            status: DraftStatus.Deleted,
+            status: TreeStatus.Deleted,
           },
         ],
       },
     ])
   })
 
-  it('Db items list with all DELETED existing files in existing directory in draft (directory status is set to DELETED)', () => {
-    const draftList: DraftItem[] = [{
-      id: dbItemsList[1].id,
-      fsPath: '1.getting-started/2.introduction.md',
-      status: DraftStatus.Deleted,
-      original: {
-        path: '/getting-started/introduction',
-      } as DatabaseItem,
-    }, {
-      id: dbItemsList[2].id,
-      fsPath: '1.getting-started/3.installation.md',
-      status: DraftStatus.Deleted,
-      original: {
-        path: '/getting-started/installation',
-      } as DatabaseItem,
-    }]
-
-    const tree = buildTree(dbItemsList, draftList)
-
-    expect(tree).toStrictEqual([
-      result[0],
-      {
-        ...result[1],
-        status: DraftStatus.Deleted,
-        children: [
-          {
-            ...result[1].children![0],
-            status: DraftStatus.Deleted,
-          },
-          {
-            ...result[1].children![1],
-            status: DraftStatus.Deleted,
-          },
-        ],
-      },
-    ])
-  })
-
-  it('Db items list with UPDATED file in existing directory in draft (directory status is set)', () => {
+  it('With UPDATED draft file in existing directory (directory status is set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Updated,
+      original: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Modified']],
+        },
+      } as unknown as DatabaseItem,
     }]
+
     const tree = buildTree(dbItemsList, draftList)
 
     const expectedTree: TreeItem[] = [
       result[0],
       {
         ...result[1],
-        status: DraftStatus.Updated,
+        status: TreeStatus.Updated,
         children: [
           {
             ...result[1].children![0],
-            status: DraftStatus.Updated,
+            status: TreeStatus.Updated,
           },
           ...result[1].children!.slice(1),
         ],
@@ -195,15 +205,47 @@ describe('buildTree with one level of depth', () => {
     expect(tree).toStrictEqual(expectedTree)
   })
 
-  it('Db items list with UPDATED and OPENED files in exsiting directory in draft (directory status is set)', () => {
+  it('With Created and OPENED draft files in exsiting directory (directory status is set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Created,
+      original: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Created']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Created']],
+        },
+      } as unknown as DatabaseItem,
     }, {
       id: dbItemsList[2].id,
       fsPath: '1.getting-started/3.installation.md',
       status: DraftStatus.Opened,
+      original: {
+        id: dbItemsList[2].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[2].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(dbItemsList, draftList)
@@ -212,10 +254,10 @@ describe('buildTree with one level of depth', () => {
       result[0],
       {
         ...result[1],
-        status: DraftStatus.Updated,
+        status: TreeStatus.Updated,
         children: [
-          { ...result[1].children![0], status: DraftStatus.Created },
-          { ...result[1].children![1], status: DraftStatus.Opened },
+          { ...result[1].children![0], status: TreeStatus.Created },
+          { ...result[1].children![1], status: TreeStatus.Opened },
           ...result[1].children!.slice(2),
         ],
       },
@@ -224,15 +266,47 @@ describe('buildTree with one level of depth', () => {
     expect(tree).toStrictEqual(expectedTree)
   })
 
-  it('Db items list with OPENED files in existing directory in draft (directory status is not set)', () => {
+  it('With OPENED draft files in existing directory (directory status is not set)', () => {
     const draftList: DraftItem[] = [{
       id: dbItemsList[1].id,
       fsPath: '1.getting-started/2.introduction.md',
       status: DraftStatus.Opened,
+      original: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
     }, {
       id: dbItemsList[2].id,
       fsPath: '1.getting-started/3.installation.md',
       status: DraftStatus.Opened,
+      original: {
+        id: dbItemsList[2].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: dbItemsList[2].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(dbItemsList, draftList)
@@ -243,14 +317,55 @@ describe('buildTree with one level of depth', () => {
         ...result[1],
         children: [
           {
-            ...result[1].children![0], status: DraftStatus.Opened },
-          { ...result[1].children![1], status: DraftStatus.Opened },
+            ...result[1].children![0], status: TreeStatus.Opened },
+          { ...result[1].children![1], status: TreeStatus.Opened },
           ...result[1].children!.slice(2),
         ],
       },
     ]
 
     expect(tree).toStrictEqual(expectedTree)
+  })
+
+  it.only('With same id DELETED and CREATED draft file resulting in RENAMED', () => {
+    const deletedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
+    const createdDbItem: DatabaseItem & { fsPath: string } = dbItemsList[2] // 3.installation.md
+
+    const draftList: DraftItem[] = [{
+      id: deletedDbItem.id,
+      fsPath: deletedDbItem.fsPath,
+      status: DraftStatus.Deleted,
+      modified: undefined,
+      original: deletedDbItem,
+    }, {
+      id: createdDbItem.id,
+      fsPath: createdDbItem.fsPath,
+      status: DraftStatus.Created,
+      modified: createdDbItem,
+      original: deletedDbItem,
+    }]
+
+    const dbItemsListWithoutDeletedDbItem = dbItemsList.filter(item => item.id !== deletedDbItem.id)
+
+    const tree = buildTree(dbItemsListWithoutDeletedDbItem, draftList)
+
+    expect(tree).toStrictEqual([
+      result[0],
+      {
+        ...result[1],
+        status: TreeStatus.Updated,
+        children: [
+          {
+            id: createdDbItem.id,
+            fsPath: createdDbItem.fsPath,
+            routePath: '/getting-started/installation',
+            name: 'installation',
+            type: 'file',
+            status: TreeStatus.Renamed,
+          },
+        ],
+      },
+    ])
   })
 })
 
@@ -290,51 +405,83 @@ describe('buildTree with two levels of depth', () => {
     },
   ]
 
-  it('Db items list without draft', () => {
+  it('Without draft', () => {
     const tree = buildTree(nestedDbItemsList, null)
     expect(tree).toStrictEqual(result)
   })
 
-  it('Db items list with one level of depth draft', () => {
+  it('With one level of depth draft files', () => {
     const draftList: DraftItem[] = [{
       id: nestedDbItemsList[0].id,
       fsPath: '1.essentials/2.configuration.md',
       status: DraftStatus.Updated,
+      original: {
+        id: nestedDbItemsList[0].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: nestedDbItemsList[0].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Modified']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(nestedDbItemsList, draftList)
 
     expect(tree).toStrictEqual([{
       ...result[0],
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
       children: [
-        { ...result[0].children![0], status: DraftStatus.Updated },
+        { ...result[0].children![0], status: TreeStatus.Updated },
         result[0].children![1],
       ],
     }])
   })
 
-  it('Db items list with nested levels of depth draft', () => {
+  it('With nested levels of depth draft files', () => {
     const draftList: DraftItem[] = [{
       id: nestedDbItemsList[1].id,
       fsPath: '1.essentials/1.nested/2.advanced.md',
       status: DraftStatus.Updated,
+      original: {
+        id: nestedDbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Original']],
+        },
+      } as unknown as DatabaseItem,
+      modified: {
+        id: nestedDbItemsList[1].id,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Modified']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(nestedDbItemsList, draftList)
 
     expect(tree).toStrictEqual([{
       ...result[0],
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
       children: [
         result[0].children![0],
         {
           ...result[0].children![1],
-          status: DraftStatus.Updated,
+          status: TreeStatus.Updated,
           children: [
             {
               ...result[0].children![1].children![0],
-              status: DraftStatus.Updated,
+              status: TreeStatus.Updated,
             },
           ],
         },
@@ -342,121 +489,42 @@ describe('buildTree with two levels of depth', () => {
     }])
   })
 
-  it('Db items list with DELETED existing file in first level directory in draft', () => {
+  it ('With DELETED draft file in nested existing directory ', () => {
     const draftList: DraftItem[] = [{
-      id: nestedDbItemsList[0].id,
-      fsPath: '1.essentials/2.configuration.md',
+      id: 'docs/1.essentials/1.nested/2.deleted.md',
+      fsPath: '1.essentials/1.nested/2.deleted.md',
       status: DraftStatus.Deleted,
+      modified: undefined,
       original: {
-        path: '/essentials/configuration',
-      } as DatabaseItem,
-    }]
-
-    const tree = buildTree(nestedDbItemsList, draftList)
-
-    expect(tree).toStrictEqual([{
-      ...result[0],
-      status: DraftStatus.Updated,
-      children: [
-        {
-          ...result[0].children![0],
-          status: DraftStatus.Deleted,
-        },
-        result[0].children![1],
-      ],
-    }])
-  })
-
-  it ('Db items list with DELETED existing file in nested existing directory in draft (directory status is set to DELETED)', () => {
-    const draftList: DraftItem[] = [{
-      id: nestedDbItemsList[1].id,
-      fsPath: '1.essentials/1.nested/2.advanced.md',
-      status: DraftStatus.Deleted,
-      original: {
-        path: '/essentials/nested/advanced',
-      } as DatabaseItem,
-    }]
-
-    const tree = buildTree(nestedDbItemsList, draftList)
-
-    expect(tree).toStrictEqual([{
-      ...result[0],
-      status: DraftStatus.Updated,
-      children: [
-        result[0].children![0],
-        {
-          ...result[0].children![1],
-          status: DraftStatus.Deleted,
-          children: [
-            {
-              ...result[0].children![1].children![0],
-              status: DraftStatus.Deleted,
-            },
-          ],
-        },
-      ],
-    }])
-  })
-
-  it ('Db items list with DELETED non exisitng file in first level existing directory in draft', () => {
-    const draftList: DraftItem[] = [{
-      id: 'docs/1.essentials/1.deleted.md',
-      fsPath: '1.essentials/1.deleted.md',
-      status: DraftStatus.Deleted,
-      original: {
-        path: '/essentials/deleted',
-      } as DatabaseItem,
-    }]
-
-    const tree = buildTree(nestedDbItemsList, draftList)
-
-    expect(tree).toStrictEqual([{
-      ...result[0],
-      status: DraftStatus.Updated,
-      children: [
-        result[0].children![0],
-        result[0].children![1],
-        {
-          id: 'docs/1.essentials/1.deleted.md',
-          name: 'deleted',
-          fsPath: '1.essentials/1.deleted.md',
-          routePath: '/essentials/deleted',
-          type: 'file',
-          status: DraftStatus.Deleted,
-        },
-      ],
-    }])
-  })
-
-  it ('Db items list with DELETED non existing file in nested existing directory in draft', () => {
-    const draftList: DraftItem[] = [{
-      id: 'docs/1.essentials/1.nested/1.deleted.md',
-      fsPath: '1.essentials/1.nested/1.deleted.md',
-      status: DraftStatus.Deleted,
-      original: {
+        id: 'docs/1.essentials/1.nested/2.deleted.md',
         path: '/essentials/nested/deleted',
-      } as DatabaseItem,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Deleted']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(nestedDbItemsList, draftList)
 
     expect(tree).toStrictEqual([{
       ...result[0],
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
       children: [
         result[0].children![0],
         {
           ...result[0].children![1],
-          status: DraftStatus.Updated,
+          status: TreeStatus.Updated,
           children: [
-            result[0].children![1].children![0],
+            ...result[0].children![1].children!,
             {
-              id: 'docs/1.essentials/1.nested/1.deleted.md',
+              id: 'docs/1.essentials/1.nested/2.deleted.md',
               name: 'deleted',
-              fsPath: '1.essentials/1.nested/1.deleted.md',
+              fsPath: '1.essentials/1.nested/2.deleted.md',
               routePath: '/essentials/nested/deleted',
               type: 'file',
-              status: DraftStatus.Deleted,
+              status: TreeStatus.Deleted,
             },
           ],
         },
@@ -464,21 +532,28 @@ describe('buildTree with two levels of depth', () => {
     }])
   })
 
-  it ('Db items list with DELETED existing file in nested non existing directory in draft', () => {
+  it ('With DELETED draft file in nested non existing directory', () => {
     const draftList: DraftItem[] = [{
       id: 'docs/1.essentials/1.deleted/1.deleted.md',
       fsPath: '1.essentials/1.deleted/1.deleted.md',
       status: DraftStatus.Deleted,
+      modified: undefined,
       original: {
+        id: 'docs/1.essentials/1.deleted/1.deleted.md',
         path: '/essentials/deleted/deleted',
-      } as DatabaseItem,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Deleted']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(nestedDbItemsList, draftList)
 
     expect(tree).toStrictEqual([{
       ...result[0],
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
       children: [
         result[0].children![0],
         result[0].children![1],
@@ -488,7 +563,7 @@ describe('buildTree with two levels of depth', () => {
           fsPath: '1.essentials/1.deleted',
           routePath: '/essentials/deleted',
           type: 'directory',
-          status: DraftStatus.Deleted,
+          status: TreeStatus.Deleted,
           children: [
             {
               id: 'docs/1.essentials/1.deleted/1.deleted.md',
@@ -496,7 +571,7 @@ describe('buildTree with two levels of depth', () => {
               fsPath: '1.essentials/1.deleted/1.deleted.md',
               routePath: '/essentials/deleted/deleted',
               type: 'file',
-              status: DraftStatus.Deleted,
+              status: TreeStatus.Deleted,
             },
           ],
         },
@@ -504,21 +579,28 @@ describe('buildTree with two levels of depth', () => {
     }])
   })
 
-  it ('Db items list with DELETED file in multi-nested non existing directory chain in draft', () => {
+  it ('With DELETED draft file in multi-nested non existing directory chain', () => {
     const draftList: DraftItem[] = [{
       id: 'docs/1.essentials/1.deep/2.deeper/3.deepest/1.file.md',
       fsPath: '1.essentials/1.deep/2.deeper/3.deepest/1.file.md',
       status: DraftStatus.Deleted,
+      modified: undefined,
       original: {
+        id: 'docs/1.essentials/1.deep/2.deeper/3.deepest/1.file.md',
         path: '/essentials/deep/deeper/deepest/file',
-      } as DatabaseItem,
+        extension: ContentFileExtension.Markdown,
+        body: {
+          type: 'minimark',
+          value: [['text', 'Deleted']],
+        },
+      } as unknown as DatabaseItem,
     }]
 
     const tree = buildTree(nestedDbItemsList, draftList)
 
     expect(tree).toStrictEqual([{
       ...result[0],
-      status: DraftStatus.Updated,
+      status: TreeStatus.Updated,
       children: [
         result[0].children![0],
         result[0].children![1],
@@ -528,7 +610,7 @@ describe('buildTree with two levels of depth', () => {
           fsPath: '1.essentials/1.deep',
           routePath: '/essentials/deep',
           type: 'directory',
-          status: DraftStatus.Deleted,
+          status: TreeStatus.Deleted,
           children: [
             {
               id: 'docs/1.essentials/1.deep/2.deeper',
@@ -536,7 +618,7 @@ describe('buildTree with two levels of depth', () => {
               fsPath: '1.essentials/1.deep/2.deeper',
               routePath: '/essentials/deep/deeper',
               type: 'directory',
-              status: DraftStatus.Deleted,
+              status: TreeStatus.Deleted,
               children: [
                 {
                   id: 'docs/1.essentials/1.deep/2.deeper/3.deepest',
@@ -544,7 +626,7 @@ describe('buildTree with two levels of depth', () => {
                   fsPath: '1.essentials/1.deep/2.deeper/3.deepest',
                   routePath: '/essentials/deep/deeper/deepest',
                   type: 'directory',
-                  status: DraftStatus.Deleted,
+                  status: TreeStatus.Deleted,
                   children: [
                     {
                       id: 'docs/1.essentials/1.deep/2.deeper/3.deepest/1.file.md',
@@ -552,7 +634,7 @@ describe('buildTree with two levels of depth', () => {
                       fsPath: '1.essentials/1.deep/2.deeper/3.deepest/1.file.md',
                       routePath: '/essentials/deep/deeper/deepest/file',
                       type: 'file',
-                      status: DraftStatus.Deleted,
+                      status: TreeStatus.Deleted,
                     },
                   ],
                 },
@@ -562,6 +644,76 @@ describe('buildTree with two levels of depth', () => {
         },
       ],
     }])
+  })
+})
+
+describe('getTreeStatus', () => {
+  it('draft is CREATED if originalDatabaseItem is not defined', () => {
+    const original: DatabaseItem = undefined as never
+    const modified: DatabaseItem = {
+      id: 'landing/index.md',
+      title: 'Home',
+      body: {
+        type: 'minimark',
+        value: [],
+      },
+      description: 'Home page',
+      extension: 'md',
+      stem: 'index',
+      meta: {},
+    }
+
+    const status = getTreeStatus(modified, original)
+    expect(status).toBe(TreeStatus.Created)
+  })
+
+  it('draft is OPENED if originalDatabaseItem is defined and is the same as draftedDocument', () => {
+    const original: DatabaseItem = dbItemsList[0]
+    const draft: DatabaseItem = original
+
+    const status = getTreeStatus(draft, original)
+    expect(status).toBe(TreeStatus.Opened)
+  })
+
+  it('draft is UPDATED if originalDatabaseItem is defined and one of its data field is different from draftedDocument', () => {
+    const original: DatabaseItem = dbItemsList[0]
+    const modified: DatabaseItem = {
+      ...original,
+      title: 'New title',
+    }
+
+    const status = getTreeStatus(modified, original)
+    expect(status).toBe(TreeStatus.Updated)
+  })
+
+  it('draft is UPDATED if originalDatabaseItem is defined and its body is different from draftedDocument', () => {
+    const original: DatabaseItem = dbItemsList[0]
+    const modified: DatabaseItem = {
+      ...original,
+      body: { type: 'minimark', value: ['text', 'New body'] },
+    }
+
+    const status = getTreeStatus(modified, original)
+    expect(status).toBe(TreeStatus.Updated)
+  })
+
+  it('draft is RENAMED if originalDatabaseItem is defined and id is different from draftedDocument', () => {
+    const original: DatabaseItem = dbItemsList[0]
+    const modified: DatabaseItem = {
+      ...original,
+      id: 'landing/renamed.md',
+    }
+
+    const status = getTreeStatus(modified, original)
+    expect(status).toBe(TreeStatus.Renamed)
+  })
+
+  it('draft is DELETED if modifiedDatabaseItem is not defined', () => {
+    const original: DatabaseItem = dbItemsList[0]
+    const modified: DatabaseItem = undefined as never
+
+    const status = getTreeStatus(modified, original)
+    expect(status).toBe(TreeStatus.Deleted)
   })
 })
 

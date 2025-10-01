@@ -2,11 +2,10 @@
 import type { BreadcrumbItem } from '@nuxt/ui/components/Breadcrumb.vue.d.ts'
 import type { DropdownMenuItem } from '@nuxt/ui/components/DropdownMenu.vue.d.ts'
 import { computed, unref } from 'vue'
-import type { TreeItem } from '../../../types'
+import { type TreeItem, TreeStatus } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
 import { findParentFromId, ROOT_ITEM } from '../../../utils/tree'
 import { FEATURE_DISPLAY_MAP } from '../../../utils/context'
-import { DraftStatus } from '../../../types/draft'
 
 const { context } = useStudio()
 
@@ -87,7 +86,7 @@ const items = computed<BreadcrumbItem[]>(() => {
       </template>
     </UBreadcrumb>
     <ItemBadge
-      v-if="currentItem.status && currentItem.status !== DraftStatus.Opened"
+      v-if="currentItem.status && currentItem.status !== TreeStatus.Opened"
       :status="currentItem.status"
     />
   </div>

@@ -5,7 +5,7 @@ import type { DatabaseItem, DraftItem, StudioHost, GithubFile, DatabasePageItem,
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { generateContentFromDocument } from '../utils/content'
-import { getDraftStatus, findDescendantsFromId } from '../utils/draft'
+import { findDescendantsFromId, getUpdatedDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
 import { stripNumericPrefix } from '../utils/string'
@@ -35,7 +35,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     // return item
   }
 
-  async function create(document: DatabaseItem, status: DraftStatus = DraftStatus.Created) {
+  async function create(document: DatabaseItem, status: DraftStatus = DraftStatus.Created, original?: DatabaseItem) {
     const existingItem = list.value.find(item => item.id === document.id)
     if (existingItem) {
       throw new Error(`Draft file already exists for document ${document.id}`)
@@ -47,7 +47,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     const item: DraftItem<DatabaseItem> = {
       id: document.id,
       fsPath,
-      original: document,
+      original: original || document,
       githubFile,
       status,
       modified: document,
@@ -69,7 +69,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     }
 
     const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(document, existingItem.original)
+    existingItem.status = getUpdatedDraftStatus(document, existingItem.original)
     existingItem.modified = document
 
     await storage.setItem(id, existingItem)
@@ -170,7 +170,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     host.app.requestRerender()
   }
 
-  async function rename(id: string, newNameWithExtension: string) {
+  async function rename(id: string, newFsPath: string) {
     let currentDbItem: DatabaseItem = await host.document.get(id)
     if (!currentDbItem) {
       throw new Error(`Database item not found for document ${id}`)
@@ -181,21 +181,16 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
       currentDbItem = currentDraftItem.modified as DatabasePageItem
     }
 
-    const newNameWithoutExtension = newNameWithExtension.split('.').slice(0, -1).join('.')
-    const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
-    const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newNameWithExtension}`
-    const newStem = `${currentDbItem.stem.split('/').slice(0, -1).join('/')}/${newNameWithoutExtension}`
-    const newExtension = newNameWithExtension.split('.').pop()!
+    const nameWithoutExtension = newFsPath.split('/').pop()!.split('.').slice(0, -1).join('.')
+    const newRoutePath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${nameWithoutExtension}`
+    const content = await generateContentFromDocument(currentDbItem)
 
-    const newDbItem: DatabaseItem = {
-      ...currentDbItem,
-      id: newId,
-      path: newPath,
-      stem: newStem,
-      extension: newExtension,
-    }
+    // Delete renamed draft item
+    await remove([id])
 
-    return await update(id, newDbItem)
+    // Create new draft item
+    const newDbItem = await host.document.create(newFsPath, newRoutePath, content!)
+    return await create(newDbItem, DraftStatus.Created, currentDbItem)
   }
 
   async function duplicate(id: string): Promise<DraftItem<DatabaseItem>> {
@@ -221,7 +216,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
     const newDbItem = await host.document.create(newFsPath, newRoutePath, currentContent)
 
-    return await create(newDbItem, DraftStatus.Created)
+    return await create(newDbItem)
   }
 
   async function load() {
@@ -254,11 +249,6 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
   }
 
   function select(draftItem: DraftItem<DatabaseItem> | null) {
-    // TODO: Handle editor with deleted file
-    if (draftItem?.status === DraftStatus.Deleted) {
-      return
-    }
-
     current.value = draftItem
   }
 

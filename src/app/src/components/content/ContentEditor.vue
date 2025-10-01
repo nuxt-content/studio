@@ -2,7 +2,7 @@
 import { computed, type PropType, toRaw } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
-import type { DatabasePageItem, DraftItem } from '../../types'
+import { DraftStatus, type DatabasePageItem, type DraftItem } from '../../types'
 import { useStudio } from '../../composables/useStudio'
 
 const props = defineProps({
@@ -25,10 +25,13 @@ const document = computed<DatabasePageItem>({
       return {} as DatabasePageItem
     }
 
+    if (props.draftItem.status === DraftStatus.Deleted) {
+      return props.draftItem.original as DatabasePageItem
+    }
+
     const dbItem = props.draftItem.modified as DatabasePageItem
 
     let result: DatabasePageItem
-    // TODO: check mdcRoot and markdownRoot types with Ahad
     if (dbItem.body?.type === 'minimark') {
       result = {
         ...props.draftItem.modified as DatabasePageItem,

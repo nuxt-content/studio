@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computeActionItems, computeActionParams } from '../../../utils/context'
+import { computeActionItems } from '../../../utils/context'
 import { computed, type PropType } from 'vue'
 import type { TreeItem } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
@@ -17,7 +17,7 @@ const props = defineProps({
 const actions = computed<DropdownMenuItem[]>(() => {
   return computeActionItems(context.itemActions.value, props.item).map(action => ({
     ...action,
-    onSelect: () => action.handler?.(computeActionParams(action.id, { item: props.item })),
+    onSelect: () => action.handler!(props.item),
   }))
 })
 </script>
