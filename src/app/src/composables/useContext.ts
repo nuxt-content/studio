@@ -1,7 +1,16 @@
 import { createSharedComposable } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import type { useUi } from './useUi'
-import { type UploadMediaParams, type CreateFileParams, type StudioHost, type StudioAction, type TreeItem, StudioItemActionId, type ActionHandlerParams, StudioFeature } from '../types'
+import {
+  type StudioActionInProgress,
+  type UploadMediaParams,
+  type CreateFileParams,
+  type StudioHost,
+  type StudioAction,
+  type ActionHandlerParams,
+  StudioItemActionId,
+  StudioFeature,
+} from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
 import type { useDraftDocuments } from './useDraftDocuments'
 import { useModal } from './useModal'
@@ -18,7 +27,7 @@ export const useContext = createSharedComposable((
 ) => {
   const modal = useModal()
 
-  const actionInProgress = ref<StudioItemActionId | null>(null)
+  const actionInProgress = ref<StudioActionInProgress | null>(null)
   const currentFeature = computed<keyof typeof ui.panels | null>(() =>
     Object.keys(ui.panels).find(key => ui.panels[key as keyof typeof ui.panels]) as keyof typeof ui.panels,
   )
@@ -28,7 +37,7 @@ export const useContext = createSharedComposable((
     return STUDIO_ITEM_ACTION_DEFINITIONS.map(action => ({
       ...action,
       handler: async (args) => {
-        if (actionInProgress.value === action.id) {
+        if (actionInProgress.value?.id === action.id) {
           // Two steps actions need to be already in progress to be executed
           if (twoStepActions.includes(action.id)) {
             await itemActionHandler[action.id](args as never)
@@ -41,7 +50,7 @@ export const useContext = createSharedComposable((
           }
         }
 
-        actionInProgress.value = action.id
+        actionInProgress.value = { id: action.id, item: args.item }
 
         // One step actions can be executed immediately
         if (oneStepActions.includes(action.id)) {
@@ -71,8 +80,8 @@ export const useContext = createSharedComposable((
         await draft.value.revert(id)
       })
     },
-    [StudioItemActionId.RenameItem]: async ({ path, file }: { path: string, file: TreeItem }) => {
-      alert(`rename file ${path} ${file.name}`)
+    [StudioItemActionId.RenameItem]: async ({ id, newNameWithExtension }: { id: string, newNameWithExtension: string }) => {
+      alert(`rename file ${id} ${newNameWithExtension}`)
     },
     [StudioItemActionId.DeleteItem]: async (id: string) => {
       modal.openConfirmActionModal(id, StudioItemActionId.DeleteItem, async () => {

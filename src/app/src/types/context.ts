@@ -15,6 +15,11 @@ export enum StudioItemActionId {
   DuplicateItem = 'duplicate-item',
 }
 
+export interface StudioActionInProgress {
+  id: StudioItemActionId
+  item?: TreeItem
+}
+
 export interface StudioAction {
   id: StudioItemActionId
   label: string
@@ -30,8 +35,8 @@ export interface CreateFileParams {
 }
 
 export interface RenameFileParams {
-  path: string
-  file: TreeItem
+  id: string
+  newNameWithExtension: string
 }
 
 export interface UploadMediaParams {

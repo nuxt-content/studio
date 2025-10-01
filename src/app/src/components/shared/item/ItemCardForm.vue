@@ -21,7 +21,14 @@ const props = defineProps({
     type: Object as PropType<TreeItem>,
     required: true,
   },
+  renamedItem: {
+    type: Object as PropType<TreeItem>,
+    default: null,
+  },
 })
+
+const originalName = computed(() => props.renamedItem?.name || '')
+const originalExtension = computed(() => props.renamedItem?.id.split('.').pop() as ContentFileExtension || ContentFileExtension.Markdown)
 
 const schema = z.object({
   name: z.string()
@@ -33,8 +40,8 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 const state = reactive<Schema>({
-  name: '',
-  extension: ContentFileExtension.Markdown,
+  name: originalName.value,
+  extension: originalExtension.value,
 })
 
 const action = computed<StudioAction>(() => {

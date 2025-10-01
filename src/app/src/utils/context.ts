@@ -96,7 +96,12 @@ export function computeActionParams(action: StudioItemActionId, { item }: { item
     case StudioItemActionId.DeleteItem:
     case StudioItemActionId.DuplicateItem:
       return item.id
+    case StudioItemActionId.RenameItem:
+      return {
+        id: item.id,
+        item
+      }
     default:
-      return {}
+      return item.id
   }
 }
