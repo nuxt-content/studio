@@ -2,8 +2,8 @@
 import { computed, type PropType, toRaw } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
-import type { DatabasePageItem, DraftItem } from '../../../../types'
-import { useStudio } from '../../../../composables/useStudio'
+import type { DatabasePageItem, DraftItem } from '../../types'
+import { useStudio } from '../../composables/useStudio'
 
 const props = defineProps({
   draftItem: {
@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const { draftDocuments } = useStudio()
+const { documentTree } = useStudio()
 
 const document = computed<DatabasePageItem>({
   get() {
@@ -47,7 +47,7 @@ const document = computed<DatabasePageItem>({
       return
     }
 
-    draftDocuments.update(props.draftItem.id, {
+    documentTree.draft.update(props.draftItem.id, {
       ...toRaw(document.value as DatabasePageItem),
       ...toRaw(value),
     })
@@ -57,7 +57,7 @@ const document = computed<DatabasePageItem>({
 
 <template>
   <div class="h-full">
-    <PanelContentEditorCode
+    <ContentEditorCode
       v-model="document"
       :draft-item="draftItem"
       :read-only="readOnly"

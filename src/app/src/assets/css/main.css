@@ -11,7 +11,7 @@
 @source inline('ring-red-200 hover:ring-red-300 hover:dark:ring-red-700');
 @source inline('ring-green-200 hover:ring-green-300 hover:dark:ring-green-700');
 
-:root {
+:root, .light {
   --ui-primary: black;
 }
 
@@ -20,11 +20,6 @@
 }
 
 @theme static {
-  --ui-sub-header-height: 45px;
-  --ui-footer-height: 40px;
-
-  --font-sans: 'Public Sans', sans-serif;
-
   --color-green-50: '#EFFDF5';
   --color-green-100: '#D9FBE8';
   --color-green-200: '#B3F5D1';

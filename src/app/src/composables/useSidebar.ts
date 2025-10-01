@@ -31,6 +31,7 @@ export const useSidebar = createSharedComposable(() => {
 
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
+    document.body.style.transition = 'none'
   }
 
   function handleMouseMove(event: MouseEvent) {
@@ -50,6 +51,7 @@ export const useSidebar = createSharedComposable(() => {
     isResizing.value = false
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
+    document.body.style.transition = ''
   }
 
   function handleTouchMove(event: TouchEvent) {

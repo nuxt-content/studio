@@ -4,8 +4,8 @@ import type { ActionHandlerParams } from '../types/context'
 import { StudioItemActionId } from '../types/context'
 
 export const FEATURE_DISPLAY_MAP = {
-  [StudioFeature.Content]: 'Content files',
-  [StudioFeature.Media]: 'Media library',
+  [StudioFeature.Content]: '/',
+  [StudioFeature.Media]: '/',
 } as const
 
 export const oneStepActions: StudioItemActionId[] = [StudioItemActionId.RevertItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem]
@@ -13,10 +13,10 @@ export const twoStepActions: StudioItemActionId[] = [StudioItemActionId.CreateDo
 
 export const STUDIO_ITEM_ACTION_DEFINITIONS: StudioAction[] = [
   {
-    id: StudioItemActionId.CreateFolder,
-    label: 'Create folder',
-    icon: 'i-lucide-folder-plus',
-    tooltip: 'Create a new folder',
+    id: StudioItemActionId.RevertItem,
+    label: 'Revert changes',
+    icon: 'i-lucide-undo',
+    tooltip: 'Revert changes',
   },
   {
     id: StudioItemActionId.CreateDocument,
@@ -25,10 +25,10 @@ export const STUDIO_ITEM_ACTION_DEFINITIONS: StudioAction[] = [
     tooltip: 'Create a new file',
   },
   {
-    id: StudioItemActionId.RevertItem,
-    label: 'Revert changes',
-    icon: 'i-lucide-undo',
-    tooltip: 'Revert changes',
+    id: StudioItemActionId.CreateFolder,
+    label: 'Create folder',
+    icon: 'i-lucide-folder-plus',
+    tooltip: 'Create a new folder',
   },
   {
     id: StudioItemActionId.RenameItem,

@@ -1,4 +1,4 @@
-import { useStudioHost as useStudioHostBased } from './host'
+import { useStudioHost as useStudioHostBase } from './host'
 import type { StudioUser, DatabaseItem, Repository } from 'nuxt-studio/app'
 // TODO: use `nuxt-studio/app/utils` instead of `../../../app/src/utils`
 import { generateContentFromDocument } from '../../../app/src/utils'
@@ -9,7 +9,7 @@ import { useRuntimeConfig } from '#imports'
 import { collections } from '#content/preview'
 
 export function useStudioHost(user: StudioUser, repository: Repository) {
-  const host = useStudioHostBased(user, repository)
+  const host = useStudioHostBase(user, repository)
 
   if (!useRuntimeConfig().public.contentStudio.studioDevStorage) {
     return host

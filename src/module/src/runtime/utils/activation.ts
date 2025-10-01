@@ -20,4 +20,12 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
   else if (mounted) {
     window.location.reload()
   }
+  else {
+    // Listen to CMD + . to toggle the studio or redirect to the login page
+    document.addEventListener('keydown', (event) => {
+      if (event.metaKey && event.key === '.') {
+        window.location.href = '/__nuxt_content/studio'
+      }
+    })
+  }
 }

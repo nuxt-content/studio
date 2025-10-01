@@ -86,7 +86,6 @@ export default eventHandler(() => {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 32px;
         }
 
         .logo img {
@@ -96,7 +95,7 @@ export default eventHandler(() => {
 
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .header h1 {
@@ -127,7 +126,6 @@ export default eventHandler(() => {
             gap: 12px;
             transition: all 0.2s ease;
             text-decoration: none;
-            margin-bottom: 24px;
         }
 
         .github-btn:hover {
@@ -179,7 +177,7 @@ export default eventHandler(() => {
 
         <div class="header">
             <h1>Nuxt Studio</h1>
-            <p>Sign in to use your admin dashboard</p>
+            <p>Sign in to start editing your website.</p>
         </div>
 
         <a href="#" class="github-btn">

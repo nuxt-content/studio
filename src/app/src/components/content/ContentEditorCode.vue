@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef, watch } from 'vue'
-import type { DatabasePageItem, DraftItem } from '../../../../types'
-import { DraftStatus } from '../../../../types/draft'
+import { type DatabasePageItem, type DraftItem, DraftStatus } from '../../types'
 import type { PropType } from 'vue'
-import { setupMonaco, setupSuggestion, type Editor } from '../../../../utils/monaco/index'
-import { generateContentFromDocument, generateDocumentFromContent, pickReservedKeysFromDocument } from '../../../../utils/content'
-import { useStudio } from '../../../../composables/useStudio'
+import { generateContentFromDocument, generateDocumentFromContent, pickReservedKeysFromDocument } from '../../utils/content'
+import { setupMonaco, setupSuggestion, type Editor } from '../../utils/monaco'
+import { useStudio } from '../../composables/useStudio'
 
 const props = defineProps({
   draftItem: {
@@ -100,7 +99,9 @@ function setContent(document: DatabasePageItem) {
       const position = editor.value.getPosition()
       editor.value.getModel()?.setValue(md || '')
       // Restore the cursor position
-      position && editor.value.setPosition(position)
+      if (position) {
+        editor.value.setPosition(position)
+      }
     }
 
     currentDocumentId.value = document.id
@@ -111,6 +112,6 @@ function setContent(document: DatabasePageItem) {
 <template>
   <div
     ref="editorRef"
-    class="h-full -m-4"
+    class="h-full -ml-3"
   />
 </template>

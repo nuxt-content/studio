@@ -165,6 +165,11 @@ export default defineNuxtModule<ModuleOptions>({
       handler: runtime('./server/routes/auth/session.get'),
     })
     addServerHandler({
+      method: 'delete',
+      route: '/__nuxt_content/studio/auth/session',
+      handler: runtime('./server/routes/auth/session.delete'),
+    })
+    addServerHandler({
       route: '/__nuxt_content/studio',
       handler: runtime('./server/routes/admin'),
     })

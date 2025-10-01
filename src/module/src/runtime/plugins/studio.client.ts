@@ -2,8 +2,9 @@ import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
 import type { Repository } from 'nuxt-studio/app'
 import { defineStudioActivationPlugin } from '../utils/activation'
 
-export default defineNuxtPlugin(async () => {
-  await defineStudioActivationPlugin(async (user) => {
+export default defineNuxtPlugin(() => {
+  // Don't await this to avoid blocking the main thread
+  defineStudioActivationPlugin(async (user) => {
     const config = useRuntimeConfig()
     // Initialize host
     const host = await import('../host').then(m => m.useStudioHost)

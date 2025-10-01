@@ -2,8 +2,8 @@ import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
 import { defineStudioActivationPlugin } from '../utils/activation'
 import type { Repository } from 'nuxt-studio/app'
 
-export default defineNuxtPlugin(async () => {
-  await defineStudioActivationPlugin(async (user) => {
+export default defineNuxtPlugin(() => {
+  defineStudioActivationPlugin(async (user) => {
     const config = useRuntimeConfig()
     console.log(`
   ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗     ██████╗ ███████╗██╗   ██╗
@@ -19,7 +19,7 @@ export default defineNuxtPlugin(async () => {
     window.useStudioHost = () => host(user, config.public.contentStudio.repository as unknown as Repository)
 
     const el = document.createElement('script')
-    el.src = `${config.public.contentStudio?.studioDevServer}/src/index.ts`
+    el.src = `${config.public.contentStudio?.studioDevServer}/src/main.ts`
     el.type = 'module'
     document.body.appendChild(el)
 

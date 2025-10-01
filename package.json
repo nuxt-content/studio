@@ -8,8 +8,8 @@
   "exports": {
     ".": "./dist/module/module.mjs",
     "./app": {
-      "types": "./dist/app/index.d.ts",
-      "default": "./dist/app/index.js"
+      "types": "./dist/app/main.d.ts",
+      "default": "./dist/app/main.js"
     },
     "./app/utils": {
       "types": "./dist/app/utils.d.ts",
@@ -64,6 +64,7 @@
   },
   "packageManager": "pnpm@10.17.1",
   "dependencies": {
+    "@iconify-json/simple-icons": "^1.2.53",
     "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@61af819",
     "@nuxtlabs/monarch-mdc": "^0.8.1",
     "@unhead/vue": "^2.0.17",

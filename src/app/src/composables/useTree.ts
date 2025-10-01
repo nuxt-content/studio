@@ -89,17 +89,16 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     select(findItemFromId(tree.value, currentItem.value.id)!)
   }
 
-  hooks.hook('studio:draft:document:updated', async () => {
-    if (type !== StudioFeature.Content) return
-
-    await handleDraftUpdate()
-  })
-
-  hooks.hook('studio:draft:media:updated', async () => {
-    if (type !== StudioFeature.Media) return
-
-    await handleDraftUpdate()
-  })
+  if (type === StudioFeature.Content) {
+    hooks.hook('studio:draft:document:updated', async () => {
+      await handleDraftUpdate()
+    })
+  }
+  else {
+    hooks.hook('studio:draft:media:updated', async () => {
+      await handleDraftUpdate()
+    })
+  }
 
   return {
     root: tree,
@@ -110,5 +109,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     selectByRoute,
     selectItemById,
     selectParentById,
+    type,
+    draft,
   }
 }
