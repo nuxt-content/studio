@@ -4,6 +4,7 @@ import { generateStemFromFsPath } from './collections'
 import type { MarkdownRoot } from '@nuxt/content'
 import { omit } from './object'
 import type { DatabaseItem } from 'nuxt-studio/app'
+import { compressTree } from '@nuxt/content/runtime'
 
 export function removeReservedKeysFromDocument(document: DatabaseItem) {
   const result = omit(document, ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta'])
@@ -35,7 +36,15 @@ export async function generateDocumentFromContent(id: string, fsPath: string, ro
   // TODO expose document creation logic from content module and use it there
   const stem = generateStemFromFsPath(fsPath)
 
-  const parsed = await parseMarkdown(content)
+  const parsed = await parseMarkdown(content).then(res => {
+    if (res.body.type === 'root') {
+      return {
+        ...res,
+        body: compressTree(res.body),
+      }
+    }
+    return res
+  })
 
   return {
     id,
@@ -50,8 +59,7 @@ export async function generateDocumentFromContent(id: string, fsPath: string, ro
     ...parsed.data,
     excerpt: parsed.excerpt,
     body: {
-      // TODO: fix MarkdownRoot/MDCRoot conversion in MDC module
-      ...(parsed.body as unknown as MarkdownRoot),
+      ...parsed.body,
       toc: parsed.toc,
     },
   }
