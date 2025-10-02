@@ -34,7 +34,7 @@ const imageSrc = computed(() => {
   if (props.item.preview) {
     return props.item.preview
   }
-  return 'https://placehold.co/1920x1080/f9fafc/f9fafc'
+  return ''
 })
 
 // ring-(--ui-success) ring-(--ui-info) ring-(--ui-warning) ring-(--ui-error) ring-(--ui-neutral)
@@ -53,12 +53,14 @@ const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_U
     >
       <div class="bg-default bg-[linear-gradient(45deg,#e6e9ea_25%,transparent_0),linear-gradient(-45deg,#e6e9ea_25%,transparent_0),linear-gradient(45deg,transparent_75%,#e6e9ea_0),linear-gradient(-45deg,transparent_75%,#e6e9ea_0)] bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0]">
         <Image
+          v-if="imageSrc"
           :src="imageSrc"
           width="426"
           height="240"
           alt="Card placeholder"
           class="z-[-1] rounded-t-lg aspect-video object-cover"
         />
+        <div v-else class="z-[-1] aspect-video bg-muted" />
         <div
           v-if="itemExtensionIcon"
           class="absolute inset-0 flex items-center justify-center"
