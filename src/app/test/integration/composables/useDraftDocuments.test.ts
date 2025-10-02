@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { type StudioHost, type DatabaseItem, DraftStatus } from '../../../src/types'
+import { type StudioHost, DraftStatus } from '../../../src/types'
 import { createMockDocument, createMockStorage, createMockHooks } from '../../mocks/document'
 import { createMockHost } from '../../mocks/host'
 import { createMockGit } from '../../mocks/git'
@@ -15,7 +15,7 @@ vi.mock('unstorage/drivers/indexedb', () => ({
     async getItem(key: string) {
       return mockStorage.get(key) || null
     },
-    async setItem(key: string, value: DatabaseItem) {
+    async setItem(key: string, value: string) {
       mockStorage.set(key, value)
     },
     async removeItem(key: string) {
@@ -72,7 +72,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
 
     // Storage
     expect(mockStorage.size).toEqual(1)
-    const storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId  ))!)
+    const storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
     expect(storedDraft).toHaveProperty('status', DraftStatus.Created)
 
     // In memory
@@ -165,7 +165,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     const updatedDocument = createMockDocument(documentId, {
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Updated content' }],
+        value: ['Updated content'],
       },
     })
     await update(documentId, updatedDocument)
@@ -199,7 +199,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     const { selectById, rename, update, list } = draftDocuments
 
     const mockDocument = createMockDocument(documentId)
-    const fsPath = mockHost.document.getFileSystemPath(documentId )
+    const fsPath = mockHost.document.getFileSystemPath(documentId)
     const createdDocument = await mockHost.document.create(fsPath, mockDocument.path, '')
 
     /*
@@ -256,7 +256,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     const updatedDocument = createMockDocument(newId, {
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Updated content' }],
+        value: ['Updated content'],
       },
     })
     await update(newId, updatedDocument)

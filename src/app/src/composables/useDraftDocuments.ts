@@ -1,7 +1,7 @@
 import { createStorage } from 'unstorage'
 import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { ref } from 'vue'
-import type { DatabaseItem, DraftItem, StudioHost, GithubFile, DatabasePageItem, RawFile } from '../types'
+import type { DatabaseItem, DraftItem, StudioHost, GithubFile, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { generateContentFromDocument } from '../utils/content'
@@ -173,14 +173,9 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
   }
 
   async function rename(id: string, newFsPath: string) {
-    let currentDbItem: DatabaseItem = await host.document.get(id)
+    const currentDbItem: DatabaseItem = await host.document.get(id)
     if (!currentDbItem) {
       throw new Error(`Database item not found for document ${id}`)
-    }
-
-    const currentDraftItem: DraftItem<DatabaseItem> | undefined = list.value.find(item => item.id === id)
-    if (currentDraftItem) {
-      currentDbItem = currentDraftItem.modified as DatabasePageItem
     }
 
     const nameWithoutExtension = newFsPath.split('/').pop()!.split('.').slice(0, -1).join('.')

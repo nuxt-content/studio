@@ -56,13 +56,7 @@ describe('buildTree with one level of depth', () => {
       fsPath: createdDbItem.fsPath,
       status: DraftStatus.Created,
       original: undefined,
-      modified: {
-        ...dbItemsList[0],
-        body: {
-          type: 'minimark',
-          value: [['text', 'Created']],
-        },
-      },
+      modified: createdDbItem,
     }]
 
     const tree = buildTree(dbItemsList, draftList)
@@ -157,7 +151,7 @@ describe('buildTree with one level of depth', () => {
         ...updatedDbItem,
         body: {
           type: 'minimark',
-          value: [['text', 'Modified']],
+          value: ['Modified'],
         },
       },
     }]
@@ -348,7 +342,7 @@ describe('buildTree with two levels of depth', () => {
         ...updatedDbItem,
         body: {
           type: 'minimark',
-          value: [['text', 'Modified']],
+          value: ['Modified'],
         },
       },
     }]
@@ -377,7 +371,7 @@ describe('buildTree with two levels of depth', () => {
         ...updatedDbItem,
         body: {
           type: 'minimark',
-          value: [['text', 'Modified']],
+          value: ['Modified'],
         },
       },
     }]
@@ -473,7 +467,7 @@ describe('getTreeStatus', () => {
     const original: DatabaseItem = dbItemsList[0]
     const modified: DatabaseItem = {
       ...original,
-      body: { type: 'minimark', value: ['text', 'New body'] },
+      body: { type: 'minimark', value: ['New body'] },
     }
 
     const status = getTreeStatus(modified, original)

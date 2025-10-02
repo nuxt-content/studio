@@ -8,7 +8,7 @@ export const createMockDocument = (id: string, overrides?: Partial<DatabasePageI
   extension: 'md',
   body: {
     type: 'minimark',
-    value: [{ type: 'text', text: 'Test content' }],
+    value: ['Test content'],
   },
   meta: {},
   ...overrides,

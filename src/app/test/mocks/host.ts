@@ -17,7 +17,7 @@ export const createMockHost = (): StudioHost => ({
         stem: fsPath.split('/').pop()?.replace('.md', ''),
         body: {
           type: 'minimark',
-          value: [{ type: 'text', text: content || 'Test content' }],
+          value: [content || 'Test content'],
         },
       })
     }),

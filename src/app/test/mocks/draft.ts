@@ -14,7 +14,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -24,7 +24,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Modified' }],
+        value: ['Modified'],
       },
     },
   },
@@ -39,7 +39,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -49,7 +49,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
   },
@@ -66,7 +66,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -76,7 +76,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Modified' }],
+        value: ['Modified'],
       },
     },
   },
@@ -91,7 +91,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -101,7 +101,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Modified' }],
+        value: ['Modified'],
       },
     },
   },
@@ -117,7 +117,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
   },
@@ -134,7 +134,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -144,7 +144,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Modified' }],
+        value: ['Modified'],
       },
     },
   },
@@ -159,7 +159,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
     modified: {
@@ -169,7 +169,7 @@ const draftItemsList: DraftItem[] = [
       extension: 'md',
       body: {
         type: 'minimark',
-        value: [{ type: 'text', text: 'Original' }],
+        value: ['Original'],
       },
     },
   },

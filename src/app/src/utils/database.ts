@@ -1,5 +1,5 @@
 import { type DatabasePageItem, ContentFileExtension } from '../types'
-// import { stringify } from 'minimark/stringify'
+import { stringify } from 'minimark/stringify'
 
 export function isEqual(document1: DatabasePageItem, document2: DatabasePageItem) {
   function removeLastStyle(document: DatabasePageItem) {
@@ -22,11 +22,7 @@ export function isEqual(document1: DatabasePageItem, document2: DatabasePageItem
       document2 = removeLastStyle(document2)
     }
 
-    // TODO: fix issue with created files
-    // if (stringify(body1) !== stringify(body2)) {
-    //   return false
-    // }
-    if (JSON.stringify(body1) !== JSON.stringify(body2)) {
+    if (stringify(body1) !== stringify(body2)) {
       return false
     }
   }
