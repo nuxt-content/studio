@@ -48,7 +48,7 @@ onMounted(async () => {
 
   // create a Monaco editor instance
   editor.value = monaco.createEditor(editorRef.value, {
-    // theme: ui.colorMode.value === 'light' ? 'vs' : 'vs-dark',
+    theme: ui.colorMode.value === 'light' ? 'vitesse-light' : 'vitesse-dark',
     lineNumbers: 'off',
     readOnly: props.readOnly,
     scrollbar: props.readOnly
@@ -92,11 +92,11 @@ onMounted(async () => {
   editor.value.setModel(monaco.editor.createModel(content.value, 'mdc'))
 
   // Set the theme based on the color mode
-  // watch(ui.colorMode, () => {
-  //   editor.value?.updateOptions({
-  //     theme: ui.colorMode.value === 'light' ? 'vs' : 'vs-dark',
-  //   })
-  // })
+  watch(ui.colorMode, () => {
+    editor.value?.updateOptions({
+      theme: ui.colorMode.value === 'light' ? 'vitesse-light' : 'vitesse-dark',
+    })
+  })
 })
 
 function setContent(document: DatabasePageItem) {

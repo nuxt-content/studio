@@ -1,5 +1,7 @@
 import { createSingletonPromise } from '@vueuse/core'
 import type { editor as Editor } from 'modern-monaco/editor-core'
+import themeLight from './theme-light'
+import themeDark from './theme-dark'
 
 export { setupSuggestion } from './mdc-compilation'
 export type { editor as Editor } from 'modern-monaco/editor-core'
@@ -20,6 +22,8 @@ export const setupMonaco = createSingletonPromise(async () => {
   }
 
   const monaco: Monaco = await init()
+  monaco.editor.defineTheme('vitesse-light', themeLight)
+  monaco.editor.defineTheme('vitesse-dark', themeDark)
 
   return {
     monaco,
