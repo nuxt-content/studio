@@ -5,7 +5,6 @@ import { computed, unref } from 'vue'
 import { type TreeItem, TreeStatus } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
 import { findParentFromId, ROOT_ITEM } from '../../../utils/tree'
-import { FEATURE_DISPLAY_MAP } from '../../../utils/context'
 
 const { context } = useStudio()
 
@@ -14,7 +13,7 @@ const tree = computed(() => context.activeTree.value.root.value)
 
 const items = computed<BreadcrumbItem[]>(() => {
   const rootItem = {
-    label: FEATURE_DISPLAY_MAP[context.activeTree.value.type as keyof typeof FEATURE_DISPLAY_MAP],
+    icon: 'i-lucide-folder-git',
     onClick: () => {
       // TODO: update for ROOT_DOCUMENT_ITEM and ROOT_MEDIA_ITEM
       context.activeTree.value.select(ROOT_ITEM)
@@ -69,10 +68,11 @@ const items = computed<BreadcrumbItem[]>(() => {
 </script>
 
 <template>
-  <div class="flex gap-2">
+  <div class="flex items-center gap-1">
     <UBreadcrumb
       :items="items"
       color="neutral"
+      :ui="{ link: 'text-xs', list: 'gap-0.5', separatorIcon: 'size-3', linkLeadingIcon: 'size-4' }"
     >
       <template #ellipsis="{ item }">
         <UDropdownMenu :items="item.children">

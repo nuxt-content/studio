@@ -16,5 +16,6 @@ defineProps({
     :color="COLOR_UI_STATUS_MAP[status]"
     :label="status"
     variant="soft"
+    size="sm"
   />
 </template>

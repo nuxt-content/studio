@@ -23,7 +23,7 @@ export default defineConfig({
       },
       ui: {
         colors: {
-          neutral: 'zinc',
+          neutral: 'neutral',
         },
         pageCard: {
           slots: {

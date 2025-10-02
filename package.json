@@ -41,7 +41,7 @@
     "@nuxt/eslint-config": "latest",
     "@nuxt/kit": "^4.1.2",
     "@nuxt/module-builder": "latest",
-    "@nuxt/ui": "4.0.0",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@5111",
     "@octokit/types": "^15.0.0",
     "@tailwindcss/typography": "latest",
     "@vitejs/plugin-vue": "^6.0.1",

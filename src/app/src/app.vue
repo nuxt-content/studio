@@ -35,12 +35,6 @@ async function editContentFile(id: string) {
   ui.open(StudioFeature.Content)
 }
 
-const colorModeClass = ref(host.ui.colorMode)
-
-host.on.colorModeChange((colorMode) => {
-  colorModeClass.value = colorMode
-})
-
 host.on.mounted(() => {
   detectActiveDocuments()
   host.on.routeChange(() => {
@@ -59,8 +53,11 @@ router.beforeEach((to, from) => {
 </script>
 
 <template>
-  <div :class="colorModeClass">
-    <UApp :toaster="{ portal: false }">
+  <div :class="ui.colorMode.value">
+    <UApp
+      :toaster="{ portal: false }"
+      :modal="{ portal: false }"
+    >
       <AppLayout :open="ui.isOpen.value">
         <RouterView v-slot="{ Component }">
           <Transition

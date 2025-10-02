@@ -79,10 +79,12 @@ const handleConfirm = async () => {
         <UButton
           color="neutral"
           label="Cancel"
+          variant="ghost"
           @click="emit('close')"
         />
         <UButton
           :label="successLabelMap[actionId]"
+          color="neutral"
           @click="handleConfirm"
         />
       </div>

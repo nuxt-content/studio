@@ -8,6 +8,11 @@ export const useUI = createSharedComposable((host: StudioHost) => {
   const sidebar = useSidebar()
   const isOpen = ref(false)
   const currentPanel = ref<StudioFeature | null>(null)
+  const colorMode = ref(host.ui.colorMode)
+
+  host.on.colorModeChange((newColorMode) => {
+    colorMode.value = newColorMode
+  })
 
   watch(isOpen, (value) => {
     if (value) {
@@ -20,6 +25,7 @@ export const useUI = createSharedComposable((host: StudioHost) => {
 
   return {
     config,
+    colorMode,
     sidebar,
     isOpen,
     currentPanel,

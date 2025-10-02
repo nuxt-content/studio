@@ -4,7 +4,8 @@ import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Image } from '@unpic/vue'
 import { titleCase } from 'scule'
-import { COLOR_STATUS_MAP } from '../../../utils/tree'
+import { COLOR_UI_STATUS_MAP } from '../../../utils/tree'
+import { DraftStatus } from '../../../types/draft'
 
 const props = defineProps({
   item: {
@@ -36,20 +37,21 @@ const imageSrc = computed(() => {
   return 'https://placehold.co/1920x1080/f9fafc/f9fafc'
 })
 
-const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_MAP[props.item.status]}-200 hover:ring-${COLOR_STATUS_MAP[props.item.status]}-300 hover:dark:ring-${COLOR_STATUS_MAP[props.item.status]}-700` : 'ring-gray-200 hover:ring-gray-300 hover:dark:ring-gray-700')
+// ring-(--ui-success) ring-(--ui-info) ring-(--ui-warning) ring-(--ui-error) ring-(--ui-neutral)
+const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_UI_STATUS_MAP[props.item.status]})` : 'ring-(--ui-border) hover:ring-(--ui-border-accented)')
 </script>
 
 <template>
   <UPageCard
     reverse
-    class="cursor-pointer hover:bg-white relative w-full min-w-0 overflow-hidden"
+    class="cursor-pointer hover:bg-muted relative w-full min-w-0 overflow-hidden"
     :class="statusRingColor"
   >
     <div
       v-if="item.type === 'file'"
       class="relative"
     >
-      <div class="bg-[#f7f9fa] bg-[linear-gradient(45deg,#e6e9ea_25%,transparent_0),linear-gradient(-45deg,#e6e9ea_25%,transparent_0),linear-gradient(45deg,transparent_75%,#e6e9ea_0),linear-gradient(-45deg,transparent_75%,#e6e9ea_0)] bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0]">
+      <div class="bg-default bg-[linear-gradient(45deg,#e6e9ea_25%,transparent_0),linear-gradient(-45deg,#e6e9ea_25%,transparent_0),linear-gradient(45deg,transparent_75%,#e6e9ea_0),linear-gradient(-45deg,transparent_75%,#e6e9ea_0)] bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0]">
         <Image
           :src="imageSrc"
           width="426"
@@ -63,12 +65,12 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
         >
           <UIcon
             :name="itemExtensionIcon"
-            class="w-8 h-8 text-gray-400 dark:text-gray-500"
+            class="w-8 h-8 text-muted"
           />
         </div>
       </div>
       <ItemBadge
-        v-if="item.status"
+        v-if="item.status && item.status !== DraftStatus.Opened"
         :status="item.status"
         class="absolute top-2 right-2"
       />
@@ -81,16 +83,16 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
             <UIcon
               v-if="isFolder"
               name="i-lucide-folder"
-              class="h-4 w-4 shrink-0"
+              class="h-4 w-4 shrink-0 text-muted"
             />
             <UIcon
               v-else-if="name === 'Home'"
               name="i-lucide-house"
-              class="h-4 w-4 shrink-0"
+              class="h-4 w-4 shrink-0 text-muted"
             />
             <h3
-              class="text-sm font-semibold truncate"
-              :class="props.item.status === TreeStatus.Deleted && 'line-through'"
+              class="text-sm font-semibold truncate text-default"
+              :class="props.item.status === 'deleted' && 'line-through'"
             >
               {{ name }}
             </h3>
@@ -99,7 +101,7 @@ const statusRingColor = computed(() => props.item.status ? `ring-${COLOR_STATUS_
         </div>
 
         <UTooltip :text="item.routePath">
-          <span class="truncate leading-relaxed text-xs text-gray-400 dark:text-gray-500 block w-full">
+          <span class="truncate leading-relaxed text-xs text-dimmed block w-full">
             {{ item.routePath || item.fsPath }}
           </span>
         </UTooltip>

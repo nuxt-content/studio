@@ -23,7 +23,7 @@ async function onFileDrop(event: DragEvent) {
 
 <template>
   <div class="flex flex-col">
-    <div class="flex items-center justify-between gap-2 px-4 py-2 border-b-[0.5px] border-default bg-muted">
+    <div class="flex items-center justify-between gap-2 px-4 py-1 border-b-[0.5px] border-default bg-muted/70">
       <ItemBreadcrumb />
       <ItemActionsToolbar />
     </div>
