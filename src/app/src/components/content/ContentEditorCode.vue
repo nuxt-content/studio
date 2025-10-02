@@ -36,7 +36,6 @@ watch(() => props.draftItem.status, (newStatus) => {
 })
 
 const language = computed(() => {
-  console.log(document.value?.extension)
   switch (document.value?.extension) {
     case ContentFileExtension.Markdown:
       return 'mdc';
