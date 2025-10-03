@@ -5,8 +5,9 @@ import type { useDraftMedias } from './useDraftMedias'
 import { buildTree, findItemFromId, findItemFromRoute, ROOT_ITEM, findParentFromId } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
 import { useHooks } from './useHooks'
+import type { useUI } from './useUI'
 
-export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
+export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<typeof useUI>, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
   const hooks = useHooks()
 
   const tree = ref<TreeItem[]>([])
@@ -40,7 +41,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
   async function select(item: TreeItem) {
     currentItem.value = item || ROOT_ITEM
     if (item?.type === 'file') {
-      if (type === StudioFeature.Content) {
+      if (type === StudioFeature.Content && ui.config.value.syncEditorAndRoute) {
         host.app.navigateTo(item.routePath!)
       }
 

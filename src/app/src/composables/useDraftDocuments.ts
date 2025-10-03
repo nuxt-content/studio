@@ -8,7 +8,6 @@ import { generateContentFromDocument } from '../utils/content'
 import { findDescendantsFromId, getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
-import { stripNumericPrefix } from '../utils/string'
 import { joinURL } from 'ufo'
 
 const storage = createStorage({
@@ -178,15 +177,13 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
       throw new Error(`Database item not found for document ${id}`)
     }
 
-    const nameWithoutExtension = newFsPath.split('/').pop()!.split('.').slice(0, -1).join('.')
-    const newRoutePath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${nameWithoutExtension}`
     const content = await generateContentFromDocument(currentDbItem)
 
     // Delete renamed draft item
     await remove([id])
 
     // Create new draft item
-    const newDbItem = await host.document.create(newFsPath, newRoutePath, content!)
+    const newDbItem = await host.document.create(newFsPath, content!)
     return await create(newDbItem, currentDbItem)
   }
 

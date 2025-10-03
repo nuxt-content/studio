@@ -19,6 +19,7 @@ import { useRoute } from 'vue-router'
 import { findDescendantsFileItemsFromId } from '../utils/tree'
 import type { useDraftMedias } from './useDraftMedias'
 import { joinURL } from 'ufo'
+import { upperFirst } from 'scule'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
@@ -80,9 +81,12 @@ export const useContext = createSharedComposable((
       const navigationDocumentFsPath = joinURL(fsPath, '.navigation.yml')
 
       const navigationDocument = await host.document.create(navigationDocumentFsPath, `title: ${folderName}`)
-      const rootDocument = await host.document.create(rootDocumentFsPath, `New ${folderName} root file`)
+      const rootDocument = await host.document.create(rootDocumentFsPath, `# ${upperFirst(folderName)} root file`)
 
       await activeTree.value.draft.create(navigationDocument)
+
+      unsetActionInProgress()
+
       const rootDocumentDraftItem = await activeTree.value.draft.create(rootDocument)
 
       await activeTree.value.selectItemById(rootDocumentDraftItem.id)

@@ -24,10 +24,10 @@ export const useStudio = createSharedComposable(() => {
   const isReady = ref(false)
   const ui = useUI(host)
   const draftDocuments = useDraftDocuments(host, git)
-  const documentTree = useTree(StudioFeature.Content, host, draftDocuments)
+  const documentTree = useTree(StudioFeature.Content, host, ui, draftDocuments)
 
   const draftMedias = useDraftMedias(host, git)
-  const mediaTree = useTree(StudioFeature.Media, host, draftMedias)
+  const mediaTree = useTree(StudioFeature.Media, host, ui, draftMedias)
 
   const context = useContext(host, documentTree, mediaTree)
 
@@ -40,6 +40,10 @@ export const useStudio = createSharedComposable(() => {
 
     host.on.routeChange(async (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
       if (ui.isOpen.value && ui.config.value.syncEditorAndRoute) {
+        if (documentTree.currentItem.value.routePath === to.path) {
+          return
+        }
+
         await documentTree.selectByRoute(to)
       }
       // setTimeout(() => {

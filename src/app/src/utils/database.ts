@@ -1,8 +1,8 @@
 import { compressTree } from '@nuxt/content/runtime'
 import { type DatabasePageItem, ContentFileExtension } from '../types'
 import { stringify } from 'minimark/stringify'
-import { MDCRoot } from '@nuxtjs/mdc'
-import { MarkdownRoot } from '@nuxt/content'
+import type { MDCRoot } from '@nuxtjs/mdc'
+import type { MarkdownRoot } from '@nuxt/content'
 
 export function isEqual(document1: DatabasePageItem, document2: DatabasePageItem) {
   function withoutLastStyles(body: MarkdownRoot) {
@@ -18,10 +18,10 @@ export function isEqual(document1: DatabasePageItem, document2: DatabasePageItem
   // Compare body first
   if (document1.extension === ContentFileExtension.Markdown) {
     const minifiedBody1 = withoutLastStyles(
-      document1.body.type === 'minimark' ?  document1.body : compressTree(document1.body as unknown as MDCRoot)
+      document1.body.type === 'minimark' ? document1.body : compressTree(document1.body as unknown as MDCRoot),
     )
     const minifiedBody2 = withoutLastStyles(
-      document2.body.type === 'minimark' ?  document2.body : compressTree(document2.body as unknown as MDCRoot)
+      document2.body.type === 'minimark' ? document2.body : compressTree(document2.body as unknown as MDCRoot),
     )
 
     if (stringify(minifiedBody1) !== stringify(minifiedBody2)) {

@@ -9,6 +9,7 @@ import { useStudio } from '../../../composables/useStudio'
 import { StudioItemActionId } from '../../../types'
 import { stripNumericPrefix } from '../../../utils/string'
 import { defineShortcuts } from '#imports'
+import { upperFirst } from 'scule'
 
 const { context } = useStudio()
 
@@ -93,7 +94,7 @@ function onSubmit(_event: FormSubmitEvent<Schema>) {
     case StudioItemActionId.CreateDocument:
       params = {
         fsPath: withoutLeadingSlash(joinURL(props.parentItem.fsPath, `${state.name}.${state.extension}`)),
-        content: `New ${state.name} file`,
+        content: `# ${upperFirst(state.name)} file`,
       }
       break
     case StudioItemActionId.CreateFolder:
