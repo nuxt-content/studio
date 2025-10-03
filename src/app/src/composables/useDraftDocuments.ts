@@ -202,16 +202,14 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     }
 
     const currentFsPath = currentDraftItem?.fsPath || host.document.getFileSystemPath(id)
-    const currentRoutePath = currentDbItem.path!
     const currentContent = await generateContentFromDocument(currentDbItem) || ''
     const currentName = currentFsPath.split('/').pop()!
     const currentExtension = currentName.split('.').pop()!
     const currentNameWithoutExtension = currentName.split('.').slice(0, -1).join('.')
 
     const newFsPath = `${currentFsPath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy.${currentExtension}`
-    const newRoutePath = `${currentRoutePath.split('/').slice(0, -1).join('/')}/${stripNumericPrefix(currentNameWithoutExtension)}-copy`
 
-    const newDbItem = await host.document.create(newFsPath, newRoutePath, currentContent)
+    const newDbItem = await host.document.create(newFsPath, currentContent)
 
     return await create(newDbItem)
   }

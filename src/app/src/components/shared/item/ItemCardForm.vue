@@ -93,14 +93,12 @@ function onSubmit(_event: FormSubmitEvent<Schema>) {
     case StudioItemActionId.CreateDocument:
       params = {
         fsPath: withoutLeadingSlash(joinURL(props.parentItem.fsPath, `${state.name}.${state.extension}`)),
-        routePath: routePath.value,
         content: `New ${state.name} file`,
       }
       break
     case StudioItemActionId.CreateFolder:
       params = {
         fsPath: withoutLeadingSlash(joinURL(props.parentItem.fsPath, state.name)),
-        routePath: routePath.value,
       }
       break
     case StudioItemActionId.RenameItem:
