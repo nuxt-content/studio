@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TreeStatus, type TreeItem } from '../../../types'
+import { type TreeItem, TreeStatus } from '../../../types'
 import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Image } from '@unpic/vue'

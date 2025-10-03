@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ubuntu-latest
+        os: [ubuntu-latest]
         node: [22]
 
     steps:
@@ -48,4 +48,7 @@ jobs:
         run: pnpm run typecheck
 
       - name: Test
-        run: pnpm run test run
+        run: pnpm run test
+
+      - name: Publish
+        run: pnpx pkg-pr-new publish --no-template --pnpm

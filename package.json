@@ -2,7 +2,10 @@
   "name": "nuxt-studio",
   "version": "0.0.1",
   "description": "Nuxt Studio for Nuxt Content",
-  "repository": "@nuxtlabs/nuxt-studio",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuxt-content/studio.git"
+  },
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -20,6 +23,9 @@
       "default": "./dist/app/service-worker.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "main": "./dist/module/module.mjs",
   "scripts": {
     "prepack": "nuxt-module-build build src/module; vite build src/app",
@@ -78,5 +84,16 @@
     "minimark": "^0.2.0",
     "ofetch": "^1.4.1",
     "unstorage": "^1.17.1"
-  }
+  },
+  "keywords": [
+    "nuxt",
+    "content",
+    "nuxt-module",
+    "studio",
+    "editor",
+    "preview",
+    "cms",
+    "markdown",
+    "mdc"
+  ]
 }
