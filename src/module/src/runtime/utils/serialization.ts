@@ -1,3 +1,4 @@
+// @ts-expect-error missing js-yaml
 import yaml from 'js-yaml'
 
 export const yamlToJson = (data: string) => {

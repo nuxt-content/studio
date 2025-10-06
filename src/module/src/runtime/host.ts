@@ -2,9 +2,9 @@ import { ref } from 'vue'
 import { ensure } from './utils/ensure'
 import type { CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
-import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collections'
+import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collection'
 import { kebabCase } from 'scule'
-import type { UseStudioHost, StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
+import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 import { generateDocumentFromContent } from './utils/content'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
@@ -27,12 +27,6 @@ function getSidebarWidth(): number {
     }
   }
   return sidebarWidth
-}
-
-declare global {
-  interface Window {
-    useStudioHost: UseStudioHost
-  }
 }
 
 // TODO: Move styles and these logics out of host (Maybe have a injectCSS util in host)
