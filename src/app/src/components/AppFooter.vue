@@ -35,7 +35,7 @@ const userMenuItems = computed(() => [
         to: repositoryUrl.value,
         target: '_blank',
       }
-    : undefined
+    : undefined,
   ].filter(Boolean),
   [{
     label: 'Sign out',
