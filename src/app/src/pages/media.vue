@@ -15,14 +15,13 @@ const currentTreeItem = computed(() => context.activeTree.value.currentItem.valu
 const currentDraftItem = computed(() => context.activeTree.value.draft.current.value)
 
 async function onFileDrop(event: DragEvent) {
-  console.log('onFileDrop')
   if (currentDraftItem.value) {
     return
   }
 
   if (event.dataTransfer?.files) {
     await context.itemActionHandler[StudioItemActionId.UploadMedia]({
-      directory: currentTreeItem.value.fsPath,
+      parentFsPath: currentTreeItem.value.fsPath,
       files: Array.from(event.dataTransfer.files),
     })
   }
@@ -31,7 +30,6 @@ async function onFileDrop(event: DragEvent) {
 
 <template>
   <div
-    class="flex flex-col h-full"
     @drop.prevent.stop="onFileDrop"
     @dragover.prevent.stop
   >
@@ -45,7 +43,7 @@ async function onFileDrop(event: DragEvent) {
     />
     <div
       v-else
-      class="flex flex-col p-4 h-full"
+      class="flex flex-col p-4"
     >
       <ItemTree
         v-if="folderTree?.length > 0 || isFolderCreationInProgress"

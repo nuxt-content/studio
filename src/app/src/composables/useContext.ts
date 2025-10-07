@@ -97,9 +97,9 @@ export const useContext = createSharedComposable((
       const draftItem = await activeTree.value.draft.create(document)
       await activeTree.value.selectItemById(draftItem.id)
     },
-    [StudioItemActionId.UploadMedia]: async ({ directory, files }: UploadMediaParams) => {
+    [StudioItemActionId.UploadMedia]: async ({ parentFsPath, files }: UploadMediaParams) => {
       for (const file of files) {
-        await (activeTree.value.draft as ReturnType<typeof useDraftMedias>).upload(directory, file)
+        await (activeTree.value.draft as ReturnType<typeof useDraftMedias>).upload(parentFsPath, file)
       }
     },
     [StudioItemActionId.RevertItem]: async (item: TreeItem) => {

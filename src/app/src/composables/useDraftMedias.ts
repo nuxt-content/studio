@@ -39,7 +39,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     const item: DraftItem = {
       id: media.id,
       fsPath,
-      original: media,
       githubFile,
       status: getDraftStatus(media),
       modified: media,
@@ -54,15 +53,15 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     return item
   }
 
-  async function upload(directory: string, file: File) {
-    const draftItem = await fileToDraftItem(directory, file)
+  async function upload(parentFsPath: string, file: File) {
+    const draftItem = await fileToDraftItem(parentFsPath, file)
     host.media.upsert(draftItem.id, draftItem.modified!)
     await create(draftItem.modified!)
   }
 
-  async function fileToDraftItem(directory: string, file: File): Promise<DraftItem<MediaItem>> {
+  async function fileToDraftItem(parentFsPath: string, file: File): Promise<DraftItem<MediaItem>> {
     const rawData = await fileToDataUrl(file)
-    const fsPath = directory && directory !== '/' ? joinURL(directory, file.name) : file.name
+    const fsPath = parentFsPath !== '/' ? joinURL(parentFsPath, file.name) : file.name
 
     return {
       id: `public-assets/${fsPath}`,
@@ -144,7 +143,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       }
 
       if (existingItem.status === DraftStatus.Created) {
-        await host.document.delete(draftItem.id)
+        await host.media.delete(draftItem.id)
         await storage.removeItem(draftItem.id)
         list.value = list.value.filter(item => item.id !== draftItem.id)
       }
@@ -156,7 +155,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       }
     }
 
-    await hooks.callHook('studio:draft:document:updated')
+    await hooks.callHook('studio:draft:media:updated')
 
     host.app.requestRerender()
   }

@@ -1,4 +1,4 @@
-import { StudioFeature, type StudioHost, type TreeItem } from '../types'
+import { StudioFeature, TreeStatus, type StudioHost, type TreeItem, DraftStatus } from '../types'
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
 import type { useDraftMedias } from './useDraftMedias'
@@ -10,16 +10,20 @@ import type { useUI } from './useUI'
 export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<typeof useUI>, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
   const hooks = useHooks()
 
+  const tree = ref<TreeItem[]>([])
+
   const rootItem = computed<TreeItem>(() => {
+    const draftedTreeItems = draft.list.value.filter(draft => draft.status !== DraftStatus.Pristine)
     return {
       id: type === StudioFeature.Content ? TreeRootId.Content : TreeRootId.Media,
       name: type === StudioFeature.Content ? 'content' : 'media',
       type: 'root',
       fsPath: '/',
+      children: tree.value,
+      status: draftedTreeItems.length > 0 ? TreeStatus.Updated : null,
     } as TreeItem
   })
 
-  const tree = ref<TreeItem[]>([])
   const currentItem = ref<TreeItem>(rootItem.value)
 
   const currentTree = computed<TreeItem[]>(() => {

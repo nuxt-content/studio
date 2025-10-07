@@ -1,3 +1,5 @@
+import { TreeRootId } from '../../src/utils/tree'
+
 /**
  * Normalize a storage key using the same logic as unstorage
  */
@@ -14,10 +16,17 @@ export function normalizeKey(key: string): string {
     || ''
 }
 
-/**
- * Generate a unique test document ID to avoid conflicts between tests
- */
 export function generateUniqueDocumentId(filename = 'document'): string {
   const uniqueId = Math.random().toString(36).substr(2, 9)
   return `docs/${filename}-${uniqueId}.md`
+}
+
+export function generateUniqueMediaId(filename = 'media'): string {
+  const uniqueId = Math.random().toString(36).substr(2, 9)
+  return `${TreeRootId.Media}/${filename}-${uniqueId}.md`
+}
+
+export function generateUniqueMediaName(filename = 'media', extension = 'png'): string {
+  const uniqueId = Math.random().toString(36).substr(2, 9)
+  return `${filename}-${uniqueId}.${extension}`
 }

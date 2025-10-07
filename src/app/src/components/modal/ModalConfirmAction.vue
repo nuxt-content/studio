@@ -58,7 +58,9 @@ const handleConfirm = async () => {
       color: 'success',
     })
   }
-  catch {
+  catch (e) {
+    console.error(e)
+
     toast.add({
       title: errorMessageMap[props.actionId],
       color: 'error',

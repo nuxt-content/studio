@@ -1,10 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { type StudioHost, DraftStatus } from '../../../src/types'
-import { createMockDocument, createMockStorage, createMockHooks } from '../../mocks/document'
-import { createMockHost } from '../../mocks/host'
-import { createMockGit } from '../../mocks/git'
-import { useDraftDocuments } from '../../../src/composables/useDraftDocuments'
-import { normalizeKey, generateUniqueDocumentId } from '../../utils'
+import { type DraftItem, type MediaItem, type StudioHost, DraftStatus } from '../../src/types'
+import { createMockDocument } from '../mocks/document'
+import { createMockFile, setupMediaMocks } from '../mocks/media'
+import { createMockHost } from '../mocks/host'
+import { createMockGit } from '../mocks/git'
+import { createMockStorage, createMockHooks } from '../mocks/draft'
+import { useDraftDocuments } from '../../src/composables/useDraftDocuments'
+import { useDraftMedias } from '../../src/composables/useDraftMedias'
+import { normalizeKey, generateUniqueDocumentId, generateUniqueMediaName } from '../utils'
+import { TreeRootId } from '../../src/utils/tree'
+import { joinURL } from 'ufo'
 
 // Use the existing utilities from mocks/document.ts
 const mockStorage = createMockStorage()
@@ -40,7 +45,7 @@ vi.mock('@vueuse/core', () => ({
   createSharedComposable: <T extends (...args: unknown[]) => unknown>(fn: T): T => fn,
 }))
 
-describe('useDraftDocuments - Action Chains Integration Tests', () => {
+describe('Document draft - Action Chains Integration Tests', () => {
   let mockHost: StudioHost
   let mockGit: ReturnType<typeof createMockGit>
   let documentId: string
@@ -65,9 +70,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
 
     const mockDocument = createMockDocument(documentId)
 
-    /*
-      STEP 1: CREATE
-    */
+    /* STEP 1: CREATE */
     await create(mockDocument)
 
     // Storage
@@ -79,9 +82,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Created)
 
-    /*
-      STEP 2: REVERT
-    */
+    /* STEP 2: REVERT */
     await revert(documentId)
 
     // Storage
@@ -97,9 +98,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
 
     const mockDocument = createMockDocument(documentId)
 
-    /*
-      STEP 1: CREATE
-    */
+    /* STEP 1: CREATE */
     await create(mockDocument)
 
     // Storage
@@ -111,9 +110,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Created)
 
-    /*
-      STEP 2: UPDATE
-    */
+    /* STEP 2: UPDATE */
     await update(documentId, mockDocument)
 
     // Storage
@@ -125,9 +122,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Created)
 
-    /*
-      STEP 3: REVERT
-    */
+    /* STEP 3: REVERT */
     await revert(documentId)
 
     // Storage
@@ -141,9 +136,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     const draftDocuments = useDraftDocuments(mockHost, mockGit as never)
     const { selectById, update, revert, list } = draftDocuments
 
-    /*
-      STEP 1: SELECT
-    */
+    /* STEP 1: SELECT */
     await selectById(documentId)
 
     // Storage
@@ -155,9 +148,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Pristine)
 
-    /*
-      STEP 2: UPDATE
-    */
+    /* STEP 2: UPDATE */
     const updatedDocument = createMockDocument(documentId, {
       body: {
         type: 'minimark',
@@ -175,9 +166,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Updated)
 
-    /*
-      STEP 3: REVERT
-    */
+    /* STEP 3: REVERT */
     await revert(documentId)
 
     // Storage
@@ -196,9 +185,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
 
     const createdDocument = createMockDocument(documentId)
 
-    /*
-      STEP 1: SELECT
-    */
+    /* STEP 1: SELECT */
     await selectById(documentId)
 
     // Storage
@@ -210,9 +197,7 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     expect(list.value).toHaveLength(1)
     expect(list.value[0].status).toEqual(DraftStatus.Pristine)
 
-    /*
-      STEP 2: RENAME
-    */
+    /* STEP 2: RENAME */
     const newId = generateUniqueDocumentId()
     const newFsPath = mockHost.document.getFileSystemPath(newId)
     await rename([{ id: documentId, newFsPath }])
@@ -283,5 +268,65 @@ describe('useDraftDocuments - Action Chains Integration Tests', () => {
     const updatedDraftMemory = list.value.find(item => item.id === newId)
     expect(updatedDraftMemory).toHaveProperty('status', DraftStatus.Created)
     expect(updatedDraftMemory).toHaveProperty('original', createdDocument)
+  })
+})
+
+describe('Media draft - Action Chains Integration Tests', () => {
+  let mockHost: StudioHost
+  let mockGit: ReturnType<typeof createMockGit>
+  let mediaName: string
+  let mediaId: string
+  let parentPath: string
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockStorage.clear()
+    mockHooks.callHook.mockResolvedValue(undefined)
+
+    // Setup media-related mocks
+    setupMediaMocks()
+
+    // Create unique test document ID for each test
+    parentPath = '/'
+    mediaName = generateUniqueMediaName()
+    mediaId = joinURL(TreeRootId.Media, mediaName)
+
+    // Create fresh mock instances using utilities
+    mockGit = createMockGit()
+    mockHost = createMockHost()
+  })
+
+  it('Upload > Revert', async () => {
+    const draftMedias = useDraftMedias(mockHost, mockGit as never)
+    const { upload, revert, list } = draftMedias
+
+    const file = createMockFile(mediaName)
+
+    /* STEP 1: UPLOAD */
+    await upload(parentPath, file)
+
+    // Storage
+    expect(mockStorage.size).toEqual(1)
+    const storedDraft: DraftItem<MediaItem> = JSON.parse(mockStorage.get(normalizeKey(mediaId))!)
+    expect(storedDraft).toHaveProperty('status', DraftStatus.Created)
+    expect(storedDraft).toHaveProperty('id', mediaId)
+    expect(storedDraft.original).toBeUndefined()
+    expect(storedDraft.modified).toHaveProperty('id', mediaId)
+
+    // Memory
+    expect(list.value).toHaveLength(1)
+    expect(list.value[0]).toHaveProperty('status', DraftStatus.Created)
+    expect(list.value[0]).toHaveProperty('id', mediaId)
+    expect(list.value[0].original).toBeUndefined()
+    expect(list.value[0].modified).toHaveProperty('id', mediaId)
+
+    /* STEP 2: REVERT */
+    await revert(mediaId)
+
+    // Storage
+    expect(mockStorage.size).toEqual(0)
+
+    // Memory
+    expect(list.value).toHaveLength(0)
   })
 })

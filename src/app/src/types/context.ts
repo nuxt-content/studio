@@ -43,7 +43,7 @@ export interface RenameFileParams {
 }
 
 export interface UploadMediaParams {
-  directory: string
+  parentFsPath: string
   files: File[]
 }
 

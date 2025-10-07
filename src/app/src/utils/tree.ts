@@ -314,26 +314,28 @@ export function findDescendantsFileItemsFromId(tree: TreeItem[], id: string): Tr
 
 function calculateDirectoryStatuses(items: TreeItem[]) {
   for (const item of items) {
-    if (item.type === 'directory' && item.children) {
-      calculateDirectoryStatuses(item.children)
+    if (item.type === 'file' || !item.children) {
+      continue
+    }
 
-      const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
+    calculateDirectoryStatuses(item.children)
 
-      if (childrenWithStatus.length > 0) {
-        item.status = TreeStatus.Updated
+    const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
 
-        const allChildrenHaveStatus = childrenWithStatus.length === item.children.length
+    if (childrenWithStatus.length > 0) {
+      item.status = TreeStatus.Updated
 
-        if (allChildrenHaveStatus) {
-          if (childrenWithStatus.every(child => child.status === TreeStatus.Deleted)) {
-            item.status = TreeStatus.Deleted
-          }
-          else if (childrenWithStatus.every(child => child.status === TreeStatus.Renamed)) {
-            item.status = TreeStatus.Renamed
-          }
-          else if (childrenWithStatus.every(child => child.status === TreeStatus.Created)) {
-            item.status = TreeStatus.Created
-          }
+      const allChildrenHaveStatus = childrenWithStatus.length === item.children.length
+
+      if (allChildrenHaveStatus) {
+        if (childrenWithStatus.every(child => child.status === TreeStatus.Deleted)) {
+          item.status = TreeStatus.Deleted
+        }
+        else if (childrenWithStatus.every(child => child.status === TreeStatus.Renamed)) {
+          item.status = TreeStatus.Renamed
+        }
+        else if (childrenWithStatus.every(child => child.status === TreeStatus.Created)) {
+          item.status = TreeStatus.Created
         }
       }
     }
