@@ -19,6 +19,7 @@ export * from './ui'
 
 export interface StudioHost {
   meta: {
+    dev: boolean
     components: () => ComponentMeta[]
   }
   on: {
@@ -26,6 +27,8 @@ export interface StudioHost {
     mounted: (fn: () => void) => void
     beforeUnload: (fn: (event: BeforeUnloadEvent) => void) => void
     colorModeChange: (fn: (colorMode: 'light' | 'dark') => void) => void
+    documentUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
+    mediaUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
   }
   ui: {
     colorMode: 'light' | 'dark'

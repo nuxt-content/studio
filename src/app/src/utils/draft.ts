@@ -2,8 +2,13 @@ import { type DatabasePageItem, type DraftItem, type BaseItem, ContentFileExtens
 import { DraftStatus } from '../types'
 import { ROOT_ITEM } from './tree'
 import { isEqual } from './database'
+import { studioFlags } from '../composables/useStudio'
 
 export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftStatus {
+  if (studioFlags.dev) {
+    return DraftStatus.Pristine
+  }
+
   if (!modified && !original) {
     throw new Error('Unconsistent state: both modified and original are undefined')
   }

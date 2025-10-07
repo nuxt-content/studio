@@ -100,6 +100,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
   const host: StudioHost = {
     meta: {
+      dev: false,
       components: () => meta.componentsMeta.value,
     },
     on: {
@@ -126,6 +127,12 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           attributes: true,
           attributeFilter: ['class'],
         })
+      },
+      documentUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => {
+        // no operation
+      },
+      mediaUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => {
+        // no operation
       },
     },
     ui: {

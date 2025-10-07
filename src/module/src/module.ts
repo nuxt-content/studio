@@ -1,9 +1,11 @@
-import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler, addTemplate, addVitePlugin } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
 import { resolve } from 'node:path'
 import fsDriver from 'unstorage/drivers/fs'
 import { createStorage } from 'unstorage'
+import type { ViteDevServer } from 'vite'
+import { getAssetsStorageDevTemplate, getAssetsStorageTemplate } from './templates'
 
 interface ModuleOptions {
   devStorage?: boolean
@@ -38,7 +40,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'contentStudio',
   },
   defaults: {
-    devStorage: false,
+    devStorage: true,
   },
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -113,14 +115,22 @@ export default defineNuxtModule<ModuleOptions>({
 
       nuxt.options.nitro.storage = {
         ...nuxt.options.nitro.storage,
-        nuxt_content_studio: {
+        nuxt_studio_content: {
           driver: 'fs',
           base: resolve(nuxt.options.rootDir, 'content'),
         },
+        nuxt_studio_public_assets: {
+          driver: 'fs',
+          base: resolve(nuxt.options.srcDir, 'public'),
+        },
       }
       addServerHandler({
-        route: '/__nuxt_content/studio/dev/fs/**',
-        handler: runtime('./server/routes/dev/fs/[...path]'),
+        route: '/__nuxt_content/studio/dev/content/**',
+        handler: runtime('./server/routes/dev/content/[...path]'),
+      })
+      addServerHandler({
+        route: '/__nuxt_content/studio/dev/public/**',
+        handler: runtime('./server/routes/dev/public/[...path]'),
       })
     }
 
@@ -129,33 +139,26 @@ export default defineNuxtModule<ModuleOptions>({
         base: resolve(nuxt.options.rootDir, 'public'),
       }),
     })
-    assetsStorage.getKeys()
-      .then((keys) => {
-        addTemplate({
-          filename: 'content-studio-public-assets.mjs',
-          getContents: () => {
-            return [
-              'import { createStorage } from \'unstorage\'',
-              'const storage = createStorage({})',
-              '',
-              ...keys.map((key) => {
-                const value = {
-                  id: `public-assets/${key.replace(/:/g, '/')}`,
-                  extension: key.split('.').pop(),
-                  stem: key.split('.').join('.'),
-                  path: '/' + key.replace(/:/g, '/'),
-                }
-                return `storage.setItem('${value.id}', ${JSON.stringify(value)})`
-              }),
-              '',
-              'export const publicAssetsStorage = storage',
-            ].join('\n')
-          },
+    addTemplate({
+      filename: 'content-studio-public-assets.mjs',
+      getContents: () => nuxt.options.dev
+        ? getAssetsStorageDevTemplate(assetsStorage, nuxt)
+        : getAssetsStorageTemplate(assetsStorage, nuxt)
+    })
+
+    addVitePlugin({
+      name: 'nuxt-studio',
+      configureServer: (server: ViteDevServer) => {
+        assetsStorage.watch((type, file) => {
+          server.ws.send({
+            type: 'custom',
+            event: 'nuxt-studio:media:update',
+            data: { type, id: `public-assets/${file}` },
+          })
         })
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      }, 
+      closeWatcher: () => { assetsStorage.unwatch() },
+    })
 
     addServerHandler({
       route: '/__nuxt_content/studio/auth/github',

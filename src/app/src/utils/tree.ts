@@ -4,6 +4,7 @@ import { stripNumericPrefix } from './string'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
 import { isEqual } from './database'
+import { studioFlags } from '../composables/useStudio'
 
 export const ROOT_ITEM: TreeItem = { id: 'root', name: 'content', fsPath: '/', type: 'root' }
 
@@ -185,6 +186,10 @@ TreeItem[] {
 }
 
 export function getTreeStatus(modified?: BaseItem, original?: BaseItem): TreeStatus {
+  if (studioFlags.dev) {
+      return TreeStatus.Opened
+    }
+
   if (!original && !modified) {
     throw new Error('Unconsistent state: both modified and original are undefined')
   }
@@ -310,6 +315,10 @@ export function findDescendantsFileItemsFromId(tree: TreeItem[], id: string): Tr
 }
 
 function calculateDirectoryStatuses(items: TreeItem[]) {
+  if (studioFlags.dev) {
+    return
+  }
+
   for (const item of items) {
     if (item.type === 'directory' && item.children) {
       calculateDirectoryStatuses(item.children)

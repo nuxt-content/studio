@@ -43,7 +43,7 @@
     "test:types": "vue-tsc --noEmit && cd playground/docus && vue-tsc --noEmit"
   },
   "devDependencies": {
-    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@22409fe",
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@b7bb80d",
     "@nuxt/eslint-config": "latest",
     "@nuxt/kit": "^4.1.2",
     "@nuxt/module-builder": "latest",
@@ -65,7 +65,7 @@
     "zod": "^4.1.11"
   },
   "resolutions": {
-    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@22409fe",
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@b7bb80d",
     "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@61af819",
     "remark-mdc": "npm:remark-mdc-edge@3.6.0-29310522.024adeb"
   },

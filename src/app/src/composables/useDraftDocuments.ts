@@ -1,5 +1,3 @@
-import { createStorage } from 'unstorage'
-import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { ref } from 'vue'
 import type { DatabaseItem, DraftItem, StudioHost, GithubFile, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
@@ -9,13 +7,7 @@ import { findDescendantsFromId, getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
 import { joinURL } from 'ufo'
-
-const storage = createStorage({
-  driver: indexedDbDriver({
-    dbName: 'content-studio-document',
-    storeName: 'drafts',
-  }),
-})
+import { documentStorage as storage } from '../utils/storage'
 
 export const useDraftDocuments = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
   const list = ref<DraftItem<DatabaseItem>[]>([])

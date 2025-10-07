@@ -50,7 +50,7 @@ const language = computed(() => {
 })
 
 // Trigger on document changes
-watch(() => document.value?.id, async () => {
+watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
   if (document.value?.body) {
     setContent(document.value)
   }

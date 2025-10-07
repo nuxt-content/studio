@@ -22,6 +22,12 @@ export interface DraftItem<T = DatabaseItem | MediaItem> {
    * - Buffer: Media content
    */
   raw?: string | Buffer
+  /**
+   * Version of the draft
+   * Incremented when the draft is updated
+   * Used to detect changes when the draft is saved
+   */
+  version?: number
 }
 
 // export interface DraftItem extends DraftItem {

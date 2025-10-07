@@ -8,9 +8,9 @@ import { removeReservedKeysFromDocument } from '../../../../utils/content'
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {
-  const path = event.path.replace('/__nuxt_content/studio/dev/fs/', '')
+  const path = event.path.replace('/__nuxt_content/studio/dev/content/', '')
   const key = path.replace(/\//g, ':').replace(/^content:/, '')
-  const storage = useStorage('nuxt_content_studio')
+  const storage = useStorage('nuxt_studio_content')
 
   // GET => getItem / getKeys
   if (event.method === 'GET') {

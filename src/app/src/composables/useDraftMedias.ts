@@ -1,6 +1,4 @@
 import { ref } from 'vue'
-import { createStorage } from 'unstorage'
-import indexedDbDriver from 'unstorage/drivers/indexedb'
 import { joinURL, withLeadingSlash } from 'ufo'
 import type { DraftItem, StudioHost, GithubFile, MediaItem, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
@@ -8,13 +6,7 @@ import type { useGit } from './useGit'
 import { getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
-
-const storage = createStorage({
-  driver: indexedDbDriver({
-    dbName: 'content-studio-media',
-    storeName: 'drafts',
-  }),
-})
+import { mediaStorage as storage } from '../utils/storage'
 
 export const useDraftMedias = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
   const list = ref<DraftItem[]>([])
@@ -277,7 +269,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
         extension: fsPath.split('.').pop()!,
         stem: fsPath.split('.').join('.'),
         path: withLeadingSlash(fsPath),
-        preview: await resizedataURL(rawData, 128, 128),
         raw: rawData,
       },
     }
@@ -289,26 +280,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       reader.readAsDataURL(file)
       reader.onload = () => resolve(reader.result as string)
       reader.onerror = error => reject(error)
-    })
-  }
-
-  function resizedataURL(datas: string, wantedWidth: number, wantedHeight: number): Promise<string> {
-    return new Promise(function (resolve) {
-      const img = document.createElement('img')
-      img.onload = function () {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')!
-
-        canvas.width = wantedWidth
-        canvas.height = wantedHeight
-
-        ctx.drawImage(img, 0, 0, wantedWidth, wantedHeight)
-
-        const dataURI = canvas.toDataURL()
-
-        resolve(dataURI)
-      }
-      img.src = datas
     })
   }
 

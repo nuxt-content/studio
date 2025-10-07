@@ -3,13 +3,13 @@ import { parseMarkdown } from '@nuxtjs/mdc/runtime'
 import { omit } from './object'
 import type { DatabaseItem } from 'nuxt-studio/app'
 import { compressTree } from '@nuxt/content/runtime'
-import { ContentFileExtension } from 'nuxt-studio/app'
 import { parseFrontMatter } from 'remark-mdc'
 import { destr } from 'destr'
 import { visit } from 'unist-util-visit'
 import type { Node } from 'unist'
 import type { MDCElement } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
+import { ContentFileExtension } from '../../types/content'
 
 export function removeReservedKeysFromDocument(document: DatabaseItem) {
   const result = omit(document, ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta'])

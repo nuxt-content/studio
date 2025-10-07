@@ -10,3 +10,10 @@ export interface ContentProvide {
   collections: Record<string, CollectionInfo>
 }
 export type ContentDatabaseAdapter = (collection: string) => DatabaseAdapter
+
+export enum ContentFileExtension {
+  Markdown = "md",
+  YAML = "yaml",
+  YML = "yml",
+  JSON = "json"
+}

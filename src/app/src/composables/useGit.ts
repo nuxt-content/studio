@@ -5,6 +5,13 @@ import { DraftStatus } from '../types/draft'
 
 import { joinURL } from 'ufo'
 
+export const useDevelopmentGit = (_options: GitOptions) => {
+  return {
+    fetchFile: (_path: string, _options: { cached?: boolean } = {}):  Promise<GithubFile | null> => Promise.resolve(null),
+    commitFiles: (_files: RawFile[], _message: string): Promise<{ success: boolean, commitSha: string, url: string } | null> => Promise.resolve(null),
+  }
+}
+
 export const useGit = createSharedComposable(({ owner, repo, token, branch, rootDir, authorName, authorEmail }: GitOptions) => {
   const gitFiles: Record<string, GithubFile> = {}
   const $api = ofetch.create({
@@ -49,9 +56,9 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     }
   }
 
-  function commitFiles(files: RawFile[], message: string) {
+  function commitFiles(files: RawFile[], message: string): Promise<{ success: boolean, commitSha: string, url: string } | null> {
     if (!token) {
-      return null
+      return Promise.resolve(null)
     }
     files = files.map(file => ({ ...file, path: joinURL(rootDir, file.path) }))
 
