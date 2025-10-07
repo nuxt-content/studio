@@ -41,7 +41,7 @@ export default eventHandler(async (event) => {
     }
     else if (getRequestHeader(event, 'content-type') === 'text/plain') {
       const value = await readRawBody(event, 'utf8')
-      await storage.setItem(key, value)
+      await storage.setItem(key, value!)
     }
     else {
       const value = await readRawBody(event, 'utf8')
