@@ -67,8 +67,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
       await remove([id])
 
-      console.log('Rename currentDbItem', currentDbItem)
-
       const newDbItem: MediaItem = {
         ...currentDbItem,
         id: joinURL(TreeRootId.Media, newFsPath),

@@ -271,11 +271,19 @@ describe('Document draft - Action Chains Integration Tests', () => {
     expect(updatedDraftMemory).toHaveProperty('original', createdDocument)
   })
 
-  it('Rename > Revert', async () => {
+  it.only('Select > Rename > Revert', async () => {
     const draftDocuments = useDraftDocuments(mockHost, mockGit as never)
-    const { rename, revert, list } = draftDocuments
+    const { selectById, rename, revert, list } = draftDocuments
 
-    /* STEP 1: RENAME */
+    /* STEP 1: SELECT */
+    await selectById(documentId)
+
+    // Storage
+    expect(mockStorage.size).toEqual(1)
+    const initialDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
+    expect(initialDraft).toHaveProperty('status', DraftStatus.Pristine)
+
+    /* STEP 2: RENAME */
     const newId = generateUniqueDocumentId()
     const newFsPath = mockHost.document.getFileSystemPath(newId)
     await rename([{ id: documentId, newFsPath }])
