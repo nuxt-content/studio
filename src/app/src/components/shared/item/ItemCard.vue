@@ -30,6 +30,7 @@ const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_U
     reverse
     class="cursor-pointer hover:bg-muted relative w-full min-w-0 overflow-hidden"
     :class="statusRingColor"
+    :ui="{ container: 'overflow-hidden' }"
   >
     <div
       v-if="item.type === 'file'"
@@ -80,7 +81,7 @@ const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_U
               class="h-4 w-4 shrink-0 text-muted"
             />
             <h3
-              class="text-sm font-semibold truncate text-default"
+              class="text-sm font-semibold truncate text-default overflow-hidden"
               :class="props.item.status === 'deleted' && 'line-through'"
             >
               {{ name }}
@@ -90,9 +91,9 @@ const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_U
         </div>
 
         <UTooltip :text="item.routePath">
-          <span class="truncate leading-relaxed text-xs text-dimmed block w-full">
+          <div class="truncate leading-relaxed text-xs text-dimmed block w-full">
             {{ item.routePath || item.fsPath }}
-          </span>
+          </div>
         </UTooltip>
       </div>
     </template>
