@@ -20,7 +20,7 @@ const name = computed(() => titleCase(props.item.name))
 
 const itemExtensionIcon = computed(() => isMedia.value ? '' : getFileIcon(props.item.id))
 
-const imageSrc = computed(() => props.item.routePath || '')
+const imageSrc = computed(() => isMedia.value ? props.item.routePath : '')
 
 // ring-(--ui-success) ring-(--ui-info) ring-(--ui-warning) ring-(--ui-error) ring-(--ui-neutral)
 const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_UI_STATUS_MAP[props.item.status]})` : 'ring-(--ui-border) hover:ring-(--ui-border-accented)')
