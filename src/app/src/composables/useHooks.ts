@@ -3,7 +3,7 @@ import { createHooks } from 'hookable'
 
 export const useHooks = createSharedComposable(() => {
   return createHooks<{
-    'studio:draft:document:updated': () => void
-    'studio:draft:media:updated': () => void
+    'studio:draft:document:updated': ({ caller }: { caller: string }) => void
+    'studio:draft:media:updated': ({ caller }: { caller: string }) => void
   }>()
 })

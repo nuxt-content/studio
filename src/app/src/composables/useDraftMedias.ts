@@ -8,6 +8,7 @@ import { createSharedComposable } from '@vueuse/core'
 import { useBaseDraft } from './useDraftBase'
 import { TreeRootId } from '../utils/tree'
 import { generateStemFromFsPath } from '../../../module/src/runtime/utils/media'
+import { useHooks } from './useHooks'
 
 const storage = createStorage<DraftItem<MediaItem>>({
   driver: indexedDbDriver({
@@ -15,6 +16,8 @@ const storage = createStorage<DraftItem<MediaItem>>({
     storeName: 'drafts',
   }),
 })
+
+const hooks = useHooks()
 
 export const useDraftMedias = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
   const {
@@ -50,7 +53,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
         extension: fsPath.split('.').pop()!,
         stem: fsPath.split('.').join('.'),
         path: withLeadingSlash(fsPath),
-        preview: await resizedataURL(rawData, 128, 128),
         raw: rawData,
       },
     }
@@ -65,7 +67,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
         throw new Error(`Database item not found for document ${id}`)
       }
 
-      await remove([id])
+      await remove([id], { rerender: false })
 
       const newDbItem: MediaItem = {
         ...currentDbItem,
@@ -75,8 +77,10 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       }
 
       await host.media.upsert(newDbItem.id, newDbItem)
-      await create(newDbItem, currentDbItem)
+      await create(newDbItem, currentDbItem, { rerender: false })
     }
+
+    await hooks.callHook('studio:draft:media:updated', { caller: 'useDraftMedias.rename' })
   }
 
   function fileToDataUrl(file: File): Promise<string> {
@@ -85,26 +89,6 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       reader.readAsDataURL(file)
       reader.onload = () => resolve(reader.result as string)
       reader.onerror = error => reject(error)
-    })
-  }
-
-  function resizedataURL(datas: string, wantedWidth: number, wantedHeight: number): Promise<string> {
-    return new Promise(function (resolve) {
-      const img = document.createElement('img')
-      img.onload = function () {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')!
-
-        canvas.width = wantedWidth
-        canvas.height = wantedHeight
-
-        ctx.drawImage(img, 0, 0, wantedWidth, wantedHeight)
-
-        const dataURI = canvas.toDataURL()
-
-        resolve(dataURI)
-      }
-      img.src = datas
     })
   }
 

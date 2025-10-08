@@ -98,12 +98,14 @@ export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<ty
   }
 
   if (type === StudioFeature.Content) {
-    hooks.hook('studio:draft:document:updated', async () => {
+    hooks.hook('studio:draft:document:updated', async ({ caller }) => {
+      console.info('studio:draft:document:updated have been called by', caller)
       await handleDraftUpdate()
     })
   }
   else {
-    hooks.hook('studio:draft:media:updated', async () => {
+    hooks.hook('studio:draft:media:updated', async ({ caller }) => {
+      console.info('studio:draft:media:updated have been called by', caller)
       await handleDraftUpdate()
     })
   }

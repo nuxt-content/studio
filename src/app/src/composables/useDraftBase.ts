@@ -26,7 +26,7 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
     return list.value.find(item => item.id === id) as DraftItem<T>
   }
 
-  async function create(item: T, original?: T): Promise<DraftItem<T>> {
+  async function create(item: T, original?: T, { rerender = true }: { rerender?: boolean } = {}): Promise<DraftItem<T>> {
     const existingItem = list.value?.find(draft => draft.id === item.id)
     if (existingItem) {
       throw new Error(`Draft file already exists for document ${item.id}`)
@@ -51,19 +51,21 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
 
     list.value.push(draftItem)
 
-    await hooks.callHook(hookName)
+    if (rerender) {
+      await hooks.callHook(hookName, { caller: 'useBaseDraft.create' })
+    }
 
     return draftItem
   }
 
-  async function remove(ids: string[]) {
+  async function remove(ids: string[], { rerender = true }: { rerender?: boolean } = {}) {
     for (const id of ids) {
       const existingDraftItem = list.value.find(item => item.id === id) as DraftItem<T> | undefined
       const fsPath = hostDb.getFileSystemPath(id)
-      const originalDbItem = await host.media.get(id) as T
+      const originalDbItem = await hostDb.get(id) as T
 
       await storage.removeItem(id)
-      await host.media.delete(id)
+      await hostDb.delete(id)
 
       let deleteDraftItem: DraftItem<T> | null = null
       if (existingDraftItem) {
@@ -103,11 +105,13 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
         await storage.setItem(id, deleteDraftItem)
       }
 
-      await hooks.callHook('studio:draft:media:updated')
+      if (rerender) {
+        await hooks.callHook('studio:draft:media:updated', { caller: 'useBaseDraft.remove' })
+      }
     }
   }
 
-  async function revert(id: string) {
+  async function revert(id: string, { rerender = true }: { rerender?: boolean } = {}) {
     const draftItems = findDescendantsFromId(list.value, id)
 
     for (const draftItem of draftItems) {
@@ -123,7 +127,7 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
 
         // Renamed draft
         if (existingItem.original) {
-          revert(existingItem.original.id)
+          revert(existingItem.original.id, { rerender })
         }
       }
       else {
@@ -135,7 +139,7 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
       }
     }
 
-    await hooks.callHook(hookName)
+    await hooks.callHook(hookName, { caller: 'useBaseDraft.revert' })
   }
 
   function select(draftItem: DraftItem<T> | null) {
@@ -183,7 +187,7 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
       }
     }))
 
-    await hooks.callHook(hookName)
+    await hooks.callHook(hookName, { caller: 'useBaseDraft.load' })
   }
 
   return {

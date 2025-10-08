@@ -51,7 +51,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
     // Trigger hook to warn that draft list has changed
     if (existingItem.status !== oldStatus) {
-      await hooks.callHook('studio:draft:document:updated')
+      await hooks.callHook('studio:draft:document:updated', { caller: 'useDraftDocuments.update' })
     }
     else {
       // Rerender host app
@@ -73,12 +73,15 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
       const content = await generateContentFromDocument(currentDbItem)
 
       // Delete renamed draft item
-      await remove([id])
+      await remove([id], { rerender: false })
 
       // Create new draft item
       const newDbItem = await host.document.create(newFsPath, content!)
-      await create(newDbItem, currentDbItem)
+
+      await create(newDbItem, currentDbItem, { rerender: false })
     }
+
+    await hooks.callHook('studio:draft:document:updated', { caller: 'useDraftDocuments.rename' })
   }
 
   async function duplicate(id: string): Promise<DraftItem<DatabaseItem>> {
