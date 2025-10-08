@@ -18,7 +18,7 @@ export interface DraftItem<T = DatabaseItem | MediaItem> {
   original?: T
   modified?: T
   /**
-   * - String: Markdown for docuemnts
+   * - String: Markdown for documents
    * - Buffer: Media content
    */
   raw?: string | Buffer

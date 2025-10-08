@@ -3,22 +3,37 @@ import { computed } from 'vue'
 import { useStudio } from '../composables/useStudio'
 import { StudioItemActionId } from '../types'
 
-const { mediaTree, context } = useStudio()
+const { context } = useStudio()
 
-const folderTree = computed(() => (mediaTree.current.value || []).filter(f => f.type === 'directory'))
-const fileTree = computed(() => (mediaTree.current.value || []).filter(f => f.type === 'file'))
+const folderTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'directory'))
+const fileTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'file'))
 
-const isFileCreationInProgress = computed(() => context.actionInProgress.value?.id === StudioItemActionId.CreateDocument)
-const isFolderCreationInProgress = computed(() => context.actionInProgress.value?.id === StudioItemActionId.CreateFolder)
+const currentTreeItem = computed(() => context.activeTree.value.currentItem.value)
+const currentDraftItem = computed(() => context.activeTree.value.draft.current.value)
+
+const showFolderForm = computed(() => {
+  return context.actionInProgress.value?.id === StudioItemActionId.CreateFolder
+    || (
+      context.actionInProgress.value?.id === StudioItemActionId.RenameItem
+      && context.actionInProgress.value?.item?.type === 'directory'
+    )
+})
+
+const showFileForm = computed(() => {
+  return context.actionInProgress.value?.id === StudioItemActionId.CreateDocument
+    || (
+      context.actionInProgress.value?.id === StudioItemActionId.RenameItem
+      && context.actionInProgress.value?.item?.type === 'file')
+})
 
 async function onFileDrop(event: DragEvent) {
-  if (mediaTree.draft.current.value) {
+  if (currentDraftItem.value) {
     return
   }
 
   if (event.dataTransfer?.files) {
     await context.itemActionHandler[StudioItemActionId.UploadMedia]({
-      directory: mediaTree.currentItem.value.fsPath,
+      parentFsPath: currentTreeItem.value.fsPath,
       files: Array.from(event.dataTransfer.files),
     })
   }
@@ -27,7 +42,6 @@ async function onFileDrop(event: DragEvent) {
 
 <template>
   <div
-    class="flex flex-col"
     @drop.prevent.stop="onFileDrop"
     @dragover.prevent.stop
   >
@@ -36,24 +50,24 @@ async function onFileDrop(event: DragEvent) {
       <ItemActionsToolbar />
     </div>
     <MediaEditor
-      v-if="mediaTree.currentItem.value.type === 'file' && mediaTree.draft.current.value"
-      :draft-item="mediaTree.draft.current.value"
+      v-if="currentTreeItem.type === 'file' && currentDraftItem"
+      :draft-item="currentDraftItem!"
     />
     <div
       v-else
-      class="flex flex-col p-4 min-h-[200px]"
+      class="flex flex-col p-4"
     >
       <ItemTree
-        v-if="folderTree?.length > 0 || isFolderCreationInProgress"
+        v-if="folderTree?.length > 0 || showFolderForm"
         class="mb-2"
         :tree="folderTree"
-        :show-creation-form="isFolderCreationInProgress"
+        :show-form="showFolderForm"
         type="directory"
       />
       <ItemTree
-        v-if="fileTree?.length > 0 || isFileCreationInProgress"
+        v-if="fileTree?.length > 0 || showFileForm"
         :tree="fileTree"
-        :show-creation-form="isFileCreationInProgress"
+        :show-form="showFileForm"
         type="file"
       />
     </div>

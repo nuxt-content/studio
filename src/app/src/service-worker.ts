@@ -1,15 +1,24 @@
 export const serviceWorker = () => `
 const DB_NAME = 'content-studio-media'
 const STORE_NAME = 'drafts'
-const EXTENSIONS_WITH_PREVIEW = new Set([
+
+const DraftStatus = {
+  Deleted: 'deleted',
+  Created: 'created',
+  Updated: 'updated',
+  Pristine: 'pristine'
+}
+
+const mediaFileExtensions = [
+  'png',
   'jpg',
   'jpeg',
-  'png',
-  'gif',
+  'svg',
   'webp',
   'ico',
-  'avif',
-])
+  'gif',
+]
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const isSameDomain = url.origin === self.location.origin;
@@ -18,8 +27,7 @@ self.addEventListener('fetch', event => {
     return event.respondWith(fetch(event.request));
   }
 
-  if (url.pathname.startsWith('/_ipx/_/') || EXTENSIONS_WITH_PREVIEW.has(url.pathname.split('.').pop())) {
-    console.log('Fetching from IndexedDB:', url.pathname);
+  if (url.pathname.startsWith('/_ipx/_/') || mediaFileExtensions.includes(url.pathname.split('.').pop())) {
     return event.respondWith(fetchFromIndexedDB(event, url));
   }
 
@@ -27,15 +35,30 @@ self.addEventListener('fetch', event => {
 })
 
 function fetchFromIndexedDB(event, url) {
+  console.log('Fetching from IndexedDB:', url.pathname);
   const dbKey = ['public-assets:', url.pathname.replace(/^\\/+(_ipx\\/_\\/)?/, '').replace('/', ':')].join('')
   return getData(dbKey).then(data => {
     if (!data) {
-      console.log('No data found in IndexedDB:', url.pathnam, dbKey);
+      console.log('No data found in IndexedDB:', url.pathname, dbKey);
       return fetch(event.request);
     }
 
-    const json = JSON.parse(data)
-    const parsed = parseDataUrl(json.modified.raw);
+    const dbItem = JSON.parse(data)
+
+    console.log('Data found in IndexedDB:', dbItem);
+
+    // Deleted file
+    if (dbItem.status === DraftStatus.Deleted) {
+      return fetch('https://placehold.co/1200x800?text=Deleted');
+    }
+
+    // Renamed file
+    if (dbItem.original?.path) {
+      return fetch(dbItem.original.path);
+    }
+
+    // Created file
+    const parsed = parseDataUrl(dbItem.modified.raw);
     const bytes = base64ToUint8Array(parsed.base64);
 
     return new Response(bytes, {

@@ -1,4 +1,4 @@
-import { StudioFeature, type StudioHost, type TreeItem } from '../types'
+import { StudioFeature, TreeStatus, type StudioHost, type TreeItem, DraftStatus } from '../types'
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
 import type { useDraftMedias } from './useDraftMedias'
@@ -10,16 +10,20 @@ import type { useUI } from './useUI'
 export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<typeof useUI>, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
   const hooks = useHooks()
 
+  const tree = ref<TreeItem[]>([])
+
   const rootItem = computed<TreeItem>(() => {
+    const draftedTreeItems = draft.list.value.filter(draft => draft.status !== DraftStatus.Pristine)
     return {
       id: type === StudioFeature.Content ? TreeRootId.Content : TreeRootId.Media,
       name: type === StudioFeature.Content ? 'content' : 'media',
       type: 'root',
       fsPath: '/',
+      children: tree.value,
+      status: draftedTreeItems.length > 0 ? TreeStatus.Updated : null,
     } as TreeItem
   })
 
-  const tree = ref<TreeItem[]>([])
   const currentItem = ref<TreeItem>(rootItem.value)
 
   const currentTree = computed<TreeItem[]>(() => {
@@ -72,9 +76,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<ty
 
   async function selectParentById(id: string) {
     const parent = findParentFromId(tree.value, id)
-    if (parent) {
-      await select(parent)
-    }
+    await select(parent || rootItem.value)
   }
 
   async function handleDraftUpdate() {
@@ -90,15 +92,20 @@ export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<ty
 
     // Reselect current item to update status
     select(findItemFromId(tree.value, currentItem.value.id)!)
+
+    // Rerender host app
+    host.app.requestRerender()
   }
 
   if (type === StudioFeature.Content) {
-    hooks.hook('studio:draft:document:updated', async () => {
+    hooks.hook('studio:draft:document:updated', async ({ caller }) => {
+      console.info('studio:draft:document:updated have been called by', caller)
       await handleDraftUpdate()
     })
   }
   else {
-    hooks.hook('studio:draft:media:updated', async () => {
+    hooks.hook('studio:draft:media:updated', async ({ caller }) => {
+      console.info('studio:draft:media:updated have been called by', caller)
       await handleDraftUpdate()
     })
   }

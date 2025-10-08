@@ -45,7 +45,9 @@ describe('computeActionItems', () => {
       action.id !== StudioItemActionId.RevertItem
       && action.id !== StudioItemActionId.DeleteItem
       && action.id !== StudioItemActionId.DuplicateItem
-      && action.id !== StudioItemActionId.RenameItem,
+      && action.id !== StudioItemActionId.RenameItem
+      && action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateDocument,
     )
 
     expect(result).toEqual(expectedActions)
@@ -286,7 +288,9 @@ describe('computeActionItems', () => {
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.RevertItem
-      && action.id !== StudioItemActionId.DuplicateItem,
+      && action.id !== StudioItemActionId.DuplicateItem
+      && action.id !== StudioItemActionId.CreateFolder
+      && action.id !== StudioItemActionId.CreateDocument,
     )
     expect(result).toEqual(expectedActions)
   })

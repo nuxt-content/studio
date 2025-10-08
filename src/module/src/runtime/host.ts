@@ -208,11 +208,11 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
         return document!
       },
-      upsert: async (id: string, upsertedDocument: CollectionItemBase) => {
+      upsert: async (id: string, document: CollectionItemBase) => {
         id = id.replace(/:/g, '/')
 
         const collection = getCollectionInfo(id, useContentCollections()).collection
-        const doc = createCollectionDocument(collection, id, upsertedDocument)
+        const doc = createCollectionDocument(collection, id, document)
 
         await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
         await useContentDatabaseAdapter(collection.name).exec(generateRecordInsert(collection, doc))
@@ -247,24 +247,8 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       list: async (): Promise<MediaItem[]> => {
         return await Promise.all(await publicAssetsStorage.getKeys().then(keys => keys.map(key => publicAssetsStorage.getItem(key)))) as MediaItem[]
       },
-      upsert: async (id: string, upsertedDocument: MediaItem) => {
-        await publicAssetsStorage.setItem(id, upsertedDocument)
-      },
-      create: async (fsPath: string, routePath: string, content: string) => {
-        await publicAssetsStorage.setItem(fsPath, {
-          id: fsPath,
-          fsPath,
-          routePath,
-          content,
-        })
-        return {
-          id: fsPath,
-          extension: fsPath.split('.').pop(),
-          stem: fsPath.split('.').slice(0, -1).join('.'),
-          fsPath,
-          routePath,
-          content,
-        } as MediaItem
+      upsert: async (id: string, media: MediaItem) => {
+        await publicAssetsStorage.setItem(id, media)
       },
       delete: async (id: string) => {
         await publicAssetsStorage.removeItem(id)

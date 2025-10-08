@@ -1,4 +1,11 @@
-import { type DatabasePageItem, DraftStatus, TreeStatus, type DraftItem, type TreeItem, ContentFileExtension } from '../types'
+import {
+  ContentFileExtension,
+  DraftStatus,
+  TreeStatus,
+  type DatabasePageItem,
+  type DraftItem,
+  type TreeItem,
+} from '../types'
 import { withLeadingSlash } from 'ufo'
 import { stripNumericPrefix } from './string'
 import type { RouteLocationNormalized } from 'vue-router'
@@ -11,16 +18,6 @@ export enum TreeRootId {
   Content = 'content',
   Media = 'public-assets',
 }
-
-export const EXTENSIONS_WITH_PREVIEW = new Set([
-  'jpg',
-  'jpeg',
-  'png',
-  'gif',
-  'webp',
-  'ico',
-  'avif',
-])
 
 export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Created]: 'green',
@@ -94,11 +91,6 @@ TreeItem[] {
         name: fileName,
         fsPath: dbItem.fsPath,
         type: 'file',
-      }
-
-      // Public assets
-      if (dbItem.id.startsWith('public-assets/')) {
-        fileItem.preview = EXTENSIONS_WITH_PREVIEW.has(dbItem.extension) ? dbItem.path : undefined
       }
 
       if (itemHasPathField) {
@@ -324,26 +316,28 @@ function calculateDirectoryStatuses(items: TreeItem[]) {
   }
 
   for (const item of items) {
-    if (item.type === 'directory' && item.children) {
-      calculateDirectoryStatuses(item.children)
+    if (item.type === 'file' || !item.children) {
+      continue
+    }
 
-      const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
+    calculateDirectoryStatuses(item.children)
 
-      if (childrenWithStatus.length > 0) {
-        item.status = TreeStatus.Updated
+    const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
 
-        const allChildrenHaveStatus = childrenWithStatus.length === item.children.length
+    if (childrenWithStatus.length > 0) {
+      item.status = TreeStatus.Updated
 
-        if (allChildrenHaveStatus) {
-          if (childrenWithStatus.every(child => child.status === TreeStatus.Deleted)) {
-            item.status = TreeStatus.Deleted
-          }
-          else if (childrenWithStatus.every(child => child.status === TreeStatus.Renamed)) {
-            item.status = TreeStatus.Renamed
-          }
-          else if (childrenWithStatus.every(child => child.status === TreeStatus.Created)) {
-            item.status = TreeStatus.Created
-          }
+      const allChildrenHaveStatus = childrenWithStatus.length === item.children.length
+
+      if (allChildrenHaveStatus) {
+        if (childrenWithStatus.every(child => child.status === TreeStatus.Deleted)) {
+          item.status = TreeStatus.Deleted
+        }
+        else if (childrenWithStatus.every(child => child.status === TreeStatus.Renamed)) {
+          item.status = TreeStatus.Renamed
+        }
+        else if (childrenWithStatus.every(child => child.status === TreeStatus.Created)) {
+          item.status = TreeStatus.Created
         }
       }
     }

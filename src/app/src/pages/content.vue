@@ -3,10 +3,13 @@ import { computed } from 'vue'
 import { useStudio } from '../composables/useStudio'
 import { StudioItemActionId, TreeStatus } from '../types'
 
-const { documentTree, context, ui } = useStudio()
+const { context, ui } = useStudio()
 
-const folderTree = computed(() => (documentTree.current.value || []).filter(f => f.type === 'directory'))
-const fileTree = computed(() => (documentTree.current.value || []).filter(f => f.type === 'file'))
+const folderTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'directory'))
+const fileTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'file'))
+
+const currentTreeItem = computed(() => context.activeTree.value.currentItem.value)
+const currentDraftItem = computed(() => context.activeTree.value.draft.current.value)
 
 const showFolderForm = computed(() => {
   return context.actionInProgress.value?.id === StudioItemActionId.CreateFolder
@@ -31,13 +34,12 @@ const showFileForm = computed(() => {
       <ItemActionsToolbar />
     </div>
     <ContentEditor
-      v-if="documentTree.currentItem.value.type === 'file' && documentTree.draft.current.value"
-      :draft-item="documentTree.draft.current.value!"
-      :read-only="documentTree.currentItem.value.status === TreeStatus.Deleted"
+      v-if="currentTreeItem.type === 'file' && currentDraftItem"
+      :draft-item="currentDraftItem!"
+      :read-only="currentTreeItem.status === TreeStatus.Deleted"
     />
     <div
       v-else-if="ui.config.value.showTechnicalMode"
-      class="flex flex-col p-4"
     >
       Developer tree
     </div>

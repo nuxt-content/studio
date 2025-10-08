@@ -45,7 +45,7 @@ export async function generateDocumentFromContent(id: string, content: string): 
     return await generateDocumentFromMarkdownContent(id, content)
   }
 
-  if (extension === 'yaml' || extension === 'YML') {
+  if (extension === 'yaml' || extension === 'yml') {
     return await generateDocumentFromYAMLContent(id, content)
   }
 

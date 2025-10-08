@@ -56,8 +56,12 @@ export function computeActionItems(itemActions: StudioAction[], item?: TreeItem 
 
   const forbiddenActions: StudioItemActionId[] = []
 
+  // Duplicate only available for documents
+  if (item.id.startsWith(TreeRootId.Media)) {
+    forbiddenActions.push(StudioItemActionId.DuplicateItem, StudioItemActionId.CreateFolder, StudioItemActionId.CreateDocument)
+  }
   // Upload only available for medias
-  if (!item.id.startsWith(TreeRootId.Media)) {
+  else {
     forbiddenActions.push(StudioItemActionId.UploadMedia)
   }
 

@@ -5,7 +5,7 @@ import { StudioFeature } from './types'
 import { defineShortcuts } from '#imports'
 import { useRouter } from 'vue-router'
 
-const { host, ui, isReady, documentTree } = useStudio()
+const { host, ui, isReady, context } = useStudio()
 const router = useRouter()
 
 defineShortcuts({
@@ -31,7 +31,7 @@ function detectActiveDocuments() {
 }
 
 async function editContentFile(id: string) {
-  await documentTree.selectItemById(id)
+  await context.activeTree.value.selectItemById(id)
   ui.open(StudioFeature.Content)
 }
 

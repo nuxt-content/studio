@@ -14,8 +14,4 @@ export interface TreeItem {
   status?: TreeStatus
   routePath?: string
   children?: TreeItem[]
-  /**
-   * Preview image for the item inside the tree
-   */
-  preview?: string
 }

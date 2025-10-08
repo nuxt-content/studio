@@ -4,7 +4,7 @@ import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Image } from '@unpic/vue'
 import { titleCase } from 'scule'
-import { COLOR_UI_STATUS_MAP } from '../../../utils/tree'
+import { COLOR_UI_STATUS_MAP, TreeRootId } from '../../../utils/tree'
 import { getFileIcon } from '../../../utils/file'
 
 const props = defineProps({
@@ -14,12 +14,13 @@ const props = defineProps({
   },
 })
 
+const isMedia = computed(() => props.item.id.startsWith(TreeRootId.Media))
 const isFolder = computed(() => props.item.type === 'directory')
 const name = computed(() => titleCase(props.item.name))
 
 const itemExtensionIcon = computed(() => props.item.preview ? '' : getFileIcon(props.item.id))
 
-const imageSrc = computed(() => props.item.preview || '')
+const imageSrc = computed(() => props.item.routePath || '')
 
 // ring-(--ui-success) ring-(--ui-info) ring-(--ui-warning) ring-(--ui-error) ring-(--ui-neutral)
 const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_UI_STATUS_MAP[props.item.status]})` : 'ring-(--ui-border) hover:ring-(--ui-border-accented)')

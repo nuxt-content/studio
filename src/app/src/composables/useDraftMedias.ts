@@ -1,264 +1,40 @@
 import { ref } from 'vue'
 import { joinURL, withLeadingSlash } from 'ufo'
-import type { DraftItem, StudioHost, GithubFile, MediaItem, RawFile } from '../types'
+import type { DraftItem, StudioHost, MediaItem, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
-import { getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
-import { useHooks } from './useHooks'
+import { useBaseDraft } from './useDraftBase'
 import { TreeRootId } from '../utils/tree'
 import { mediaStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
+import { generateStemFromFsPath } from '../../../module/src/runtime/utils/media'
+import { useHooks } from './useHooks'
+
+const hooks = useHooks()
 
 export const useDraftMedias = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
-  const list = ref<DraftItem[]>([])
-  const current = ref<DraftItem | null>(null)
+  const {
+    list,
+    current,
+    get,
+    create,
+    remove,
+    revert,
+    select,
+    selectById,
+    load,
+  } = useBaseDraft('media', host, git, storage)
 
-  const hooks = useHooks()
-
-  async function get(id: string) {
-    const item = list.value.find(item => item.id === id)
-    return item
-  }
-
-  async function create(media: MediaItem) {
-    const existingItem = list.value.find(item => item.id === media.id) as DraftItem<MediaItem>
-    if (existingItem) {
-      throw new Error(`Draft file already exists for document ${media.id}`)
-    }
-
-    const fsPath = host.media.getFileSystemPath(media.id)
-    const githubFile = await git.fetchFile(joinURL('public', fsPath), { cached: true }) as GithubFile
-
-    const item: DraftItem = {
-      id: media.id,
-      fsPath,
-      original: media,
-      githubFile,
-      status: getDraftStatus(media),
-      modified: media,
-    }
-
-    await storage.setItem(media.id, item)
-
-    list.value.push(item)
-
-    await hooks.callHook('studio:draft:media:updated')
-
-    return item
-  }
-
-  async function update(id: string, media: MediaItem) {
-    const existingItem = list.value.find(item => item.id === id)
-    if (!existingItem) {
-      throw new Error(`Draft file not found for document ${id}`)
-    }
-
-    const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(media, existingItem.original)
-    existingItem.modified = media
-
-    await storage.setItem(id, existingItem)
-
-    list.value = list.value.map(item => item.id === id ? existingItem : item)
-
-    // Upsert document in database
-    await host.media.upsert(id, existingItem.modified!)
-
-    // Rerender host app
-    host.app.requestRerender()
-
-    // Trigger hook to warn that draft list has changed
-    if (existingItem.status !== oldStatus) {
-      await hooks.callHook('studio:draft:media:updated')
-    }
-
-    return existingItem
-  }
-
-  async function remove(ids: string[]) {
-    for (const id of ids) {
-      const item = await storage.getItem(id) as DraftItem
-      const fsPath = host.media.getFileSystemPath(id)
-
-      if (item) {
-        if (item.status === DraftStatus.Deleted) return
-
-        await storage.removeItem(id)
-        await host.media.delete(id)
-      }
-      else {
-      // Fetch github file before creating draft to detect non deployed changes
-        const githubFile = await git.fetchFile(joinURL('public', fsPath), { cached: true }) as GithubFile
-        const original = await host.media.get(id)
-
-        const deleteItem: DraftItem = {
-          id,
-          fsPath,
-          status: DraftStatus.Deleted,
-          original,
-          githubFile,
-        }
-
-        await storage.setItem(id, deleteItem)
-
-        await host.media.delete(id)
-      }
-
-      list.value = list.value.filter(item => item.id !== id)
-      host.app.requestRerender()
-    }
-  }
-
-  async function revert(id: string) {
-    const existingItem = list.value.find(item => item.id === id)
-    if (!existingItem) {
-      return
-    }
-
-    if (existingItem.status === DraftStatus.Created) {
-      await host.media.delete(id)
-      await storage.removeItem(id)
-      list.value = list.value.filter(item => item.id !== id)
-    }
-    else {
-      await host.media.upsert(id, existingItem.original!)
-      existingItem.status = getDraftStatus(existingItem.original!, existingItem.original)
-      existingItem.modified = existingItem.original
-      await storage.setItem(id, existingItem)
-    }
-
-    await hooks.callHook('studio:draft:media:updated')
-
-    host.app.requestRerender()
-  }
-
-  // async function revertAll() {
-  //   await storage.clear()
-  //   for (const item of list.value) {
-  //     if (item.original) {
-  //       await host.media.upsert(item.id, item.original)
-  //     }
-  //     else if (item.status === DraftStatus.Created) {
-  //       await host.media.delete(item.id)
-  //     }
-  //   }
-  //   list.value = []
-  //   host.app.requestRerender()
-  // }
-
-  async function rename(_items: { id: string, newFsPath: string }[]) {
-    // let currentDbItem: MediaItem = await host.document.get(id)
-    // if (!currentDbItem) {
-    //   throw new Error(`Database item not found for document ${id}`)
-    // }
-
-    // const currentDraftItem: DraftItem<MediaItem> | undefined = list.value.find(item => item.id === id)
-    // if (currentDraftItem) {
-    //   currentDbItem = currentDraftItem.modified as DatabasePageItem
-    // }
-
-    // const newNameWithoutExtension = newFsPath.split('.').slice(0, -1).join('.')
-    // const newId = `${currentDbItem.id.split('/').slice(0, -1).join('/')}/${newFsPath}`
-    // const newPath = `${currentDbItem.path!.split('/').slice(0, -1).join('/')}/${newFsPath}`
-    // const newStem = `${currentDbItem.stem.split('/').slice(0, -1).join('/')}/${newNameWithoutExtension}`
-    // const newExtension = getFileExtension(newFsPath)
-
-    // const newDbItem = {
-    //   ...currentDbItem,
-    //   id: newId,
-    //   path: newPath,
-    //   stem: newStem,
-    //   extension: newExtension,
-    // }
-
-    // return await update(id, newDbItem)
-  }
-
-  async function duplicate(_id: string): Promise<DraftItem<MediaItem>> {
-    return { } as DraftItem<MediaItem>
-    // let currentDbItem = await host.media.get(id)
-    // if (!currentDbItem) {
-    //   throw new Error(`Database item not found for document ${id}`)
-    // }
-
-    // const currentDraftItem = list.value.find(item => item.id === id)
-    // if (currentDraftItem) {
-    //   currentDbItem = currentDraftItem.modified!
-    // }
-
-    // const currentFsPath = currentDraftItem?.fsPath || host.document.getFileSystemPath(id)
-    // const currentRoutePath = currentDbItem.path!
-    // const currentContent = ''
-    // const currentName = currentFsPath.split('/').pop()!
-    // const currentExtension = getFileExtension(currentName)
-    // const currentNameWithoutExtension = currentName.split('.').slice(0, -1).join('.')
-
-    // const newFsPath = `${currentFsPath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy.${currentExtension}`
-    // const newRoutePath = `${currentRoutePath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy`
-
-    // const newDbItem = await host.media.create(newFsPath, newRoutePath, currentContent)
-    // return await create(newDbItem, DraftStatus.Created)
-  }
-
-  async function load() {
-    const storedList = await storage.getKeys().then(async (keys) => {
-      return Promise.all(keys.map(async (key) => {
-        const item = await storage.getItem(key) as DraftItem
-        if (item.status === DraftStatus.Pristine) {
-          await storage.removeItem(key)
-          return null
-        }
-        return item
-      }))
-    })
-
-    list.value = storedList.filter(Boolean) as DraftItem[]
-
-    // Upsert/Delete draft files in database
-    await Promise.all(list.value.map(async (draftItem) => {
-      if (draftItem.status === DraftStatus.Deleted) {
-        await host.media.delete(draftItem.id)
-      }
-      else {
-        await host.media.upsert(draftItem.id, draftItem.modified!)
-      }
-    }))
-
-    host.app.requestRerender()
-
-    await hooks.callHook('studio:draft:media:updated')
-  }
-
-  function select(draftItem: DraftItem | null) {
-    current.value = draftItem
-  }
-
-  async function selectById(id: string) {
-    const existingItem = list.value.find(item => item.id === id)
-    if (existingItem) {
-      select(existingItem)
-      return
-    }
-
-    const dbItem = await host.media.get(id)
-    if (!dbItem) {
-      throw new Error(`Cannot select item: no corresponding database entry found for id ${id}`)
-    }
-
-    const draftItem = await create(dbItem)
-    select(draftItem)
-  }
-
-  async function upload(directory: string, file: File) {
-    const draftItem = await fileToDraftItem(directory, file)
+  async function upload(parentFsPath: string, file: File) {
+    const draftItem = await fileToDraftItem(parentFsPath, file)
     host.media.upsert(draftItem.id, draftItem.modified!)
     await create(draftItem.modified!)
   }
 
-  async function fileToDraftItem(directory: string, file: File): Promise<DraftItem<MediaItem>> {
+  async function fileToDraftItem(parentFsPath: string, file: File): Promise<DraftItem<MediaItem>> {
     const rawData = await fileToDataUrl(file)
-    const fsPath = directory && directory !== '/' ? joinURL(directory, file.name) : file.name
+    const fsPath = parentFsPath !== '/' ? joinURL(parentFsPath, file.name) : file.name
 
     return {
       id: `${TreeRootId.Media}/${fsPath}`,
@@ -266,7 +42,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
       githubFile: undefined,
       status: DraftStatus.Created,
       modified: {
-        id: `${TreeRootId.Media}/${fsPath}`,
+        id: joinURL(TreeRootId.Media, fsPath),
         fsPath,
         extension: getFileExtension(fsPath),
         stem: fsPath.split('.').join('.'),
@@ -274,6 +50,31 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
         raw: rawData,
       },
     }
+  }
+
+  async function rename(items: { id: string, newFsPath: string }[]) {
+    for (const item of items) {
+      const { id, newFsPath } = item
+
+      const currentDbItem = await host.media.get(id)
+      if (!currentDbItem) {
+        throw new Error(`Database item not found for document ${id}`)
+      }
+
+      await remove([id], { rerender: false })
+
+      const newDbItem: MediaItem = {
+        ...currentDbItem,
+        id: joinURL(TreeRootId.Media, newFsPath),
+        stem: generateStemFromFsPath(newFsPath),
+        path: withLeadingSlash(newFsPath),
+      }
+
+      await host.media.upsert(newDbItem.id, newDbItem)
+      await create(newDbItem, currentDbItem, { rerender: false })
+    }
+
+    await hooks.callHook('studio:draft:media:updated', { caller: 'useDraftMedias.rename' })
   }
 
   function fileToDataUrl(file: File): Promise<string> {
@@ -303,11 +104,11 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
   return {
     get,
     create,
-    update,
+    update: () => {},
+    duplicate: () => {},
     remove,
     revert,
     rename,
-    duplicate,
     list,
     load,
     current,

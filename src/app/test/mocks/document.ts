@@ -1,5 +1,4 @@
 import type { DatabasePageItem } from '../../src/types'
-import { vi } from 'vitest'
 
 export const createMockDocument = (id: string, overrides?: Partial<DatabasePageItem>) => ({
   id,
@@ -13,9 +12,3 @@ export const createMockDocument = (id: string, overrides?: Partial<DatabasePageI
   meta: {},
   ...overrides,
 })
-
-export const createMockHooks = () => ({
-  callHook: vi.fn().mockResolvedValue(undefined),
-})
-
-export const createMockStorage = () => new Map<string, string>()

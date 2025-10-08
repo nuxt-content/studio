@@ -10,10 +10,12 @@ const items: TabsItem[] = [
   {
     label: 'Content',
     value: 'content',
+    to: '/content',
   },
   {
     label: 'Media',
     value: 'media',
+    to: '/media',
   },
 ]
 

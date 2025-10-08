@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const { documentTree } = useStudio()
+const { context } = useStudio()
 
 const document = computed<DatabasePageItem>({
   get() {
@@ -50,7 +50,7 @@ const document = computed<DatabasePageItem>({
       return
     }
 
-    documentTree.draft.update(props.draftItem.id, {
+    context.activeTree.value.draft.update(props.draftItem.id, {
       ...toRaw(document.value as DatabasePageItem),
       ...toRaw(value),
     })
