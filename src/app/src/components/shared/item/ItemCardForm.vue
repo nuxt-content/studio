@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { computed, reactive, type PropType } from 'vue'
 import * as z from 'zod'
-import { type CreateFileParams, type CreateFolderParams, type RenameFileParams, type StudioAction, type TreeItem, ContentFileExtension, MediaFileExtension } from '../../../types'
+import type {
+  MediaFileExtension,
+  CreateFileParams,
+  CreateFolderParams,
+  RenameFileParams,
+  StudioAction,
+  TreeItem,
+} from '../../../types'
+import { ContentFileExtension, StudioItemActionId } from '../../../types'
 import { joinURL, withLeadingSlash, withoutLeadingSlash } from 'ufo'
-import { contentFileExtensions } from '../../../utils/content'
 import { useStudio } from '../../../composables/useStudio'
-import { StudioItemActionId } from '../../../types'
 import { stripNumericPrefix } from '../../../utils/string'
 import { defineShortcuts } from '#imports'
 import { upperFirst } from 'scule'
-import { getFileExtension } from '../../../utils/file'
-import { TreeRootId } from '../../../utils/tree'
-import { mediaFileExtensions } from '../../../utils/media'
+import { getFileExtension, CONTENT_EXTENSIONS, isMediaFile, MEDIA_EXTENSIONS } from '../../../utils/file'
 
 const { context } = useStudio()
 
@@ -37,35 +41,21 @@ const props = defineProps({
 })
 
 const originalName = computed(() => props.renamedItem?.name || '')
-const isMedia = computed(() => props.renamedItem?.id.startsWith(TreeRootId.Media))
-const originalExtension = computed(() => {
-  const ext = getFileExtension(props.renamedItem?.id || '')
-  if (isMedia.value) {
-    if (ext && mediaFileExtensions.includes(ext as MediaFileExtension)) {
-      return ext as MediaFileExtension
-    }
-    return null
-  }
-
-  if (ext && contentFileExtensions.includes(ext as ContentFileExtension)) {
-    return ext as ContentFileExtension
-  }
-
-  return ContentFileExtension.Markdown
-})
+const isMedia = computed(() => props.renamedItem && isMediaFile(props.renamedItem?.fsPath))
+const originalExtension = computed(() => props.renamedItem ? getFileExtension(props.renamedItem?.fsPath) : ContentFileExtension.Markdown)
 
 const schema = z.object({
   name: z.string()
     .min(1, 'Name cannot be empty')
     .refine((name: string) => !name.endsWith('.'), 'Name cannot end with "."')
     .refine((name: string) => !name.startsWith('/'), 'Name cannot start with "/"'),
-  extension: z.enum([...Object.values(ContentFileExtension), ...Object.values(MediaFileExtension)]).nullish(),
+  extension: z.enum([...CONTENT_EXTENSIONS, ...MEDIA_EXTENSIONS]).nullish(),
 })
 
 type Schema = z.output<typeof schema>
 const state = reactive<Schema>({
   name: originalName.value,
-  extension: originalExtension.value,
+  extension: originalExtension.value! as MediaFileExtension | ContentFileExtension,
 })
 
 const action = computed<StudioAction>(() => {
@@ -226,7 +216,7 @@ function onSubmit() {
                 </template>
                 <USelect
                   v-model="state.extension"
-                  :items="isMedia ? mediaFileExtensions : contentFileExtensions"
+                  :items="isMedia ? MEDIA_EXTENSIONS : CONTENT_EXTENSIONS"
                   :disabled="isMedia"
                   variant="soft"
                   class="w-18"

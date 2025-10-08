@@ -4,8 +4,8 @@ import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Image } from '@unpic/vue'
 import { titleCase } from 'scule'
-import { COLOR_UI_STATUS_MAP, TreeRootId } from '../../../utils/tree'
-import { getFileIcon } from '../../../utils/file'
+import { COLOR_UI_STATUS_MAP } from '../../../utils/tree'
+import { getFileIcon, isMediaFile } from '../../../utils/file'
 
 const props = defineProps({
   item: {
@@ -14,11 +14,11 @@ const props = defineProps({
   },
 })
 
-const isMedia = computed(() => props.item.id.startsWith(TreeRootId.Media))
+const isMedia = computed(() => isMediaFile(props.item.fsPath))
 const isFolder = computed(() => props.item.type === 'directory')
 const name = computed(() => titleCase(props.item.name))
 
-const itemExtensionIcon = computed(() => isMedia.value ? '' : getFileIcon(props.item.id))
+const itemExtensionIcon = computed(() => getFileIcon(props.item.fsPath))
 
 const imageSrc = computed(() => isMedia.value ? props.item.routePath : '')
 
@@ -46,18 +46,14 @@ const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_U
           alt="Card placeholder"
           class="z-[-1] rounded-t-lg aspect-video object-cover"
         />
-        <div
-          v-else
-          class="z-[-1] aspect-video bg-elevated"
-        />
-        <div
-          v-if="itemExtensionIcon"
-          class="absolute inset-0 flex items-center justify-center"
-        >
-          <UIcon
-            :name="itemExtensionIcon"
-            class="w-8 h-8 text-muted"
-          />
+        <div v-else>
+          <div class="z-[-1] aspect-video bg-elevated" />
+          <div class="absolute inset-0 flex items-center justify-center">
+            <UIcon
+              :name="itemExtensionIcon"
+              class="w-8 h-8 text-muted"
+            />
+          </div>
         </div>
       </div>
       <ItemBadge

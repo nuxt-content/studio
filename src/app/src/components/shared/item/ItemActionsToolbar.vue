@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { computeActionItems } from '../../../utils/context'
 import { useStudio } from '../../../composables/useStudio'
 import { type StudioAction, StudioItemActionId } from '../../../types'
-import { mediaFileExtensions } from '../../../utils/media'
+import { MEDIA_EXTENSIONS } from '../../../utils/file'
 
 const { context } = useStudio()
 const fileInputRef = ref<HTMLInputElement>()
@@ -56,7 +56,7 @@ const actionHandler = (action: StudioAction) => {
       ref="fileInputRef"
       type="file"
       multiple
-      :accept="mediaFileExtensions.map(ext => `.${ext}`).join(', ')"
+      :accept="MEDIA_EXTENSIONS.map(ext => `.${ext}`).join(', ')"
       class="hidden"
       @change="handleFileSelection"
     >

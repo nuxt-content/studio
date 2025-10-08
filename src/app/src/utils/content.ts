@@ -11,13 +11,6 @@ import type { MarkdownRoot } from '@nuxt/content'
 import { destr } from 'destr'
 import { getFileExtension } from './file'
 
-export const contentFileExtensions = [
-  ContentFileExtension.Markdown,
-  ContentFileExtension.YAML,
-  ContentFileExtension.YML,
-  ContentFileExtension.JSON,
-] as const
-
 const reservedKeys = ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta']
 
 export function pickReservedKeysFromDocument(document: DatabaseItem) {

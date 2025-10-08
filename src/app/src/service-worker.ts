@@ -9,7 +9,7 @@ const DraftStatus = {
   Pristine: 'pristine'
 }
 
-const mediaFileExtensions = [
+const IMAGE_EXTENSIONS = [
   'png',
   'jpg',
   'jpeg',
@@ -27,7 +27,7 @@ self.addEventListener('fetch', event => {
     return event.respondWith(fetch(event.request));
   }
 
-  if (url.pathname.startsWith('/_ipx/_/') || mediaFileExtensions.includes(url.pathname.split('.').pop())) {
+  if (url.pathname.startsWith('/_ipx/_/') || IMAGE_EXTENSIONS.includes(url.pathname.split('.').pop())) {
     return event.respondWith(fetchFromIndexedDB(event, url));
   }
 
