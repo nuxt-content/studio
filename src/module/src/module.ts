@@ -100,6 +100,9 @@ export default defineNuxtModule<ModuleOptions>({
       },
     })
     extendViteConfig((config) => {
+      config.define ||= {}
+      config.define['import.meta.preview'] = true
+
       config.optimizeDeps ||= {}
       config.optimizeDeps.include = [
         ...(config.optimizeDeps.include || []),
@@ -170,14 +173,10 @@ export default defineNuxtModule<ModuleOptions>({
       route: '/__nuxt_content/studio/auth/session',
       handler: runtime('./server/routes/auth/session.delete'),
     })
-    addServerHandler({
-      route: '/__nuxt_content/studio',
-      handler: runtime('./server/routes/admin'),
-    })
-    addServerHandler({
-      route: '/sw.js',
-      handler: runtime('./server/routes/sw'),
-    })
+    addServerHandler({ route: '/__nuxt_content/studio', handler: runtime('./server/routes/admin') })
+    // Register meta route for studio
+    addServerHandler({ route: '/__nuxt_content/studio/meta', handler: runtime('./server/routes/meta') })
+    addServerHandler({ route: '/sw.js', handler: runtime('./server/routes/sw') })
     // addServerHandler({
     //   route: '/__nuxt_content/studio/auth/google',
     //   handler: runtime('./server/routes/auth/google.get'),

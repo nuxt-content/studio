@@ -17,7 +17,7 @@ export const contentFileExtensions = [
   ContentFileExtension.JSON,
 ] as const
 
-const reservedKeys = ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta']
+const reservedKeys = ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta', 'rawbody']
 
 export function pickReservedKeysFromDocument(document: DatabaseItem) {
   return pick(document, reservedKeys)

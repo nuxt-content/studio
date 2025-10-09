@@ -17,7 +17,9 @@ const showTechnicalMode = computed({
 const repositoryUrl = computed(() => {
   switch (host.repository.provider) {
     case 'github':
-      return `https://github.com/${host.repository.owner}/${host.repository.repo}/tree/${host.repository.branch}`
+      return host.repository?.owner
+        ? `https://github.com/${host.repository.owner}/${host.repository.repo}/tree/${host.repository.branch}`
+        : ''
     default:
       return ''
   }
@@ -26,12 +28,15 @@ const repositoryUrl = computed(() => {
 const userMenuItems = computed(() => [
   [{
     slot: 'view-mode' as const,
-  }, {
-    label: `${host.repository.owner}/${host.repository.repo}`,
-    icon: 'i-simple-icons:github',
-    to: repositoryUrl.value,
-    target: '_blank',
-  }],
+  }, repositoryUrl.value
+    ? {
+        label: `${host.repository.owner}/${host.repository.repo}`,
+        icon: 'i-simple-icons:github',
+        to: repositoryUrl.value,
+        target: '_blank',
+      }
+    : undefined,
+  ].filter(Boolean),
   [{
     label: 'Sign out',
     icon: 'i-lucide-log-out',

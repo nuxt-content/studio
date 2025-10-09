@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@nuxt/content': https://pkg.pr.new/@nuxt/content@22409fe
+  '@nuxt/content': https://pkg.pr.new/@nuxt/content@6d63367
   '@nuxtjs/mdc': https://pkg.pr.new/@nuxtjs/mdc@61af819
   remark-mdc: npm:remark-mdc-edge@3.6.0-29310522.024adeb
 
@@ -54,8 +54,8 @@ importers:
         version: 1.17.1(db0@0.3.2(better-sqlite3@12.2.0))(idb-keyval@6.2.2)(ioredis@5.7.0)
     devDependencies:
       '@nuxt/content':
-        specifier: https://pkg.pr.new/@nuxt/content@22409fe
-        version: https://pkg.pr.new/@nuxt/content@22409fe(better-sqlite3@12.2.0)(magicast@0.3.5)
+        specifier: https://pkg.pr.new/@nuxt/content@6d63367
+        version: https://pkg.pr.new/@nuxt/content@6d63367(better-sqlite3@12.2.0)(magicast@0.3.5)
       '@nuxt/eslint-config':
         specifier: latest
         version: 1.9.0(@typescript-eslint/utils@8.42.0(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2))(@vue/compiler-sfc@3.5.22)(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2)
@@ -117,8 +117,8 @@ importers:
   playground/docus:
     dependencies:
       '@nuxt/content':
-        specifier: https://pkg.pr.new/@nuxt/content@22409fe
-        version: https://pkg.pr.new/@nuxt/content@22409fe(better-sqlite3@12.2.0)(magicast@0.3.5)
+        specifier: https://pkg.pr.new/@nuxt/content@6d63367
+        version: https://pkg.pr.new/@nuxt/content@6d63367(better-sqlite3@12.2.0)(magicast@0.3.5)
       '@nuxt/ui':
         specifier: 4.0.0-alpha.1
         version: 4.0.0-alpha.1(@babel/parser@7.28.4)(change-case@5.4.4)(db0@0.3.2(better-sqlite3@12.2.0))(embla-carousel@8.6.0)(idb-keyval@6.2.2)(ioredis@5.7.0)(magicast@0.3.5)(typescript@5.9.2)(valibot@1.1.0(typescript@5.9.2))(vite@7.1.7(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(yaml@2.8.1))(vue-router@4.5.1(vue@3.5.21(typescript@5.9.2)))(vue@3.5.22(typescript@5.9.2))(zod@4.1.11)
@@ -138,8 +138,8 @@ importers:
   playground/minimal:
     dependencies:
       '@nuxt/content':
-        specifier: https://pkg.pr.new/@nuxt/content@22409fe
-        version: https://pkg.pr.new/@nuxt/content@22409fe(better-sqlite3@12.2.0)(magicast@0.3.5)
+        specifier: https://pkg.pr.new/@nuxt/content@6d63367
+        version: https://pkg.pr.new/@nuxt/content@6d63367(better-sqlite3@12.2.0)(magicast@0.3.5)
       better-sqlite3:
         specifier: ^12.2.0
         version: 12.2.0
@@ -813,8 +813,8 @@ packages:
     engines: {node: ^16.10.0 || >=18.0.0}
     hasBin: true
 
-  '@nuxt/content@https://pkg.pr.new/@nuxt/content@22409fe':
-    resolution: {tarball: https://pkg.pr.new/@nuxt/content@22409fe}
+  '@nuxt/content@https://pkg.pr.new/@nuxt/content@6d63367':
+    resolution: {tarball: https://pkg.pr.new/@nuxt/content@6d63367}
     version: 3.6.3
     peerDependencies:
       '@electric-sql/pglite': '*'
@@ -7228,7 +7228,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxt/content@https://pkg.pr.new/@nuxt/content@22409fe(better-sqlite3@12.2.0)(magicast@0.3.5)':
+  '@nuxt/content@https://pkg.pr.new/@nuxt/content@6d63367(better-sqlite3@12.2.0)(magicast@0.3.5)':
     dependencies:
       '@nuxt/kit': 4.1.2(magicast@0.3.5)
       '@nuxtjs/mdc': https://pkg.pr.new/@nuxtjs/mdc@61af819(magicast@0.3.5)
@@ -7257,7 +7257,7 @@ snapshots:
       minimark: 0.2.0
       minimatch: 10.0.3
       nuxt-component-meta: 0.13.1(magicast@0.3.5)
-      nypm: 0.6.1
+      nypm: 0.6.2
       ohash: 2.0.11
       pathe: 2.0.3
       pkg-types: 2.3.0
@@ -9310,9 +9310,9 @@ snapshots:
   '@vue/language-core@3.0.6(typescript@5.9.2)':
     dependencies:
       '@volar/language-core': 2.4.23
-      '@vue/compiler-dom': 3.5.21
+      '@vue/compiler-dom': 3.5.22
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.21
+      '@vue/shared': 3.5.22
       alien-signals: 2.0.7
       muggle-string: 0.4.1
       path-browserify: 1.0.1
@@ -10097,7 +10097,7 @@ snapshots:
       '@iconify-json/lucide': 1.2.68
       '@iconify-json/simple-icons': 1.2.53
       '@iconify-json/vscode-icons': 1.2.30
-      '@nuxt/content': https://pkg.pr.new/@nuxt/content@22409fe(better-sqlite3@12.2.0)(magicast@0.3.5)
+      '@nuxt/content': https://pkg.pr.new/@nuxt/content@6d63367(better-sqlite3@12.2.0)(magicast@0.3.5)
       '@nuxt/image': 1.11.0(db0@0.3.2(better-sqlite3@12.2.0))(idb-keyval@6.2.2)(ioredis@5.7.0)(magicast@0.3.5)
       '@nuxt/kit': 4.1.2(magicast@0.3.5)
       '@nuxt/ui': 4.0.0(@babel/parser@7.28.4)(change-case@5.4.4)(db0@0.3.2(better-sqlite3@12.2.0))(embla-carousel@8.6.0)(idb-keyval@6.2.2)(ioredis@5.7.0)(magicast@0.3.5)(typescript@5.9.2)(valibot@1.1.0(typescript@5.9.2))(vite@7.1.7(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(yaml@2.8.1))(vue-router@4.5.1(vue@3.5.21(typescript@5.9.2)))(vue@3.5.22(typescript@5.9.2))(zod@4.1.11)
@@ -11704,7 +11704,7 @@ snapshots:
   micromark@4.0.2:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.4.1
+      debug: 4.4.3
       decode-named-character-reference: 1.2.0
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.3
