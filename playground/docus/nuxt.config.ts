@@ -10,11 +10,6 @@ export default defineNuxtConfig({
     experimental: {
       sqliteConnector: 'native',
     },
-
-    preview: {
-      dev: true,
-      api: 'http://localhost:3000',
-    },
   },
   compatibilityDate: '2025-08-26',
   contentStudio: {

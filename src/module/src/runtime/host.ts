@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { ensure } from './utils/ensure'
-import type { CollectionItemBase, DatabaseAdapter } from '@nuxt/content'
+import type { CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collection'
-import { kebabCase } from 'lodash'
-import type { UseStudioHost, StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
+import { kebabCase } from 'scule'
+import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 import { generateDocumentFromContent } from './utils/content'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
@@ -27,12 +27,6 @@ function getSidebarWidth(): number {
     }
   }
   return sidebarWidth
-}
-
-declare global {
-  interface Window {
-    useStudioHost: UseStudioHost
-  }
 }
 
 // TODO: Move styles and these logics out of host (Maybe have a injectCSS util in host)
@@ -91,7 +85,14 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
   }
 
   function useContentCollections() {
-    return useContent().collections
+    return Object.fromEntries(
+      Object.entries(useContent().collections).filter(([, collection]) => {
+        if (!collection.source.length || collection.source.some((source: CollectionSource) => source.repository || (source as unknown as { _custom: boolean })._custom)) {
+          return false
+        }
+        return true
+      }),
+    )
   }
 
   function useContentCollectionQuery(collection: string) {

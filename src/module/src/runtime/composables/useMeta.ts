@@ -8,8 +8,9 @@ export const useHostMeta = createSharedComposable(() => {
 
   async function fetch() {
     // TODO: look into this approach and consider possible refactors
-    const data = await $fetch<{ components: ComponentMeta[] }>('/__preview.json')
-      .catch(() => ({ components: [] }))
+    const data = await $fetch<{ components: ComponentMeta[] }>('/__nuxt_content/studio/meta', {
+      headers: { 'content-type': 'application/json' },
+    }).catch(() => ({ components: [] }))
 
     componentsMeta.value = data.components || []
   }

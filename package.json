@@ -30,7 +30,7 @@
   "scripts": {
     "prepack": "nuxt-module-build build src/module; vite build src/app",
     "dev": "npm run dev:prepare && STUDIO_DEV_SERVER=http://localhost:5151 nuxi dev playground/docus",
-    "dev:minimal": "pnpm nuxt dev playground/minimal",
+    "dev:minimal": "npm run dev:prepare && STUDIO_DEV_SERVER=http://localhost:5151 nuxt dev playground/minimal",
     "dev:app": "vite src/app --port 5151",
     "dev:build": "nuxi build playground/docus",
     "dev:prepare": "nuxt-module-build build --stub src/module && nuxt-module-build prepare src/module && nuxi prepare playground/docus",

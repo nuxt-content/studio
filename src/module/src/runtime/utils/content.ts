@@ -11,7 +11,7 @@ import type { MDCElement } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
 
 export function removeReservedKeysFromDocument(document: DatabaseItem) {
-  const result = omit(document, ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta'])
+  const result = omit(document, ['id', 'stem', 'extension', '__hash__', 'path', 'body', 'meta', 'rawbody'])
   // Default value of navigation is true, so we can safely remove it
   if (result.navigation === true) {
     Reflect.deleteProperty(result, 'navigation')
