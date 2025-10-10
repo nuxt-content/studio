@@ -215,6 +215,7 @@ async function onSubmit() {
                   square
                 >
                   <UIcon
+                    v-if="!isLoading"
                     name="i-ph-check"
                     class="size-4"
                   />

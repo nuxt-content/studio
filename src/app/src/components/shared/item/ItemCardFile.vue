@@ -20,7 +20,7 @@ const itemExtensionIcon = computed(() => getFileIcon(props.item.fsPath))
 const imageSrc = computed(() => isMedia.value ? props.item.routePath : '')
 
 // ring-(--ui-success) ring-(--ui-info) ring-(--ui-warning) ring-(--ui-error) ring-(--ui-neutral)
-const statusRingColor = computed(() => props.item.status ? `ring-(--ui-${COLOR_UI_STATUS_MAP[props.item.status]})` : 'ring-(--ui-border) hover:ring-(--ui-border-accented)')
+const statusRingColor = computed(() => props.item.status && props.item.status !== TreeStatus.Opened ? `ring-(--ui-${COLOR_UI_STATUS_MAP[props.item.status]})` : '')
 </script>
 
 <template>

@@ -45,10 +45,17 @@ host.on.mounted(() => {
 })
 
 const direction = ref<'left' | 'right'>('left')
+const isReviewTransition = ref(false)
 const directionOrder = ['content', 'media']
 
 router.beforeEach((to, from) => {
-  direction.value = directionOrder.indexOf(from.name as string) > directionOrder.indexOf(to.name as string) ? 'left' : 'right'
+  if (to.name === 'review' || from.name === 'review') {
+    isReviewTransition.value = true
+  }
+  else {
+    isReviewTransition.value = false
+    direction.value = directionOrder.indexOf(from.name as string) > directionOrder.indexOf(to.name as string) ? 'left' : 'right'
+  }
 })
 </script>
 
@@ -61,6 +68,23 @@ router.beforeEach((to, from) => {
       <AppLayout :open="ui.isOpen.value">
         <RouterView v-slot="{ Component }">
           <Transition
+            v-if="isReviewTransition"
+            enter-active-class="transition-translate duration-200 absolute"
+            enter-from-class="-translate-y-full"
+            enter-to-class="translate-y-0"
+            leave-active-class="transition-translate duration-200 absolute"
+            leave-from-class="translate-y-0"
+            leave-to-class="translate-y-full"
+          >
+            <KeepAlive>
+              <component
+                :is="Component"
+                class="w-full h-full"
+              />
+            </KeepAlive>
+          </Transition>
+          <Transition
+            v-else
             enter-active-class="transition-translate duration-200 absolute"
             :enter-from-class="direction === 'right' ? 'translate-x-full' : '-translate-x-full'"
             enter-to-class="translate-x-0"

@@ -12,6 +12,7 @@ import {
   type CreateFolderParams,
   StudioItemActionId,
   type DatabaseItem,
+  DraftStatus,
 } from '../types'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions } from '../utils/context'
 import type { useTree } from './useTree'
@@ -28,6 +29,15 @@ export const useContext = createSharedComposable((
 ) => {
   const route = useRoute()
 
+  /**
+   * Drafts
+   */
+  const isDraftInProgress = computed(() => [...documentTree.draft.list.value, ...mediaTree.draft.list.value].some(draft => draft.status !== DraftStatus.Pristine))
+  const draftCount = computed(() => documentTree.draft.list.value.length + mediaTree.draft.list.value.length)
+
+  /**
+   * Actions
+   */
   const actionInProgress = ref<StudioActionInProgress | null>(null)
   const activeTree = computed(() => {
     if (route.name === 'media') {
@@ -137,5 +147,7 @@ export const useContext = createSharedComposable((
     actionInProgress,
     unsetActionInProgress,
     itemActionHandler,
+    draftCount,
+    isDraftInProgress,
   }
 })

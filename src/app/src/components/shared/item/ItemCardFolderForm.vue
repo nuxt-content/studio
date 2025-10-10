@@ -115,7 +115,7 @@ async function onSubmit() {
                 autofocus
                 placeholder="Folder name"
                 class="w-full h-7"
-                :disabled="isLoading"
+                :loading="isLoading"
                 @keydown.esc="context.unsetActionInProgress"
               />
             </div>

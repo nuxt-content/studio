@@ -31,7 +31,7 @@ const filteredTree = computed(() => {
       class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-2"
     >
       <li v-if="showForm">
-        <ItemCardFormFolder
+        <ItemCardFolderForm
           :parent-item="context.activeTree.value.currentItem.value"
           :action-id="context.actionInProgress.value!.id as never"
           :renamed-item="context.actionInProgress.value!.item"

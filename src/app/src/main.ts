@@ -12,6 +12,7 @@ import { refineTailwindStyles } from './utils/styles.ts'
 import App from './app.vue'
 import Content from './pages/content.vue'
 import Media from './pages/media.vue'
+import Review from './pages/review.vue'
 
 if (typeof window !== 'undefined' && 'customElements' in window) {
   const NuxtStudio = defineCustomElement(
@@ -31,6 +32,11 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
               name: 'media',
               path: '/media',
               component: Media,
+            },
+            {
+              name: 'review',
+              path: '/review',
+              component: Review,
             },
           ],
           history: createMemoryHistory(),
