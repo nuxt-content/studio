@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { type DraftItem, type MediaItem, type StudioHost, DraftStatus } from '../../src/types'
+import { type DraftItem, type MediaItem, type StudioHost, DraftStatus, TreeRootId } from '../../src/types'
 import { createMockDocument } from '../mocks/document'
 import { createMockFile, setupMediaMocks } from '../mocks/media'
 import { createMockHost } from '../mocks/host'
@@ -8,7 +8,6 @@ import { createMockStorage, createMockHooks } from '../mocks/draft'
 import { useDraftDocuments } from '../../src/composables/useDraftDocuments'
 import { useDraftMedias } from '../../src/composables/useDraftMedias'
 import { normalizeKey, generateUniqueDocumentId, generateUniqueMediaName, generateUniqueMediaId } from '../utils'
-import { TreeRootId } from '../../src/utils/tree'
 import { joinURL } from 'ufo'
 
 // Use the existing utilities from mocks/document.ts

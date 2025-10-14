@@ -1,5 +1,4 @@
-import { type StudioAction, type TreeItem, TreeStatus, StudioItemActionId, StudioBranchActionId } from '../types'
-import { TreeRootId } from './tree'
+import { type StudioAction, type TreeItem, TreeStatus, StudioItemActionId, StudioBranchActionId, TreeRootId } from '../types'
 
 export const oneStepActions: StudioItemActionId[] = [StudioItemActionId.RevertItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem]
 export const twoStepActions: StudioItemActionId[] = [StudioItemActionId.CreateDocument, StudioItemActionId.CreateFolder, StudioItemActionId.RenameItem]

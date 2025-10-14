@@ -35,8 +35,9 @@ export const useContext = createSharedComposable((
   /**
    * Drafts
    */
-  const isDraftInProgress = computed(() => [...documentTree.draft.list.value, ...mediaTree.draft.list.value].some(draft => draft.status !== DraftStatus.Pristine))
-  const draftCount = computed(() => documentTree.draft.list.value.length + mediaTree.draft.list.value.length)
+  const allDrafts = computed(() => [...documentTree.draft.list.value, ...mediaTree.draft.list.value].filter(draft => draft.status !== DraftStatus.Pristine))
+  const isDraftInProgress = computed(() => allDrafts.value.some(draft => draft.status !== DraftStatus.Pristine))
+  const draftCount = computed(() => allDrafts.value.length)
 
   /**
    * Actions
@@ -171,6 +172,7 @@ export const useContext = createSharedComposable((
     branchActions,
     branchActionHandler,
     actionInProgress,
+    allDrafts,
     draftCount,
     isDraftInProgress,
     unsetActionInProgress,

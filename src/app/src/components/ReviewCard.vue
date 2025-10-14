@@ -2,14 +2,14 @@
 import type { DraftItem, DatabaseItem, DatabasePageItem } from '../types'
 import type { PropType } from 'vue'
 import { ref, computed, watch, nextTick } from 'vue'
-import { DraftStatus, ContentFileExtension } from '../types'
+import { DraftStatus, ContentFileExtension, TreeRootId } from '../types'
 import { getFileIcon, getFileExtension } from '../utils/file'
 import { generateContentFromDocument } from '../utils/content'
 import { useMonacoDiff } from '../composables/useMonacoDiff'
 import { useMonaco } from '../composables/useMonaco'
 import { useStudio } from '../composables/useStudio'
 
-const { ui } = useStudio()
+const { ui, host } = useStudio()
 
 const props = defineProps({
   draftItem: {
@@ -101,6 +101,17 @@ const statusConfig = computed(() => {
 
 const fileIcon = computed(() => getFileIcon(props.draftItem.fsPath))
 const fileName = computed(() => props.draftItem.fsPath.split('/').pop() || props.draftItem.fsPath)
+
+const originalPath = computed(() => {
+  if (props.draftItem.status !== DraftStatus.Created || !props.draftItem.original) {
+    return null
+  }
+
+  const isMedia = props.draftItem.original.id.startsWith(TreeRootId.Media)
+  const hostApi = isMedia ? host.media : host.document
+  return hostApi.getFileSystemPath(props.draftItem.original.id)
+})
+
 const filePath = computed(() => props.draftItem.fsPath)
 </script>
 
@@ -131,9 +142,20 @@ const filePath = computed(() => props.draftItem.fsPath)
               size="xs"
             />
           </div>
-          <span class="text-xs text-dimmed truncate">
-            {{ filePath }}
-          </span>
+
+          <div class="flex items-center gap-2 truncate text-xs">
+            <div
+              v-if="originalPath"
+              class="flex items-center gap-2"
+            >
+              <span class="text-dimmed font-medium">{{ originalPath }}</span>
+              <UIcon
+                name="i-lucide-arrow-right"
+                class="w-3 h-3 text-dimmed flex-shrink-0"
+              />
+            </div>
+            <span class="text-muted italic">{{ filePath }}</span>
+          </div>
         </div>
       </div>
 

@@ -3,22 +3,13 @@ import { computed } from 'vue'
 import { useStudio } from '../composables/useStudio'
 import { DraftStatus } from '../types'
 
-const { context, documentTree, mediaTree } = useStudio()
-
-const allDrafts = computed(() => {
-  const documents = documentTree.draft.list.value || []
-  const medias = mediaTree.draft.list.value || []
-
-  return [...documents, ...medias].filter(draft =>
-    draft.status !== DraftStatus.Pristine,
-  )
-})
+const { context } = useStudio()
 
 const groupedDrafts = computed(() => {
   return {
-    created: allDrafts.value.filter(d => d.status === DraftStatus.Created),
-    updated: allDrafts.value.filter(d => d.status === DraftStatus.Updated),
-    deleted: allDrafts.value.filter(d => d.status === DraftStatus.Deleted),
+    created: context.allDrafts.value.filter(d => d.status === DraftStatus.Created),
+    updated: context.allDrafts.value.filter(d => d.status === DraftStatus.Updated),
+    deleted: context.allDrafts.value.filter(d => d.status === DraftStatus.Deleted),
   }
 })
 </script>

@@ -14,11 +14,6 @@ import { isEqual } from './database'
 import { studioFlags } from '../composables/useStudio'
 import { getFileExtension } from './file'
 
-export enum TreeRootId {
-  Content = 'content',
-  Media = 'public-assets',
-}
-
 export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Created]: 'green',
   [TreeStatus.Updated]: 'orange',

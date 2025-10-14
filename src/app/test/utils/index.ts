@@ -1,4 +1,4 @@
-import { TreeRootId } from '../../src/utils/tree'
+import { TreeRootId } from '../../src/types'
 
 /**
  * Normalize a storage key using the same logic as unstorage

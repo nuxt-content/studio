@@ -1,8 +1,7 @@
-import type { StudioHost } from '../../src/types'
+import { type StudioHost, TreeRootId } from '../../src/types'
 import { vi } from 'vitest'
 import { createMockDocument } from './document'
 import { createMockMedia } from './media'
-import { TreeRootId } from '../../src/utils/tree'
 import { joinURL } from 'ufo'
 
 // Simple implementation that mimics the real getFileSystemPath logic

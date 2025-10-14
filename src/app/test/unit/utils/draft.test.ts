@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { findDescendantsFromId, getDraftStatus } from '../../../src/utils/draft'
 import { draftItemsList } from '../../../test/mocks/draft'
 import { dbItemsList } from '../../../test/mocks/database'
-import { DraftStatus } from '../../../src/types'
-import { TreeRootId } from '../../../src/utils/tree'
+import { DraftStatus, TreeRootId } from '../../../src/types'
 
 describe('findDescendantsFromId', () => {
   it('returns exact match for a root level file', () => {

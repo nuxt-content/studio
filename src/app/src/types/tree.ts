@@ -1,3 +1,8 @@
+export enum TreeRootId {
+  Content = 'content',
+  Media = 'public-assets',
+}
+
 export enum TreeStatus {
   Deleted = 'deleted',
   Created = 'created',
