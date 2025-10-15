@@ -19,7 +19,7 @@ import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions, STUDIO_
 import type { useTree } from './useTree'
 import type { useGit } from './useGit'
 import type { useDraftMedias } from './useDraftMedias'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { findDescendantsFileItemsFromId, findItemFromId } from '../utils/tree'
 import { joinURL } from 'ufo'
 import { upperFirst } from 'scule'
@@ -31,6 +31,7 @@ export const useContext = createSharedComposable((
   mediaTree: ReturnType<typeof useTree>,
 ) => {
   const route = useRoute()
+  const router = useRouter()
 
   /**
    * Drafts
@@ -139,6 +140,10 @@ export const useContext = createSharedComposable((
       const draftItem = await activeTree.value.draft.duplicate(item.id)
       await activeTree.value.selectItemById(draftItem!.id)
     },
+    [StudioItemActionId.RevertAllItems]: async () => {
+      await documentTree.draft.revertAll()
+      await mediaTree.draft.revertAll()
+    },
   }
 
   const branchActions = computed<StudioAction<StudioBranchActionId>[]>(() => {
@@ -158,6 +163,11 @@ export const useContext = createSharedComposable((
       const documentFiles = await documentTree.draft.listAsRawFiles()
       const mediaFiles = await mediaTree.draft.listAsRawFiles()
       await git.commitFiles([...documentFiles, ...mediaFiles], commitMessage)
+
+      // @ts-expect-error params is null
+      await itemActionHandler[StudioItemActionId.RevertAllItems]()
+
+      router.push('/content')
     },
   }
 

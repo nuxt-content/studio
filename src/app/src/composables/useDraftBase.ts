@@ -142,6 +142,16 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
     await hooks.callHook(hookName, { caller: 'useBaseDraft.revert' })
   }
 
+  async function revertAll() {
+    const itemsToRevert = [...list.value]
+
+    for (const draftItem of itemsToRevert) {
+      await revert(draftItem.id, { rerender: false })
+    }
+
+    await hooks.callHook(hookName, { caller: 'useBaseDraft.revertAll' })
+  }
+
   function select(draftItem: DraftItem<T> | null) {
     current.value = draftItem
   }
@@ -197,6 +207,7 @@ export function useBaseDraft<T extends DatabaseItem | MediaItem>(
     create,
     remove,
     revert,
+    revertAll,
     select,
     selectById,
     load,

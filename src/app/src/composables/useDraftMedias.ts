@@ -1,5 +1,6 @@
 import { joinURL, withLeadingSlash } from 'ufo'
-import type { DraftItem, StudioHost, MediaItem, RawFile, TreeRootId } from '../types'
+import type { DraftItem, StudioHost, MediaItem, RawFile } from '../types'
+import { TreeRootId } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { createSharedComposable } from '@vueuse/core'
@@ -19,6 +20,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     create,
     remove,
     revert,
+    revertAll,
     select,
     selectById,
     load,
@@ -106,6 +108,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     duplicate: () => {},
     remove,
     revert,
+    revertAll,
     rename,
     list,
     load,

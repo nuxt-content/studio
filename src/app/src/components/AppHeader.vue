@@ -40,7 +40,7 @@ async function publishChanges() {
 
     toast.add({
       title: 'Changes published',
-      description: 'Changes have been published successfully pushed to the remote repository.',
+      description: 'Changes have been successfully pushed to the remote repository.',
       color: 'success',
     })
   }

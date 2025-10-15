@@ -13,6 +13,7 @@ export enum StudioItemActionId {
   RenameItem = 'rename-item',
   DeleteItem = 'delete-item',
   DuplicateItem = 'duplicate-item',
+  RevertAllItems = 'revert-all-items',
 }
 
 export enum StudioBranchActionId {
@@ -61,9 +62,10 @@ export type ActionHandlerParams = {
   [StudioItemActionId.CreateDocument]: CreateFileParams
   [StudioItemActionId.UploadMedia]: UploadMediaParams
   [StudioItemActionId.RevertItem]: TreeItem
-  [StudioItemActionId.RenameItem]: TreeItem | RenameFileParams // Two steps actions (item to rename first then rename params)
+  [StudioItemActionId.RenameItem]: TreeItem | RenameFileParams
   [StudioItemActionId.DeleteItem]: TreeItem
   [StudioItemActionId.DuplicateItem]: TreeItem
+  [StudioItemActionId.RevertAllItems]: never
 
   // Branches
   [StudioBranchActionId.PublishBranch]: PublishBranchParams
