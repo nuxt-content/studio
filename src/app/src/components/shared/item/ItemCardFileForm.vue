@@ -34,7 +34,7 @@ const props = defineProps({
   },
 })
 
-const action = computed<StudioAction>(() => context.itemActions.value.find(action => action.id === props.actionId)!)
+const action = computed<StudioAction<StudioItemActionId>>(() => context.itemActions.value.find(action => action.id === props.actionId)!)
 const originalName = computed(() => props.renamedItem?.name === 'home' ? 'index' : props.renamedItem?.name || '')
 const isMedia = computed(() => props.renamedItem && isMediaFile(props.renamedItem?.fsPath))
 const originalExtension = computed(() => {
@@ -69,8 +69,9 @@ const itemExtensionIcon = computed<string>(() => {
 })
 
 const routePath = computed(() => {
-  const path = state.name === 'index' ? '/' : state.name
-  return withLeadingSlash(joinURL(props.parentItem.routePath!, stripNumericPrefix(path)))
+  const name = state.name === 'index' ? '/' : state.name
+  const routePath = isMedia.value ? `${name}.${state.extension}` : name
+  return withLeadingSlash(joinURL(props.parentItem.routePath!, stripNumericPrefix(routePath)))
 })
 
 const tooltipText = computed(() => {
