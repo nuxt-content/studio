@@ -19,4 +19,5 @@ export interface TreeItem {
   status?: TreeStatus
   routePath?: string
   children?: TreeItem[]
+  prefix?: number | null
 }

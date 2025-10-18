@@ -12,9 +12,8 @@ import type {
 import { StudioItemActionId } from '../../../types'
 import { joinURL, withLeadingSlash, withoutLeadingSlash } from 'ufo'
 import { useStudio } from '../../../composables/useStudio'
-import { stripNumericPrefix } from '../../../utils/string'
+import { parseName, getFileExtension, CONTENT_EXTENSIONS, MEDIA_EXTENSIONS } from '../../../utils/file'
 import { upperFirst } from 'scule'
-import { getFileExtension, CONTENT_EXTENSIONS, MEDIA_EXTENSIONS } from '../../../utils/file'
 
 const { context } = useStudio()
 
@@ -50,6 +49,7 @@ const originalExtension = computed(() => {
 
   return props.renamedItem ? getFileExtension(props.renamedItem?.fsPath) : props.config.default
 })
+const originalPrefix = computed(() => props.renamedItem?.prefix || null)
 
 const schema = z.object({
   name: z.string()
@@ -57,18 +57,20 @@ const schema = z.object({
     .refine((name: string) => !name.endsWith('.'), 'Name cannot end with "."')
     .refine((name: string) => !name.startsWith('/'), 'Name cannot start with "/"'),
   extension: z.enum([...CONTENT_EXTENSIONS, ...MEDIA_EXTENSIONS] as [string, ...string[]]).nullish(),
+  prefix: z.number().int().positive().nullish(),
 })
 
 type Schema = z.output<typeof schema>
 const state = reactive<Schema>({
   name: originalName.value,
   extension: originalExtension.value,
+  prefix: originalPrefix.value,
 })
 
 const routePath = computed(() => {
   const name = state.name === 'index' ? '/' : state.name
   const routePath = props.config.editable ? name : `${name}.${state.extension}`
-  return withLeadingSlash(joinURL(props.parentItem.routePath!, stripNumericPrefix(routePath)))
+  return withLeadingSlash(joinURL(props.parentItem.routePath!, parseName(routePath).name))
 })
 
 const displayInfo = computed(() => {
@@ -109,25 +111,33 @@ async function onSubmit() {
   isLoading.value = true
 
   let params: CreateFileParams | RenameFileParams | CreateFolderParams
-  const name = isDirectory.value ? state.name : `${state.name}.${state.extension}`
-  const newFsPath = joinURL(props.parentItem.fsPath, name)
+  const baseName = state.name
+  const prefixedName = state.prefix ? `${state.prefix}.${baseName}` : baseName
+  const name = isDirectory.value ? prefixedName : `${prefixedName}.${state.extension}`
+  const newFsPath = withoutLeadingSlash(joinURL(props.parentItem.fsPath, name))
+
+  if (newFsPath === props.renamedItem?.fsPath) {
+    isLoading.value = false
+    context.unsetActionInProgress()
+    return
+  }
 
   switch (props.actionId) {
     case StudioItemActionId.CreateDocument:
       params = {
-        fsPath: withoutLeadingSlash(newFsPath),
-        content: `# ${upperFirst(state.name)} file`,
+        fsPath: newFsPath,
+        content: `# ${upperFirst(baseName)} file`,
       }
       break
     case StudioItemActionId.RenameItem:
       params = {
-        newFsPath: withoutLeadingSlash(newFsPath),
+        newFsPath: newFsPath,
         id: props.renamedItem.id,
       }
       break
     case StudioItemActionId.CreateFolder:
       params = {
-        fsPath: withoutLeadingSlash(newFsPath),
+        fsPath: newFsPath,
       }
       break
   }
@@ -171,6 +181,25 @@ async function onSubmit() {
 
               <div class="flex flex-col gap-1 flex-1 min-w-0">
                 <div class="flex items-center gap-1">
+                  <UFormField
+                    name="prefix"
+                    :ui="{ error: 'hidden' }"
+                    class="w-12"
+                  >
+                    <template #error>
+                      <span />
+                    </template>
+                    <UInput
+                      v-model.number="state.prefix"
+                      type="number"
+                      variant="soft"
+                      placeholder="No."
+                      min="1"
+                      class="h-5"
+                      size="xs"
+                      :disabled="isLoading"
+                    />
+                  </UFormField>
                   <UFormField
                     name="name"
                     :ui="{ error: 'hidden' }"

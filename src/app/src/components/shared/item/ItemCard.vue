@@ -36,45 +36,51 @@ const displayInfo = computed(() => {
     :ui="{ container: 'overflow-hidden' }"
   >
     <template #body>
-      <div class="flex items-start gap-3">
-        <div
-          v-if="!isDirectory"
-          class="relative flex-shrink-0 w-12 h-12"
-        >
-          <div class="w-full h-full bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0] rounded-lg overflow-hidden bg-elevated">
-            <slot name="thumbnail" />
+      <UTooltip :text="item.fsPath">
+        <div class="flex items-start gap-3">
+          <div
+            v-if="!isDirectory"
+            class="relative flex-shrink-0 w-12 h-12"
+          >
+            <div class="w-full h-full bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0] rounded-lg overflow-hidden bg-elevated">
+              <slot name="thumbnail" />
+            </div>
           </div>
-        </div>
 
-        <div class="flex flex-col gap-1 flex-1 min-w-0">
-          <div class="flex items-center gap-1 min-w-0">
-            <UIcon
-              v-if="name === 'Home'"
-              name="i-lucide-house"
-              class="h-4 w-4 shrink-0 text-muted"
-            />
-            <h3
-              class="flex items-center gap-1 text-sm font-semibold truncate text-default overflow-hidden"
-              :class="props.item.status === 'deleted' && 'line-through'"
-            >
-              {{ name }}
-              <ItemBadge
-                v-if="item.status && item.status !== TreeStatus.Opened"
-                :status="item.status"
-                size="xs"
+          <div class="flex flex-col gap-1 flex-1 min-w-0">
+            <div class="flex items-center gap-1 min-w-0">
+              <UIcon
+                v-if="name === 'Home'"
+                name="i-lucide-house"
+                class="h-4 w-4 shrink-0 text-muted"
               />
-            </h3>
-          </div>
+              <UBadge
+                v-else-if="item.prefix"
+                :label="item.prefix.toString()"
+                size="xs"
+                variant="subtle"
+              />
+              <h3
+                class="flex items-center gap-1 text-sm font-semibold truncate text-default overflow-hidden"
+                :class="props.item.status === 'deleted' && 'line-through'"
+              >
+                {{ name }}
+                <ItemBadge
+                  v-if="item.status && item.status !== TreeStatus.Opened"
+                  :status="item.status"
+                  size="xs"
+                />
+              </h3>
+            </div>
 
-          <UTooltip :text="displayInfo">
             <div class="truncate leading-relaxed text-xs text-dimmed">
               {{ displayInfo }}
             </div>
-          </UTooltip>
-        </div>
+          </div>
 
-        <ItemActionsDropdown :item="item" />
-      </div>
+          <ItemActionsDropdown :item="item" />
+        </div>
+      </UTooltip>
     </template>
   </UPageCard>
 </template>

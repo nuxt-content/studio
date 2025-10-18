@@ -7,12 +7,11 @@ import {
   type TreeItem,
 } from '../types'
 import { withLeadingSlash } from 'ufo'
-import { stripNumericPrefix } from './string'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
 import { isEqual } from './database'
 import { studioFlags } from '../composables/useStudio'
-import { getFileExtension } from './file'
+import { getFileExtension, parseName } from './file'
 
 export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Created]: 'green',
@@ -79,13 +78,15 @@ TreeItem[] {
     Generate root file
     ******************/
     if (directorySegments.length === 0) {
-      fileName = fileName === 'index' ? 'home' : stripNumericPrefix(fileName)
+      const { name, prefix } = parseName(fileName)
+      fileName = name === 'index' ? 'home' : name
 
       const fileItem: TreeItem = {
         id: dbItem.id,
         name: fileName,
         fsPath: dbItem.fsPath,
         type: 'file',
+        prefix,
       }
 
       if (itemHasPathField) {
@@ -120,7 +121,7 @@ TreeItem[] {
 
     let directoryChildren = tree
     for (let i = 0; i < directorySegments.length; i++) {
-      const dirName = stripNumericPrefix(directorySegments[i])
+      const { name: dirName, prefix: dirPrefix } = parseName(directorySegments[i])
       const dirId = dirIdBuilder(i)
       const dirFsPath = dirFsPathBuilder(i)
 
@@ -133,6 +134,7 @@ TreeItem[] {
           fsPath: dirFsPath,
           type: 'directory',
           children: [],
+          prefix: dirPrefix,
         }
 
         if (itemHasPathField) {
@@ -152,11 +154,13 @@ TreeItem[] {
     /****************************************
     Generate file in directory (last segment)
     ******************************************/
+    const { name, prefix } = parseName(fileName)
     const fileItem: TreeItem = {
       id: dbItem.id,
-      name: stripNumericPrefix(fileName),
+      name,
       fsPath: dbItem.fsPath,
       type: 'file',
+      prefix,
     }
 
     const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
