@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useStudio } from './composables/useStudio'
 import { watch, ref } from 'vue'
-import { StudioFeature } from './types'
 import { useRouter } from 'vue-router'
 
 const { host, ui, isReady, context } = useStudio()
@@ -33,7 +32,7 @@ function detectActiveDocuments() {
 
 async function editContentFile(id: string) {
   await context.activeTree.value.selectItemById(id)
-  ui.open(StudioFeature.Content)
+  ui.open()
 }
 
 host.on.mounted(() => {

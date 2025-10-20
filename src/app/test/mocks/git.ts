@@ -2,7 +2,7 @@ import { vi } from 'vitest'
 import type { GithubFile } from '../../src/types/git'
 import type { useGit } from '../../src/composables/useGit'
 
-export const createMockGit = (githubFile?: GithubFile): typeof useGit => ({
+export const createMockGit = (githubFile?: GithubFile): ReturnType<typeof useGit> => ({
   fetchFile: vi.fn().mockResolvedValue(githubFile || createMockGithubFile()),
 } as never)
 

@@ -1,12 +1,5 @@
 import type { DraftItem } from '../../src/types/draft'
 import { DraftStatus } from '../../src/types/draft'
-import { vi } from 'vitest'
-
-export const createMockHooks = () => ({
-  callHook: vi.fn().mockResolvedValue(undefined),
-})
-
-export const createMockStorage = () => new Map<string, string>()
 
 export const draftItemsList: DraftItem[] = [
   // Root files

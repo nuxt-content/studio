@@ -18,7 +18,7 @@ export function normalizeKey(key: string): string {
 
 export function generateUniqueDocumentId(filename = 'document'): string {
   const uniqueId = Math.random().toString(36).substr(2, 9)
-  return `docs/${filename}-${uniqueId}.md`
+  return `/${filename}-${uniqueId}.md`
 }
 
 export function generateUniqueMediaId(filename = 'media'): string {
