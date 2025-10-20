@@ -48,10 +48,10 @@ const showFileForm = computed(() => {
       class="flex flex-col p-4"
     >
       <div v-if="folderTree?.length > 0 || showFolderForm">
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-1 mb-3">
           <UIcon
             name="i-lucide-folder"
-            class="w-4 h-4 text-muted"
+            class="size-3.5 text-muted"
           />
           <h3 class="text-xs uppercase tracking-wider text-muted">
             Directories
@@ -73,10 +73,10 @@ const showFileForm = computed(() => {
         />
       </div>
       <div v-if="fileTree?.length > 0 || showFileForm">
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-1 mb-3">
           <UIcon
             name="i-lucide-file"
-            class="w-4 h-4 text-muted"
+            class="size-3.5 text-muted"
           />
           <h3 class="text-xs uppercase tracking-wider text-muted">
             Files

@@ -41,28 +41,23 @@ const current = computed({
     <UButton
       label="Review"
       color="neutral"
-      variant="solid"
-      :disabled="context.draftCount.value === 0"
+      :variant="context.draftCount.value > 0 ? 'solid' : 'soft'"
       to="/review"
-      class="w-20"
+      :disabled="context.draftCount.value === 0"
+      icon="i-lucide-file-diff"
+      :ui="{ leadingIcon: 'size-3.5' }"
     >
-      <div class="flex items-center gap-2">
-        <span class="w-10">
-          Review
-        </span>
+      <template
+        v-if="context.draftCount.value > 0"
+        #leading
+      >
         <UBadge
-          v-if="context.draftCount.value > 0"
           :label="context.draftCount.value.toString()"
           class="bg-[var(--ui-color-neutral-400)]"
           size="xs"
           variant="soft"
         />
-        <UIcon
-          v-else
-          name="i-lucide-eye"
-          class="w-3 h-3"
-        />
-      </div>
+      </template>
     </UButton>
   </div>
 </template>

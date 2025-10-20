@@ -93,6 +93,7 @@ async function publishChanges() {
             size="sm"
             :disabled="isPublishing"
             class="w-full"
+            autofocus
             :ui="{ base: 'focus-visible:ring-1' }"
           />
         </UFormField>
@@ -104,18 +105,10 @@ async function publishChanges() {
             variant="solid"
             :loading="isPublishing"
             :disabled="errors.length > 0"
-          >
-            <div class="flex items-center gap-2">
-              <span class="w-10">
-                Publish
-              </span>
-
-              <UIcon
-                name="i-lucide-save"
-                class="w-3 h-3"
-              />
-            </div>
-          </UButton>
+            icon="i-lucide-check"
+            label="Publish"
+            :ui="{ leadingIcon: 'size-3.5' }"
+          />
         </UTooltip>
       </div>
     </template>

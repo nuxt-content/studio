@@ -39,7 +39,7 @@ const statusConfig = {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex items-center gap-2 px-4 py-1 border-b-[0.5px] border-default bg-muted/70">
+    <div class="flex items-center gap-1 px-4 py-2 border-b-[0.5px] border-default bg-muted/70">
       <h2 class="text-xs font-semibold">
         Review changes
       </h2>
@@ -48,6 +48,7 @@ const statusConfig = {
         :label="context.draftCount.value.toString()"
         color="primary"
         variant="soft"
+        size="xs"
       />
     </div>
 
@@ -61,17 +62,18 @@ const statusConfig = {
             v-if="drafts.length > 0"
             class="mb-4"
           >
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-1 mb-2">
               <UIcon
                 :name="statusConfig[status].icon"
                 :class="statusConfig[status].iconClass"
-                class="w-4 h-4"
+                class="w-3.5 h-3.5"
               />
-              <span class="text-sm font-semibold">{{ statusConfig[status].label }}</span>
+              <span class="text-xs font-semibold">{{ statusConfig[status].label }}</span>
               <UBadge
                 :label="drafts.length.toString()"
                 :color="statusConfig[status].color"
                 variant="soft"
+                size="xs"
               />
             </div>
             <div class="flex flex-col gap-2">

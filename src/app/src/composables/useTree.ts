@@ -16,7 +16,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, ui: ReturnType<ty
     const draftedTreeItems = draft.list.value.filter(draft => draft.status !== DraftStatus.Pristine)
     return {
       id: type === StudioFeature.Content ? TreeRootId.Content : TreeRootId.Media,
-      name: type === StudioFeature.Content ? 'content' : 'media',
+      name: type === StudioFeature.Content ? 'content' : 'public',
       type: 'root',
       fsPath: '/',
       children: tree.value,

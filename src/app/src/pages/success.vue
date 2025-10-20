@@ -14,7 +14,6 @@ const changeCount = computed(() => {
   const queryCount = route.query.changeCount
   return queryCount ? Number.parseInt(queryCount as string, 10) : 0
 })
-const branchUrl = computed(() => git.getBranchUrl())
 const repositoryInfo = computed(() => git.getRepositoryInfo())
 
 const alertDescription = computed(() => {
@@ -24,8 +23,8 @@ const alertDescription = computed(() => {
   return 'A new version of your website has been deployed. Please refresh your app to see changes in Studio.'
 })
 
-function goBack() {
-  router.push('/content')
+function reload() {
+  window.location.reload()
 }
 
 onMounted(() => {
@@ -34,7 +33,7 @@ onMounted(() => {
   // TODO: implemented manifest detection logic
   setTimeout(() => {
     isWaitingForDeployment.value = false
-  }, 10000)
+  }, 1000)
 })
 </script>
 
@@ -54,12 +53,27 @@ onMounted(() => {
         <h1 class="text-2xl font-bold text-default mb-2">
           Changes Published
         </h1>
-        <p class="text-dimmed">
-          <span class="font-semibold text-default">{{ changeCount }}</span>
+        <p class="text-dimmed flex items-center flex-wrap justify-center">
+          <span class="font-semibold text-default">{{ changeCount }} &nbsp;</span>
           {{ changeCount === 1 ? 'change' : 'changes' }} published on
-          <span class="font-semibold text-default">{{ repositoryInfo.branch }}</span>
+          <UButton
+            :label="repositoryInfo.branch"
+            icon="i-lucide-git-branch"
+            :to="git.getBranchUrl()"
+            variant="link"
+            target="_blank"
+            :padded="false"
+          />
           of
-          <span class="font-semibold text-default">{{ repositoryInfo.owner }}/{{ repositoryInfo.repo }}</span>
+          <UButton
+            :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
+            icon="i-simple-icons:github"
+            :to="git.getRepositoryUrl()"
+            variant="link"
+            target="_blank"
+            :padded="false"
+          />
+          repository
         </p>
       </div>
 
@@ -73,22 +87,16 @@ onMounted(() => {
         :ui="{ icon: isWaitingForDeployment ? 'animate-spin' : '' }"
       />
 
-      <div class="flex gap-2 justify-center">
+      <div
+        class="flex justify-center h-7"
+      >
         <UButton
-          :to="branchUrl"
-          target="_blank"
-          icon="i-simple-icons:github"
-          variant="soft"
-        >
-          Check on GitHub
-        </UButton>
-        <UButton
-          icon="i-lucide-arrow-left"
+          v-if="!isWaitingForDeployment"
+          icon="i-lucide-rotate-ccw"
           color="neutral"
-          variant="outline"
-          @click="goBack"
+          @click="reload"
         >
-          Back to Content
+          Reload application
         </UButton>
       </div>
     </div>

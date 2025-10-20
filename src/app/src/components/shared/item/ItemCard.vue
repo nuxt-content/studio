@@ -52,13 +52,14 @@ const displayInfo = computed(() => {
               <UIcon
                 v-if="name === 'Home'"
                 name="i-lucide-house"
-                class="h-4 w-4 shrink-0 text-muted"
+                class="size-3.5 shrink-0 text-muted"
               />
               <UBadge
                 v-else-if="item.prefix"
                 :label="item.prefix.toString()"
                 size="xs"
-                variant="subtle"
+                variant="soft"
+                class="bg-elevated"
               />
               <h3
                 class="flex items-center gap-1 text-sm font-semibold truncate text-default overflow-hidden"

@@ -17,7 +17,6 @@ const items = computed<BreadcrumbItem[]>(() => {
     icon: 'i-lucide-folder-git',
     label: rootTreeItem.name,
     onClick: () => {
-      // TODO: update for ROOT_DOCUMENT_ITEM and ROOT_MEDIA_ITEM
       context.activeTree.value.select(rootTreeItem)
     },
   }
@@ -90,6 +89,7 @@ const items = computed<BreadcrumbItem[]>(() => {
     <ItemBadge
       v-if="currentItem.status && currentItem.status !== TreeStatus.Opened"
       :status="currentItem.status"
+      size="xs"
     />
   </div>
 </template>
