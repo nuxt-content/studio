@@ -19,7 +19,9 @@ export const createMockHost = (): StudioHost => ({
       if (documentDb.has(id)) {
         return documentDb.get(id)
       }
-      return createMockDocument(id)
+      const document = createMockDocument(id)
+      documentDb.set(id, document)
+      return document
     }),
     create: vi.fn().mockImplementation(async (fsPath: string, content: string) => {
       // Add dummy collection prefix
@@ -33,7 +35,9 @@ export const createMockHost = (): StudioHost => ({
       documentDb.set(id, document)
       return document
     }),
-    upsert: vi.fn().mockResolvedValue(undefined),
+    upsert: vi.fn().mockImplementation(async (id: string, document: DatabaseItem) => {
+      documentDb.set(id, document)
+    }),
     delete: vi.fn().mockImplementation(async (id: string) => {
       documentDb.delete(id)
     }),
@@ -47,7 +51,9 @@ export const createMockHost = (): StudioHost => ({
       if (mediaDb.has(id)) {
         return mediaDb.get(id)
       }
-      return createMockMedia(id)
+      const media = createMockMedia(id)
+      mediaDb.set(id, media)
+      return media
     }),
     create: vi.fn().mockImplementation(async (fsPath: string, _routePath: string, _content: string) => {
       const id = joinURL(TreeRootId.Media, fsPath)
@@ -55,7 +61,9 @@ export const createMockHost = (): StudioHost => ({
       mediaDb.set(id, media)
       return media
     }),
-    upsert: vi.fn().mockResolvedValue(undefined),
+    upsert: vi.fn().mockImplementation(async (id: string, media: MediaItem) => {
+      mediaDb.set(id, media)
+    }),
     delete: vi.fn().mockImplementation(async (id: string) => {
       mediaDb.delete(id)
     }),

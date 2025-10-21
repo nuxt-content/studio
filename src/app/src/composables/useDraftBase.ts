@@ -127,7 +127,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
 
         // Renamed draft
         if (existingItem.original) {
-          revert(existingItem.original.id, { rerender })
+          await revert(existingItem.original.id, { rerender: false })
         }
       }
       else {
@@ -139,7 +139,9 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       }
     }
 
-    await hooks.callHook(hookName, { caller: 'useDraftBase.revert' })
+    if (rerender) {
+      await hooks.callHook(hookName, { caller: 'useDraftBase.revert' })
+    }
   }
 
   async function revertAll() {
