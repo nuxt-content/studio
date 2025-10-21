@@ -1,4 +1,5 @@
 import { TreeRootId } from '../../src/types'
+import { joinURL } from 'ufo'
 
 /**
  * Normalize a storage key using the same logic as unstorage
@@ -18,7 +19,8 @@ export function normalizeKey(key: string): string {
 
 export function generateUniqueDocumentId(filename = 'document'): string {
   const uniqueId = Math.random().toString(36).substr(2, 9)
-  return `/${filename}-${uniqueId}.md`
+  // Add dummy collection prefix
+  return joinURL('docs', `${filename}-${uniqueId}.md`)
 }
 
 export function generateUniqueMediaId(filename = 'media'): string {

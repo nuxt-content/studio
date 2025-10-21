@@ -4,7 +4,7 @@ import { TreeRootId } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { createSharedComposable } from '@vueuse/core'
-import { useBaseDraft } from './useDraftBase'
+import { useDraftBase } from './useDraftBase'
 import { mediaStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
 import { generateStemFromFsPath } from '../../../module/src/runtime/utils/media'
@@ -24,7 +24,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     select,
     selectById,
     load,
-  } = useBaseDraft('media', host, git, storage)
+  } = useDraftBase('media', host, git, storage)
 
   async function upload(parentFsPath: string, file: File) {
     const draftItem = await fileToDraftItem(parentFsPath, file)

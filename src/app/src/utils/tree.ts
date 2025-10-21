@@ -65,7 +65,7 @@ TreeItem[] {
 
   for (const dbItem of virtualDbItems) {
     const itemHasPathField = 'path' in dbItem && dbItem.path
-    const fsPathSegments = dbItem.fsPath.split('/')
+    const fsPathSegments = dbItem.fsPath.split('/').filter(Boolean)
     const directorySegments = fsPathSegments.slice(0, -1)
     let fileName = fsPathSegments[fsPathSegments.length - 1].replace(/\.[^/.]+$/, '')
 

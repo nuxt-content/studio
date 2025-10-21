@@ -8,7 +8,7 @@ import { useHooks } from './useHooks'
 import { joinURL } from 'ufo'
 import { documentStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
-import { useBaseDraft } from './useDraftBase'
+import { useDraftBase } from './useDraftBase'
 
 export const useDraftDocuments = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
   const {
@@ -22,7 +22,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     select,
     selectById,
     load,
-  } = useBaseDraft<DatabaseItem>('document', host, git, storage)
+  } = useDraftBase<DatabaseItem>('document', host, git, storage)
 
   const hooks = useHooks()
 

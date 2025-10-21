@@ -7,11 +7,7 @@ import { createMockGit } from '../mocks/git'
 import { createMockFile, setupMediaMocks } from '../mocks/media'
 import { createMockDocument } from '../mocks/document'
 import { createMockStorage, createMockUI } from '../mocks/composables'
-import { useDraftDocuments } from '../../src/composables/useDraftDocuments'
-import { useDraftMedias } from '../../src/composables/useDraftMedias'
-import { useTree } from '../../src/composables/useTree'
 import type { useUI } from '../../src/composables/useUI'
-import { useContext } from '../../src/composables/useContext'
 import type { useGit } from '../../src/composables/useGit'
 import { findItemFromId } from '../../src/utils/tree'
 
@@ -57,6 +53,15 @@ const cleanAndSetupContext = async (mockedHost: StudioHost, mockedGit: ReturnTyp
   mockStorage.clear()
   clearMockHost()
 
+  // Reset all composables to kill previous instances
+  vi.resetModules()
+
+  // Re-import composables to get fresh instances after resetModules
+  const { useDraftDocuments } = await import('../../src/composables/useDraftDocuments')
+  const { useDraftMedias } = await import('../../src/composables/useDraftMedias')
+  const { useTree } = await import('../../src/composables/useTree')
+  const { useContext } = await import('../../src/composables/useContext')
+
   // Initialize document tree
   const draftDocuments = useDraftDocuments(mockedHost, mockedGit)
   const documentTree = useTree(StudioFeature.Content, mockedHost, mockedUI, draftDocuments)
@@ -71,9 +76,9 @@ const cleanAndSetupContext = async (mockedHost: StudioHost, mockedGit: ReturnTyp
   return context
 }
 
-describe('Document draft - Action Chains Integration Tests', () => {
+describe('Document - Action Chains Integration Tests', () => {
   let documentId: string
-  let context: ReturnType<typeof useContext>
+  let context: Awaited<ReturnType<typeof cleanAndSetupContext>>
 
   beforeEach(async () => {
     currentRouteName = 'content'
@@ -82,108 +87,124 @@ describe('Document draft - Action Chains Integration Tests', () => {
   })
 
   it('Create > Revert', async () => {
+    const consoleInfoSpy = vi.spyOn(console, 'info')
+
     /* STEP 1: CREATE */
+    const fsPath = mockHost.document.getFileSystemPath(documentId)
     await context.itemActionHandler[StudioItemActionId.CreateDocument]({
-      fsPath: mockHost.document.getFileSystemPath(documentId),
+      fsPath,
       content: 'Test content',
     })
 
-    // Draft Storage
+    // Draft in Storage
     expect(mockStorage.size).toEqual(1)
     const storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
     expect(storedDraft).toHaveProperty('status', DraftStatus.Created)
+    expect(storedDraft).toHaveProperty('id', documentId)
+    expect(storedDraft.modified).toHaveProperty('id', documentId)
+    expect(storedDraft.original).toBeUndefined()
 
-    // Draft Memory
+    // Draft in Memory
     expect(context.activeTree.value.draft.list.value).toHaveLength(1)
-    expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Created)
+    expect(context.activeTree.value.draft.list.value[0]).toHaveProperty('id', documentId)
+    expect(context.activeTree.value.draft.list.value[0].modified).toHaveProperty('id', documentId)
+    expect(context.activeTree.value.draft.list.value[0].original).toBeUndefined()
 
     // Tree
-    console.log('=== TREE DEBUG ===')
-    console.log('currentItem:', context.activeTree.value.currentItem.value)
-    console.log('current.value:', context.activeTree.value.current.value)
-    console.log('rootItem:', context.activeTree.value.rootItem.value)
     expect(context.activeTree.value.currentItem.value).toHaveProperty('id', documentId)
-    expect(context.activeTree.value.current.value[0]).toHaveLength(1)
-    expect(context.activeTree.value.current.value[0]).toHaveProperty('id', documentId)
+    expect(context.activeTree.value.currentItem.value).toHaveProperty('status', DraftStatus.Created)
+    expect(context.activeTree.value.root.value).toHaveLength(1)
+    expect(context.activeTree.value.root.value[0]).toHaveProperty('id', documentId)
 
     /* STEP 2: REVERT */
     await context.itemActionHandler[StudioItemActionId.RevertItem](context.activeTree.value.currentItem.value)
 
-    // Storage
+    // Draft in Storage
     expect(mockStorage.size).toEqual(0)
 
-    // In memory
+    // Draft In memory
     expect(context.activeTree.value.draft.list.value).toHaveLength(0)
 
-    // Tree state checks - should be back at root
-    expect(context.activeTree.value.currentItem.value.type).toEqual('root')
-    expect(context.activeTree.value.current.value).toHaveLength(0)
+    // Tree
+    expect(context.activeTree.value.currentItem.value).toHaveProperty('type', 'root')
+    expect(context.activeTree.value.root.value).toHaveLength(0)
+
+    /* VERIFY HOOKS */
+    expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
+    expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.revert')
+    expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
   })
 
-  // it('Create > Rename', async () => {
-  //   const mockDocument = createMockDocument(documentId)
+  it('Create > Rename', async () => {
+    const consoleInfoSpy = vi.spyOn(console, 'info')
+    /* STEP 1: CREATE */
+    const fsPath = mockHost.document.getFileSystemPath(documentId)
+    await context.itemActionHandler[StudioItemActionId.CreateDocument]({
+      fsPath,
+      content: 'Test content',
+    })
 
-  //   /* STEP 1: CREATE */
-  //   await context.itemActionHandler[StudioItemActionId.CreateDocument]({
-  //     fsPath: mockHost.document.getFileSystemPath(documentId),
-  //     content: mockDocument.body.value.join('\n'),
-  //   })
+    /* STEP 2: RENAME */
+    const newId = generateUniqueDocumentId()
+    const newFsPath = mockHost.document.getFileSystemPath(newId)
+    const draftItem = context.activeTree.value.draft.list.value[0]
+    await context.itemActionHandler[StudioItemActionId.RenameItem]({
+      id: draftItem.id,
+      newFsPath,
+    })
 
-  //   /* STEP 2: RENAME */
-  //   const newId = generateUniqueDocumentId()
-  //   const newFsPath = mockHost.document.getFileSystemPath(newId)
-  //   const draftItem = context.activeTree.value.draft.list.value[0]
-  //   await context.itemActionHandler[StudioItemActionId.RenameItem]({
-  //     id: draftItem.id,
-  //     newFsPath,
-  //   })
+    // Draft in Storage
+    expect(mockStorage.size).toEqual(1)
+    const createdDraftStorage = JSON.parse(mockStorage.get(normalizeKey(newId))!)
+    expect(createdDraftStorage).toHaveProperty('status', DraftStatus.Created)
+    expect(createdDraftStorage).toHaveProperty('id', newId)
+    expect(createdDraftStorage.original).toBeUndefined()
+    expect(createdDraftStorage.modified).toHaveProperty('id', newId)
 
-  //   // Storage
-  //   expect(mockStorage.size).toEqual(1)
-  //   const createdDraftStorage = JSON.parse(mockStorage.get(normalizeKey(newId))!)
-  //   expect(createdDraftStorage).toHaveProperty('status', DraftStatus.Created)
-  //   expect(createdDraftStorage).toHaveProperty('id', newId)
-  //   expect(createdDraftStorage.original).toBeUndefined()
-  //   expect(createdDraftStorage.modified).toHaveProperty('id', newId)
+    // Draft in Memory
+    const list = context.activeTree.value.draft.list.value
+    expect(list).toHaveLength(1)
+    expect(list[0].status).toEqual(DraftStatus.Created)
+    expect(list[0].id).toEqual(newId)
+    expect(list[0].original).toBeUndefined()
+    expect(list[0].modified).toHaveProperty('id', newId)
 
-  //   // In memory
-  //   const list = context.activeTree.value.draft.list.value
-  //   expect(list).toHaveLength(1)
-  //   expect(list[0].status).toEqual(DraftStatus.Created)
-  //   expect(list[0].id).toEqual(newId)
-  //   expect(list[0].original).toBeUndefined()
-  //   expect(list[0].modified).toHaveProperty('id', newId)
-  // })
+    // Tree
+    expect(context.activeTree.value.currentItem.value).toHaveProperty('type', 'root')
+    expect(context.activeTree.value.root.value).toHaveLength(1)
+    expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId)
+    expect(context.activeTree.value.root.value[0]).toHaveProperty('status', DraftStatus.Created)
+
+    /* VERIFY HOOKS */
+    expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
+    expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
+    expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftDocuments.rename')
+  })
 
   // it('Create > Update > Revert', async () => {
   //   const mockDocument = createMockDocument(documentId)
 
   //   /* STEP 1: CREATE */
+  //   const fsPath = mockHost.document.getFileSystemPath(documentId)
   //   await context.itemActionHandler[StudioItemActionId.CreateDocument]({
-  //     fsPath: mockHost.document.getFileSystemPath(documentId),
+  //     fsPath,
   //     content: mockDocument.body.value.join('\n'),
   //   })
-
-  //   // Storage
-  //   expect(mockStorage.size).toEqual(1)
-  //   let storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
-  //   expect(storedDraft).toHaveProperty('status', DraftStatus.Created)
-
-  //   // In memory
-  //   expect(context.activeTree.value.draft.list.value).toHaveLength(1)
-  //   expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Created)
 
   //   /* STEP 2: UPDATE */
   //   await context.activeTree.value.draft.update(documentId, mockDocument)
 
   //   // Storage
   //   expect(mockStorage.size).toEqual(1)
-  //   storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
+  //   const storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
   //   expect(storedDraft).toHaveProperty('status', DraftStatus.Created)
 
-  //   // In memory
+  //   // Memory
   //   expect(context.activeTree.value.draft.list.value).toHaveLength(1)
   //   expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Created)
+
+  //   // Tree
+  //   expect(context.activeTree.value.root.value).toHaveLength(1)
 
   //   /* STEP 3: REVERT */
   //   await context.itemActionHandler[StudioItemActionId.RevertItem](context.activeTree.value.currentItem.value)
@@ -191,22 +212,17 @@ describe('Document draft - Action Chains Integration Tests', () => {
   //   // Storage
   //   expect(mockStorage.size).toEqual(0)
 
-  //   // In memory
+  //   // Memory
   //   expect(context.activeTree.value.draft.list.value).toHaveLength(0)
+
+  //   // Tree
+  //   expect(context.activeTree.value.currentItem.value).toHaveProperty('type', 'root')
+  //   expect(context.activeTree.value.root.value).toHaveLength(0)
   // })
 
   // it('Select > Update > Revert', async () => {
   //   /* STEP 1: SELECT */
   //   await context.activeTree.value.draft.selectById(documentId)
-
-  //   // Storage
-  //   expect(mockStorage.size).toEqual(1)
-  //   let storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
-  //   expect(storedDraft).toHaveProperty('status', DraftStatus.Pristine)
-
-  //   // In memory
-  //   expect(context.activeTree.value.draft.list.value).toHaveLength(1)
-  //   expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Pristine)
 
   //   /* STEP 2: UPDATE */
   //   const updatedDocument = createMockDocument(documentId, {
@@ -219,24 +235,32 @@ describe('Document draft - Action Chains Integration Tests', () => {
 
   //   // Storage
   //   expect(mockStorage.size).toEqual(1)
-  //   storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
+  //   const storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
   //   expect(storedDraft).toHaveProperty('status', DraftStatus.Updated)
 
-  //   // In memory
+  //   // Memory
   //   expect(context.activeTree.value.draft.list.value).toHaveLength(1)
   //   expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Updated)
+
+  //   // Tree
+  //   expect(context.activeTree.value.root.value).toHaveLength(1)
+  //   expect(context.activeTree.value.root.value[0].status).toEqual('updated')
 
   //   /* STEP 3: REVERT */
   //   await context.itemActionHandler[StudioItemActionId.RevertItem](context.activeTree.value.currentItem.value)
 
   //   // Storage
   //   expect(mockStorage.size).toEqual(1)
-  //   storedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
-  //   expect(storedDraft).toHaveProperty('status', DraftStatus.Pristine)
+  //   const revertedDraft = JSON.parse(mockStorage.get(normalizeKey(documentId))!)
+  //   expect(revertedDraft).toHaveProperty('status', DraftStatus.Pristine)
 
-  //   // In memory
+  //   // Memory
   //   expect(context.activeTree.value.draft.list.value).toHaveLength(1)
   //   expect(context.activeTree.value.draft.list.value[0].status).toEqual(DraftStatus.Pristine)
+
+  //   // Tree
+  //   expect(context.activeTree.value.root.value).toHaveLength(1)
+  //   expect(context.activeTree.value.root.value[0].status).toEqual('opened')
   // })
 
   // it('Select > Update > Rename', async () => {
