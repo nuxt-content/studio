@@ -35,7 +35,6 @@ vi.mock('unstorage/drivers/indexedb', () => ({
   }),
 }))
 
-// Mock vue-router
 vi.mock('vue-router', () => ({
   useRoute: () => ({
     get name() {
@@ -131,7 +130,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.currentItem.value).toHaveProperty('type', 'root')
     expect(context.activeTree.value.root.value).toHaveLength(0)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.revert')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
@@ -177,7 +176,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('status', DraftStatus.Created)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftDocuments.rename')
@@ -236,7 +235,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.currentItem.value).toHaveProperty('type', 'root')
     expect(context.activeTree.value.root.value).toHaveLength(0)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.revert')
@@ -323,7 +322,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', documentId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
@@ -397,7 +396,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
@@ -509,7 +508,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(3)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.load')
     // Update is not called because status is the same (from created to created)
@@ -564,7 +563,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', documentId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
@@ -639,7 +638,7 @@ describe('Document - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId2)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:document:updated have been called by', 'useDraftBase.create')
@@ -706,7 +705,7 @@ describe('Media - Action Chains Integration Tests', () => {
     // Tree
     expect(context.activeTree.value.root.value).toHaveLength(0)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.create')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.revert')
@@ -752,7 +751,7 @@ describe('Media - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('status', DraftStatus.Created)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(2)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.create')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftMedias.rename')
@@ -836,7 +835,7 @@ describe('Media - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', mediaId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.create')
@@ -924,7 +923,7 @@ describe('Media - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', mediaId)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.create')
@@ -997,7 +996,7 @@ describe('Media - Action Chains Integration Tests', () => {
     expect(context.activeTree.value.root.value).toHaveLength(1)
     expect(context.activeTree.value.root.value[0]).toHaveProperty('id', newId2)
 
-    /* VERIFY HOOKS */
+    // Hooks
     expect(consoleInfoSpy).toHaveBeenCalledTimes(4)
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.load')
     expect(consoleInfoSpy).toHaveBeenCalledWith('studio:draft:media:updated have been called by', 'useDraftBase.create')
