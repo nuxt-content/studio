@@ -131,6 +131,7 @@ onUnmounted(() => {
       v-for="action in actions"
       :key="action.id"
       :text="action.tooltip"
+      :open="action.isPending ? true : undefined"
     >
       <UButton
         :key="action.id"
