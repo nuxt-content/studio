@@ -18,7 +18,7 @@ export const setupMonaco = createSingletonPromise(async () => {
     styleEl.media = 'screen'
     styleEl.textContent = [
       '/* Only include font-face rules in head tag to load fonts and avoid conflicts with other styles */',
-      cssBundle.match(/@font-face{[^}]+}/)?.[0] || '',
+      cssBundle.match(/@font-face\{[^}]+\}/)?.[0] || '',
     ].join('\n')
     window.document.head.appendChild(styleEl)
   }
