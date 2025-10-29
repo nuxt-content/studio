@@ -140,8 +140,7 @@ export const useContext = createSharedComposable((
     },
     [StudioItemActionId.RevertItem]: async (item: TreeItem) => {
       // Get collections from document item or use default media collection
-      const collections = item.collections || [TreeRootId.Media]
-      for (const collection of collections) {
+      for (const collection of item.collections) {
         const id = generateIdFromFsPath(item.fsPath, collection)
         await activeTree.value.draft.revert(id)
       }

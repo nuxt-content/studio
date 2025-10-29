@@ -32,6 +32,7 @@ const displayInfo = computed(() => {
 <template>
   <UPageCard
     reverse
+    variant="subtle"
     class="cursor-pointer hover:bg-muted relative w-full min-w-0 overflow-hidden"
     :class="statusRingColor"
     :ui="{ container: 'overflow-hidden' }"
@@ -41,7 +42,7 @@ const displayInfo = computed(() => {
         <div class="flex items-start gap-3">
           <div
             v-if="!isDirectory"
-            class="relative flex-shrink-0 w-12 h-12"
+            class="relative shrink-0 w-12 h-12"
           >
             <div class="w-full h-full bg-size-[24px_24px] bg-position-[0_0,0_12px,12px_-12px,-12px_0] rounded-lg overflow-hidden bg-elevated">
               <slot name="thumbnail" />
@@ -80,7 +81,10 @@ const displayInfo = computed(() => {
             </div>
           </div>
 
-          <ItemActionsDropdown :item="item" />
+          <div class="flex flex-col items-end justify-between self-stretch">
+            <ItemActionsDropdown :item="item" />
+            <slot name="bottom-right" />
+          </div>
         </div>
       </UTooltip>
     </template>

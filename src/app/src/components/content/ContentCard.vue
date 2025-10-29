@@ -21,6 +21,8 @@ const props = defineProps({
 })
 
 const itemExtensionIcon = computed(() => getFileIcon(props.item.fsPath))
+const collectionName = computed(() => props.item.collections[0])
+const isDirectory = computed(() => props.item.type === 'directory')
 </script>
 
 <template>
@@ -41,6 +43,14 @@ const itemExtensionIcon = computed(() => getFileIcon(props.item.fsPath))
           class="w-6 h-6 text-muted"
         />
       </div>
+    </template>
+    <template #bottom-right>
+      <UBadge
+        v-if="!isDirectory"
+        :label="collectionName"
+        size="xs"
+        variant="soft"
+      />
     </template>
   </ItemCard>
 </template>
