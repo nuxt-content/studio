@@ -197,7 +197,7 @@ export async function generateContentFromMarkdownDocument(document: DatabasePage
     }
   })
 
-  return await stringifyMarkdown(body, removeReservedKeysFromDocument(document), {
+  const markdown = await stringifyMarkdown(body, removeReservedKeysFromDocument(document), {
     plugins: {
       remarkMDC: {
         options: {
@@ -206,4 +206,6 @@ export async function generateContentFromMarkdownDocument(document: DatabasePage
       },
     },
   })
+
+  return typeof markdown === 'string' ? markdown.replace(/&#x2A;/g, '*') : markdown
 }

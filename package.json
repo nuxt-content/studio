@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.71",
-    "@nuxtjs/mdc": "0.18.0",
+    "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@bf09212",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
     "unstorage": "^1.17.1"
