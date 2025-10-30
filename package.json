@@ -15,8 +15,8 @@
       "default": "./dist/app/main.js"
     },
     "./app/utils": {
-      "types": "./dist/app/utils.d.ts",
-      "default": "./dist/app/utils.js"
+      "types": "./dist/app/shared.d.ts",
+      "default": "./dist/app/shared.js"
     },
     "./app/service-worker": {
       "types": "./dist/app/service-worker.d.ts",

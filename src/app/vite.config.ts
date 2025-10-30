@@ -61,7 +61,7 @@ export default defineConfig({
     cssCodeSplit: false,
     outDir: '../../dist/app',
     lib: {
-      entry: ['./src/main.ts', './src/utils.ts', './src/service-worker.ts'],
+      entry: ['./src/main.ts', './src/shared.ts', './src/service-worker.ts'],
       formats: ['es'],
     },
     sourcemap: false,
