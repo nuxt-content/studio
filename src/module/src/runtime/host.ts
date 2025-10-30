@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { ensure } from './utils/ensure'
 import type { CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
-import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo } from './utils/collection'
+import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo, cleanupDocumentBeforeReturn } from './utils/collection'
 import { kebabCase } from 'scule'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
@@ -181,7 +181,9 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
     document: {
       get: async (id: string): Promise<DatabaseItem> => {
-        return useContentCollectionQuery(id.split('/')[0] as string).where('id', '=', id).first()
+        const item = await useContentCollectionQuery(id.split('/')[0] as string).where('id', '=', id).first()
+
+        return cleanupDocumentBeforeReturn(item as DatabaseItem)
       },
       getFileSystemPath: (id: string) => {
         return getCollectionInfo(id, useContentCollections()).fsPath
