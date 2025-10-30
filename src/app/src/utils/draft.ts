@@ -3,7 +3,7 @@ import { DraftStatus, ContentFileExtension, TreeRootId } from '../types'
 import { isEqual } from './database'
 import { studioFlags } from '../composables/useStudio'
 import { generateContentFromDocument } from './content'
-import { fromBase64UTF8 } from '../utils'
+import { fromBase64ToUTF8 } from '../utils/string'
 
 export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
   if (draftItem.id.startsWith(TreeRootId.Media)) {
@@ -16,7 +16,7 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
 
   if (draftItem.status === DraftStatus.Created && draftItem.githubFile) {
     return {
-      githubContent: fromBase64UTF8(draftItem.githubFile.content!),
+      githubContent: fromBase64ToUTF8(draftItem.githubFile.content!),
       localContent: await generateContentFromDocument(draftItem.modified as DatabaseItem) as string,
     }
   }
@@ -27,7 +27,7 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
   }
 
   const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
-  const githubContent = fromBase64UTF8(draftItem.githubFile.content)
+  const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
 
   if (localContent.trim() === githubContent.trim()) {
     return

@@ -32,7 +32,6 @@ export function useMonacoDiff(target: Ref, options: UseMonacoDiffOptions) {
       renderSideBySideInlineBreakpoint: 0,
       wordWrap: 'on',
       scrollBeyondLastLine: false,
-      // automatically adjust the layout of the editor
       automaticLayout: true,
       ...options.editorOptions,
     })

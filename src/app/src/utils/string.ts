@@ -1,6 +1,4 @@
-export { generateContentFromDocument, generateDocumentFromContent, removeReservedKeysFromDocument } from './utils/content'
-
-export function fromBase64UTF8(base64: string) {
+export function fromBase64ToUTF8(base64: string) {
   const binary = atob(base64)
   const len = binary.length
   const bytes = new Uint8Array(len)
