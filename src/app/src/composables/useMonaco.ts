@@ -61,7 +61,8 @@ export function useMonaco(target: Ref<HTMLElement | undefined>, options: UseMona
 
     // Create and attach model
     const language = unref(options.language)
-    const model = (options.uri && monaco.editor.getModel(options.uri)) || monaco.editor.createModel(initialContent, language, options.uri)
+    const existingModel = options.uri && monaco.editor.getModel(options.uri)
+    const model = existingModel || monaco.editor.createModel(initialContent, language, options.uri)
     editor.value.setModel(model)
 
     // Watch for color mode changes
