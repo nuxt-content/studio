@@ -74,7 +74,6 @@ function isDeepEqual(obj1: Record<string, unknown>, obj2: Record<string, unknown
   if (keys1.length !== keys2.length) return false
 
   for (const key of keys1) {
-    if (!keys2.includes(key)) continue // Ignore missing null/undefined fields
     if (!isDeepEqual(obj1[key] as Record<string, unknown>, obj2[key] as Record<string, unknown>)) return false
   }
 
