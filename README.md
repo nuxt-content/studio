@@ -47,7 +47,7 @@ Originally offered as a standalone premium platform at https://nuxt.studio, Stud
 - 🤖 **AI Content Assistant** — Receive smart, AI-powered suggestions to enhance your content creation flow
 - 💡 **Community-driven Features** — Have an idea? [Share your suggestions](https://github.com/nuxt-content/studio/discussions) to shape the future of Nuxt Studio
 
-[📖 Documentation](https://content.nuxt.com/studio)
+[📖 Documentation](https://content.nuxt.com/docs/studio)
 [🎮 Live Demo](https://docus.dev/admin)
 
 ## Quick Setup
