@@ -48,7 +48,7 @@
     "@vueuse/core": "^13.9.0",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
-    "unstorage": "^1.17.2"
+    "unstorage": "1.17.1"
   },
   "devDependencies": {
     "@iconify-json/simple-icons": "^1.2.57",
