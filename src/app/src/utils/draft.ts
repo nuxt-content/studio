@@ -66,6 +66,11 @@ export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftS
       return DraftStatus.Updated
     }
   }
+  else if (typeof original === 'object' && typeof modified === 'object') {
+    if (!isEqual(original as unknown as Record<string, unknown>, modified as unknown as Record<string, unknown>)) {
+      return DraftStatus.Updated
+    }
+  }
   else {
     if (JSON.stringify(original) !== JSON.stringify(modified)) {
       return DraftStatus.Updated

@@ -100,7 +100,7 @@ async function generateDocumentFromYAMLContent(id: string, content: string): Pro
 
   return {
     id,
-    extension: ContentFileExtension.YAML,
+    extension: getFileExtension(id),
     stem: generateStemFromId(id),
     meta: {},
     ...parsed,
@@ -187,6 +187,7 @@ export async function generateContentFromYAMLDocument(document: DatabaseItem): P
   return await stringifyFrontMatter(removeReservedKeysFromDocument(document), '', {
     prefix: '',
     suffix: '',
+    lineWidth: 0,
   })
 }
 
