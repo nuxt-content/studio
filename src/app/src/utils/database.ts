@@ -29,6 +29,11 @@ export function isEqual(document1: Record<string, unknown>, document2: Record<st
       return false
     }
   }
+  else if (typeof body1 === 'object' && typeof body2 === 'object') {
+    if (!isDeepEqual(body1 as Record<string, unknown>, body2 as Record<string, unknown>)) {
+      return false
+    }
+  }
   else {
     // For other file types, we compare the JSON stringified bodies
     if (JSON.stringify(body1) !== JSON.stringify(body2)) {

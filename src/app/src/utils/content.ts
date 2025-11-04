@@ -100,7 +100,7 @@ async function generateDocumentFromYAMLContent(id: string, content: string): Pro
 
   return {
     id,
-    extension: ContentFileExtension.YAML,
+    extension: getFileExtension(id),
     stem: generateStemFromId(id),
     meta: {},
     ...parsed,
