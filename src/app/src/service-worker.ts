@@ -19,6 +19,26 @@ const IMAGE_EXTENSIONS = [
   'gif',
 ]
 
+function extractImagePath(pathname) {
+  if (pathname.startsWith('/_ipx/_/')) {
+    return pathname.replace('/_ipx/_', '')
+  }
+
+  if (pathname.startsWith('/_vercel/image')) {
+    try {
+      return new URL(pathname, 'http://localhost').searchParams.get('url') || null
+    } catch (error) {
+      return null
+    }
+  }
+
+  if (IMAGE_EXTENSIONS.includes(pathname.split('.').pop())) {
+    return pathname
+  }
+
+  return null
+}
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const isSameDomain = url.origin === self.location.origin;
@@ -27,19 +47,18 @@ self.addEventListener('fetch', event => {
     return event.respondWith(fetch(event.request));
   }
 
-  if (url.pathname.startsWith('/_ipx/_/') || IMAGE_EXTENSIONS.includes(url.pathname.split('.').pop())) {
-    return event.respondWith(fetchFromIndexedDB(event, url));
+  const imageUrl = extractImagePath(url.pathname);
+  if (imageUrl) {
+    return event.respondWith(fetchFromIndexedDB(event, imageUrl));
   }
 
   event.respondWith(fetch(event.request))
 })
 
 function fetchFromIndexedDB(event, url) {
-  console.log('Fetching from IndexedDB:', url.pathname);
-  const dbKey = ['public-assets:', url.pathname.replace(/^\\/+(_ipx\\/_\\/)?/, '').replace('/', ':')].join('')
+  const dbKey = ['public-assets:', url.replace(/^\\//g, ':')].join('')
   return getData(dbKey).then(data => {
     if (!data) {
-      console.log('No data found in IndexedDB:', url.pathname, dbKey);
       return fetch(event.request);
     }
 
