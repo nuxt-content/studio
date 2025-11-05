@@ -1,6 +1,12 @@
-import { eventHandler, sendRedirect } from 'h3'
+import { eventHandler, getQuery, sendRedirect, setCookie } from 'h3'
 
 export default eventHandler((event) => {
+  const { redirect } = getQuery(event)
+  if (redirect) {
+    setCookie(event, 'studio-redirect', String(redirect), {
+      httpOnly: true,
+    })
+  }
   // Automatically redirect to the GitHub login page
   // TODO: once there is more than one auth provider, we need to add a selector for the auth provider
   return sendRedirect(event, '/__nuxt_studio/auth/github')

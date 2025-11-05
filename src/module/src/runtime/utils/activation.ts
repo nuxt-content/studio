@@ -25,7 +25,7 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
     // Listen to CMD + . to toggle the studio or redirect to the login page
     document.addEventListener('keydown', (event) => {
       if (event.metaKey && event.key === '.') {
-        window.location.href = config.route
+        window.location.href = config.route + '?redirect=' + encodeURIComponent(window.location.pathname)
       }
     })
   }
