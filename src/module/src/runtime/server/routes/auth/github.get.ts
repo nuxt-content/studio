@@ -58,7 +58,7 @@ export interface OAuthGitHubConfig {
 
   /**
    * Redirect URL to to allow overriding for situations like prod failing to determine public hostname
-   * @default process.env.NUXT_OAUTH_GITHUB_REDIRECT_URL
+   * @default process.env.NUXT_STUDIO_AUTH_GITHUB_REDIRECT_URL
    * @see https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps
    */
   redirectURL?: string
@@ -109,7 +109,9 @@ export default eventHandler(async (event: H3Event) => {
   }
 
   const requestURL = getRequestURL(event)
-  const redirectURL = `${requestURL.protocol}//${requestURL.host}${requestURL.pathname}`
+
+  config.redirectURL = config.redirectURL || `${requestURL.protocol}//${requestURL.host}${requestURL.pathname}`
+
   const state = await handleState(event)
 
   if (!query.code) {
@@ -125,7 +127,7 @@ export default eventHandler(async (event: H3Event) => {
       event,
       withQuery(config.authorizationURL as string, {
         client_id: config.clientId,
-        redirect_uri: redirectURL,
+        redirect_uri: config.redirectURL,
         scope: config.scope.join(' '),
         state,
         ...config.authorizationParams,
@@ -149,7 +151,7 @@ export default eventHandler(async (event: H3Event) => {
       grant_type: 'authorization_code',
       client_id: config.clientId,
       client_secret: config.clientSecret,
-      redirect_uri: redirectURL,
+      redirect_uri: config.redirectURL,
       code: query.code,
     },
   })
