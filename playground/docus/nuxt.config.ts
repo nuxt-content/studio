@@ -19,6 +19,7 @@ export default defineNuxtConfig({
       repo: 'studio',
       branch: 'main',
       rootDir: 'playground/docus',
+      private: false
     },
   },
 })
