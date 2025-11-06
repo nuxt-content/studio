@@ -126,11 +126,8 @@ async function setContent(document: DatabasePageItem) {
 </script>
 
 <template>
-  <div class="relative h-full">
-    <AlertMDCFormatting v-if="isAutomaticFormattingDetected" />
-    <div
-      ref="editorRef"
-      class="h-full -ml-3"
-    />
+  <div class="relative h-full flex flex-col">
+    <AlertMDCFormatting class="flex-none" v-if="isAutomaticFormattingDetected" />
+    <div ref="editorRef" class="flex-1" />
   </div>
 </template>
