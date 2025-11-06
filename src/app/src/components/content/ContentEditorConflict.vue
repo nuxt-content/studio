@@ -39,7 +39,7 @@ useMonacoDiff(diffEditorRef, {
   original: conflict.value?.githubContent || '',
   modified: conflict.value?.localContent || '',
   language: language.value,
-  colorMode: ui.colorMode.value,
+  colorMode: ui.colorMode,
 })
 </script>
 

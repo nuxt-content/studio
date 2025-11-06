@@ -91,7 +91,7 @@ async function initializeEditor() {
       original: gitHubOriginal!,
       modified: modified!,
       language: language.value,
-      colorMode: ui.colorMode.value,
+      colorMode: ui.colorMode,
       editorOptions: {
         automaticLayout: true,
         hideUnchangedRegions: {
