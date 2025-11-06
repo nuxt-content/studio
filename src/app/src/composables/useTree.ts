@@ -2,7 +2,7 @@ import { StudioFeature, TreeStatus, type StudioHost, type TreeItem, DraftStatus 
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
 import type { useDraftMedias } from './useDraftMedias'
-import { buildTree, findItemFromFsPath, findItemFromRoute, findParentFromFsPath, generateIdFromFsPath } from '../utils/tree'
+import { buildTree, findItemFromFsPath, findItemFromRoute, findParentFromFsPath } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
 import { useHooks } from './useHooks'
 import { useStudioState } from './useStudioState'
@@ -53,7 +53,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     setLocation(type, currentItem.value.fsPath)
 
     if (item?.type === 'file') {
-      await draft.selectById(generateIdFromFsPath(item.fsPath, item.collections![0]))
+      await draft.selectById(item.id)
 
       if (
         !preferences.value.syncEditorAndRoute

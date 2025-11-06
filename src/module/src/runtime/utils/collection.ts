@@ -63,12 +63,11 @@ export function getCollection(collectionName: string, collections: Record<string
 }
 
 export function getCollectionSource(id: string, collection: CollectionInfo) {
-  const [_, ...rest] = id.split(/[/:]/)
-  const path = rest.join('/')
-
   const matchedSource = collection.source.find((source) => {
-    const include = minimatch(path, source.include, { dot: true })
-    const exclude = source.exclude?.some(exclude => minimatch(path, exclude))
+    const filePath = generateFsPathFromId(id, source)
+
+    const include = minimatch(filePath, source.include, { dot: true })
+    const exclude = source.exclude?.some(exclude => minimatch(filePath, exclude))
 
     return include && !exclude
   })
@@ -82,7 +81,7 @@ export function generateFsPathFromId(id: string, source: CollectionInfo['source'
 
   const { fixed } = parseSourceBase(source)
 
-  const pathWithoutFixed = path.substring(fixed.length)
+  const pathWithoutFixed = source.prefix === '/' ? path : path.substring(fixed.length)
   return join(fixed, pathWithoutFixed)
 }
 

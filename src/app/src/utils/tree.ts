@@ -81,6 +81,7 @@ TreeItem[] {
         type: 'file',
         prefix,
         collections: [dbItem.id.split('/')[0]],
+        id: dbItem.id,
       }
 
       if (dbItem.fsPath.endsWith('.gitkeep')) {
@@ -122,6 +123,7 @@ TreeItem[] {
           children: [],
           prefix: dirPrefix,
           collections: [dbItem.id.split('/')[0]],
+          id: dirFsPath,
         }
 
         directoryMap.set(dirFsPath, directory)
@@ -150,6 +152,7 @@ TreeItem[] {
       type: 'file',
       prefix,
       collections: [dbItem.id.split('/')[0]],
+      id: dbItem.id,
     }
 
     if (dbItem.fsPath.endsWith('.gitkeep')) {

@@ -21,4 +21,5 @@ export interface TreeItem {
   routePath?: string
   children?: TreeItem[]
   hide?: boolean
+  id: string
 }

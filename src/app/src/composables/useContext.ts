@@ -139,19 +139,14 @@ export const useContext = createSharedComposable((
       }
     },
     [StudioItemActionId.RevertItem]: async (item: TreeItem) => {
-      // Get collections from document item or use default media collection
-      for (const collection of item.collections) {
-        const id = generateIdFromFsPath(item.fsPath, collection)
-        await activeTree.value.draft.revert(id)
-      }
+      await activeTree.value.draft.revert(item.id)
     },
     [StudioItemActionId.RenameItem]: async (params: TreeItem | RenameFileParams) => {
       const { item, newFsPath } = params as RenameFileParams
 
       // Revert file
       if (item.type === 'file') {
-        const id = generateIdFromFsPath(item.fsPath, item.collections[0])
-        await activeTree.value.draft.rename([{ id, newFsPath }])
+        await activeTree.value.draft.rename([{ id: item.id, newFsPath }])
         return
       }
 
@@ -160,7 +155,7 @@ export const useContext = createSharedComposable((
       if (descendants.length > 0) {
         const itemsToRename = descendants.map((descendant) => {
           return {
-            id: generateIdFromFsPath(descendant.fsPath, descendant.collections[0]),
+            id: descendant.id,
             newFsPath: descendant.fsPath.replace(item.fsPath, newFsPath),
           }
         })
@@ -171,25 +166,21 @@ export const useContext = createSharedComposable((
     [StudioItemActionId.DeleteItem]: async (item: TreeItem) => {
       // Delete file
       if (item.type === 'file') {
-        const id = generateIdFromFsPath(item.fsPath, item.collections![0])
-        await activeTree.value.draft.remove([id])
+        await activeTree.value.draft.remove([item.id])
         return
       }
 
       // Delete folder
       const descendants = findDescendantsFileItemsFromFsPath(activeTree.value.root.value, item.fsPath)
       if (descendants.length > 0) {
-        const ids: string[] = descendants.map((descendant) => {
-          return generateIdFromFsPath(descendant.fsPath, descendant.collections![0])
-        })
+        const ids: string[] = descendants.map(descendant => descendant.id)
         await activeTree.value.draft.remove(ids)
       }
     },
     [StudioItemActionId.DuplicateItem]: async (item: TreeItem) => {
       // Duplicate file
       if (item.type === 'file') {
-        const id = generateIdFromFsPath(item.fsPath, item.collections![0])
-        const draftItem = await activeTree.value.draft.duplicate(id)
+        const draftItem = await activeTree.value.draft.duplicate(item.id)
         await activeTree.value.selectItemByFsPath(draftItem!.id)
         return
       }
