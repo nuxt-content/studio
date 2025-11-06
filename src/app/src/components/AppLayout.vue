@@ -49,9 +49,14 @@ function onLeave(el: Element, done: () => void) {
   >
     <div
       v-if="open"
-      class="fixed top-0 bottom-0 left-0 overflow-y-auto border-r border-default flex flex-col max-w-full bg-default"
+      class="fixed top-0 bottom-0 left-0 border-r border-default flex flex-col max-w-full bg-default"
       :style="sidebarStyle"
     >
+      <!-- This is needed for the Monaco editor to be able to position the portal correctly -->
+      <div class="monaco-editor">
+        <div id="monaco-portal" />
+      </div>
+
       <AppHeader />
 
       <div class="flex-1 overflow-y-auto relative">

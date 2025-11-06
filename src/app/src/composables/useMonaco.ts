@@ -35,6 +35,12 @@ export function useMonaco(target: Ref<HTMLElement | undefined>, options: UseMona
 
     const colorMode = unref(options.colorMode) || 'dark'
 
+    const monacoPortal = (el.getRootNode() as Document)?.getElementById('monaco-portal') || undefined
+    if (monacoPortal) {
+      monacoPortal.style.position = 'absolute'
+      monacoPortal.style.top = el.getClientRects()[0].top + 'px'
+    }
+
     // Create editor instance (use the custom createEditor wrapper from setupMonaco)
     editor.value = monaco.createEditor(el, {
       theme: getTheme(colorMode),
@@ -42,6 +48,7 @@ export function useMonaco(target: Ref<HTMLElement | undefined>, options: UseMona
       readOnly: options.readOnly ?? false,
       wordWrap: 'on',
       automaticLayout: true,
+      overflowWidgetsDomNode: monacoPortal,
       ...options.editorOptions,
     })
 
