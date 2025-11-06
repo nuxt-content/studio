@@ -6,11 +6,11 @@ import { StudioItemActionId, StudioFeature } from '../types'
 const { context } = useStudio()
 const isUploading = ref(false)
 
-const folderTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'directory'))
-const fileTree = computed(() => (context.activeTree.value.current.value || []).filter(f => f.type === 'file' && !f.fsPath.endsWith('.gitkeep')))
+const folderTree = computed(() => (context.mediaTree.current.value || []).filter(f => f.type === 'directory'))
+const fileTree = computed(() => (context.mediaTree.current.value || []).filter(f => f.type === 'file' && !f.fsPath.endsWith('.gitkeep')))
 
-const currentTreeItem = computed(() => context.activeTree.value.currentItem.value)
-const currentDraftItem = computed(() => context.activeTree.value.draft.current.value)
+const currentTreeItem = computed(() => context.mediaTree.currentItem.value)
+const currentDraftItem = computed(() => context.mediaTree.draft.current.value)
 
 const showFolderForm = computed(() => {
   return context.actionInProgress.value?.id === StudioItemActionId.CreateMediaFolder
@@ -56,7 +56,7 @@ async function onFileDrop(event: DragEvent) {
 
     <div class="flex-1 relative">
       <div
-        v-if="context.activeTree.value.draft.isLoading.value"
+        v-if="context.mediaTree.draft.isLoading.value"
         class="absolute inset-0 bg-primary/3 animate-pulse pointer-events-none"
       />
 
