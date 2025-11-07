@@ -259,14 +259,6 @@ export default defineNuxtModule<ModuleOptions>({
         'debug',
         'extend',
       ]
-
-      // // --- Keep fs.allow ---
-      // // This is still needed so Vite can read src/app/main.ts
-      // const studioRoot = resolver.resolve('../..')
-      // config.server ||= {}
-      // config.server.fs ||= {}
-      // config.server.fs.allow ||= []
-      // config.server.fs.allow.push(studioRoot)
     })
 
     if (options.development!.sync) {
