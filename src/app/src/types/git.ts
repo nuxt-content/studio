@@ -59,13 +59,14 @@ export interface CommitResult {
 }
 
 export interface GitFile {
+  provider: GitProviderType
   name: string
   path: string
   sha: string
   size: number
   url: string
   content?: string
-  encoding?: string
+  encoding?: 'utf-8' | 'base64'
 }
 
 export interface GithubFile extends GitFile {

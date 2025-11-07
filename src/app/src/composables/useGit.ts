@@ -224,9 +224,7 @@ function createGitLabProvider(options: GitOptions): GitProvider {
 
     try {
       const encodedPath = encodeURIComponent(path)
-      const glFile = await $api(`/repository/files/${encodedPath}/raw?ref=${branch}`)
-
-      // Get file metadata
+      // GitLab API returns base64-encoded content when using /repository/files endpoint (without /raw)
       const fileMetadata = await $api(`/repository/files/${encodedPath}?ref=${branch}`)
 
       const gitFile: GitFile = {
@@ -235,8 +233,9 @@ function createGitLabProvider(options: GitOptions): GitProvider {
         sha: fileMetadata.blob_id,
         size: fileMetadata.size,
         url: fileMetadata.file_path,
-        content: typeof glFile === 'string' ? glFile : undefined,
-        encoding: fileMetadata.encoding,
+        content: fileMetadata.content,
+        encoding: 'base64' as const,
+        provider: 'gitlab' as const,
       }
 
       if (cached) {
@@ -251,12 +250,12 @@ function createGitLabProvider(options: GitOptions): GitProvider {
         return null
       }
 
+      console.error(`Failed to fetch file from GitLab: ${path}`, error)
+
       // For development, show alert. In production, you might want to use a toast notification
       if (process.env.NODE_ENV === 'development') {
         alert(`Failed to fetch file: ${path}\n${(error as { message?: string }).message || error}`)
       }
-
-      console.error(`Failed to fetch file from GitLab: ${path}`, error)
 
       return null
     }
