@@ -41,7 +41,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     return {
       id: joinURL(TreeRootId.Media, fsPath),
       fsPath,
-      githubFile: undefined,
+      remoteFile: undefined,
       status: DraftStatus.Created,
       modified: {
         id: joinURL(TreeRootId.Media, fsPath),

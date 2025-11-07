@@ -116,11 +116,11 @@ async function setContent(document: DatabasePageItem) {
   currentDocumentId.value = document.id
 
   isAutomaticFormattingDetected.value = false
-  if (props.draftItem.original && props.draftItem.githubFile?.content) {
+  if (props.draftItem.original && props.draftItem.remoteFile?.content) {
     const localOriginal = await generateContentFromDocument(props.draftItem.original as DatabaseItem)
-    const gitHubOriginal = fromBase64ToUTF8(props.draftItem.githubFile.content)
+    const remoteOriginal = props.draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(props.draftItem.remoteFile.content!) : props.draftItem.remoteFile.content!
 
-    isAutomaticFormattingDetected.value = !isEqual(localOriginal, gitHubOriginal)
+    isAutomaticFormattingDetected.value = !isEqual(localOriginal, remoteOriginal)
   }
 }
 </script>

@@ -2,11 +2,12 @@ import { vi } from 'vitest'
 import type { GithubFile } from '../../src/types/git'
 import type { useGit } from '../../src/composables/useGit'
 
-export const createMockGit = (githubFile?: GithubFile): ReturnType<typeof useGit> => ({
-  fetchFile: vi.fn().mockResolvedValue(githubFile || createMockGithubFile()),
+export const createMockGit = (remoteFile?: GithubFile): ReturnType<typeof useGit> => ({
+  fetchFile: vi.fn().mockResolvedValue(remoteFile || createMockGithubFile()),
 } as never)
 
 export const createMockGithubFile = (overrides?: Partial<GithubFile>): GithubFile => ({
+  provider: 'github',
   path: 'content/document.md',
   name: 'document.md',
   content: 'Test content',

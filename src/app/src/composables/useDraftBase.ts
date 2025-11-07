@@ -34,12 +34,12 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
     }
 
     const fsPath = hostDb.getFileSystemPath(item.id)
-    const githubFile = await git.fetchFile(joinURL(ghPathPrefix, fsPath), { cached: true }) as GithubFile
+    const remoteFile = await git.fetchFile(joinURL(ghPathPrefix, fsPath), { cached: true }) as GithubFile
 
     const draftItem: DraftItem<T> = {
       id: item.id,
       fsPath,
-      githubFile,
+      remoteFile,
       status: getDraftStatus(item, original),
       modified: item,
     }
@@ -86,7 +86,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
             fsPath: existingDraftItem.fsPath,
             status: DraftStatus.Deleted,
             original: existingDraftItem.original,
-            githubFile: existingDraftItem.githubFile,
+            remoteFile: existingDraftItem.remoteFile,
           }
 
           list.value = list.value.map(item => item.id === id ? deleteDraftItem! : item) as DraftItem<T>[]
@@ -94,14 +94,14 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       }
       else {
       // TODO: check if gh file has been updated
-        const githubFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
+        const remoteFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
 
         deleteDraftItem = {
           id,
           fsPath,
           status: DraftStatus.Deleted,
           original: originalDbItem,
-          githubFile,
+          remoteFile,
         }
 
         list.value.push(deleteDraftItem)

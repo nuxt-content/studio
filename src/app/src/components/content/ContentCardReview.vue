@@ -90,7 +90,7 @@ async function initializeEditor() {
   isLoadingContent.value = true
 
   const localOriginal = props.draftItem.original ? await generateContentFromDocument(props.draftItem.original as DatabaseItem) : null
-  const gitHubOriginal = props.draftItem.githubFile?.content ? fromBase64ToUTF8(props.draftItem.githubFile.content) : null
+  const gitHubOriginal = props.draftItem.remoteFile?.content ? fromBase64ToUTF8(props.draftItem.remoteFile.content) : null
   const modified = props.draftItem.modified ? await generateContentFromDocument(props.draftItem.modified as DatabasePageItem) : null
 
   isAutomaticFormattingDetected.value = !isEqual(localOriginal, gitHubOriginal)

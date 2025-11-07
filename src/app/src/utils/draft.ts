@@ -14,20 +14,20 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
     return
   }
 
-  if (draftItem.status === DraftStatus.Created && draftItem.githubFile) {
+  if (draftItem.status === DraftStatus.Created && draftItem.remoteFile) {
     return {
-      githubContent: fromBase64ToUTF8(draftItem.githubFile.content!),
+      githubContent: draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(draftItem.remoteFile.content!) : draftItem.remoteFile.content!,
       localContent: await generateContentFromDocument(draftItem.modified as DatabaseItem) as string,
     }
   }
 
   // TODO: No GitHub file found (might have been deleted remotely)
-  if (!draftItem.githubFile || !draftItem.githubFile.content) {
+  if (!draftItem.remoteFile || !draftItem.remoteFile.content) {
     return
   }
 
   const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
-  const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
+  const githubContent = draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(draftItem.remoteFile.content!) : draftItem.remoteFile.content!
   const githubDocument = await generateDocumentFromContent(draftItem.id, githubContent) as DatabaseItem
 
   if (isEqual(draftItem.original as DatabasePageItem, githubDocument as DatabasePageItem)) {
