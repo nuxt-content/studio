@@ -49,7 +49,7 @@ Originally offered as a standalone premium platform at https://nuxt.studio, Stud
 - 💡 **Community-driven Features** — Have an idea? [Share your suggestions](https://github.com/nuxt-content/studio/discussions) to shape the future of Nuxt Studio
 
 ### Resources
-- [📖 Documentation](https://content.nuxt.com/docs/studio)
+- [📖 Documentation](https://content.nuxt.com/docs/studio/setup)
 - [🎮 Live Demo](https://docus.dev/admin)
 
 ## Quick Setup
