@@ -5,7 +5,7 @@ import { DraftStatus } from '../types/draft'
 
 import { joinURL } from 'ufo'
 
-export const useDevelopmentGit = (_options: GitOptions) => {
+export const useDevelopmentGit = (_options: GitOptions): GitProvider => {
   return {
     fetchFile: (_path: string, _options: { cached?: boolean } = {}): Promise<GitFile | null> => Promise.resolve(null),
     commitFiles: (_files: RawFile[], _message: string): Promise<CommitResult | null> => Promise.resolve(null),
@@ -13,7 +13,7 @@ export const useDevelopmentGit = (_options: GitOptions) => {
     getBranchUrl: () => '',
     getCommitUrl: () => '',
     getContentRootDirUrl: () => '',
-    getRepositoryInfo: () => ({ owner: '', repo: '', branch: '', provider: 'github' }),
+    getRepositoryInfo: () => ({ owner: '', repo: '', branch: '', provider: 'github' as const }),
   }
 }
 
