@@ -42,7 +42,12 @@ function createGitHubProvider(options: GitOptions): GitProvider {
     }
 
     try {
-      const ghFile: GitFile = await $api(`/contents/${path}?ref=${branch}`)
+      const ghResponse = await $api(`/contents/${path}?ref=${branch}`)
+      const ghFile: GitFile = {
+        ...ghResponse,
+        provider: 'github' as const,
+      }
+
       if (cached) {
         gitFiles[path] = ghFile
       }
