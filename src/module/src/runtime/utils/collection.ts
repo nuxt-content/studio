@@ -4,7 +4,7 @@ import { pathMetaTransform } from './path-meta'
 import { minimatch } from 'minimatch'
 import { join, dirname, parse } from 'pathe'
 import type { DatabaseItem } from 'nuxt-studio/app'
-import { withoutLeadingSlash } from 'ufo'
+import { withLeadingSlash, withoutLeadingSlash, withoutTrailingSlash } from 'ufo'
 
 export const getCollectionByFilePath = (path: string, collections: Record<string, CollectionInfo>): CollectionInfo | undefined => {
   let matchedSource: ResolvedCollectionSource | undefined
@@ -62,13 +62,39 @@ export function getCollection(collectionName: string, collections: Record<string
   return collection
 }
 
+/**
+ * On Nuxt Content, Id is built like this: {collection.name}/{source.prefix}/{path}
+ * But 'source.prefix' can be different from the fixed part of 'source.include'
+ * We need to remove the 'source.prefix' from the path and add the fixed part of the 'source.include' to get the fsPath (used to match the source)
+ */
 export function getCollectionSource(id: string, collection: CollectionInfo) {
   const [_, ...rest] = id.split(/[/:]/)
-  const path = rest.join('/')
+  const prefixAndPath = rest.join('/')
+  console.log('prefixAndPath', prefixAndPath)
 
   const matchedSource = collection.source.find((source) => {
-    const include = minimatch(path, source.include, { dot: true })
-    const exclude = source.exclude?.some(exclude => minimatch(path, exclude))
+    const prefix = source.prefix
+    if (!prefix) {
+      return false
+    }
+
+    if (!withLeadingSlash(prefixAndPath).startsWith(prefix)) {
+      return false
+    }
+
+    let fsPath
+    const [fixPart] = source.include.includes('*') ? source.include.split('*') : ['', source.include]
+    const fixed = withoutTrailingSlash(withoutLeadingSlash(fixPart || '/'))
+    if (fixed === prefix) {
+      fsPath = prefixAndPath
+    }
+    else {
+      const path = prefixAndPath.replace(prefix, '')
+      fsPath = join(fixed, path)
+    }
+
+    const include = minimatch(fsPath, source.include, { dot: true })
+    const exclude = source.exclude?.some(exclude => minimatch(fsPath, exclude))
 
     return include && !exclude
   })
@@ -81,9 +107,15 @@ export function generateFsPathFromId(id: string, source: CollectionInfo['source'
   const path = rest.join('/')
 
   const { fixed } = parseSourceBase(source)
+  const normalizedFixed = withoutTrailingSlash(fixed)
 
-  const pathWithoutFixed = path.substring(fixed.length)
-  return join(fixed, pathWithoutFixed)
+  // If path already starts with the fixed part, return as is
+  if (normalizedFixed && path.startsWith(normalizedFixed)) {
+    return path
+  }
+
+  // Otherwise, join fixed part with path
+  return join(fixed, path)
 }
 
 export function getCollectionInfo(id: string, collections: Record<string, CollectionInfo>) {
