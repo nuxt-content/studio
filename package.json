@@ -83,7 +83,8 @@
     "zod": "^4.1.12"
   },
   "resolutions": {
-    "remark-mdc": "3.8.1"
+    "remark-mdc": "3.8.1",
+    "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@cb6a227"
   },
   "packageManager": "pnpm@10.20.0",
   "keywords": [
