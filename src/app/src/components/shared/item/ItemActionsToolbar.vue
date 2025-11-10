@@ -24,7 +24,7 @@ const actions = computed(() => {
   const hasPendingAction = pendingAction.value !== null
   const hasLoadingAction = loadingAction.value !== null
 
-  return computeItemActions(context.itemActions.value, item.value).map((action) => {
+  return computeItemActions(context.itemActions.value, item.value, context.currentFeature.value).map((action) => {
     const isOneStepAction = oneStepActions.includes(action.id)
     const isPending = pendingAction.value?.id === action.id
     const isLoading = loadingAction.value?.id === action.id

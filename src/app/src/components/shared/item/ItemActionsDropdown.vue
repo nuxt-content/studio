@@ -40,7 +40,7 @@ const actions = computed<DropdownMenuItem[]>(() => {
   const hasPendingAction = pendingAction.value !== null
   const hasLoadingAction = loadingAction.value !== null
 
-  return computeItemActions(context.itemActions.value, props.item).map((action) => {
+  return computeItemActions(context.itemActions.value, props.item, context.currentFeature.value).map((action) => {
     const isOneStepAction = oneStepActions.includes(action.id)
     const isPending = pendingAction.value?.id === action.id
     const isLoading = loadingAction.value?.id === action.id

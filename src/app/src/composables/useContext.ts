@@ -1,6 +1,6 @@
 import { createSharedComposable } from '@vueuse/core'
 import { computed, ref } from 'vue'
-import { StudioItemActionId, DraftStatus, StudioBranchActionId, TreeRootId } from '../types'
+import { StudioItemActionId, DraftStatus, StudioBranchActionId, TreeRootId, StudioFeature } from '../types'
 import type {
   PublishBranchParams,
   RenameFileParams,
@@ -33,6 +33,20 @@ export const useContext = createSharedComposable((
 ) => {
   const route = useRoute()
   const router = useRouter()
+
+  /**
+   * Current feature
+   */
+  const currentFeature = computed<StudioFeature | null>(() => {
+    switch (route.name) {
+      case 'media':
+        return StudioFeature.Media
+      case 'content':
+        return StudioFeature.Content
+      default:
+        return null
+    }
+  })
 
   /**
    * Drafts
@@ -230,6 +244,7 @@ export const useContext = createSharedComposable((
   }
 
   return {
+    currentFeature,
     activeTree,
     itemActions,
     itemActionHandler,

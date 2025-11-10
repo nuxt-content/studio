@@ -13,7 +13,7 @@ export enum TreeStatus {
 
 export interface TreeItem {
   name: string
-  fsPath: string // can be used as id
+  fsPath: string // unique identifier
   type: 'file' | 'directory' | 'root'
   prefix: number | null
   status?: TreeStatus

@@ -1,12 +1,24 @@
 import { describe, it, expect } from 'vitest'
 import { computeItemActions, STUDIO_ITEM_ACTION_DEFINITIONS } from '../../../src/utils/context'
-import { StudioItemActionId, type TreeItem } from '../../../src/types'
+import { StudioItemActionId, StudioFeature, type TreeItem } from '../../../src/types'
 import { TreeStatus } from '../../../src/types'
 
 describe('computeItemActions', () => {
-  it('should return all actions when item is undefined', () => {
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, undefined)
-    expect(result).toEqual(STUDIO_ITEM_ACTION_DEFINITIONS)
+  it('should return no actions when item is null', () => {
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, null, StudioFeature.Content)
+    expect(result).toEqual([])
+  })
+
+  it('should return no actions when feature is undefined', () => {
+    const rootItem: TreeItem = {
+      type: 'root',
+      name: 'content',
+      fsPath: '/',
+      prefix: null,
+    }
+
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem, null)
+    expect(result).toEqual([])
   })
 
   /**************************************************
@@ -20,7 +32,7 @@ describe('computeItemActions', () => {
       prefix: null,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.RenameItem
@@ -41,7 +53,7 @@ describe('computeItemActions', () => {
       prefix: null,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem, StudioFeature.Media)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.RevertItem
@@ -64,7 +76,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Updated,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, rootItem, StudioFeature.Media)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DeleteItem
@@ -88,7 +100,7 @@ describe('computeItemActions', () => {
       prefix: null,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -109,7 +121,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Opened,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -130,7 +142,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Updated,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -150,7 +162,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Created,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -170,7 +182,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Deleted,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -193,7 +205,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Renamed,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, fileItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.CreateDocumentFolder
@@ -216,7 +228,7 @@ describe('computeItemActions', () => {
       prefix: null,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -237,7 +249,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Opened,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -257,7 +269,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Updated,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -276,7 +288,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Created,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -295,7 +307,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Deleted,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -316,7 +328,7 @@ describe('computeItemActions', () => {
       status: TreeStatus.Renamed,
     } as TreeItem
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Content)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.DuplicateItem
@@ -334,7 +346,7 @@ describe('computeItemActions', () => {
       prefix: null,
     }
 
-    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem)
+    const result = computeItemActions(STUDIO_ITEM_ACTION_DEFINITIONS, directoryItem, StudioFeature.Media)
 
     const expectedActions = STUDIO_ITEM_ACTION_DEFINITIONS.filter(action =>
       action.id !== StudioItemActionId.RevertItem
