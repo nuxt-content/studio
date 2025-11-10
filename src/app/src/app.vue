@@ -22,6 +22,9 @@ watch(ui.sidebar.sidebarWidth, () => {
   }
 })
 
+// Nuxt UI Portal element
+const portal = ref<HTMLElement>()
+
 const activeDocuments = ref<{ id: string, title: string }[]>([])
 function detectActiveDocuments() {
   activeDocuments.value = host.document.detectActives().map((content) => {
@@ -77,10 +80,7 @@ router.beforeEach((to, from) => {
 
 <template>
   <div :class="ui.colorMode.value">
-    <UApp
-      :toaster="{ portal: false }"
-      :modal="{ portal: false }"
-    >
+    <UApp :portal="portal">
       <AppLayout :open="ui.isOpen.value">
         <RouterView v-slot="{ Component }">
           <Transition
@@ -144,6 +144,8 @@ router.beforeEach((to, from) => {
           />
         </UFieldGroup>
       </div>
+
+      <div ref="portal" />
     </UApp>
   </div>
 </template>
