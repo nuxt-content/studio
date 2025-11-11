@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { getCollectionByFilePath, generateIdFromFsPath } from '../../src/runtime/utils/collection'
-import type { CollectionInfo } from '@nuxt/content'
+import { getCollectionByFilePath, generateIdFromFsPath, generateFsPathFromId } from '../../src/runtime/utils/collection'
+import type { CollectionInfo, ResolvedCollectionSource } from '@nuxt/content'
 import { collections } from '../mocks/collection'
 
 describe('getCollectionByFilePath', () => {
@@ -43,55 +43,55 @@ describe('getCollectionByFilePath', () => {
   })
 })
 
-// describe('generateFsPathFromId', () => {
-//   it('One file included', () => {
-//     const id = 'landing/index.md'
-//     const source = {
-//       prefix: '/',
-//       include: 'index.md',
-//     } as ResolvedCollectionSource
-//     const result = generateFsPathFromId(id, source)
-//     expect(result).toBe('index.md')
-//   })
+describe('generateFsPathFromId', () => {
+  it('One file included', () => {
+    const id = 'landing/index.md'
+    const source = {
+      prefix: '/',
+      include: 'index.md',
+    } as ResolvedCollectionSource
+    const result = generateFsPathFromId(id, source)
+    expect(result).toBe('index.md')
+  })
 
-//   it('Global pattern included', () => {
-//     const id = 'docs/1.getting-started/2.introduction.md'
-//     const source = {
-//       prefix: '/',
-//       include: '**',
-//       exclude: ['index.md'],
-//     } as ResolvedCollectionSource
-//     const result = generateFsPathFromId(id, source)
-//     expect(result).toBe('1.getting-started/2.introduction.md')
-//   })
+  it('Global pattern included', () => {
+    const id = 'docs/1.getting-started/2.introduction.md'
+    const source = {
+      prefix: '/',
+      include: '**',
+      exclude: ['index.md'],
+    } as ResolvedCollectionSource
+    const result = generateFsPathFromId(id, source)
+    expect(result).toBe('1.getting-started/2.introduction.md')
+  })
 
-//   it('Custom pattern with prefix', () => {
-//     const id = 'docs_en/en/1.getting-started/2.introduction.md'
-//     const source = {
-//       prefix: '/en',
-//       include: 'en/**/*',
-//       exclude: [
-//         'en/index.md',
-//       ],
-//     } as ResolvedCollectionSource
+  it('Custom pattern with prefix', () => {
+    const id = 'docs_en/en/1.getting-started/2.introduction.md'
+    const source = {
+      prefix: '/en',
+      include: 'en/**/*',
+      exclude: [
+        'en/index.md',
+      ],
+    } as ResolvedCollectionSource
 
-//     const result = generateFsPathFromId(id, source)
-//     expect(result).toBe('en/1.getting-started/2.introduction.md')
-//   })
+    const result = generateFsPathFromId(id, source)
+    expect(result).toBe('en/1.getting-started/2.introduction.md')
+  })
 
-//   it('Custom pattern with root prefix and fixed part', () => {
-//     const id = 'pages/about.md'
-//     const source: ResolvedCollectionSource = {
-//       prefix: '/',
-//       include: 'pages/**/*',
-//       cwd: '',
-//       _resolved: true,
-//     }
+  it('Custom pattern with root prefix and fixed part', () => {
+    const id = 'pages/about.md'
+    const source: ResolvedCollectionSource = {
+      prefix: '/',
+      include: 'pages/**/*',
+      cwd: '',
+      _resolved: true,
+    }
 
-//     const result = generateFsPathFromId(id, source)
-//     expect(result).toBe('pages/about.md')
-//   })
-// })
+    const result = generateFsPathFromId(id, source)
+    expect(result).toBe('pages/about.md')
+  })
+})
 
 describe('generateIdFromFsPath', () => {
   it('should generate id for single file with no prefix', () => {
