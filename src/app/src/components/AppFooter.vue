@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useStudio } from '../composables/useStudio'
 import { useStudioState } from '../composables/useStudioState'
+import type { DropdownMenuItem } from '@nuxt/ui'
 
 const { ui, host, git } = useStudio()
 const { preferences, updatePreference, unsetActiveLocation } = useStudioState()
@@ -38,7 +39,7 @@ const userMenuItems = computed(() => [
       })
     },
   }],
-].filter(Boolean))
+].filter(Boolean) as DropdownMenuItem[][])
 
 function closeStudio() {
   unsetActiveLocation()
