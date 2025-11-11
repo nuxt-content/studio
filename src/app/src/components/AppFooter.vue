@@ -16,19 +16,19 @@ const user = host.user.get()
 
 const repositoryUrl = computed(() => git.getBranchUrl())
 const userMenuItems = computed(() => [
-  [
-  // [{
-  //   slot: 'view-mode' as const,
-  // }
-    repositoryUrl.value
-      ? {
+  repositoryUrl.value
+    ? [
+        // [{
+        //   slot: 'view-mode' as const,
+        // }
+        {
           label: `${host.repository.owner}/${host.repository.repo}`,
           icon: 'i-simple-icons:github',
           to: repositoryUrl.value,
           target: '_blank',
-        }
-      : undefined,
-  ].filter(Boolean),
+        },
+      ]
+    : undefined,
   [{
     label: 'Sign out',
     icon: 'i-lucide-log-out',
@@ -38,7 +38,7 @@ const userMenuItems = computed(() => [
       })
     },
   }],
-])
+].filter(Boolean))
 
 function closeStudio() {
   unsetActiveLocation()

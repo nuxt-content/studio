@@ -5,6 +5,17 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
   const user = useState<StudioUser | null>('studio-session', () => null)
   const config = useRuntimeConfig().public.studio
 
+  if (config.dev) {
+    return await onStudioActivation({
+      provider: 'github',
+      email: 'dev@nuxt.com',
+      name: 'Dev',
+      githubToken: '',
+      githubId: '',
+      avatar: '',
+    })
+  }
+
   await $fetch<{ user: StudioUser }>('/__nuxt_studio/auth/session').then((session) => {
     user.value = session?.user ?? null
   })

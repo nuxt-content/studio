@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { computed } from 'vue'
-import { useStudio } from '../../composables/useStudio'
+import { studioFlags, useStudio } from '../../composables/useStudio'
 import type { StudioFeature } from '../../types'
 import { useStudioState } from '../../composables/useStudioState'
 
@@ -52,6 +52,7 @@ const current = computed({
     />
 
     <UButton
+      v-if="!studioFlags.dev"
       label="Review"
       color="neutral"
       :variant="context.draftCount.value > 0 ? 'solid' : 'soft'"

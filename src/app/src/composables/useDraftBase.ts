@@ -6,6 +6,7 @@ import { checkConflict, findDescendantsFromId, getDraftStatus } from '../utils/d
 import type { useGit } from './useGit'
 import { useHooks } from './useHooks'
 import { ref } from 'vue'
+import { studioFlags } from './useStudio'
 
 export function useDraftBase<T extends DatabaseItem | MediaItem>(
   type: 'media' | 'document',
@@ -73,42 +74,44 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       await storage.removeItem(id)
       await hostDb.delete(id)
 
-      let deleteDraftItem: DraftItem<T> | null = null
-      if (existingDraftItem) {
-        if (existingDraftItem.status === DraftStatus.Deleted) return
+      if (!studioFlags.dev) {
+        let deleteDraftItem: DraftItem<T> | null = null
+        if (existingDraftItem) {
+          if (existingDraftItem.status === DraftStatus.Deleted) return
 
-        if (existingDraftItem.status === DraftStatus.Created) {
-          list.value = list.value.filter(item => item.id !== id)
+          if (existingDraftItem.status === DraftStatus.Created) {
+            list.value = list.value.filter(item => item.id !== id)
+          }
+          else {
+            deleteDraftItem = {
+              id,
+              fsPath: existingDraftItem.fsPath,
+              status: DraftStatus.Deleted,
+              original: existingDraftItem.original,
+              githubFile: existingDraftItem.githubFile,
+            }
+
+            list.value = list.value.map(item => item.id === id ? deleteDraftItem! : item) as DraftItem<T>[]
+          }
         }
         else {
+        // TODO: check if gh file has been updated
+          const githubFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
+
           deleteDraftItem = {
             id,
-            fsPath: existingDraftItem.fsPath,
+            fsPath,
             status: DraftStatus.Deleted,
-            original: existingDraftItem.original,
-            githubFile: existingDraftItem.githubFile,
+            original: originalDbItem,
+            githubFile,
           }
 
-          list.value = list.value.map(item => item.id === id ? deleteDraftItem! : item) as DraftItem<T>[]
-        }
-      }
-      else {
-      // TODO: check if gh file has been updated
-        const githubFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
-
-        deleteDraftItem = {
-          id,
-          fsPath,
-          status: DraftStatus.Deleted,
-          original: originalDbItem,
-          githubFile,
+          list.value.push(deleteDraftItem)
         }
 
-        list.value.push(deleteDraftItem)
-      }
-
-      if (deleteDraftItem) {
-        await storage.setItem(id, deleteDraftItem)
+        if (deleteDraftItem) {
+          await storage.setItem(id, deleteDraftItem)
+        }
       }
 
       if (rerender) {
