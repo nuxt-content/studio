@@ -37,7 +37,7 @@ export const createMockHost = (): StudioHost => ({
       const id = fsPathToId(fsPath, 'document')
       const document = createMockDocument(id, { body: { type: 'minimark', value: [content?.trim() || 'Test content'] }, fsPath })
       documentDb.set(id, document)
-      return documentx
+      return document
     }),
     upsert: vi.fn().mockImplementation(async (fsPath: string, document: DatabaseItem) => {
       const id = fsPathToId(fsPath, 'document')
