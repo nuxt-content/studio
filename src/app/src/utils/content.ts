@@ -88,7 +88,7 @@ export async function generateDocumentFromContent(id: string, content: string): 
   return null
 }
 
-async function generateDocumentFromYAMLContent(id: string, content: string): Promise<DatabaseItem> {
+export async function generateDocumentFromYAMLContent(id: string, content: string): Promise<DatabaseItem> {
   const { data } = parseFrontMatter(`---\n${content}\n---`)
 
   // Keep array contents under `body` key
@@ -108,7 +108,7 @@ async function generateDocumentFromYAMLContent(id: string, content: string): Pro
   } as DatabaseItem
 }
 
-async function generateDocumentFromJSONContent(id: string, content: string): Promise<DatabaseItem> {
+export async function generateDocumentFromJSONContent(id: string, content: string): Promise<DatabaseItem> {
   let parsed: Record<string, unknown> = destr(content)
 
   // Keep array contents under `body` key
@@ -129,7 +129,7 @@ async function generateDocumentFromJSONContent(id: string, content: string): Pro
   } as DatabaseItem
 }
 
-async function generateDocumentFromMarkdownContent(id: string, content: string): Promise<DatabaseItem> {
+export async function generateDocumentFromMarkdownContent(id: string, content: string): Promise<DatabaseItem> {
   const document = await parseMarkdown(content, {
     remark: {
       plugins: {
