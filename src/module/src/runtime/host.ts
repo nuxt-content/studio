@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { ensure } from './utils/ensure'
-import type { CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
+import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
 import { createCollectionDocument, normalizeDocument } from './utils/document'
@@ -89,7 +89,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     return localDatabaseAdapter!(collection)
   }
 
-  function useContentCollections() {
+  function useContentCollections(): Record<string, CollectionInfo> {
     return Object.fromEntries(
       Object.entries(useContent().collections).filter(([, collection]) => {
         if (!collection.source.length || collection.source.some((source: CollectionSource) => source.repository || (source as unknown as { _custom: boolean })._custom)) {
@@ -197,12 +197,19 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         return normalizeDocument(fsPath, item as DatabaseItem)
       },
       list: async (): Promise<DatabaseItem[]> => {
-        const collections = Object.keys(useContentCollections()).filter(c => c !== 'info')
-        const contents = await Promise.all(collections.map(async (collection) => {
-          return await useContentCollectionQuery(collection).all() as DatabaseItem[]
+        const collections = Object.values(useContentCollections()).filter(collection => collection.name !== 'info')
+        const documentsByCollection = await Promise.all(collections.map(async (collection) => {
+          const documents = await useContentCollectionQuery(collection.name).all() as DatabaseItem[]
+
+          return documents.map((document) => {
+            const source = getCollectionSourceById(document.id, collection.source)
+            const fsPath = generateFsPathFromId(document.id, source!)
+
+            return normalizeDocument(fsPath, document)
+          })
         }))
 
-        return contents.flat()
+        return documentsByCollection.flat()
       },
       create: async (fsPath: string, content: string) => {
         const collections = useContentCollections()
