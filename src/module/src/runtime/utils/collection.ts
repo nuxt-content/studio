@@ -1,10 +1,11 @@
-import type { CollectionInfo, CollectionSource, Draft07, CollectionItemBase, PageCollectionItemBase, ResolvedCollectionSource, Draft07DefinitionProperty } from '@nuxt/content'
+import type { CollectionInfo, CollectionSource, Draft07, CollectionItemBase, PageCollectionItemBase, ResolvedCollectionSource, Draft07DefinitionProperty, MinimarkTree } from '@nuxt/content'
 import { hash } from 'ohash'
 import { pathMetaTransform } from './path-meta'
 import { minimatch } from 'minimatch'
 import { join, dirname, parse } from 'pathe'
 import type { DatabaseItem } from 'nuxt-studio/app'
 import { withoutLeadingSlash } from 'ufo'
+import { textContent } from 'minimark'
 
 export const getCollectionByFilePath = (path: string, collections: Record<string, CollectionInfo>): CollectionInfo | undefined => {
   let matchedSource: ResolvedCollectionSource | undefined
@@ -160,6 +161,19 @@ export function normalizeDocument(document: DatabaseItem) {
     }
   }
 
+  const meta = pathMetaTransform(document as unknown as PageCollectionItemBase)
+  if (meta.title === document.title) {
+    Reflect.deleteProperty(document, 'title')
+  }
+
+  const extractedContentHeading = contentHeading(document.body as MinimarkTree)
+  if (extractedContentHeading.title === document.title) {
+    Reflect.deleteProperty(document, 'title')
+  }
+  if (extractedContentHeading.description === document.description) {
+    Reflect.deleteProperty(document, 'description')
+  }
+
   return document
 }
 
@@ -213,4 +227,25 @@ export function generateRecordInsert(collection: CollectionInfo, data: Record<st
 
 export function generateRecordDeletion(collection: CollectionInfo, id: string) {
   return `DELETE FROM ${collection.tableName} WHERE id = '${id}';`
+}
+
+/**
+ * Extract the title and description from the body
+ */
+export function contentHeading(body: MinimarkTree) {
+  let title = "";
+  let description = "";
+  const children = body.value.filter((node) => node[0] !== "hr");
+  if (children.length && children[0]?.[0] === "h1") {
+    const node = children.shift()!
+    title = textContent(node);
+  }
+  if (children.length && children[0]?.[0] === "p") {
+    const node = children.shift()!;
+    description = textContent(node);
+  }
+  return {
+    title,
+    description
+  };
 }
