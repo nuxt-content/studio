@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type PropType, toRaw } from 'vue'
+import { computed, type PropType } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
 import { DraftStatus, type DatabasePageItem, type DraftItem } from '../../types'

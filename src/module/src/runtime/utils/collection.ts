@@ -166,8 +166,8 @@ export function normalizeDocument(document: DatabaseItem) {
     Reflect.deleteProperty(document, 'title')
   }
 
-  const extractedContentHeading = document.body 
-    ? contentHeading(document.body as MinimarkTree) 
+  const extractedContentHeading = document.body
+    ? contentHeading(document.body as MinimarkTree)
     : { title: '', description: '' }
   if (extractedContentHeading.title === document.title) {
     Reflect.deleteProperty(document, 'title')
@@ -235,19 +235,19 @@ export function generateRecordDeletion(collection: CollectionInfo, id: string) {
  * Extract the title and description from the body
  */
 export function contentHeading(body: MinimarkTree) {
-  let title = "";
-  let description = "";
-  const children = body.value.filter((node) => node[0] !== "hr");
-  if (children.length && children[0]?.[0] === "h1") {
+  let title = ''
+  let description = ''
+  const children = body.value.filter(node => node[0] !== 'hr')
+  if (children.length && children[0]?.[0] === 'h1') {
     const node = children.shift()!
-    title = textContent(node);
+    title = textContent(node)
   }
-  if (children.length && children[0]?.[0] === "p") {
-    const node = children.shift()!;
-    description = textContent(node);
+  if (children.length && children[0]?.[0] === 'p') {
+    const node = children.shift()!
+    description = textContent(node)
   }
   return {
     title,
-    description
-  };
+    description,
+  }
 }
