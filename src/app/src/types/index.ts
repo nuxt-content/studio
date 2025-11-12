@@ -41,7 +41,7 @@ export interface StudioHost {
   }
   repository: Repository
   document: {
-    get: (fsPath: string) => Promise<DatabaseItem>
+    get: (fsPath: string) => Promise<DatabaseItem | undefined>
     list: () => Promise<DatabaseItem[]>
     upsert: (fsPath: string, document: DatabaseItem) => Promise<void>
     create: (fsPath: string, content: string) => Promise<DatabaseItem>
