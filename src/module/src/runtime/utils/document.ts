@@ -3,7 +3,7 @@ import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
 import type { DatabaseItem } from 'nuxt-studio/app'
 import { isObjectMatch } from './object'
-import { ContentFileExtension } from '../../types/content'
+import { ContentFileExtension } from '../types/content'
 import { parseMarkdown } from '@nuxtjs/mdc/runtime/parser/index'
 import type { MDCElement } from '@nuxtjs/mdc'
 import { visit } from 'unist-util-visit'
@@ -140,7 +140,7 @@ export async function generateDocumentFromMarkdownContent(id: string, content: s
 
   const body = document.body.type === 'root' ? compressTree(document.body) : document.body as never as MarkdownRoot
 
-  return {
+  const result = {
     id,
     meta: {},
     extension: 'md',
@@ -150,7 +150,9 @@ export async function generateDocumentFromMarkdownContent(id: string, content: s
       toc: document.toc,
     },
     ...document.data,
-  } as never as DatabaseItem
+  }
+
+  return pathMetaTransform(result as PageCollectionItemBase) as unknown as DatabaseItem
 }
 
 function generateStemFromId(id: string) {
