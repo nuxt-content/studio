@@ -89,19 +89,18 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
   documentStorage.mount('/', nullStorageDriver)
   mediaStorage.mount('/', nullStorageDriver)
 
-  host.on.documentUpdate(async (id: string, type: 'remove' | 'update') => {
-    const item = draftDocuments.list.value.find(item => item.id === id)
+  host.on.documentUpdate(async (fsPath: string, type: 'remove' | 'update') => {
+    const item = draftDocuments.list.value.find(item => item.fsPath === fsPath)
 
     if (type === 'remove') {
       if (item) {
-        await draftDocuments.remove([id])
+        await draftDocuments.remove([fsPath])
       }
     }
     else if (item) {
-      const fsPath = host.document.getFileSystemPath(id)
       // Update draft if the document is not focused or the current item is not the one that was updated
       if (!window.document.hasFocus() || documentTree.currentItem.value?.fsPath !== fsPath) {
-        const document = await host.document.get(id)
+        const document = await host.document.get(fsPath)
         item.modified = document
         item.original = document
         item.status = getDraftStatus(document, item.original, true)
@@ -112,18 +111,17 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
     await hooks.callHook('studio:draft:document:updated', { caller: 'useStudio.on.documentUpdate' })
   })
 
-  host.on.mediaUpdate(async (id: string, type: 'remove' | 'update') => {
-    const item = draftMedias.list.value.find(item => item.id === id)
+  host.on.mediaUpdate(async (fsPath: string, type: 'remove' | 'update') => {
+    const item = draftMedias.list.value.find(item => item.fsPath === fsPath)
 
     if (type === 'remove') {
       if (item) {
-        await draftMedias.remove([id])
+        await draftMedias.remove([fsPath])
       }
     }
     else if (item) {
-      const fsPath = host.media.getFileSystemPath(id)
       if (!window.document.hasFocus() || mediaTree.currentItem.value?.fsPath !== fsPath) {
-        const media = await host.media.get(id)
+        const media = await host.media.get(fsPath)
         item.modified = media
         item.original = media
         item.status = getDraftStatus(media, item.original, true)

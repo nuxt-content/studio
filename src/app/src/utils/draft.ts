@@ -1,11 +1,12 @@
 import type { DatabaseItem, MediaItem, DatabasePageItem, DraftItem, BaseItem, ContentConflict } from '../types'
-import { DraftStatus, ContentFileExtension, TreeRootId } from '../types'
+import { DraftStatus, ContentFileExtension } from '../types'
 import { isEqual } from './database'
 import { generateContentFromDocument, generateDocumentFromContent } from './content'
 import { fromBase64ToUTF8 } from '../utils/string'
+import { isMediaFile } from './file'
 
 export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
-  if (draftItem.id.startsWith(TreeRootId.Media)) {
+  if (isMediaFile(draftItem.fsPath) || draftItem.fsPath.endsWith('.gitkeep')) {
     return
   }
 
@@ -27,7 +28,7 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
 
   const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
   const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
-  const githubDocument = await generateDocumentFromContent(draftItem.id, githubContent) as DatabaseItem
+  const githubDocument = await generateDocumentFromContent(draftItem.modified!.id!, githubContent) as DatabaseItem
 
   if (isEqual(draftItem.original as DatabasePageItem, githubDocument as DatabasePageItem)) {
     return
@@ -79,21 +80,21 @@ export function getDraftStatus(modified?: BaseItem, original?: BaseItem, isDev =
   return DraftStatus.Pristine
 }
 
-export function findDescendantsFromId(list: DraftItem[], id: string): DraftItem[] {
-  if ([TreeRootId.Content, TreeRootId.Media].includes(id as TreeRootId)) {
+export function findDescendantsFromFsPath(list: DraftItem[], fsPath: string): DraftItem[] {
+  if (fsPath === '/') {
     return list
   }
 
   const descendants: DraftItem[] = []
   for (const item of list) {
-    const isExactMatch = item.id === id
+    const isExactMatch = item.fsPath === fsPath
     // If exact match it means id refers to a file, there is no need to browse the list further
     if (isExactMatch) {
       return [item]
     }
 
     // Else it means id refers to a directory, we need to browse the list further to find all descendants
-    const isDescendant = item.id.startsWith(id + '/')
+    const isDescendant = item.fsPath.startsWith(fsPath + '/')
     if (isDescendant) {
       descendants.push(item)
     }

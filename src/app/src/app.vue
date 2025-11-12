@@ -25,18 +25,17 @@ watch(ui.sidebar.sidebarWidth, () => {
 // Nuxt UI Portal element
 const appPortal = ref<HTMLElement>()
 
-const activeDocuments = ref<{ id: string, title: string }[]>([])
+const activeDocuments = ref<{ fsPath: string, title: string }[]>([])
 function detectActiveDocuments() {
   activeDocuments.value = host.document.detectActives().map((content) => {
     return {
-      id: content.id,
+      fsPath: content.fsPath,
       title: content.title,
     }
   })
 }
 
-async function editContentFile(id: string) {
-  const fsPath = host.document.getFileSystemPath(id)
+async function editContentFile(fsPath: string) {
   await context.activeTree.value.selectItemByFsPath(fsPath)
   ui.open()
 }
@@ -140,7 +139,7 @@ router.beforeEach((to, from) => {
             variant="outline"
             class="bg-transparent backdrop-blur-md px-2"
             label="Edit this page"
-            @click="editContentFile(activeDocuments[0].id)"
+            @click="editContentFile(activeDocuments[0].fsPath)"
           />
         </UFieldGroup>
       </div>

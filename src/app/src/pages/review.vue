@@ -79,7 +79,7 @@ const statusConfig = {
             <div class="flex flex-col gap-2">
               <template
                 v-for="draft in drafts"
-                :key="draft.id"
+                :key="draft.fsPath"
               >
                 <MediaCardReview
                   v-if="isMediaFile(draft.fsPath)"

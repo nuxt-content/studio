@@ -2,12 +2,9 @@
 import type { DraftItem } from '../../../types'
 import type { PropType } from 'vue'
 import { computed } from 'vue'
-import { DraftStatus, TreeRootId } from '../../../types'
+import { DraftStatus } from '../../../types'
 import { getFileIcon } from '../../../utils/file'
 import { COLOR_UI_STATUS_MAP } from '../../../utils/tree'
-import { useStudio } from '../../../composables/useStudio'
-
-const { host } = useStudio()
 
 const props = defineProps({
   draftItem: {
@@ -28,9 +25,7 @@ const originalPath = computed(() => {
     return null
   }
 
-  const isMedia = props.draftItem.original.id.startsWith(TreeRootId.Media)
-  const hostApi = isMedia ? host.media : host.document
-  return hostApi.getFileSystemPath(props.draftItem.original.id)
+  return props.draftItem.original.fsPath
 })
 
 function toggleOpen() {

@@ -1,5 +1,6 @@
 import type { Storage } from 'unstorage'
 import type { Nuxt } from '@nuxt/schema'
+import { withLeadingSlash } from 'ufo'
 
 export async function getAssetsStorageDevTemplate(_assetsStorage: Storage, _nuxt: Nuxt) {
   return [
@@ -19,11 +20,13 @@ export async function getAssetsStorageTemplate(assetsStorage: Storage, _nuxt: Nu
     'const storage = createStorage({})',
     '',
     ...keys.map((key) => {
+      const path = withLeadingSlash(key.replace(/:/g, '/'))
       const value = {
         id: `public-assets/${key.replace(/:/g, '/')}`,
         extension: key.split('.').pop(),
         stem: key.split('.').join('.'),
-        path: '/' + key.replace(/:/g, '/'),
+        path,
+        fsPath: path,
       }
       return `storage.setItem('${value.id}', ${JSON.stringify(value)})`
     }),

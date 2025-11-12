@@ -1,13 +1,12 @@
 import { joinURL, withLeadingSlash } from 'ufo'
 import type { DraftItem, StudioHost, MediaItem, RawFile } from '../types'
-import { TreeRootId } from '../types'
+import { VirtualMediaCollectionName, generateStemFromFsPath } from '../utils/media'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
 import { createSharedComposable } from '@vueuse/core'
 import { useDraftBase } from './useDraftBase'
 import { mediaStorage as storage } from '../utils/storage'
 import { getFileExtension, slugifyFileName } from '../utils/file'
-import { generateStemFromFsPath } from '../utils/media'
 import { useHooks } from './useHooks'
 
 const hooks = useHooks()
@@ -22,15 +21,15 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     remove,
     revert,
     revertAll,
-    selectById,
+    selectByFsPath,
     unselect,
     load,
   } = useDraftBase('media', host, git, storage)
 
   async function upload(parentFsPath: string, file: File) {
     const draftItem = await fileToDraftItem(parentFsPath, file)
-    host.media.upsert(draftItem.id, draftItem.modified!)
-    await create(draftItem.modified!)
+    host.media.upsert(draftItem.fsPath, draftItem.modified!)
+    await create(draftItem.fsPath, draftItem.modified!)
   }
 
   async function fileToDraftItem(parentFsPath: string, file: File): Promise<DraftItem<MediaItem>> {
@@ -39,49 +38,49 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     const fsPath = parentFsPath !== '/' ? joinURL(parentFsPath, slugifiedFileName) : slugifiedFileName
 
     return {
-      id: joinURL(TreeRootId.Media, fsPath),
       fsPath,
       githubFile: undefined,
       status: DraftStatus.Created,
       modified: {
-        id: joinURL(TreeRootId.Media, fsPath),
+        id: joinURL(VirtualMediaCollectionName, fsPath),
         fsPath,
         extension: getFileExtension(fsPath),
-        stem: fsPath.split('.').join('.'),
+        stem: generateStemFromFsPath(fsPath),
         path: withLeadingSlash(fsPath),
         raw: rawData,
       },
     }
   }
 
-  async function rename(items: { id: string, newFsPath: string }[]) {
+  async function rename(items: { fsPath: string, newFsPath: string }[]) {
     for (const item of items) {
-      const { id, newFsPath } = item
+      const { fsPath, newFsPath } = item
 
-      const existingDraftToRename = list.value.find(draftItem => draftItem.id === id) as DraftItem<MediaItem>
+      const existingDraftToRename = list.value.find(draftItem => draftItem.fsPath === fsPath) as DraftItem<MediaItem>
 
-      const currentDbItem = await host.media.get(id)
+      const currentDbItem = await host.media.get(fsPath)
       if (!currentDbItem) {
-        throw new Error(`Database item not found for document ${id}`)
+        throw new Error(`Database item not found for document fsPath: ${fsPath}`)
       }
 
-      await remove([id], { rerender: false })
+      await remove([fsPath], { rerender: false })
 
       const newDbItem: MediaItem = {
         ...currentDbItem,
-        id: joinURL(TreeRootId.Media, newFsPath),
+        fsPath: newFsPath,
+        id: joinURL(VirtualMediaCollectionName, newFsPath),
         stem: generateStemFromFsPath(newFsPath),
         path: withLeadingSlash(newFsPath),
       }
 
-      await host.media.upsert(newDbItem.id, newDbItem)
+      await host.media.upsert(newFsPath, newDbItem)
 
       let originalDbItem: MediaItem | undefined = currentDbItem
       if (existingDraftToRename) {
         originalDbItem = existingDraftToRename.original
       }
 
-      await create(newDbItem, originalDbItem, { rerender: false })
+      await create(newFsPath, newDbItem, originalDbItem, { rerender: false })
     }
 
     await hooks.callHook('studio:draft:media:updated', { caller: 'useDraftMedias.rename' })
@@ -128,7 +127,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     revertAll,
     rename,
     load,
-    selectById,
+    selectByFsPath,
     unselect,
     upload,
     listAsRawFiles,

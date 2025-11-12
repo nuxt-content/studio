@@ -22,29 +22,29 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     remove,
     revert,
     revertAll,
-    selectById,
+    selectByFsPath,
     unselect,
     load,
   } = useDraftBase<DatabaseItem>('document', host, git, storage)
 
   const hooks = useHooks()
 
-  async function update(id: string, document: DatabaseItem): Promise<DraftItem<DatabaseItem>> {
-    const existingItem = list.value.find(item => item.id === id) as DraftItem<DatabaseItem>
+  async function update(fsPath: string, document: DatabaseItem): Promise<DraftItem<DatabaseItem>> {
+    const existingItem = list.value.find(item => item.fsPath === fsPath) as DraftItem<DatabaseItem>
     if (!existingItem) {
-      throw new Error(`Draft file not found for document ${id}`)
+      throw new Error(`Draft file not found for document fsPath: ${fsPath}`)
     }
 
     const oldStatus = existingItem.status
     existingItem.status = getDraftStatus(document, existingItem.original, devMode.value)
     existingItem.modified = document
 
-    await storage.setItem(id, existingItem)
+    await storage.setItem(fsPath, existingItem)
 
-    list.value = list.value.map(item => item.id === id ? existingItem : item)
+    list.value = list.value.map(item => item.fsPath === fsPath ? existingItem : item)
 
     // Upsert document in database
-    await host.document.upsert(id, existingItem.modified)
+    await host.document.upsert(fsPath, existingItem.modified)
 
     // Trigger hook to warn that draft list has changed
     if (existingItem.status !== oldStatus) {
@@ -58,14 +58,14 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     return existingItem
   }
 
-  async function rename(items: { id: string, newFsPath: string }[]) {
+  async function rename(items: { fsPath: string, newFsPath: string }[]) {
     for (const item of items) {
-      const { id, newFsPath } = item
+      const { fsPath, newFsPath } = item
 
-      const existingDraftToRename = list.value.find(draftItem => draftItem.id === id) as DraftItem<DatabaseItem>
-      const dbItemToRename: DatabaseItem = await host.document.get(id)
+      const existingDraftToRename = list.value.find(draftItem => draftItem.fsPath === fsPath) as DraftItem<DatabaseItem>
+      const dbItemToRename = await host.document.get(fsPath)
       if (!dbItemToRename) {
-        throw new Error(`Database item not found for document ${id}`)
+        throw new Error(`Database item not found for document fsPath: ${fsPath}`)
       }
 
       const modifiedDbItem = existingDraftToRename?.modified || dbItemToRename
@@ -76,28 +76,28 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
       const content = await generateContentFromDocument(modifiedDbItem)
 
-      await remove([id], { rerender: false })
+      await remove([fsPath], { rerender: false })
 
       const newDbItem = await host.document.create(newFsPath, content!)
 
-      await create(newDbItem, originalDbItem, { rerender: false })
+      await create(newFsPath, newDbItem, originalDbItem, { rerender: false })
     }
 
     await hooks.callHook('studio:draft:document:updated', { caller: 'useDraftDocuments.rename' })
   }
 
-  async function duplicate(id: string): Promise<DraftItem<DatabaseItem>> {
-    let currentDbItem = await host.document.get(id)
+  async function duplicate(fsPath: string): Promise<DraftItem<DatabaseItem>> {
+    let currentDbItem = await host.document.get(fsPath)
     if (!currentDbItem) {
-      throw new Error(`Database item not found for document ${id}`)
+      throw new Error(`Database item not found for document fsPath: ${fsPath}`)
     }
 
-    const currentDraftItem = list.value.find(item => item.id === id)
+    const currentDraftItem = list.value.find(item => item.fsPath === fsPath)
     if (currentDraftItem) {
       currentDbItem = currentDraftItem.modified as DatabaseItem
     }
 
-    const currentFsPath = currentDraftItem?.fsPath || host.document.getFileSystemPath(id)
+    const currentFsPath = currentDraftItem?.fsPath || fsPath
     const currentContent = await generateContentFromDocument(currentDbItem) || ''
     const currentName = currentFsPath.split('/').pop()!
     const currentExtension = getFileExtension(currentName)
@@ -107,7 +107,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
     const newDbItem = await host.document.create(newFsPath, currentContent)
 
-    return await create(newDbItem)
+    return await create(newFsPath, newDbItem)
   }
 
   async function listAsRawFiles(): Promise<RawFile[]> {
@@ -144,7 +144,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     duplicate,
     listAsRawFiles,
     load,
-    selectById,
+    selectByFsPath,
     unselect,
   }
 })

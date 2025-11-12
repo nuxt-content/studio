@@ -1,12 +1,12 @@
-import { StudioFeature, TreeStatus, type StudioHost, type TreeItem, DraftStatus } from '../types'
+import type { DatabaseItem, StudioHost, TreeItem } from '../types'
+import { StudioFeature, TreeStatus, DraftStatus } from '../types'
 import { ref, computed } from 'vue'
 import type { useDraftDocuments } from './useDraftDocuments'
 import type { useDraftMedias } from './useDraftMedias'
-import { buildTree, findItemFromFsPath, findItemFromRoute, findParentFromFsPath, generateIdFromFsPath } from '../utils/tree'
+import { buildTree, findItemFromFsPath, findItemFromRoute, findParentFromFsPath } from '../utils/tree'
 import type { RouteLocationNormalized } from 'vue-router'
 import { useHooks } from './useHooks'
 import { useStudioState } from './useStudioState'
-import { TreeRootId } from '../types/tree'
 
 export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
   const hooks = useHooks()
@@ -22,7 +22,6 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
       fsPath: '/',
       children: tree.value,
       status: draftedTreeItems.length > 0 ? TreeStatus.Updated : null,
-      collections: [type === StudioFeature.Content ? TreeRootId.Content : TreeRootId.Media],
       prefix: null,
     } as TreeItem
   })
@@ -53,7 +52,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     setLocation(type, currentItem.value.fsPath)
 
     if (item?.type === 'file') {
-      await draft.selectById(generateIdFromFsPath(item.fsPath, item.collections![0]))
+      await draft.selectByFsPath(item.fsPath)
 
       if (
         !preferences.value.syncEditorAndRoute
@@ -100,13 +99,9 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
   // Trigger tree rebuild to update files status
   async function handleDraftUpdate(selectItem: boolean = true) {
     const api = type === StudioFeature.Content ? host.document : host.media
-    const list = await api.list()
-    const listWithFsPath = list.map((item) => {
-      const fsPath = api.getFileSystemPath(item.id)
-      return { ...item, fsPath }
-    })
+    const list = await api.list() as DatabaseItem[]
 
-    tree.value = buildTree(listWithFsPath, draft.list.value, devMode.value)
+    tree.value = buildTree(list, draft.list.value, devMode.value)
 
     // Reselect current item to update status
     if (selectItem) {

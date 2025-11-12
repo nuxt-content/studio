@@ -10,7 +10,6 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
 import { isEqual } from './database'
 import { getFileExtension, parseName } from './file'
-import { joinURL } from 'ufo'
 
 export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Created]: 'green',
@@ -28,7 +27,7 @@ export const COLOR_UI_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Opened]: 'neutral',
 } as const
 
-export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null, isDev = false):
+export function buildTree(dbItems: BaseItem[], draftList: DraftItem[] | null, isDev = false):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
@@ -36,25 +35,26 @@ TreeItem[] {
   const deletedDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Deleted) || []
   const createdDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Created) || []
 
-  function addDeletedDraftItemsInDbItems(dbItems: ((BaseItem) & { fsPath: string })[], deletedItems: DraftItem[]) {
+  function addDeletedDraftItemsInDbItems(dbItems: BaseItem[], deletedItems: DraftItem[]) {
     dbItems = [...dbItems]
     for (const deletedItem of deletedItems) {
+      // TODO: createdDraftItem.original?.fsPath is null ATM
       // Files in both deleted and original created draft are considered as renamed
       // We don't want to add them to the tree and duplicate them
-      const renamedDraftItem = createdDraftItems.find(createdDraftItem => createdDraftItem.original?.id === deletedItem.id)
+      const renamedDraftItem = createdDraftItems.find(createdDraftItem => createdDraftItem.original?.fsPath === deletedItem.fsPath)
       if (renamedDraftItem) {
         continue
       }
 
-      const virtualDbItems: BaseItem & { fsPath: string } = {
-        id: deletedItem.id,
-        extension: getFileExtension(deletedItem.id),
-        stem: '',
+      const virtualDbItem: BaseItem = {
+        id: 'N/A',
         fsPath: deletedItem.fsPath,
+        extension: getFileExtension(deletedItem.fsPath),
+        stem: '',
         path: deletedItem.original?.path,
       }
 
-      dbItems.push(virtualDbItems)
+      dbItems.push(virtualDbItem)
     }
 
     return dbItems
@@ -79,7 +79,6 @@ TreeItem[] {
         fsPath: dbItem.fsPath,
         type: 'file',
         prefix,
-        collections: [dbItem.id.split('/')[0]],
       }
 
       if (dbItem.fsPath.endsWith('.gitkeep')) {
@@ -90,7 +89,7 @@ TreeItem[] {
         fileItem.routePath = dbItem.path as string
       }
 
-      const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+      const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
       if (draftFileItem) {
         fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, isDev)
       }
@@ -120,19 +119,12 @@ TreeItem[] {
           type: 'directory',
           children: [],
           prefix: dirPrefix,
-          collections: [dbItem.id.split('/')[0]],
         }
 
         directoryMap.set(dirFsPath, directory)
 
         if (!directoryChildren.find(child => child.fsPath === dirFsPath)) {
           directoryChildren.push(directory)
-        }
-      }
-      else {
-        const collection = dbItem.id.split('/')[0]
-        if (!directory.collections.includes(collection)) {
-          directory.collections.push(collection)
         }
       }
 
@@ -148,14 +140,13 @@ TreeItem[] {
       fsPath: dbItem.fsPath,
       type: 'file',
       prefix,
-      collections: [dbItem.id.split('/')[0]],
     }
 
     if (dbItem.fsPath.endsWith('.gitkeep')) {
       fileItem.hide = true
     }
 
-    const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+    const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
     if (draftFileItem) {
       fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, isDev)
     }
@@ -170,10 +161,6 @@ TreeItem[] {
   calculateDirectoryStatuses(tree, isDev)
 
   return tree
-}
-
-export function generateIdFromFsPath(fsPath: string, collectionName: string): string {
-  return joinURL(collectionName, fsPath)
 }
 
 export function getTreeStatus(modified?: BaseItem, original?: BaseItem, isDev = false): TreeStatus {

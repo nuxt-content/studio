@@ -50,7 +50,7 @@ const document = computed<DatabasePageItem>({
       return
     }
 
-    context.activeTree.value.draft.update(props.draftItem.id, {
+    context.activeTree.value.draft.update(props.draftItem.fsPath, {
       ...toRaw(document.value as DatabasePageItem),
       ...toRaw(value),
     })

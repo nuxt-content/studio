@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { ensure } from './utils/ensure'
-import type { CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
+import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
-import { getCollectionByFilePath, generateIdFromFsPath, createCollectionDocument, generateRecordDeletion, generateRecordInsert, getCollectionInfo, normalizeDocument } from './utils/collection'
+import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
+import { createCollectionDocument, normalizeDocument } from './utils/document'
 import { kebabCase } from 'scule'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
@@ -12,8 +13,10 @@ import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroun
 import { collections } from '#content/preview'
 import { publicAssetsStorage } from '#build/studio-public-assets'
 import { useHostMeta } from './composables/useMeta'
+import { generateIdFromFsPath as generateMediaIdFromFsPath } from './utils/media'
+import { getCollectionSourceById } from './utils/source'
 
-const serviceWorkerVersion = 'v0.0.1'
+const serviceWorkerVersion = 'v0.0.2'
 
 function getSidebarWidth(): number {
   let sidebarWidth = 440
@@ -86,7 +89,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     return localDatabaseAdapter!(collection)
   }
 
-  function useContentCollections() {
+  function useContentCollections(): Record<string, CollectionInfo> {
     return Object.fromEntries(
       Object.entries(useContent().collections).filter(([, collection]) => {
         if (!collection.source.length || collection.source.some((source: CollectionSource) => source.repository || (source as unknown as { _custom: boolean })._custom)) {
@@ -182,26 +185,37 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     },
 
     document: {
-      get: async (id: string): Promise<DatabaseItem> => {
-        const item = await useContentCollectionQuery(id.split('/')[0] as string).where('id', '=', id).first()
+      get: async (fsPath: string): Promise<DatabaseItem | undefined> => {
+        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collectionInfo) {
+          throw new Error(`Collection not found for fsPath: ${fsPath}`)
+        }
 
-        return normalizeDocument(item as DatabaseItem)
-      },
-      getFileSystemPath: (id: string) => {
-        return getCollectionInfo(id, useContentCollections()).fsPath
+        const id = generateIdFromFsPath(fsPath, collectionInfo)
+        const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
+
+        return item ? normalizeDocument(fsPath, item as DatabaseItem) : undefined
       },
       list: async (): Promise<DatabaseItem[]> => {
-        const collections = Object.keys(useContentCollections()).filter(c => c !== 'info')
-        const contents = await Promise.all(collections.map(async (collection) => {
-          return await useContentCollectionQuery(collection).all() as DatabaseItem[]
+        const collections = Object.values(useContentCollections()).filter(collection => collection.name !== 'info')
+        const documentsByCollection = await Promise.all(collections.map(async (collection) => {
+          const documents = await useContentCollectionQuery(collection.name).all() as DatabaseItem[]
+
+          return documents.map((document) => {
+            const source = getCollectionSourceById(document.id, collection.source)
+            const fsPath = generateFsPathFromId(document.id, source!)
+
+            return normalizeDocument(fsPath, document)
+          })
         }))
 
-        return contents.flat()
+        return documentsByCollection.flat()
       },
       create: async (fsPath: string, content: string) => {
-        const collections = useContentCollections()
-
-        const collectionInfo = getCollectionByFilePath(fsPath, collections)
+        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collectionInfo) {
+          throw new Error(`Collection not found for fsPath: ${fsPath}`)
+        }
 
         const id = generateIdFromFsPath(fsPath, collectionInfo!)
 
@@ -211,25 +225,33 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         }
 
         const document = await generateDocumentFromContent(id, content)
-        const collectionDocument = createCollectionDocument(collectionInfo!, id, document!)
+        const collectionDocument = createCollectionDocument(id, collectionInfo, document!)
 
-        await host.document.upsert(id, collectionDocument!)
+        await host.document.upsert(fsPath, collectionDocument)
 
-        return collectionDocument!
+        return normalizeDocument(fsPath, collectionDocument!)
       },
-      upsert: async (id: string, document: CollectionItemBase) => {
-        id = id.replace(/:/g, '/')
+      upsert: async (fsPath: string, document: CollectionItemBase) => {
+        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collectionInfo) {
+          throw new Error(`Collection not found for fsPath: ${fsPath}`)
+        }
 
-        const collection = getCollectionInfo(id, useContentCollections()).collection
-        const doc = createCollectionDocument(collection, id, document)
+        const id = generateIdFromFsPath(fsPath, collectionInfo)
 
-        await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
-        await useContentDatabaseAdapter(collection.name).exec(generateRecordInsert(collection, doc))
+        const doc = createCollectionDocument(id, collectionInfo, document)
+
+        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
+        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, doc))
       },
-      delete: async (id: string) => {
-        id = id.replace(/:/g, '/')
+      delete: async (fsPath: string) => {
+        const collection = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collection) {
+          throw new Error(`Collection not found for fsPath: ${fsPath}`)
+        }
 
-        const collection = getCollectionInfo(id, useContentCollections()).collection
+        const id = generateIdFromFsPath(fsPath, collection)
+
         await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
       },
       detectActives: () => {
@@ -238,8 +260,15 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         return Array.from(wrappers).map((wrapper) => {
           const id = wrapper.getAttribute('data-content-id')!
           const title = id.split(/[/:]/).pop() || id
+
+          const collection = getCollectionById(id, useContentCollections())
+
+          const source = getCollectionSourceById(id, collection.source)
+
+          const fsPath = generateFsPathFromId(id, source!)
+
           return {
-            id,
+            fsPath,
             title,
           }
         })
@@ -247,20 +276,18 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     },
 
     media: {
-      get: async (id: string): Promise<MediaItem> => {
-        return await publicAssetsStorage.getItem(id) as MediaItem
-      },
-      getFileSystemPath: (id: string) => {
-        return id.split('/').slice(1).join('/')
+      get: async (fsPath: string): Promise<MediaItem> => {
+        return await publicAssetsStorage.getItem(generateMediaIdFromFsPath(fsPath)) as MediaItem
       },
       list: async (): Promise<MediaItem[]> => {
         return await Promise.all(await publicAssetsStorage.getKeys().then(keys => keys.map(key => publicAssetsStorage.getItem(key)))) as MediaItem[]
       },
-      upsert: async (id: string, media: MediaItem) => {
-        await publicAssetsStorage.setItem(id, media)
+      upsert: async (fsPath: string, media: MediaItem) => {
+        const id = generateMediaIdFromFsPath(fsPath)
+        await publicAssetsStorage.setItem(generateMediaIdFromFsPath(fsPath), { ...media, id })
       },
-      delete: async (id: string) => {
-        await publicAssetsStorage.removeItem(id)
+      delete: async (fsPath: string) => {
+        await publicAssetsStorage.removeItem(generateMediaIdFromFsPath(fsPath))
       },
     },
 

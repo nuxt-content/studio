@@ -1,4 +1,4 @@
-import { type StudioAction, type TreeItem, TreeStatus, StudioItemActionId, StudioBranchActionId, TreeRootId } from '../types'
+import { type StudioAction, type TreeItem, TreeStatus, StudioItemActionId, StudioBranchActionId, StudioFeature } from '../types'
 
 export const oneStepActions: StudioItemActionId[] = [StudioItemActionId.RevertItem, StudioItemActionId.DeleteItem, StudioItemActionId.DuplicateItem]
 export const twoStepActions: StudioItemActionId[] = [StudioItemActionId.CreateDocument, StudioItemActionId.CreateDocumentFolder, StudioItemActionId.CreateMediaFolder, StudioItemActionId.RenameItem]
@@ -61,14 +61,14 @@ export const STUDIO_BRANCH_ACTION_DEFINITIONS: StudioAction<StudioBranchActionId
   tooltip: 'Publish branch',
 }] as const
 
-export function computeItemActions(itemActions: StudioAction<StudioItemActionId>[], item?: TreeItem | null): StudioAction<StudioItemActionId>[] {
-  if (!item) {
-    return itemActions
+export function computeItemActions(itemActions: StudioAction<StudioItemActionId>[], item: TreeItem | null, feature: StudioFeature | null): StudioAction<StudioItemActionId>[] {
+  if (!item || !feature) {
+    return []
   }
 
   const forbiddenActions: StudioItemActionId[] = []
 
-  if (item.collections.includes(TreeRootId.Media)) {
+  if (feature === StudioFeature.Media) {
     forbiddenActions.push(StudioItemActionId.DuplicateItem, StudioItemActionId.CreateDocumentFolder, StudioItemActionId.CreateDocument)
   }
   else {

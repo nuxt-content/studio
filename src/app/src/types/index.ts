@@ -28,8 +28,8 @@ export interface StudioHost {
     beforeUnload: (fn: (event: BeforeUnloadEvent) => void) => void
     colorModeChange: (fn: (colorMode: 'light' | 'dark') => void) => void
     manifestUpdate: (fn: (id: string) => void) => void
-    documentUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
-    mediaUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
+    documentUpdate: (fn: (fsPath: string, type: 'remove' | 'update') => void) => void
+    mediaUpdate: (fn: (fsPath: string, type: 'remove' | 'update') => void) => void
   }
   ui: {
     colorMode: 'light' | 'dark'
@@ -41,20 +41,18 @@ export interface StudioHost {
   }
   repository: Repository
   document: {
-    get: (id: string) => Promise<DatabaseItem>
-    getFileSystemPath: (id: string) => string
+    get: (fsPath: string) => Promise<DatabaseItem | undefined>
     list: () => Promise<DatabaseItem[]>
-    upsert: (id: string, document: DatabaseItem) => Promise<void>
+    upsert: (fsPath: string, document: DatabaseItem) => Promise<void>
     create: (fsPath: string, content: string) => Promise<DatabaseItem>
-    delete: (id: string) => Promise<void>
-    detectActives: () => Array<{ id: string, title: string }>
+    delete: (fsPath: string) => Promise<void>
+    detectActives: () => Array<{ fsPath: string, title: string }>
   }
   media: {
-    get: (id: string) => Promise<MediaItem>
-    getFileSystemPath: (id: string) => string
+    get: (fsPath: string) => Promise<MediaItem>
     list: () => Promise<MediaItem[]>
-    upsert: (id: string, media: MediaItem) => Promise<void>
-    delete: (id: string) => Promise<void>
+    upsert: (fsPath: string, media: MediaItem) => Promise<void>
+    delete: (fsPath: string) => Promise<void>
   }
   user: {
     get: () => StudioUser
