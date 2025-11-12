@@ -23,8 +23,6 @@ export const useStudio = createSharedComposable(() => {
     enableDevMode()
   }
 
-  console.log('devMode', devMode.value)
-
   const gitOptions: GitOptions = {
     owner: host.repository.owner,
     repo: host.repository.repo,
