@@ -66,7 +66,7 @@ const schema = computed(() => z.object({
   prefix: z.preprocess(
     val => val === '' ? null : val,
     z.string()
-      .regex(/^\d+$/, 'Prefix be a string containing only digits')
+      .regex(/^\d+$/, 'Prefix must be a string containing only digits')
       .refine(
         (prefix: string | null | undefined) => {
           if (prefix === null || prefix === undefined) {
@@ -77,7 +77,7 @@ const schema = computed(() => z.object({
 
           return Number.isInteger(num) && num >= 0
         },
-        'Prefix must be a positive integer',
+        'Prefix must be a non-negative integer',
       )
       .nullish(),
   ),
