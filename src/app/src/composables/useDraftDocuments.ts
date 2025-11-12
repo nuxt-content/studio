@@ -9,8 +9,10 @@ import { joinURL } from 'ufo'
 import { documentStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
 import { useDraftBase } from './useDraftBase'
+import { useStudioState } from './useStudioState'
 
 export const useDraftDocuments = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
+  const { devMode } = useStudioState()
   const {
     isLoading,
     list,
@@ -34,7 +36,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     }
 
     const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(document, existingItem.original)
+    existingItem.status = getDraftStatus(document, existingItem.original, devMode.value)
     existingItem.modified = document
 
     await storage.setItem(id, existingItem)

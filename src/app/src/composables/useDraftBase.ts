@@ -6,7 +6,7 @@ import { checkConflict, findDescendantsFromId, getDraftStatus } from '../utils/d
 import type { useGit } from './useGit'
 import { useHooks } from './useHooks'
 import { ref } from 'vue'
-import { studioFlags } from './useStudio'
+import { useStudioState } from './useStudioState'
 
 export function useDraftBase<T extends DatabaseItem | MediaItem>(
   type: 'media' | 'document',
@@ -23,6 +23,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
   const hookName = `studio:draft:${type}:updated` as const
 
   const hooks = useHooks()
+  const { devMode } = useStudioState()
 
   async function get(id: string): Promise<DraftItem<T> | undefined> {
     return list.value.find(item => item.id === id) as DraftItem<T>
@@ -41,7 +42,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       id: item.id,
       fsPath,
       githubFile,
-      status: getDraftStatus(item, original),
+      status: getDraftStatus(item, original, devMode.value),
       modified: item,
     }
 
@@ -74,7 +75,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       await storage.removeItem(id)
       await hostDb.delete(id)
 
-      if (!studioFlags.dev) {
+      if (!devMode.value) {
         let deleteDraftItem: DraftItem<T> | null = null
         if (existingDraftItem) {
           if (existingDraftItem.status === DraftStatus.Deleted) return
@@ -143,7 +144,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
         // @ts-expect-error upsert type is wrong, second param should be DatabaseItem | MediaItem
         await hostDb.upsert(draftItem.id, existingItem.original)
         existingItem.modified = existingItem.original
-        existingItem.status = getDraftStatus(existingItem.modified, existingItem.original)
+        existingItem.status = getDraftStatus(existingItem.modified, existingItem.original, devMode.value)
         await storage.setItem(draftItem.id, existingItem)
       }
     }

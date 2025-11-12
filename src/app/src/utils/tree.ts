@@ -9,7 +9,6 @@ import {
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
 import { isEqual } from './database'
-import { studioFlags } from '../composables/useStudio'
 import { getFileExtension, parseName } from './file'
 import { joinURL } from 'ufo'
 
@@ -29,7 +28,7 @@ export const COLOR_UI_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Opened]: 'neutral',
 } as const
 
-export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):
+export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null, isDev = false):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
@@ -93,7 +92,7 @@ TreeItem[] {
 
       const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
       if (draftFileItem) {
-        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, isDev)
       }
 
       tree.push(fileItem)
@@ -158,7 +157,7 @@ TreeItem[] {
 
     const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
     if (draftFileItem) {
-      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, isDev)
     }
 
     if (dbItem.path) {
@@ -168,7 +167,7 @@ TreeItem[] {
     directoryChildren.push(fileItem)
   }
 
-  calculateDirectoryStatuses(tree)
+  calculateDirectoryStatuses(tree, isDev)
 
   return tree
 }
@@ -177,8 +176,8 @@ export function generateIdFromFsPath(fsPath: string, collectionName: string): st
   return joinURL(collectionName, fsPath)
 }
 
-export function getTreeStatus(modified?: BaseItem, original?: BaseItem): TreeStatus {
-  if (studioFlags.dev) {
+export function getTreeStatus(modified?: BaseItem, original?: BaseItem, isDev = false): TreeStatus {
+  if (isDev) {
     return TreeStatus.Opened
   }
 
@@ -310,8 +309,8 @@ export function findDescendantsFileItemsFromFsPath(tree: TreeItem[], fsPath: str
   return descendants
 }
 
-function calculateDirectoryStatuses(items: TreeItem[]) {
-  if (studioFlags.dev) {
+function calculateDirectoryStatuses(items: TreeItem[], isDev = false) {
+  if (isDev) {
     return
   }
 
@@ -320,7 +319,7 @@ function calculateDirectoryStatuses(items: TreeItem[]) {
       continue
     }
 
-    calculateDirectoryStatuses(item.children)
+    calculateDirectoryStatuses(item.children, isDev)
 
     const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
 

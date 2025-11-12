@@ -1,7 +1,6 @@
 import type { DatabaseItem, MediaItem, DatabasePageItem, DraftItem, BaseItem, ContentConflict } from '../types'
 import { DraftStatus, ContentFileExtension, TreeRootId } from '../types'
 import { isEqual } from './database'
-import { studioFlags } from '../composables/useStudio'
 import { generateContentFromDocument, generateDocumentFromContent } from './content'
 import { fromBase64ToUTF8 } from '../utils/string'
 
@@ -44,8 +43,8 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
   }
 }
 
-export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftStatus {
-  if (studioFlags.dev) {
+export function getDraftStatus(modified?: BaseItem, original?: BaseItem, isDev = false): DraftStatus {
+  if (isDev) {
     return DraftStatus.Pristine
   }
 

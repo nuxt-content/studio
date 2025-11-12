@@ -10,7 +10,7 @@ import { TreeRootId } from '../types/tree'
 
 export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType<typeof useDraftDocuments | typeof useDraftMedias>) => {
   const hooks = useHooks()
-  const { preferences, setLocation } = useStudioState()
+  const { preferences, setLocation, devMode } = useStudioState()
 
   const tree = ref<TreeItem[]>([])
 
@@ -106,7 +106,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
       return { ...item, fsPath }
     })
 
-    tree.value = buildTree(listWithFsPath, draft.list.value)
+    tree.value = buildTree(listWithFsPath, draft.list.value, devMode.value)
 
     // Reselect current item to update status
     if (selectItem) {

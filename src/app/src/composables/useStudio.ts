@@ -14,14 +14,16 @@ import { useHooks } from './useHooks'
 import { getDraftStatus } from '../utils/draft'
 import { useStudioState } from './useStudioState'
 
-export const studioFlags = {
-  dev: false,
-}
-
 export const useStudio = createSharedComposable(() => {
   const isReady = ref(false)
   const host = window.useStudioHost()
-  studioFlags.dev = host.meta.dev
+  const { devMode, enableDevMode, preferences, setManifestId } = useStudioState()
+
+  if (host.meta.dev) {
+    enableDevMode()
+  }
+
+  console.log('devMode', devMode.value)
 
   const gitOptions: GitOptions = {
     owner: host.repository.owner,
@@ -33,8 +35,7 @@ export const useStudio = createSharedComposable(() => {
     authorEmail: host.user.get().email,
   }
 
-  const git = studioFlags.dev ? useDevelopmentGit(gitOptions) : useGit(gitOptions)
-  const { preferences, setManifestId } = useStudioState()
+  const git = devMode.value ? useDevelopmentGit(gitOptions) : useGit(gitOptions)
   const ui = useUI(host)
   const draftDocuments = useDraftDocuments(host, git)
   const documentTree = useTree(StudioFeature.Content, host, draftDocuments)
@@ -43,7 +44,7 @@ export const useStudio = createSharedComposable(() => {
   const context = useContext(host, git, documentTree, mediaTree)
 
   host.on.mounted(async () => {
-    if (studioFlags.dev) {
+    if (devMode.value) {
       initDevelopmentMode(host, draftDocuments, draftMedias, documentTree, mediaTree)
     }
 
@@ -103,7 +104,7 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
         const document = await host.document.get(id)
         item.modified = document
         item.original = document
-        item.status = getDraftStatus(document, item.original)
+        item.status = getDraftStatus(document, item.original, true)
         item.version = item.version ? item.version + 1 : 1
       }
     }
@@ -125,7 +126,7 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
         const media = await host.media.get(id)
         item.modified = media
         item.original = media
-        item.status = getDraftStatus(media, item.original)
+        item.status = getDraftStatus(media, item.original, true)
         item.version = item.version ? item.version + 1 : 1
       }
     }
