@@ -185,16 +185,16 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     },
 
     document: {
-      get: async (fsPath: string): Promise<DatabaseItem> => {
+      get: async (fsPath: string): Promise<DatabaseItem | undefined> => {
         const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
         if (!collectionInfo) {
           throw new Error(`Collection not found for fsPath: ${fsPath}`)
         }
 
         const id = generateIdFromFsPath(fsPath, collectionInfo)
-        const item = await useContentCollectionQuery(id.split('/')[0] as string).where('id', '=', id).first()
+        const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
 
-        return normalizeDocument(fsPath, item as DatabaseItem)
+        return item ? normalizeDocument(fsPath, item as DatabaseItem) : undefined
       },
       list: async (): Promise<DatabaseItem[]> => {
         const collections = Object.values(useContentCollections()).filter(collection => collection.name !== 'info')
@@ -212,9 +212,10 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         return documentsByCollection.flat()
       },
       create: async (fsPath: string, content: string) => {
-        const collections = useContentCollections()
-
-        const collectionInfo = getCollectionByFilePath(fsPath, collections)
+        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collectionInfo) {
+          throw new Error(`Collection not found for fsPath: ${fsPath}`)
+        }
 
         const id = generateIdFromFsPath(fsPath, collectionInfo!)
 
@@ -224,24 +225,24 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         }
 
         const document = await generateDocumentFromContent(id, content)
-        const collectionDocument = createCollectionDocument(collectionInfo!, id, document!)
+        const collectionDocument = createCollectionDocument(id, collectionInfo, document!)
 
-        await host.document.upsert(id, collectionDocument!)
+        await host.document.upsert(fsPath, collectionDocument)
 
-        return collectionDocument!
+        return normalizeDocument(fsPath, collectionDocument!)
       },
       upsert: async (fsPath: string, document: CollectionItemBase) => {
-        const collection = getCollectionByFilePath(fsPath, useContentCollections())
-        if (!collection) {
+        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+        if (!collectionInfo) {
           throw new Error(`Collection not found for fsPath: ${fsPath}`)
         }
 
-        const id = generateIdFromFsPath(fsPath, collection)
+        const id = generateIdFromFsPath(fsPath, collectionInfo)
 
-        const doc = createCollectionDocument(collection, id, document)
+        const doc = createCollectionDocument(id, collectionInfo, document)
 
-        await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
-        await useContentDatabaseAdapter(collection.name).exec(generateRecordInsert(collection, doc))
+        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
+        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, doc))
       },
       delete: async (fsPath: string) => {
         const collection = getCollectionByFilePath(fsPath, useContentCollections())

@@ -36,7 +36,7 @@ export function useStudioHost(user: StudioUser, repository: Repository) {
     }
 
     const id = generateIdFromFsPath(fsPath, collectionInfo)
-    const doc = createCollectionDocument(collectionInfo, id, upsertedDocument)
+    const doc = createCollectionDocument(id, collectionInfo, upsertedDocument)
 
     const content = await generateContentFromDocument(doc)
 

@@ -3,14 +3,14 @@ import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
 import type { DatabaseItem } from 'nuxt-studio/app'
 
-export function createCollectionDocument(collection: CollectionInfo, id: string, document: CollectionItemBase) {
+export function createCollectionDocument(id: string, collectionInfo: CollectionInfo, document: CollectionItemBase) {
   const parsedContent = [
     pathMetaTransform,
-  ].reduce((acc, fn) => collection.type === 'page' ? fn(acc as PageCollectionItemBase) : acc, { ...document, id } as PageCollectionItemBase)
+  ].reduce((acc, fn) => collectionInfo.type === 'page' ? fn(acc as PageCollectionItemBase) : acc, { ...document, id } as PageCollectionItemBase)
   const result = { id } as DatabaseItem
   const meta = parsedContent.meta as Record<string, unknown>
 
-  const collectionKeys = getOrderedSchemaKeys(collection.schema)
+  const collectionKeys = getOrderedSchemaKeys(collectionInfo.schema)
   for (const key of Object.keys(parsedContent)) {
     if (collectionKeys.includes(key)) {
       result[key] = parsedContent[key as keyof PageCollectionItemBase]
