@@ -16,7 +16,7 @@ import { useHostMeta } from './composables/useMeta'
 import { generateIdFromFsPath as generateMediaIdFromFsPath } from './utils/media'
 import { getCollectionSourceById } from './utils/source'
 
-const serviceWorkerVersion = 'v0.0.1'
+const serviceWorkerVersion = 'v0.0.2'
 
 function getSidebarWidth(): number {
   let sidebarWidth = 440
