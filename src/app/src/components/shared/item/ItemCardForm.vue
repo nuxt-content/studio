@@ -65,7 +65,21 @@ const schema = computed(() => z.object({
   extension: z.enum([...CONTENT_EXTENSIONS, ...MEDIA_EXTENSIONS] as [string, ...string[]]).nullish(),
   prefix: z.preprocess(
     val => val === '' ? null : val,
-    z.number().int().positive().nullish(),
+    z.string()
+      .regex(/^\d+$/, 'Prefix must be a string containing only digits')
+      .refine(
+        (prefix: string | null | undefined) => {
+          if (prefix === null || prefix === undefined) {
+            return true
+          }
+
+          const num = Number(prefix)
+
+          return Number.isInteger(num) && num >= 0
+        },
+        'Prefix must be a non-negative integer',
+      )
+      .nullish(),
   ),
 }).refine(() => {
   const siblings = props.parentItem.children?.filter(child => !child.hide) || []
@@ -87,7 +101,7 @@ const schema = computed(() => z.object({
 type Schema = {
   name: string
   extension: string | null | undefined
-  prefix: number | null | undefined
+  prefix: string | null | undefined
 }
 const state = reactive<Schema>({
   name: originalName.value,
@@ -267,11 +281,11 @@ async function onSubmit() {
                       <span />
                     </template>
                     <UInput
-                      v-model.number="state.prefix"
-                      type="number"
+                      v-model="state.prefix"
+                      type="text"
+                      pattern="[0-9]*"
                       variant="soft"
                       placeholder="N°"
-                      min="1"
                       class="h-5"
                       size="xs"
                       :disabled="isLoading"

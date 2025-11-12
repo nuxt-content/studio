@@ -50,11 +50,11 @@ export const FILE_ICONS = {
   ...AUDIO_EXTENSIONS.reduce((acc, ext) => ({ ...acc, [ext]: 'i-lucide-file-audio' }), {}),
 }
 
-export function parseName(name: string): { name: string, prefix: number | null, extension: string | null } {
+export function parseName(name: string): { name: string, prefix: string | null, extension: string | null } {
   const prefixMatch = name.match(/^(\d+)\./)
   const extensionMatch = name.match(/\.(\w+)$/)
   return {
-    prefix: prefixMatch ? Number.parseInt(prefixMatch[1], 10) : null,
+    prefix: prefixMatch ? prefixMatch[1] : null,
     extension: extensionMatch ? extensionMatch[1] : null,
     name: name.replace(/^\d+\./, ''),
   }

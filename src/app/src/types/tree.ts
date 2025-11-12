@@ -10,7 +10,7 @@ export interface TreeItem {
   name: string
   fsPath: string // unique identifier
   type: 'file' | 'directory' | 'root'
-  prefix: number | null
+  prefix: string | null
   status?: TreeStatus
   routePath?: string
   children?: TreeItem[]
