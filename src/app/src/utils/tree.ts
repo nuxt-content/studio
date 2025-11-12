@@ -47,7 +47,7 @@ TreeItem[] {
         continue
       }
 
-      const virtualDbItem: BaseItem & { fsPath: string } = {
+      const virtualDbItem: BaseItem = {
         id: 'N/A',
         fsPath: deletedItem.fsPath,
         extension: getFileExtension(deletedItem.fsPath),

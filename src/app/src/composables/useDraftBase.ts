@@ -7,7 +7,7 @@ import type { useGit } from './useGit'
 import { useHooks } from './useHooks'
 import { ref } from 'vue'
 
-export function useDraftBase<T extends DatabaseItem & { fsPath: string } | MediaItem & { fsPath: string }>(
+export function useDraftBase<T extends DatabaseItem | MediaItem>(
   type: 'media' | 'document',
   host: StudioHost,
   git: ReturnType<typeof useGit>,

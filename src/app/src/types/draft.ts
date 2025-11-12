@@ -19,8 +19,8 @@ export interface DraftItem<T = DatabaseItem | MediaItem> {
   status: DraftStatus // status
 
   githubFile?: GithubFile // file fetched on gh
-  original?: T & { fsPath: string }
-  modified?: T & { fsPath: string }
+  original?: T
+  modified?: T
   /**
    * - Buffer media content
    */

@@ -51,7 +51,7 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With draft', () => {
-    const createdDbItem: DatabaseItem & { fsPath: string } = dbItemsList[0]
+    const createdDbItem: DatabaseItem = dbItemsList[0]
 
     const draftList: DraftItem[] = [{
       fsPath: createdDbItem.fsPath,
@@ -71,7 +71,7 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With DELETED draft file in existing directory', () => {
-    const deletedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
+    const deletedDbItem: DatabaseItem = dbItemsList[1] // 2.introduction.md
 
     const draftList: DraftItem[] = [{
       fsPath: deletedDbItem.fsPath,
@@ -105,7 +105,7 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With DELETED draft file in non existing directory', () => {
-    const deletedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[2] // 3.installation.md
+    const deletedDbItem: DatabaseItem = dbItemsList[2] // 3.installation.md
 
     const draftList: DraftItem[] = [{
       fsPath: deletedDbItem.fsPath,
@@ -139,7 +139,7 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With UPDATED draft file in existing directory (directory status is set)', () => {
-    const updatedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
+    const updatedDbItem: DatabaseItem = dbItemsList[1] // 2.introduction.md
 
     const draftList: DraftItem[] = [{
       fsPath: updatedDbItem.fsPath,
@@ -175,8 +175,8 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With CREATED and OPENED draft files in exsiting directory (directory status is set)', () => {
-    const createdDbItem: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
-    const openedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[2] // 3.installation.md
+    const createdDbItem: DatabaseItem = dbItemsList[1] // 2.introduction.md
+    const openedDbItem: DatabaseItem = dbItemsList[2] // 3.installation.md
 
     const draftList: DraftItem[] = [{
       fsPath: createdDbItem.fsPath,
@@ -208,8 +208,8 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With OPENED draft files in existing directory (directory status is not set)', () => {
-    const openedDbItem1: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
-    const openedDbItem2: DatabaseItem & { fsPath: string } = dbItemsList[2] // 3.installation.md
+    const openedDbItem1: DatabaseItem = dbItemsList[1] // 2.introduction.md
+    const openedDbItem2: DatabaseItem = dbItemsList[2] // 3.installation.md
 
     const draftList: DraftItem[] = [{
       fsPath: openedDbItem1.fsPath,
@@ -242,8 +242,8 @@ describe('buildTree of documents with one level of depth', () => {
   })
 
   it('With same id DELETED and CREATED draft file resulting in RENAMED', () => {
-    const deletedDbItem: DatabaseItem & { fsPath: string } = dbItemsList[1] // 2.introduction.md
-    const createdDbItem: DatabaseItem & { fsPath: string } = { // 2.renamed.md
+    const deletedDbItem: DatabaseItem = dbItemsList[1] // 2.introduction.md
+    const createdDbItem: DatabaseItem = { // 2.renamed.md
       ...dbItemsList[1],
       id: 'docs/1.getting-started/2.renamed.md',
       path: '/getting-started/renamed',
@@ -330,7 +330,7 @@ describe('buildTree of documents with two levels of depth', () => {
   })
 
   it('With one level of depth draft files', () => {
-    const updatedDbItem: DatabaseItem & { fsPath: string } = nestedDbItemsList[0] // 1.essentials/2.configuration.md
+    const updatedDbItem: DatabaseItem = nestedDbItemsList[0] // 1.essentials/2.configuration.md
 
     const draftList: DraftItem[] = [{
       fsPath: updatedDbItem.fsPath,
@@ -358,7 +358,7 @@ describe('buildTree of documents with two levels of depth', () => {
   })
 
   it('With nested levels of depth draft files', () => {
-    const updatedDbItem: DatabaseItem & { fsPath: string } = nestedDbItemsList[1] // 1.essentials/1.nested/2.advanced.md
+    const updatedDbItem: DatabaseItem = nestedDbItemsList[1] // 1.essentials/1.nested/2.advanced.md
 
     const draftList: DraftItem[] = [{
       fsPath: updatedDbItem.fsPath,
@@ -395,7 +395,7 @@ describe('buildTree of documents with two levels of depth', () => {
   })
 
   it ('With DELETED draft file in nested non existing directory (directory status is set)', () => {
-    const deletedDbItem: DatabaseItem & { fsPath: string } = nestedDbItemsList[1] // 1.essentials/1.nested/2.advanced.md
+    const deletedDbItem: DatabaseItem = nestedDbItemsList[1] // 1.essentials/1.nested/2.advanced.md
 
     const draftList: DraftItem[] = [{
       fsPath: deletedDbItem.fsPath,
@@ -488,7 +488,7 @@ describe('buildTree of medias', () => {
     const mediaId = joinURL(VirtualMediaCollectionName, mediaFsPath)
     const gitKeepId = joinURL(VirtualMediaCollectionName, gitKeepFsPath)
 
-    const gitkeepDbItem: MediaItem & { fsPath: string } = {
+    const gitkeepDbItem: MediaItem = {
       id: gitKeepId,
       fsPath: gitKeepFsPath,
       stem: '.gitkeep',
@@ -496,7 +496,7 @@ describe('buildTree of medias', () => {
       path: withLeadingSlash(gitKeepFsPath),
     }
 
-    const mediaDbItem: MediaItem & { fsPath: string } = {
+    const mediaDbItem: MediaItem = {
       id: mediaId,
       fsPath: mediaFsPath,
       stem: 'image',

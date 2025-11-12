@@ -1,6 +1,6 @@
 import type { DatabaseItem } from '../../src/types/database'
 
-export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
+export const dbItemsList: DatabaseItem[] = [
   {
     id: 'landing/index.md',
     title: '',
@@ -60,7 +60,7 @@ export const dbItemsList: (DatabaseItem & { fsPath: string })[] = [
   },
 ]
 
-export const nestedDbItemsList: (DatabaseItem & { fsPath: string })[] = [
+export const nestedDbItemsList: DatabaseItem[] = [
   {
     id: 'docs/1.essentials/2.configuration.md',
     title: 'Configuration',
@@ -101,7 +101,7 @@ export const nestedDbItemsList: (DatabaseItem & { fsPath: string })[] = [
   },
 ]
 
-export const languagePrefixedDbItemsList: (DatabaseItem & { fsPath: string })[] = [
+export const languagePrefixedDbItemsList: DatabaseItem[] = [
   {
     id: 'landing_en/en/index.md',
     title: '',

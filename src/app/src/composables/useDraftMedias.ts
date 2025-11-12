@@ -65,7 +65,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
       await remove([fsPath], { rerender: false })
 
-      const newDbItem: MediaItem & { fsPath: string } = {
+      const newDbItem: MediaItem = {
         ...currentDbItem,
         fsPath: newFsPath,
         id: joinURL(VirtualMediaCollectionName, newFsPath),
