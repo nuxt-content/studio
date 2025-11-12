@@ -49,12 +49,7 @@ export function useStudioHost(user: StudioUser, repository: Repository) {
 
   // TODO @farnabaz to check
   host.document.delete = async (fsPath: string) => {
-    const collectionInfo = getCollectionByFilePath(fsPath, collections)
-    if (!collectionInfo) {
-      throw new Error(`Collection not found for fsPath: ${fsPath}`)
-    }
-
-    await devStorage.removeItem(generateIdFromFsPath(fsPath, collectionInfo))
+    await devStorage.removeItem(fsPath)
   }
 
   // TODO @farnabaz
