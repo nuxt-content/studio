@@ -109,11 +109,10 @@ export const useContext = createSharedComposable((
       const navigationDocument = await host.document.create(navigationDocumentFsPath, `title: ${folderName}`)
       const rootDocument = await host.document.create(rootDocumentFsPath, `# ${upperFirst(folderName)} root file`)
 
-      await activeTree.value.draft.create(fsPath, navigationDocument)
+      await activeTree.value.draft.create(navigationDocumentFsPath, navigationDocument)
+      const rootDocumentDraftItem = await activeTree.value.draft.create(rootDocumentFsPath, rootDocument)
 
       unsetActionInProgress()
-
-      const rootDocumentDraftItem = await activeTree.value.draft.create(rootDocumentFsPath, rootDocument)
 
       await activeTree.value.selectItemByFsPath(rootDocumentDraftItem.fsPath)
     },
