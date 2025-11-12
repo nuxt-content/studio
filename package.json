@@ -55,7 +55,7 @@
     "@iconify-json/simple-icons": "^1.2.57",
     "@nuxt/content": "^3.8.0",
     "@nuxt/eslint-config": "^1.10.0",
-    "@nuxt/kit": "^4.2.0",
+    "@nuxt/kit": "^4.2.1",
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/ui": "^4.1.0",
     "@octokit/types": "^15.0.1",
@@ -86,7 +86,7 @@
     "remark-mdc": "3.8.1",
     "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@cb6a227"
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.21.0",
   "keywords": [
     "nuxt",
     "content",

@@ -1,8 +1,15 @@
-import type { CollectionInfo, CollectionItemBase, MinimarkTree, PageCollectionItemBase } from '@nuxt/content'
+import type { CollectionInfo, CollectionItemBase, MarkdownRoot, PageCollectionItemBase } from '@nuxt/content'
 import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
-import { ContentFileExtension, type DatabaseItem } from 'nuxt-studio/app'
-import { textContent } from 'minimark'
+import type { DatabaseItem } from 'nuxt-studio/app'
+import { isObjectMatch } from './object'
+import { ContentFileExtension } from '../../types/content'
+import { parseMarkdown } from '@nuxtjs/mdc/runtime/parser/index'
+import type { MDCElement } from '@nuxtjs/mdc'
+import { visit } from 'unist-util-visit'
+import { compressTree } from '@nuxt/content/runtime'
+import destr from 'destr'
+import { parseFrontMatter } from 'remark-mdc'
 
 export function createCollectionDocument(id: string, collectionInfo: CollectionInfo, document: CollectionItemBase) {
   const parsedContent = [
@@ -38,65 +45,118 @@ export function createCollectionDocument(id: string, collectionInfo: CollectionI
   return result
 }
 
+export async function isDocumentMatchContent(content: string, document: DatabaseItem): Promise<boolean> {
+  const generatedDocument = await generateDocumentFromContent(document.id, content) as DatabaseItem
+  return isObjectMatch(generatedDocument, document)
+}
+
 export function normalizeDocument(fsPath: string, document: DatabaseItem): DatabaseItem {
-  // `seo` is an auto-generated field in content module
-  // if `seo.title` and `seo.description` are same as `title` and `description`
-  // we can remove it to avoid duplication
-  if (document?.seo) {
-    const seo = document.seo as Record<string, unknown>
-
-    if (!seo.title || seo.title === document.title) {
-      Reflect.deleteProperty(document.seo, 'title')
-    }
-    if (!seo.description || seo.description === document.description) {
-      Reflect.deleteProperty(document.seo, 'description')
-    }
-
-    if (Object.keys(seo).length === 0) {
-      Reflect.deleteProperty(document, 'seo')
-    }
-  }
-
-  if (document.extension === ContentFileExtension.Markdown) {
-    const meta = pathMetaTransform(document as unknown as PageCollectionItemBase)
-    if (meta.title === document.title) {
-      Reflect.deleteProperty(document, 'title')
-    }
-
-    const extractedContentHeading = document.body
-      ? contentHeading(document.body as MinimarkTree)
-      : { title: '', description: '' }
-    if (extractedContentHeading.title === document.title) {
-      Reflect.deleteProperty(document, 'title')
-    }
-    if (extractedContentHeading.description === document.description) {
-      Reflect.deleteProperty(document, 'description')
-    }
-  }
-
   return {
     ...document,
     fsPath,
   }
 }
 
-/**
- * Extract the title and description from the body
- */
-export function contentHeading(body: MinimarkTree) {
-  let title = ''
-  let description = ''
-  const children = body.value.filter(node => node[0] !== 'hr')
-  if (children.length && children[0]?.[0] === 'h1') {
-    const node = children.shift()!
-    title = textContent(node)
+export async function generateDocumentFromContent(id: string, content: string): Promise<DatabaseItem | null> {
+  const [_id, _hash] = id.split('#')
+  const extension = getFileExtension(id)
+
+  if (extension === ContentFileExtension.Markdown) {
+    return await generateDocumentFromMarkdownContent(id, content)
   }
-  if (children.length && children[0]?.[0] === 'p') {
-    const node = children.shift()!
-    description = textContent(node)
+
+  if (extension === ContentFileExtension.YAML || extension === ContentFileExtension.YML) {
+    return await generateDocumentFromYAMLContent(id, content)
   }
+
+  if (extension === ContentFileExtension.JSON) {
+    return await generateDocumentFromJSONContent(id, content)
+  }
+
+  return null
+}
+
+export async function generateDocumentFromYAMLContent(id: string, content: string): Promise<DatabaseItem> {
+  const { data } = parseFrontMatter(`---\n${content}\n---`)
+
+  // Keep array contents under `body` key
+  let parsed = data
+  if (Array.isArray(data)) {
+    console.warn(`YAML array is not supported in ${id}, moving the array into the \`body\` key`)
+    parsed = { body: data }
+  }
+
   return {
-    title,
-    description,
+    id,
+    extension: getFileExtension(id),
+    stem: generateStemFromId(id),
+    meta: {},
+    ...parsed,
+    body: parsed.body || parsed,
+  } as never as DatabaseItem
+}
+
+export async function generateDocumentFromJSONContent(id: string, content: string): Promise<DatabaseItem> {
+  let parsed: Record<string, unknown> = destr(content)
+
+  // Keep array contents under `body` key
+  if (Array.isArray(parsed)) {
+    console.warn(`JSON array is not supported in ${id}, moving the array into the \`body\` key`)
+    parsed = {
+      body: parsed,
+    }
   }
+
+  // fsPath will be overridden by host
+  return {
+    id,
+    extension: ContentFileExtension.JSON,
+    stem: generateStemFromId(id),
+    meta: {},
+    ...parsed,
+    body: parsed.body || parsed,
+  } as never as DatabaseItem
+}
+
+export async function generateDocumentFromMarkdownContent(id: string, content: string): Promise<DatabaseItem> {
+  const document = await parseMarkdown(content, {
+    remark: {
+      plugins: {
+        'remark-mdc': {
+          options: {
+            autoUnwrap: true,
+          },
+        },
+      },
+    },
+  })
+
+  // Remove nofollow from links
+  visit(document.body, (node: unknown) => (node as MDCElement).type === 'element' && (node as MDCElement).tag === 'a', (node: unknown) => {
+    if ((node as MDCElement).props?.rel?.join(' ') === 'nofollow') {
+      Reflect.deleteProperty((node as MDCElement).props!, 'rel')
+    }
+  })
+
+  const body = document.body.type === 'root' ? compressTree(document.body) : document.body as never as MarkdownRoot
+
+  return {
+    id,
+    meta: {},
+    extension: 'md',
+    stem: id.split('/').slice(1).join('/').split('.').slice(0, -1).join('.'),
+    body: {
+      ...body,
+      toc: document.toc,
+    },
+    ...document.data,
+  } as never as DatabaseItem
+}
+
+function generateStemFromId(id: string) {
+  return id.split('/').slice(1).join('/').split('.').slice(0, -1).join('.')
+}
+
+export function getFileExtension(fsPath: string) {
+  return fsPath.split('#')[0]?.split('.').pop()!.toLowerCase()
 }

@@ -3,16 +3,16 @@ import { ensure } from './utils/ensure'
 import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
-import { createCollectionDocument, normalizeDocument } from './utils/document'
+import { createCollectionDocument, isDocumentMatchContent, normalizeDocument } from './utils/document'
 import { kebabCase } from 'scule'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
-import { generateDocumentFromContent } from 'nuxt-studio/app/utils'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
 import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections } from '#imports'
 import { collections } from '#content/preview'
 import { publicAssetsStorage } from '#build/studio-public-assets'
 import { useHostMeta } from './composables/useMeta'
+import { generateDocumentFromContent } from './utils/document'
 import { generateIdFromFsPath as generateMediaIdFromFsPath } from './utils/media'
 import { getCollectionSourceById } from './utils/source'
 
@@ -273,6 +273,8 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           }
         })
       },
+      isEqual: async (content: string, document: DatabaseItem) => isDocumentMatchContent(content, document),
+      generateDocumentFromContent: async (id: string, content: string) => generateDocumentFromContent(id, content) as Promise<DatabaseItem>,
     },
 
     media: {

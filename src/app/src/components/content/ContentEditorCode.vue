@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { ContentFileExtension, type DatabasePageItem, type DraftItem, DraftStatus, type DatabaseItem } from '../../types'
 import type { PropType } from 'vue'
-import { generateContentFromDocument, generateDocumentFromContent, isEqual, pickReservedKeysFromDocument } from '../../utils/content'
+import { generateContentFromDocument, isEqual, pickReservedKeysFromDocument } from '../../utils/content'
 import { setupSuggestion } from '../../utils/monaco'
 import { useStudio } from '../../composables/useStudio'
 import { useMonaco } from '../../composables/useMonaco'
@@ -67,7 +67,7 @@ const { editor, setContent: setEditorContent } = useMonaco(editorRef, {
 
     content.value = newContent
 
-    generateDocumentFromContent(document.value!.id, content.value).then((doc) => {
+    host.document.generateDocumentFromContent(document.value!.id, content.value).then((doc) => {
       localStatus.value = DraftStatus.Updated
 
       document.value = {

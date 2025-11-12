@@ -47,6 +47,8 @@ export interface StudioHost {
     create: (fsPath: string, content: string) => Promise<DatabaseItem>
     delete: (fsPath: string) => Promise<void>
     detectActives: () => Array<{ fsPath: string, title: string }>
+    isEqual: (content: string, document: DatabaseItem) => Promise<boolean>
+    generateDocumentFromContent: (id: string, content: string) => Promise<DatabaseItem>
   }
   media: {
     get: (fsPath: string) => Promise<MediaItem>

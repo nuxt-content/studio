@@ -1,21 +1,15 @@
 // import type { ParsedContentFile } from '@nuxt/content'
-import { parseMarkdown, stringifyMarkdown } from '@nuxtjs/mdc/runtime'
-import { parseFrontMatter, stringifyFrontMatter } from 'remark-mdc'
+import { stringifyMarkdown } from '@nuxtjs/mdc/runtime'
+import { stringifyFrontMatter } from 'remark-mdc'
 import type { MDCElement, MDCRoot } from '@nuxtjs/mdc'
 import { type DatabasePageItem, type DatabaseItem, ContentFileExtension } from '../types'
 import { omit, pick } from './object'
-import { compressTree, decompressTree } from '@nuxt/content/runtime'
+import { decompressTree } from '@nuxt/content/runtime'
 import { visit } from 'unist-util-visit'
 import type { Node } from 'unist'
-import type { MarkdownRoot } from '@nuxt/content'
-import { destr } from 'destr'
 import { getFileExtension } from './file'
 
 const reservedKeys = ['id', 'fsPath', 'stem', 'extension', '__hash__', 'path', 'body', 'meta', 'rawbody']
-
-export function generateStemFromId(id: string) {
-  return id.split('/').slice(1).join('/').split('.').slice(0, -1).join('.')
-}
 
 export function pickReservedKeysFromDocument(document: DatabaseItem) {
   return pick(document, reservedKeys)
@@ -67,102 +61,6 @@ export function isEqual(content1: string | null, content2: string | null): boole
   }
 
   return false
-}
-
-export async function generateDocumentFromContent(id: string, content: string): Promise<DatabaseItem | null> {
-  const [_id, _hash] = id.split('#')
-  const extension = getFileExtension(id)
-
-  if (extension === ContentFileExtension.Markdown) {
-    return await generateDocumentFromMarkdownContent(id, content)
-  }
-
-  if (extension === ContentFileExtension.YAML || extension === ContentFileExtension.YML) {
-    return await generateDocumentFromYAMLContent(id, content)
-  }
-
-  if (extension === ContentFileExtension.JSON) {
-    return await generateDocumentFromJSONContent(id, content)
-  }
-
-  return null
-}
-
-export async function generateDocumentFromYAMLContent(id: string, content: string): Promise<DatabaseItem> {
-  const { data } = parseFrontMatter(`---\n${content}\n---`)
-
-  // Keep array contents under `body` key
-  let parsed = data
-  if (Array.isArray(data)) {
-    console.warn(`YAML array is not supported in ${id}, moving the array into the \`body\` key`)
-    parsed = { body: data }
-  }
-
-  return {
-    id,
-    extension: getFileExtension(id),
-    stem: generateStemFromId(id),
-    meta: {},
-    ...parsed,
-    body: parsed.body || parsed,
-  } as never as DatabaseItem
-}
-
-export async function generateDocumentFromJSONContent(id: string, content: string): Promise<DatabaseItem> {
-  let parsed: Record<string, unknown> = destr(content)
-
-  // Keep array contents under `body` key
-  if (Array.isArray(parsed)) {
-    console.warn(`JSON array is not supported in ${id}, moving the array into the \`body\` key`)
-    parsed = {
-      body: parsed,
-    }
-  }
-
-  // fsPath will be overridden by host
-  return {
-    id,
-    extension: ContentFileExtension.JSON,
-    stem: generateStemFromId(id),
-    meta: {},
-    ...parsed,
-    body: parsed.body || parsed,
-  } as never as DatabaseItem
-}
-
-export async function generateDocumentFromMarkdownContent(id: string, content: string): Promise<DatabaseItem> {
-  const document = await parseMarkdown(content, {
-    remark: {
-      plugins: {
-        'remark-mdc': {
-          options: {
-            autoUnwrap: true,
-          },
-        },
-      },
-    },
-  })
-
-  // Remove nofollow from links
-  visit(document.body, (node: Node) => (node as MDCElement).type === 'element' && (node as MDCElement).tag === 'a', (node: Node) => {
-    if ((node as MDCElement).props?.rel?.join(' ') === 'nofollow') {
-      Reflect.deleteProperty((node as MDCElement).props!, 'rel')
-    }
-  })
-
-  const body = document.body.type === 'root' ? compressTree(document.body) : document.body as never as MarkdownRoot
-
-  return {
-    id,
-    meta: {},
-    extension: ContentFileExtension.Markdown,
-    stem: generateStemFromId(id),
-    body: {
-      ...body,
-      toc: document.toc,
-    },
-    ...document.data,
-  } as never as DatabaseItem
 }
 
 export async function generateContentFromDocument(document: DatabaseItem): Promise<string | null> {

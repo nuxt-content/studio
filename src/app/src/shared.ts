@@ -1,2 +1,2 @@
-export { generateContentFromDocument, generateDocumentFromContent, removeReservedKeysFromDocument } from './utils/content'
+export { generateContentFromDocument, removeReservedKeysFromDocument } from './utils/content'
 export { VirtualMediaCollectionName } from './utils/media'

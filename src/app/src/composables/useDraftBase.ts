@@ -46,7 +46,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       draftItem.original = original
     }
 
-    const conflict = await checkConflict(draftItem)
+    const conflict = await checkConflict(host, draftItem)
     if (conflict) {
       draftItem.conflict = conflict
     }
