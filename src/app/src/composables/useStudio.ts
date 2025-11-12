@@ -7,7 +7,7 @@ import { useDraftMedias } from './useDraftMedias'
 import { ref } from 'vue'
 import { useTree } from './useTree'
 import type { RouteLocationNormalized } from 'vue-router'
-import type { StudioHost, GitOptions } from '../types'
+import type { StudioHost, GitOptions, DatabaseItem } from '../types'
 import { StudioFeature } from '../types'
 import { documentStorage, mediaStorage, nullStorageDriver } from '../utils/storage'
 import { useHooks } from './useHooks'
@@ -83,6 +83,7 @@ export const useStudio = createSharedComposable(() => {
 
 function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof useDraftDocuments>, draftMedias: ReturnType<typeof useDraftMedias>, documentTree: ReturnType<typeof useTree>, mediaTree: ReturnType<typeof useTree>) {
   const hooks = useHooks()
+  const areDocumentsEqual = host.document.utils.areEqual
 
   // Disable browser storages
   documentStorage.mount('/', nullStorageDriver)
@@ -99,10 +100,10 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
     else if (item) {
       // Update draft if the document is not focused or the current item is not the one that was updated
       if (!window.document.hasFocus() || documentTree.currentItem.value?.fsPath !== fsPath) {
-        const document = await host.document.get(fsPath)
+        const document = await host.document.db.get(fsPath)
         item.modified = document
         item.original = document
-        item.status = getDraftStatus(document, item.original)
+        item.status = getDraftStatus(document as DatabaseItem, item.original as DatabaseItem, areDocumentsEqual)
         item.version = item.version ? item.version + 1 : 1
       }
     }
@@ -123,7 +124,7 @@ function initDevelopmentMode(host: StudioHost, draftDocuments: ReturnType<typeof
         const media = await host.media.get(fsPath)
         item.modified = media
         item.original = media
-        item.status = getDraftStatus(media, item.original)
+        item.status = getDraftStatus(media, item.original, areDocumentsEqual)
         item.version = item.version ? item.version + 1 : 1
       }
     }

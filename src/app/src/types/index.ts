@@ -41,14 +41,24 @@ export interface StudioHost {
   }
   repository: Repository
   document: {
-    get: (fsPath: string) => Promise<DatabaseItem | undefined>
-    list: () => Promise<DatabaseItem[]>
-    upsert: (fsPath: string, document: DatabaseItem) => Promise<void>
-    create: (fsPath: string, content: string) => Promise<DatabaseItem>
-    delete: (fsPath: string) => Promise<void>
-    detectActives: () => Array<{ fsPath: string, title: string }>
-    isEqual: (content: string, document: DatabaseItem) => Promise<boolean>
-    generateDocumentFromContent: (id: string, content: string) => Promise<DatabaseItem>
+    db: {
+      get: (fsPath: string) => Promise<DatabaseItem | undefined>
+      list: () => Promise<DatabaseItem[]>
+      upsert: (fsPath: string, document: DatabaseItem) => Promise<void>
+      create: (fsPath: string, content: string) => Promise<DatabaseItem>
+      delete: (fsPath: string) => Promise<void>
+    }
+    utils: {
+      areEqual: (document1: DatabaseItem, document2: DatabaseItem) => boolean
+      isMatchingContent: (content: string, document: DatabaseItem) => Promise<boolean>
+      pickReservedKeys: (document: DatabaseItem) => DatabaseItem
+      removeReservedKeys: (document: DatabaseItem) => DatabaseItem
+      detectActives: () => Array<{ fsPath: string, title: string }>
+    }
+    generate: {
+      documentFromContent: (id: string, content: string) => Promise<DatabaseItem | null>
+      contentFromDocument: (document: DatabaseItem) => Promise<string | null>
+    }
   }
   media: {
     get: (fsPath: string) => Promise<MediaItem>

@@ -2,11 +2,11 @@
 import { computed, ref, watch } from 'vue'
 import { ContentFileExtension, type DatabasePageItem, type DraftItem, DraftStatus, type DatabaseItem } from '../../types'
 import type { PropType } from 'vue'
-import { generateContentFromDocument, isEqual, pickReservedKeysFromDocument } from '../../utils/content'
 import { setupSuggestion } from '../../utils/monaco'
 import { useStudio } from '../../composables/useStudio'
 import { useMonaco } from '../../composables/useMonaco'
 import { fromBase64ToUTF8 } from '../../utils/string'
+import { areContentEqual } from '../../utils/content'
 
 const props = defineProps({
   draftItem: {
@@ -67,11 +67,11 @@ const { editor, setContent: setEditorContent } = useMonaco(editorRef, {
 
     content.value = newContent
 
-    host.document.generateDocumentFromContent(document.value!.id, content.value).then((doc) => {
+    host.document.generate.documentFromContent(document.value!.id, content.value).then((doc) => {
       localStatus.value = DraftStatus.Updated
 
       document.value = {
-        ...pickReservedKeysFromDocument(props.draftItem.modified as DatabasePageItem || document.value!),
+        ...host.document.utils.pickReservedKeys(props.draftItem.modified as DatabasePageItem || document.value!),
         ...doc,
       } as DatabasePageItem
     })
@@ -110,17 +110,18 @@ watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
 }, { immediate: true })
 
 async function setContent(document: DatabasePageItem) {
-  const md = await generateContentFromDocument(document) || ''
+  const contentFromDocument = host.document.generate.contentFromDocument
+  const md = await contentFromDocument(document) || ''
   content.value = md
   setEditorContent(md, true)
   currentDocumentId.value = document.id
 
   isAutomaticFormattingDetected.value = false
   if (props.draftItem.original && props.draftItem.githubFile?.content) {
-    const localOriginal = await generateContentFromDocument(props.draftItem.original as DatabaseItem)
+    const localOriginal = await contentFromDocument(props.draftItem.original as DatabaseItem)
     const gitHubOriginal = fromBase64ToUTF8(props.draftItem.githubFile.content)
 
-    isAutomaticFormattingDetected.value = !isEqual(localOriginal, gitHubOriginal)
+    isAutomaticFormattingDetected.value = !areContentEqual(localOriginal, gitHubOriginal)
   }
 }
 </script>

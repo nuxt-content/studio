@@ -1,8 +1,7 @@
 import { useStudioHost as useStudioHostBase } from './host'
 import type { StudioUser, DatabaseItem, Repository } from 'nuxt-studio/app'
-import { generateContentFromDocument } from 'nuxt-studio/app/utils'
 import { getCollectionByFilePath, generateIdFromFsPath, generateFsPathFromId, getCollectionById } from './utils/collection'
-import { createCollectionDocument } from './utils/document'
+import { populateDocumentbasedOnCollectionInfo } from './utils/document'
 import { createStorage } from 'unstorage'
 import httpDriver from 'unstorage/drivers/http'
 import { useRuntimeConfig } from '#imports'
@@ -29,16 +28,16 @@ export function useStudioHost(user: StudioUser, repository: Repository) {
   }
 
   // TODO @farnabaz to check
-  host.document.upsert = debounce(async (fsPath: string, upsertedDocument: DatabaseItem) => {
+  host.document.db.upsert = debounce(async (fsPath: string, upsertedDocument: DatabaseItem) => {
     const collectionInfo = getCollectionByFilePath(fsPath, collections)
     if (!collectionInfo) {
       throw new Error(`Collection not found for fsPath: ${fsPath}`)
     }
 
     const id = generateIdFromFsPath(fsPath, collectionInfo)
-    const doc = createCollectionDocument(id, collectionInfo, upsertedDocument)
+    const doc = populateDocumentbasedOnCollectionInfo(id, collectionInfo, upsertedDocument)
 
-    const content = await generateContentFromDocument(doc)
+    const content = await host.document.generate.contentFromDocument(doc)
 
     await devStorage.setItem(fsPath, content, {
       headers: {
@@ -48,7 +47,7 @@ export function useStudioHost(user: StudioUser, repository: Repository) {
   }, 100)
 
   // TODO @farnabaz to check
-  host.document.delete = async (fsPath: string) => {
+  host.document.db.delete = async (fsPath: string) => {
     await devStorage.removeItem(fsPath)
   }
 

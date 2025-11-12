@@ -1,12 +1,12 @@
-import type { DatabaseItem, MediaItem, DatabasePageItem, DraftItem, BaseItem, ContentConflict, StudioHost } from '../types'
+import type { DatabaseItem, MediaItem, DraftItem, BaseItem, ContentConflict, StudioHost } from '../types'
 import { DraftStatus, ContentFileExtension } from '../types'
-import { isEqual } from './database'
 import { studioFlags } from '../composables/useStudio'
-import { generateContentFromDocument } from './content'
 import { fromBase64ToUTF8 } from '../utils/string'
 import { isMediaFile } from './file'
 
 export async function checkConflict(host: StudioHost, draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
+  const generateContentFromDocument = host.document.generate.contentFromDocument
+
   if (isMediaFile(draftItem.fsPath) || draftItem.fsPath.endsWith('.gitkeep')) {
     return
   }
@@ -29,7 +29,7 @@ export async function checkConflict(host: StudioHost, draftItem: DraftItem<Datab
 
   const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
 
-  if (await host.document.isEqual(githubContent, draftItem.original! as DatabaseItem)) {
+  if (await host.document.utils.isMatchingContent(githubContent, draftItem.original! as DatabaseItem)) {
     return
   }
 
@@ -44,7 +44,7 @@ export async function checkConflict(host: StudioHost, draftItem: DraftItem<Datab
   }
 }
 
-export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftStatus {
+export function getDraftStatus(modified: BaseItem, original: BaseItem, comparisonMethod: (org: DatabaseItem, mod: DatabaseItem) => boolean): DraftStatus {
   if (studioFlags.dev) {
     return DraftStatus.Pristine
   }
@@ -62,12 +62,12 @@ export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftS
   }
 
   if (original.extension === ContentFileExtension.Markdown) {
-    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
+    if (!comparisonMethod(original as DatabaseItem, modified as DatabaseItem)) {
       return DraftStatus.Updated
     }
   }
   else if (typeof original === 'object' && typeof modified === 'object') {
-    if (!isEqual(original as unknown as Record<string, unknown>, modified as unknown as Record<string, unknown>)) {
+    if (!comparisonMethod(original as DatabaseItem, modified as DatabaseItem)) {
       return DraftStatus.Updated
     }
   }

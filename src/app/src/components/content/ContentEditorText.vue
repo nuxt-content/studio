@@ -5,8 +5,9 @@ import { parseMarkdown, stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import { decompressTree, compressTree } from '@nuxt/content/runtime'
 import type { MDCRoot } from '@nuxtjs/mdc'
 import type { MarkdownRoot } from '@nuxt/content'
-import { removeReservedKeysFromDocument } from '../../utils/content'
+import { useStudio } from '../../composables/useStudio'
 
+const { host } = useStudio()
 const document = defineModel<DatabasePageItem>()
 const content = ref('')
 
@@ -14,7 +15,7 @@ watch(() => document.value?.id, async () => {
   if (document.value?.body) {
     // @ts-expect-error todo fix MarkdownRoot/MDCRoot conversion in MDC module
     const tree = document.value.body.type === 'minimark' ? decompressTree(document.value.body) : (document.value.body as MDCRoot)
-    const data = removeReservedKeysFromDocument(document.value)
+    const data = host.document.utils.removeReservedKeys(document.value)
     stringifyMarkdown(tree, data).then((md) => {
       content.value = md || ''
     })

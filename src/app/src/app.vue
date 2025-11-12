@@ -27,7 +27,7 @@ const appPortal = ref<HTMLElement>()
 
 const activeDocuments = ref<{ fsPath: string, title: string }[]>([])
 function detectActiveDocuments() {
-  activeDocuments.value = host.document.detectActives().map((content) => {
+  activeDocuments.value = host.document.utils.detectActives().map((content) => {
     return {
       fsPath: content.fsPath,
       title: content.title,

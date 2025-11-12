@@ -8,7 +8,6 @@ import {
 } from '../types'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
-import { isEqual } from './database'
 import { studioFlags } from '../composables/useStudio'
 import { getFileExtension, parseName } from './file'
 
@@ -28,7 +27,7 @@ export const COLOR_UI_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Opened]: 'neutral',
 } as const
 
-export function buildTree(dbItems: BaseItem[], draftList: DraftItem[] | null):
+export function buildTree(dbItems: BaseItem[], draftList: DraftItem[] | null, comparisonMethod: (document1: DatabasePageItem, document2: DatabasePageItem) => boolean):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
@@ -65,7 +64,7 @@ TreeItem[] {
 
   for (const dbItem of virtualDbItems) {
     const itemHasPathField = 'path' in dbItem && dbItem.path
-    const fsPathSegments = dbItem.fsPath.split('/').filter(Boolean)
+    const fsPathSegments = dbItem.fsPath!.split('/').filter(Boolean)
     const directorySegments = fsPathSegments.slice(0, -1)
     let fileName = fsPathSegments[fsPathSegments.length - 1].replace(/\.[^/.]+$/, '')
 
@@ -77,12 +76,12 @@ TreeItem[] {
       fileName = name === 'index' ? 'home' : name
       const fileItem: TreeItem = {
         name: fileName,
-        fsPath: dbItem.fsPath,
+        fsPath: dbItem.fsPath!,
         type: 'file',
         prefix,
       }
 
-      if (dbItem.fsPath.endsWith('.gitkeep')) {
+      if (dbItem.fsPath!.endsWith('.gitkeep')) {
         fileItem.hide = true
       }
 
@@ -92,7 +91,7 @@ TreeItem[] {
 
       const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
       if (draftFileItem) {
-        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, comparisonMethod)
       }
 
       tree.push(fileItem)
@@ -138,18 +137,18 @@ TreeItem[] {
     const { name, prefix } = parseName(fileName)
     const fileItem: TreeItem = {
       name,
-      fsPath: dbItem.fsPath,
+      fsPath: dbItem.fsPath!,
       type: 'file',
       prefix,
     }
 
-    if (dbItem.fsPath.endsWith('.gitkeep')) {
+    if (dbItem.fsPath!.endsWith('.gitkeep')) {
       fileItem.hide = true
     }
 
     const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
     if (draftFileItem) {
-      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!, comparisonMethod)
     }
 
     if (dbItem.path) {
@@ -164,7 +163,7 @@ TreeItem[] {
   return tree
 }
 
-export function getTreeStatus(modified?: BaseItem, original?: BaseItem): TreeStatus {
+export function getTreeStatus(modified: BaseItem, original: BaseItem, comparisonMethod: (document1: DatabasePageItem, document2: DatabasePageItem) => boolean): TreeStatus {
   if (studioFlags.dev) {
     return TreeStatus.Opened
   }
@@ -186,7 +185,7 @@ export function getTreeStatus(modified?: BaseItem, original?: BaseItem): TreeSta
   }
 
   if (original.extension === ContentFileExtension.Markdown) {
-    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
+    if (!comparisonMethod(original as DatabasePageItem, modified as DatabasePageItem)) {
       return TreeStatus.Updated
     }
   }

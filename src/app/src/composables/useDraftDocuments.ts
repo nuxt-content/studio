@@ -1,7 +1,6 @@
 import type { DatabaseItem, DraftItem, StudioHost, RawFile } from '../types'
 import { DraftStatus } from '../types/draft'
 import type { useGit } from './useGit'
-import { generateContentFromDocument } from '../utils/content'
 import { getDraftStatus } from '../utils/draft'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
@@ -26,6 +25,8 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
   } = useDraftBase<DatabaseItem>('document', host, git, storage)
 
   const hooks = useHooks()
+  const hostDb = host.document.db
+  const generateContentFromDocument = host.document.generate.contentFromDocument
 
   async function update(fsPath: string, document: DatabaseItem): Promise<DraftItem<DatabaseItem>> {
     const existingItem = list.value.find(item => item.fsPath === fsPath) as DraftItem<DatabaseItem>
@@ -34,7 +35,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     }
 
     const oldStatus = existingItem.status
-    existingItem.status = getDraftStatus(document, existingItem.original)
+    existingItem.status = getDraftStatus(document, existingItem.original as DatabaseItem, host.document.utils.areEqual)
     existingItem.modified = document
 
     await storage.setItem(fsPath, existingItem)
@@ -42,7 +43,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     list.value = list.value.map(item => item.fsPath === fsPath ? existingItem : item)
 
     // Upsert document in database
-    await host.document.upsert(fsPath, existingItem.modified)
+    await hostDb.upsert(fsPath, existingItem.modified)
 
     // Trigger hook to warn that draft list has changed
     if (existingItem.status !== oldStatus) {
@@ -61,7 +62,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
       const { fsPath, newFsPath } = item
 
       const existingDraftToRename = list.value.find(draftItem => draftItem.fsPath === fsPath) as DraftItem<DatabaseItem>
-      const dbItemToRename = await host.document.get(fsPath)
+      const dbItemToRename = await hostDb.get(fsPath)
       if (!dbItemToRename) {
         throw new Error(`Database item not found for document fsPath: ${fsPath}`)
       }
@@ -76,7 +77,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
       await remove([fsPath], { rerender: false })
 
-      const newDbItem = await host.document.create(newFsPath, content!)
+      const newDbItem = await hostDb.create(newFsPath, content!)
 
       await create(newFsPath, newDbItem, originalDbItem, { rerender: false })
     }
@@ -85,7 +86,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
   }
 
   async function duplicate(fsPath: string): Promise<DraftItem<DatabaseItem>> {
-    let currentDbItem = await host.document.get(fsPath)
+    let currentDbItem = await hostDb.get(fsPath)
     if (!currentDbItem) {
       throw new Error(`Database item not found for document fsPath: ${fsPath}`)
     }
@@ -103,7 +104,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
 
     const newFsPath = `${currentFsPath.split('/').slice(0, -1).join('/')}/${currentNameWithoutExtension}-copy.${currentExtension}`
 
-    const newDbItem = await host.document.create(newFsPath, currentContent)
+    const newDbItem = await hostDb.create(newFsPath, currentContent)
 
     return await create(newFsPath, newDbItem)
   }

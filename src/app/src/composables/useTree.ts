@@ -98,10 +98,10 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
 
   // Trigger tree rebuild to update files status
   async function handleDraftUpdate(selectItem: boolean = true) {
-    const api = type === StudioFeature.Content ? host.document : host.media
-    const list = await api.list() as DatabaseItem[]
+    const hostDb = type === StudioFeature.Content ? host.document.db : host.media
+    const list = await hostDb.list() as DatabaseItem[]
 
-    tree.value = buildTree(list, draft.list.value)
+    tree.value = buildTree(list, draft.list.value, host.document.utils.areEqual)
 
     // Reselect current item to update status
     if (selectItem) {

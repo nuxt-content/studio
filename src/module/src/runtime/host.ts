@@ -3,7 +3,7 @@ import { ensure } from './utils/ensure'
 import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
-import { createCollectionDocument, isDocumentMatchContent, normalizeDocument, generateDocumentFromContent } from './utils/document'
+import { populateDocumentbasedOnCollectionInfo, isDocumentMatchingContent, normalizeDocument, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument } from './utils/document'
 import { kebabCase } from 'scule'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
@@ -184,96 +184,106 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     },
 
     document: {
-      get: async (fsPath: string): Promise<DatabaseItem | undefined> => {
-        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
-        if (!collectionInfo) {
-          throw new Error(`Collection not found for fsPath: ${fsPath}`)
-        }
-
-        const id = generateIdFromFsPath(fsPath, collectionInfo)
-        const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
-
-        return item ? normalizeDocument(fsPath, item as DatabaseItem) : undefined
-      },
-      list: async (): Promise<DatabaseItem[]> => {
-        const collections = Object.values(useContentCollections()).filter(collection => collection.name !== 'info')
-        const documentsByCollection = await Promise.all(collections.map(async (collection) => {
-          const documents = await useContentCollectionQuery(collection.name).all() as DatabaseItem[]
-
-          return documents.map((document) => {
-            const source = getCollectionSourceById(document.id, collection.source)
-            const fsPath = generateFsPathFromId(document.id, source!)
-
-            return normalizeDocument(fsPath, document)
-          })
-        }))
-
-        return documentsByCollection.flat()
-      },
-      create: async (fsPath: string, content: string) => {
-        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
-        if (!collectionInfo) {
-          throw new Error(`Collection not found for fsPath: ${fsPath}`)
-        }
-
-        const id = generateIdFromFsPath(fsPath, collectionInfo!)
-
-        const existingDocument = await host.document.get(id)
-        if (existingDocument) {
-          throw new Error(`Cannot create document with id "${id}": document already exists.`)
-        }
-
-        const document = await generateDocumentFromContent(id, content)
-        const collectionDocument = createCollectionDocument(id, collectionInfo, document!)
-
-        await host.document.upsert(fsPath, collectionDocument)
-
-        return normalizeDocument(fsPath, collectionDocument!)
-      },
-      upsert: async (fsPath: string, document: CollectionItemBase) => {
-        const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
-        if (!collectionInfo) {
-          throw new Error(`Collection not found for fsPath: ${fsPath}`)
-        }
-
-        const id = generateIdFromFsPath(fsPath, collectionInfo)
-
-        const doc = createCollectionDocument(id, collectionInfo, document)
-
-        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
-        await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, doc))
-      },
-      delete: async (fsPath: string) => {
-        const collection = getCollectionByFilePath(fsPath, useContentCollections())
-        if (!collection) {
-          throw new Error(`Collection not found for fsPath: ${fsPath}`)
-        }
-
-        const id = generateIdFromFsPath(fsPath, collection)
-
-        await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
-      },
-      detectActives: () => {
-        // TODO: introduce a new convention to detect data contents [data-content-id!]
-        const wrappers = document.querySelectorAll('[data-content-id]')
-        return Array.from(wrappers).map((wrapper) => {
-          const id = wrapper.getAttribute('data-content-id')!
-          const title = id.split(/[/:]/).pop() || id
-
-          const collection = getCollectionById(id, useContentCollections())
-
-          const source = getCollectionSourceById(id, collection.source)
-
-          const fsPath = generateFsPathFromId(id, source!)
-
-          return {
-            fsPath,
-            title,
+      db: {
+        get: async (fsPath: string): Promise<DatabaseItem | undefined> => {
+          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+          if (!collectionInfo) {
+            throw new Error(`Collection not found for fsPath: ${fsPath}`)
           }
-        })
+
+          const id = generateIdFromFsPath(fsPath, collectionInfo)
+          const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
+
+          return item ? normalizeDocument(fsPath, item as DatabaseItem) : undefined
+        },
+        list: async (): Promise<DatabaseItem[]> => {
+          const collections = Object.values(useContentCollections()).filter(collection => collection.name !== 'info')
+          const documentsByCollection = await Promise.all(collections.map(async (collection) => {
+            const documents = await useContentCollectionQuery(collection.name).all() as DatabaseItem[]
+
+            return documents.map((document) => {
+              const source = getCollectionSourceById(document.id, collection.source)
+              const fsPath = generateFsPathFromId(document.id, source!)
+
+              return normalizeDocument(fsPath, document)
+            })
+          }))
+
+          return documentsByCollection.flat()
+        },
+        create: async (fsPath: string, content: string) => {
+          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+          if (!collectionInfo) {
+            throw new Error(`Collection not found for fsPath: ${fsPath}`)
+          }
+
+          const id = generateIdFromFsPath(fsPath, collectionInfo!)
+
+          const existingDocument = await host.document.db.get(id)
+          if (existingDocument) {
+            throw new Error(`Cannot create document with id "${id}": document already exists.`)
+          }
+
+          const document = await generateDocumentFromContent(id, content)
+          const collectionDocument = populateDocumentbasedOnCollectionInfo(id, collectionInfo, document!)
+
+          await host.document.db.upsert(fsPath, collectionDocument)
+
+          return normalizeDocument(fsPath, collectionDocument!)
+        },
+        upsert: async (fsPath: string, document: CollectionItemBase) => {
+          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+          if (!collectionInfo) {
+            throw new Error(`Collection not found for fsPath: ${fsPath}`)
+          }
+
+          const id = generateIdFromFsPath(fsPath, collectionInfo)
+
+          const doc = populateDocumentbasedOnCollectionInfo(id, collectionInfo, document)
+
+          await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
+          await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, doc))
+        },
+        delete: async (fsPath: string) => {
+          const collection = getCollectionByFilePath(fsPath, useContentCollections())
+          if (!collection) {
+            throw new Error(`Collection not found for fsPath: ${fsPath}`)
+          }
+
+          const id = generateIdFromFsPath(fsPath, collection)
+
+          await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
+        },
       },
-      isEqual: async (content: string, document: DatabaseItem) => isDocumentMatchContent(content, document),
-      generateDocumentFromContent: async (id: string, content: string) => generateDocumentFromContent(id, content) as Promise<DatabaseItem>,
+      utils: {
+        areEqual: (document1: DatabaseItem, document2: DatabaseItem) => areDocumentsEqual(document1, document2),
+        isMatchingContent: async (content: string, document: DatabaseItem) => isDocumentMatchingContent(content, document),
+        pickReservedKeys: (document: DatabaseItem) => pickReservedKeysFromDocument(document),
+        removeReservedKeys: (document: DatabaseItem) => removeReservedKeysFromDocument(document),
+        detectActives: () => {
+          // TODO: introduce a new convention to detect data contents [data-content-id!]
+          const wrappers = document.querySelectorAll('[data-content-id]')
+          return Array.from(wrappers).map((wrapper) => {
+            const id = wrapper.getAttribute('data-content-id')!
+            const title = id.split(/[/:]/).pop() || id
+
+            const collection = getCollectionById(id, useContentCollections())
+
+            const source = getCollectionSourceById(id, collection.source)
+
+            const fsPath = generateFsPathFromId(id, source!)
+
+            return {
+              fsPath,
+              title,
+            }
+          })
+        },
+      },
+      generate: {
+        documentFromContent: async (id: string, content: string) => generateDocumentFromContent(id, content),
+        contentFromDocument: async (document: DatabaseItem) => generateContentFromDocument(document),
+      },
     },
 
     media: {

@@ -3,7 +3,12 @@ export const omit = (obj: Record<string, unknown>, keys: string | string[]) => {
     .filter(([key]) => !keys.includes(key)))
 }
 
-export function isObjectMatch(base: Record<string, unknown>, target: Record<string, unknown>) {
+export const pick = (obj: Record<string, unknown>, keys: string | string[]) => {
+  return Object.fromEntries(Object.entries(obj)
+    .filter(([key]) => keys.includes(key)))
+}
+
+export function areObjectsEqual(base: Record<string, unknown>, target: Record<string, unknown>) {
   if (typeof base !== 'object' || typeof target !== 'object') {
     return base === target
   }
@@ -14,7 +19,7 @@ export function isObjectMatch(base: Record<string, unknown>, target: Record<stri
     for (let index = 0; index < base.length; index++) {
       const item = base[index]
       const targetItem = target[index]
-      if (!isObjectMatch(item, targetItem)) {
+      if (!areObjectsEqual(item, targetItem)) {
         return false
       }
     }
@@ -22,7 +27,7 @@ export function isObjectMatch(base: Record<string, unknown>, target: Record<stri
   }
 
   for (const key in base) {
-    if (!isObjectMatch(base[key] as Record<string, unknown>, target[key] as Record<string, unknown>)) {
+    if (!areObjectsEqual(base[key] as Record<string, unknown>, target[key] as Record<string, unknown>)) {
       return false
     }
   }

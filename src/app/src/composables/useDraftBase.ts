@@ -18,7 +18,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
   const current = ref<DraftItem<DatabaseItem | MediaItem> | null>(null)
 
   const ghPathPrefix = type === 'media' ? 'public' : 'content'
-  const hostDb = type === 'media' ? host.media : host.document
+  const hostDb = type === 'media' ? host.media : host.document.db
   const hookName = `studio:draft:${type}:updated` as const
 
   const hooks = useHooks()
@@ -38,7 +38,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
     const draftItem: DraftItem<T> = {
       fsPath,
       githubFile,
-      status: getDraftStatus(item, original),
+      status: getDraftStatus(item, original!, host.document.utils.areEqual),
       modified: item,
     }
 
@@ -128,14 +128,14 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
 
         // Renamed draft
         if (existingItem.original) {
-          await revert(existingItem.original.fsPath, { rerender: false })
+          await revert(existingItem.original.fsPath!, { rerender: false })
         }
       }
       else {
         // @ts-expect-error upsert type is wrong, second param should be DatabaseItem | MediaItem
         await hostDb.upsert(draftItem.fsPath, existingItem.original)
         existingItem.modified = existingItem.original
-        existingItem.status = getDraftStatus(existingItem.modified, existingItem.original)
+        existingItem.status = getDraftStatus(existingItem.modified as DatabaseItem, existingItem.original as DatabaseItem, host.document.utils.areEqual)
         await storage.setItem(draftItem.fsPath, existingItem)
       }
     }

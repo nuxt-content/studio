@@ -106,8 +106,8 @@ export const useContext = createSharedComposable((
       const rootDocumentFsPath = joinURL(fsPath, 'index.md')
       const navigationDocumentFsPath = joinURL(fsPath, '.navigation.yml')
 
-      const navigationDocument = await host.document.create(navigationDocumentFsPath, `title: ${folderName}`)
-      const rootDocument = await host.document.create(rootDocumentFsPath, `# ${upperFirst(folderName)} root file`)
+      const navigationDocument = await host.document.db.create(navigationDocumentFsPath, `title: ${folderName}`)
+      const rootDocument = await host.document.db.create(rootDocumentFsPath, `# ${upperFirst(folderName)} root file`)
 
       await activeTree.value.draft.create(navigationDocumentFsPath, navigationDocument)
       const rootDocumentDraftItem = await activeTree.value.draft.create(rootDocumentFsPath, rootDocument)
@@ -136,7 +136,7 @@ export const useContext = createSharedComposable((
     },
     [StudioItemActionId.CreateDocument]: async (params: CreateFileParams) => {
       const { fsPath, content } = params
-      const document = await host.document.create(fsPath, content)
+      const document = await host.document.db.create(fsPath, content)
       const draftItem = await activeTree.value.draft.create(fsPath, document as DatabaseItem)
       await activeTree.value.selectItemByFsPath(draftItem.fsPath)
     },
