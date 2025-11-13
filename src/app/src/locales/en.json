@@ -140,8 +140,6 @@
     },
     "items": {
       "itemCount": "1 item | {count} items",
-      "collectionCount": "1 collection | {count} collections",
-      "itemInfo": "{items} from {collections}"
     },
     "monaco": {
       "headings": {
