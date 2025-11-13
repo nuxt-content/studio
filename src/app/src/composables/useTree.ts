@@ -101,7 +101,7 @@ export const useTree = (type: StudioFeature, host: StudioHost, draft: ReturnType
     const hostDb = type === StudioFeature.Content ? host.document.db : host.media
     const list = await hostDb.list() as DatabaseItem[]
 
-    tree.value = buildTree(list, draft.list.value, host.document.utils.areEqual)
+    tree.value = buildTree(list, draft.list.value)
 
     // Reselect current item to update status
     if (selectItem) {
