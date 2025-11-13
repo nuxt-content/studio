@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import { createError, eventHandler, getRequestHeader, readRawBody, setResponseHeader } from 'h3'
 import type { Storage, StorageMeta } from 'unstorage'
+import { withLeadingSlash } from 'ufo'
 // @ts-expect-error useStorage is not defined in .nuxt/imports.d.ts
 import { useStorage } from '#imports'
 
@@ -30,6 +31,7 @@ export default eventHandler(async (event) => {
       extension: key.split('.').pop(),
       stem: key.split('.').join('.'),
       path: '/' + key.replace(/:/g, '/'),
+      fsPath: withLeadingSlash(key.replace(/:/g, '/')),
       version: new Date(item.mtime || new Date()).getTime(),
     }
   }
