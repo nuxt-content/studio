@@ -2,7 +2,7 @@ import type { CollectionInfo, CollectionItemBase, MarkdownRoot, PageCollectionIt
 import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
 import type { DatabaseItem, DatabasePageItem } from 'nuxt-studio/app'
-import { areObjectsEqual, omit, pick } from './object'
+import { doObjectsMatch, omit, pick } from './object'
 import { ContentFileExtension } from '../types/content'
 import { parseMarkdown } from '@nuxtjs/mdc/runtime/parser/index'
 import type { MDCElement, MDCRoot } from '@nuxtjs/mdc'
@@ -108,17 +108,22 @@ export function removeReservedKeysFromDocument(document: DatabaseItem): Database
 */
 export async function isDocumentMatchingContent(content: string, document: DatabaseItem): Promise<boolean> {
   const generatedDocument = await generateDocumentFromContent(document.id, content) as DatabaseItem
-  return areObjectsEqual(generatedDocument, document)
+
+  if (generatedDocument.extension === ContentFileExtension.Markdown) {
+    const { body: generatedBody, ...generatedDocumentData } = generatedDocument
+    const { body: documentBody, ...documentData } = document
+
+    if (stringify(withoutLastStyles(generatedBody)) !== stringify(withoutLastStyles(documentBody))) {
+      return false
+    }
+
+    return doObjectsMatch(generatedDocumentData, documentData)
+  }
+
+  return doObjectsMatch(generatedDocument, document)
 }
 
 export function areDocumentsEqual(document1: Record<string, unknown>, document2: Record<string, unknown>) {
-  function withoutLastStyles(body: MarkdownRoot) {
-    if (body.value[body.value.length - 1]?.[0] === 'style') {
-      return { ...body, value: body.value.slice(0, -1) }
-    }
-    return body
-  }
-
   const { body: body1, meta: meta1, ...documentData1 } = document1
   const { body: body2, meta: meta2, ...documentData2 } = document2
 
@@ -136,7 +141,7 @@ export function areDocumentsEqual(document1: Record<string, unknown>, document2:
     }
   }
   else if (typeof body1 === 'object' && typeof body2 === 'object') {
-    if (!areObjectsEqual(body1 as Record<string, unknown>, body2 as Record<string, unknown>)) {
+    if (!doObjectsMatch(body1 as Record<string, unknown>, body2 as Record<string, unknown>)) {
       return false
     }
   }
@@ -205,7 +210,7 @@ export function areDocumentsEqual(document1: Record<string, unknown>, document2:
 
   const data1 = refineDocumentData({ ...documentData1, ...(meta1 || {}) })
   const data2 = refineDocumentData({ ...documentData2, ...(meta2 || {}) })
-  if (!areObjectsEqual(data1, data2)) {
+  if (!doObjectsMatch(data1, data2)) {
     return false
   }
 
@@ -379,4 +384,11 @@ function generateStemFromId(id: string) {
 
 function getFileExtension(id: string) {
   return id.split('#')[0]?.split('.').pop()!.toLowerCase()
+}
+
+function withoutLastStyles(body: MarkdownRoot) {
+  if (body.value[body.value.length - 1]?.[0] === 'style') {
+    return { ...body, value: body.value.slice(0, -1) }
+  }
+  return body
 }
