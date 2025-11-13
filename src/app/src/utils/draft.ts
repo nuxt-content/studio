@@ -6,6 +6,7 @@ import { isMediaFile } from './file'
 
 export async function checkConflict(host: StudioHost, draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
   const generateContentFromDocument = host.document.generate.contentFromDocument
+  const isDocumentMatchingContent = host.document.utils.isMatchingContent
 
   if (isMediaFile(draftItem.fsPath) || draftItem.fsPath.endsWith('.gitkeep')) {
     return
@@ -29,7 +30,7 @@ export async function checkConflict(host: StudioHost, draftItem: DraftItem<Datab
 
   const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
 
-  if (await host.document.utils.isMatchingContent(githubContent, draftItem.original! as DatabaseItem)) {
+  if (await isDocumentMatchingContent(githubContent, draftItem.original! as DatabaseItem)) {
     return
   }
 
