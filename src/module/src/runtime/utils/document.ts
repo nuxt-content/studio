@@ -113,7 +113,7 @@ export async function isDocumentMatchingContent(content: string, document: Datab
     const { body: generatedBody, ...generatedDocumentData } = generatedDocument
     const { body: documentBody, ...documentData } = document
 
-    if (stringify(withoutLastStyles(generatedBody)) !== stringify(withoutLastStyles(documentBody))) {
+    if (stringify(withoutLastStyles(generatedBody as MarkdownRoot)) !== stringify(withoutLastStyles(documentBody as MarkdownRoot))) {
       return false
     }
 
