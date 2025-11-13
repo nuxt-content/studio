@@ -1,12 +1,12 @@
-import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler, addTemplate, addVitePlugin } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, useLogger, addServerHandler, addTemplate } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
 import { resolve } from 'node:path'
 import fsDriver from 'unstorage/drivers/fs'
 import { createStorage } from 'unstorage'
-import type { ViteDevServer } from 'vite'
 import { getAssetsStorageDevTemplate, getAssetsStorageTemplate } from './templates'
 import { version } from '../../../package.json'
+import { setupDevMode } from './dev'
 
 interface ModuleOptions {
   /**
@@ -153,10 +153,6 @@ export default defineNuxtModule<ModuleOptions>({
       repository: options.repository,
     }
 
-    addPlugin(process.env.STUDIO_DEV_SERVER
-      ? runtime('./plugins/studio.client.dev')
-      : runtime('./plugins/studio.client'))
-
     nuxt.options.vite = defu(nuxt.options.vite, {
       vue: {
         template: {
@@ -166,6 +162,7 @@ export default defineNuxtModule<ModuleOptions>({
         },
       },
     })
+
     extendViteConfig((config) => {
       config.define ||= {}
       config.define['import.meta.preview'] = true
@@ -178,48 +175,16 @@ export default defineNuxtModule<ModuleOptions>({
       ]
     })
 
-    if (options.dev) {
-      nuxt.options.nitro.storage = {
-        ...nuxt.options.nitro.storage,
-        nuxt_studio_content: {
-          driver: 'fs',
-          base: resolve(nuxt.options.rootDir, 'content'),
-        },
-        nuxt_studio_public_assets: {
-          driver: 'fs',
-          base: resolve(nuxt.options.rootDir, 'public'),
-        },
-      }
-      addServerHandler({
-        route: '/__nuxt_studio/dev/content/**',
-        handler: runtime('./server/routes/dev/content/[...path]'),
-      })
-      addServerHandler({
-        route: '/__nuxt_studio/dev/public/**',
-        handler: runtime('./server/routes/dev/public/[...path]'),
-      })
-
-      // Register Vite plugin to watch public assets
-      addVitePlugin({
-        name: 'nuxt-studio',
-        configureServer: (server: ViteDevServer) => {
-          assetsStorage.watch((type, file) => {
-            server.ws.send({
-              type: 'custom',
-              event: 'nuxt-studio:media:update',
-              data: { type, id: `public-assets/${file}` },
-            })
-          })
-        },
-        closeWatcher: () => { assetsStorage.unwatch() },
-      })
-    }
+    addPlugin(process.env.STUDIO_DEV_SERVER
+      ? runtime('./plugins/studio.client.dev')
+      : runtime('./plugins/studio.client'))
 
     const assetsStorage = createStorage({
       driver: fsDriver({
         base: resolve(nuxt.options.rootDir, 'public'),
       }),
     })
+
     addTemplate({
       filename: 'studio-public-assets.mjs',
       getContents: () => options.dev
@@ -227,23 +192,42 @@ export default defineNuxtModule<ModuleOptions>({
         : getAssetsStorageTemplate(assetsStorage, nuxt),
     })
 
+    if (options.dev) {
+      setupDevMode(nuxt, runtime, assetsStorage)
+    }
+
+    /* Server routes */
     addServerHandler({
       route: '/__nuxt_studio/auth/github',
       handler: runtime('./server/routes/auth/github.get'),
     })
+
     addServerHandler({
       route: '/__nuxt_studio/auth/session',
       handler: runtime('./server/routes/auth/session.get'),
     })
+
     addServerHandler({
       method: 'delete',
       route: '/__nuxt_studio/auth/session',
       handler: runtime('./server/routes/auth/session.delete'),
     })
-    addServerHandler({ route: options.route as string, handler: runtime('./server/routes/admin') })
-    // Register meta route for studio
-    addServerHandler({ route: '/__nuxt_studio/meta', handler: runtime('./server/routes/meta') })
-    addServerHandler({ route: '/sw.js', handler: runtime('./server/routes/sw') })
+
+    addServerHandler({
+      route: options.route as string,
+      handler: runtime('./server/routes/admin'),
+    })
+
+    addServerHandler({
+      route: '/__nuxt_studio/meta',
+      handler: runtime('./server/routes/meta'),
+    })
+
+    addServerHandler({
+      route: '/sw.js',
+      handler: runtime('./server/routes/sw'),
+    })
+
     // addServerHandler({
     //   route: '/__nuxt_studio/auth/google',
     //   handler: runtime('./server/routes/auth/google.get'),
