@@ -107,16 +107,16 @@ export default defineNuxtModule<ModuleOptions>({
         clientSecret: process.env.STUDIO_GITHUB_CLIENT_SECRET,
       },
     },
-    dev: false,
-    development: {
-      sync: false,
-    },
+    dev: true
   },
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
     const runtime = (...args: string[]) => resolver.resolve('./runtime', ...args)
 
-    options.dev = nuxt.options.dev || options.development?.sync || false
+    if (nuxt.options.dev === false || options.development?.sync === false) {
+      options.dev = false
+    }
+
     if (!nuxt.options.dev && !nuxt.options._prepare) {
       if (!options.auth?.github?.clientId && !options.auth?.github?.clientSecret) {
         logger.warn([
