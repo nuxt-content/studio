@@ -222,18 +222,17 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           return documentsByCollection.flat()
         },
         create: async (fsPath: string, content: string) => {
+          const existingDocument = await host.document.db.get(fsPath)
+          if (existingDocument) {
+            throw new Error(`Cannot create document with fsPath "${fsPath}": document already exists.`)
+          }
+
           const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
           if (!collectionInfo) {
             throw new Error(`Collection not found for fsPath: ${fsPath}`)
           }
 
           const id = generateIdFromFsPath(fsPath, collectionInfo!)
-
-          const existingDocument = await host.document.db.get(id)
-          if (existingDocument) {
-            throw new Error(`Cannot create document with id "${id}": document already exists.`)
-          }
-
           const document = await generateDocumentFromContent(id, content)
           const normalizedDocument = normalizeDocument(id, collectionInfo, document!)
 
