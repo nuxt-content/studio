@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.72",
-    "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@cb6a227",
+    "@nuxtjs/mdc": "^0.18.3",
     "@vueuse/core": "^13.9.0",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
@@ -83,8 +83,7 @@
     "zod": "^4.1.12"
   },
   "resolutions": {
-    "remark-mdc": "3.8.1",
-    "@nuxtjs/mdc": "https://pkg.pr.new/@nuxtjs/mdc@cb6a227"
+    "remark-mdc": "3.8.1"
   },
   "packageManager": "pnpm@10.21.0",
   "keywords": [
