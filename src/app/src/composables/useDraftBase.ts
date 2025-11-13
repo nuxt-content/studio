@@ -221,7 +221,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
   }
 
   function getStatus(modified: BaseItem, original: BaseItem): DraftStatus {
-    if (studioFlags.dev) {
+    if (devMode.value) {
       return DraftStatus.Pristine
     }
 
