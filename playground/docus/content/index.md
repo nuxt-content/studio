@@ -2,12 +2,11 @@
 seo:
   title: Write beautiful docs with Markdown
   description: Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box. Docus brings together the best of the Nuxt ecosystem. Powered by Nuxt UI Pro.
-fsPath: index.md
 ---
 
 ::u-page-hero
 #title
-Write docs with Studio
+Write docs with Markdown
 
 #description
 Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box.
