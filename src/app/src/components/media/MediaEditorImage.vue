@@ -18,7 +18,7 @@ const props = defineProps({
   },
 })
 
-const { git } = useStudio()
+const { gitProvider } = useStudio()
 const { t } = useI18n()
 
 const imageRef = ref<HTMLImageElement | null>(null)
@@ -68,7 +68,7 @@ const markdownCode = computed(() => {
 })
 
 const remotePath = computed(() => {
-  return joinURL(git.api.getBranchUrl(), props.remoteFile.path!)
+  return joinURL(gitProvider.api.getBranchUrl(), props.remoteFile.path!)
 })
 </script>
 
@@ -142,10 +142,10 @@ const remotePath = computed(() => {
       </div>
       <div class="flex items-center gap-1 text-xs text-muted mb-2">
         <UIcon
-          :name="git.icon"
+          :name="gitProvider.icon"
           class="w-3.5 h-3.5"
         />
-        <span>{{ $t('studio.media.providerPath', git.name) }}</span>
+        <span>{{ $t('studio.media.providerPath', gitProvider.name) }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ remoteFile.path }}

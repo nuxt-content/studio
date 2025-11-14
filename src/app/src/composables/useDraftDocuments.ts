@@ -8,7 +8,7 @@ import { documentStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
 import { useDraftBase } from './useDraftBase'
 
-export const useDraftDocuments = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGitProvider>) => {
+export const useDraftDocuments = createSharedComposable((host: StudioHost, gitProvider: ReturnType<typeof useGitProvider>) => {
   const {
     isLoading,
     list,
@@ -22,7 +22,7 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, git: 
     unselect,
     load,
     getStatus,
-  } = useDraftBase<DatabaseItem>('document', host, git, storage)
+  } = useDraftBase<DatabaseItem>('document', host, gitProvider, storage)
 
   const hooks = useHooks()
   const hostDb = host.document.db

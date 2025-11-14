@@ -34,13 +34,13 @@ export const useStudio = createSharedComposable(() => {
     instanceUrl: host.repository.instanceUrl,
   }
 
-  const git = useGitProvider(gitOptions, devMode.value)
+  const gitProvider = useGitProvider(gitOptions, devMode.value)
   const ui = useUI(host)
-  const draftDocuments = useDraftDocuments(host, git)
+  const draftDocuments = useDraftDocuments(host, gitProvider)
   const documentTree = useTree(StudioFeature.Content, host, draftDocuments)
-  const draftMedias = useDraftMedias(host, git)
+  const draftMedias = useDraftMedias(host, gitProvider)
   const mediaTree = useTree(StudioFeature.Media, host, draftMedias)
-  const context = useContext(host, git, documentTree, mediaTree)
+  const context = useContext(host, gitProvider, documentTree, mediaTree)
 
   ui.setLocale(host.meta.defaultLocale)
 
@@ -75,7 +75,7 @@ export const useStudio = createSharedComposable(() => {
   return {
     isReady,
     host,
-    git,
+    gitProvider,
     ui,
     context,
     documentTree,

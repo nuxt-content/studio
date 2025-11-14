@@ -11,7 +11,7 @@ import { useHooks } from './useHooks'
 
 const hooks = useHooks()
 
-export const useDraftMedias = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGitProvider>) => {
+export const useDraftMedias = createSharedComposable((host: StudioHost, gitProvider: ReturnType<typeof useGitProvider>) => {
   const {
     isLoading,
     list,
@@ -25,7 +25,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     unselect,
     load,
     getStatus,
-  } = useDraftBase('media', host, git, storage)
+  } = useDraftBase('media', host, gitProvider, storage)
 
   async function upload(parentFsPath: string, file: File) {
     const draftItem = await fileToDraftItem(parentFsPath, file)

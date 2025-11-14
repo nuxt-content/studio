@@ -28,7 +28,7 @@ import { upperFirst } from 'scule'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
-  git: ReturnType<typeof useGitProvider>,
+  gitProvider: ReturnType<typeof useGitProvider>,
   documentTree: ReturnType<typeof useTree>,
   mediaTree: ReturnType<typeof useTree>,
 ) => {
@@ -221,7 +221,7 @@ export const useContext = createSharedComposable((
       const { commitMessage } = params
       const documentFiles = await documentTree.draft.listAsRawFiles()
       const mediaFiles = await mediaTree.draft.listAsRawFiles()
-      await git.api.commitFiles([...documentFiles, ...mediaFiles], commitMessage)
+      await gitProvider.api.commitFiles([...documentFiles, ...mediaFiles], commitMessage)
 
       // @ts-expect-error params is null
       await itemActionHandler[StudioItemActionId.RevertAllItems]()
