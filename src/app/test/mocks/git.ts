@@ -1,10 +1,20 @@
 import { vi } from 'vitest'
 import type { GithubFile } from '../../src/types/git'
-import type { useGit } from '../../src/composables/useGit'
 
-export const createMockGit = (remoteFile?: GithubFile): ReturnType<typeof useGit> => ({
-  fetchFile: vi.fn().mockResolvedValue(remoteFile || createMockGithubFile()),
-} as never)
+export const createMockGit = (remoteFile?: GithubFile) => ({
+  provider: 'github',
+  name: 'GitHub',
+  icon: 'i-simple-icons:github',
+  api: {
+    fetchFile: vi.fn().mockResolvedValue(remoteFile || createMockGithubFile()),
+    commitFiles: vi.fn().mockResolvedValue({ success: true, commitSha: 'abc123', url: 'https://example.com/commit/abc123' }),
+    getRepositoryUrl: vi.fn().mockReturnValue('https://github.com/owner/repo'),
+    getBranchUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/tree/main'),
+    getCommitUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/commit/abc123'),
+    getContentRootDirUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/tree/main/content'),
+    getRepositoryInfo: vi.fn().mockReturnValue({ owner: 'owner', repo: 'repo', branch: 'main', provider: 'github' }),
+  },
+})
 
 export const createMockGithubFile = (overrides?: Partial<GithubFile>): GithubFile => ({
   provider: 'github',

@@ -1,5 +1,5 @@
 import { createSharedComposable } from '@vueuse/core'
-import { useDevelopmentGit, useGit } from './useGit'
+import { useGitProvider } from './useGitProvider'
 import { useUI } from './useUI'
 import { useContext } from './useContext'
 import { useDraftDocuments } from './useDraftDocuments'
@@ -34,7 +34,7 @@ export const useStudio = createSharedComposable(() => {
     instanceUrl: host.repository.instanceUrl,
   }
 
-  const git = devMode.value ? useDevelopmentGit(gitOptions) : useGit(gitOptions)
+  const git = useGitProvider(gitOptions, devMode.value)
   const ui = useUI(host)
   const draftDocuments = useDraftDocuments(host, git)
   const documentTree = useTree(StudioFeature.Content, host, draftDocuments)

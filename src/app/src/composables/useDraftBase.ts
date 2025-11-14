@@ -4,7 +4,7 @@ import type { DraftItem, StudioHost, GitFile, DatabaseItem, MediaItem, BaseItem 
 import { ContentFileExtension } from '../types'
 import { DraftStatus } from '../types/draft'
 import { checkConflict, findDescendantsFromFsPath } from '../utils/draft'
-import type { useGit } from './useGit'
+import type { useGitProvider } from './useGitProvider'
 import { useHooks } from './useHooks'
 import { ref } from 'vue'
 import { useStudioState } from './useStudioState'
@@ -12,7 +12,7 @@ import { useStudioState } from './useStudioState'
 export function useDraftBase<T extends DatabaseItem | MediaItem>(
   type: 'media' | 'document',
   host: StudioHost,
-  git: ReturnType<typeof useGit>,
+  git: ReturnType<typeof useGitProvider>,
   storage: Storage<DraftItem<T>>,
 ) {
   const isLoading = ref(false)
@@ -37,7 +37,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       throw new Error(`Draft file already exists for document at ${fsPath}`)
     }
 
-    const remoteFile = await git.fetchFile(joinURL(remotePathPrefix, fsPath), { cached: true }) as GitFile
+    const remoteFile = await git.api.fetchFile(joinURL(remotePathPrefix, fsPath), { cached: true }) as GitFile
 
     const draftItem: DraftItem<T> = {
       fsPath,
@@ -84,7 +84,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
           }
           else {
             // TODO: check if remote file has been updated
-            const remoteFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
+            const remoteFile = await git.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
 
             deleteDraftItem = {
               fsPath: existingDraftItem.fsPath,
@@ -98,7 +98,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
         }
         else {
         // TODO: check if gh file has been updated
-          const remoteFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
+          const remoteFile = await git.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
 
           deleteDraftItem = {
             fsPath,

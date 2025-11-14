@@ -4,7 +4,6 @@ import { formatBytes, getFileExtension } from '../../utils/file'
 import type { MediaItem, GitFile } from '../../types'
 import type { PropType } from 'vue'
 import { useStudio } from '../../composables/useStudio'
-import { useGitProviderIcon } from '../../composables/useGitProviderIcon'
 import { joinURL } from 'ufo'
 import { useI18n } from 'vue-i18n'
 
@@ -20,7 +19,6 @@ const props = defineProps({
 })
 
 const { git } = useStudio()
-const { icon: gitProviderIcon, providerName } = useGitProviderIcon()
 const { t } = useI18n()
 
 const imageRef = ref<HTMLImageElement | null>(null)
@@ -70,7 +68,7 @@ const markdownCode = computed(() => {
 })
 
 const remotePath = computed(() => {
-  return joinURL(git.getBranchUrl(), props.remoteFile.path!)
+  return joinURL(git.api.getBranchUrl(), props.remoteFile.path!)
 })
 </script>
 
@@ -144,10 +142,10 @@ const remotePath = computed(() => {
       </div>
       <div class="flex items-center gap-1 text-xs text-muted mb-2">
         <UIcon
-          :name="gitProviderIcon"
+          :name="git.icon"
           class="w-3.5 h-3.5"
         />
-        <span>{{ $t('studio.media.providerPath', providerName) }}</span>
+        <span>{{ $t('studio.media.providerPath', git.name) }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ remoteFile.path }}

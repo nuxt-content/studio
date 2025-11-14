@@ -2,20 +2,18 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudio } from '../composables/useStudio'
-import { useGitProviderIcon } from '../composables/useGitProviderIcon'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { git } = useStudio()
-const { icon: gitProviderIcon, providerName } = useGitProviderIcon()
 
 const errorMessage = computed(() => {
   return (route.query.error as string) || t('studio.notifications.error.unknown')
 })
 
-const repositoryInfo = computed(() => git.getRepositoryInfo())
+const repositoryInfo = computed(() => git.api.getRepositoryInfo())
 
 function retry() {
   router.push('/review')
@@ -47,7 +45,7 @@ function retry() {
             <UButton
               :label="repositoryInfo.branch"
               icon="i-lucide-git-branch"
-              :to="git.getBranchUrl()"
+              :to="git.api.getBranchUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -56,8 +54,8 @@ function retry() {
           <template #repo>
             <UButton
               :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-              :icon="gitProviderIcon"
-              :to="git.getRepositoryUrl()"
+              :icon="git.icon"
+              :to="git.api.getRepositoryUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -68,7 +66,7 @@ function retry() {
 
       <UAlert
         icon="i-lucide-alert-triangle"
-        :title="$t('studio.publish.errorTitle', providerName)"
+        :title="$t('studio.publish.errorTitle', git.name)"
         :description="errorMessage"
         color="error"
         variant="soft"

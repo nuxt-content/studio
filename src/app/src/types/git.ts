@@ -3,7 +3,7 @@ import type { DraftStatus } from './draft'
 export type GitProviderType = 'github' | 'gitlab'
 
 export interface Repository {
-  provider: GitProviderType
+  provider: GitProviderType | null
   owner: string
   repo: string
   branch: string
@@ -24,7 +24,7 @@ export interface GitBaseOptions {
 }
 
 export interface GitOptions extends GitBaseOptions {
-  provider: GitProviderType
+  provider: GitProviderType | null
   rootDir: string
   token: string
   instanceUrl?: string
@@ -42,14 +42,14 @@ export interface RawFile {
   encoding?: 'utf-8' | 'base64'
 }
 
-export interface GitProvider {
+export interface GitProviderAPI {
   fetchFile(path: string, options?: { cached?: boolean }): Promise<GitFile | null>
   commitFiles(files: RawFile[], message: string): Promise<CommitResult | null>
   getRepositoryUrl(): string
   getBranchUrl(): string
   getCommitUrl(sha: string): string
   getContentRootDirUrl(): string
-  getRepositoryInfo(): { owner: string, repo: string, branch: string, provider: GitProviderType }
+  getRepositoryInfo(): { owner: string, repo: string, branch: string, provider: GitProviderType | null }
 }
 
 export interface CommitResult {

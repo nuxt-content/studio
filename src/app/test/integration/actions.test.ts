@@ -6,7 +6,7 @@ import { createMockHost, clearMockHost, fsPathToId } from '../mocks/host'
 import { createMockGit } from '../mocks/git'
 import { createMockFile, createMockMedia, setupMediaMocks } from '../mocks/media'
 import { createMockStorage } from '../mocks/composables'
-import type { useGit } from '../../src/composables/useGit'
+import type { useGitProvider } from '../../src/composables/useGitProvider'
 import { findItemFromFsPath } from '../../src/utils/tree'
 
 const mockStorageDraft = createMockStorage()
@@ -43,7 +43,7 @@ vi.mock('vue-router', () => ({
   }),
 }))
 
-const cleanAndSetupContext = async (mockedHost: StudioHost, mockedGit: ReturnType<typeof useGit>) => {
+const cleanAndSetupContext = async (mockedHost: StudioHost, mockedGit: ReturnType<typeof useGitProvider>) => {
   // Reset mocks
   vi.clearAllMocks()
   mockStorageDraft.clear()

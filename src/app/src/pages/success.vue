@@ -3,13 +3,11 @@ import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStudio } from '../composables/useStudio'
 import { useStudioState } from '../composables/useStudioState'
-import { useGitProviderIcon } from '../composables/useGitProviderIcon'
 import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const { git } = useStudio()
 const { manifestId } = useStudioState()
-const { icon: gitProviderIcon } = useGitProviderIcon()
 const { t } = useI18n()
 
 const isReloadingApp = ref(false)
@@ -20,7 +18,7 @@ const changeCount = computed(() => {
   const queryCount = route.query.changeCount
   return queryCount ? Number.parseInt(queryCount as string, 10) : 0
 })
-const repositoryInfo = computed(() => git.getRepositoryInfo())
+const repositoryInfo = computed(() => git.api.getRepositoryInfo())
 
 const alertDescription = computed(() => {
   if (isWaitingForDeployment.value) {
@@ -80,7 +78,7 @@ onMounted(() => {
             <UButton
               :label="repositoryInfo.branch"
               icon="i-lucide-git-branch"
-              :to="git.getBranchUrl()"
+              :to="git.api.getBranchUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -90,8 +88,8 @@ onMounted(() => {
           <template #repo>
             <UButton
               :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-              :icon="gitProviderIcon"
-              :to="git.getRepositoryUrl()"
+              :icon="git.icon"
+              :to="git.api.getRepositoryUrl()"
               variant="link"
               target="_blank"
               :padded="false"
