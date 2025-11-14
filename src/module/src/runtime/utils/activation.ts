@@ -1,9 +1,10 @@
-import { getAppManifest, useState, useRuntimeConfig } from '#imports'
+import { getAppManifest, useState, useRuntimeConfig, useCookie } from '#imports'
 import type { StudioUser } from 'nuxt-studio/app'
 
 export async function defineStudioActivationPlugin(onStudioActivation: (user: StudioUser) => Promise<void>) {
   const user = useState<StudioUser | null>('studio-session', () => null)
   const config = useRuntimeConfig().public.studio
+  const cookie = useCookie('studio-session-check')
 
   if (config.dev) {
     return await onStudioActivation({
@@ -16,9 +17,9 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
     })
   }
 
-  await $fetch<{ user: StudioUser }>('/__nuxt_studio/auth/session').then((session) => {
-    user.value = session?.user ?? null
-  })
+  user.value = String(cookie.value) === 'true'
+    ? await $fetch<{ user: StudioUser }>('/__nuxt_studio/auth/session').then(session => session?.user ?? null)
+    : null
 
   let mounted = false
   if (user.value?.email) {
@@ -36,7 +37,9 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
     // Listen to CMD + . to toggle the studio or redirect to the login page
     document.addEventListener('keydown', (event) => {
       if (event.metaKey && event.key === '.') {
-        window.location.href = config.route + '?redirect=' + encodeURIComponent(window.location.pathname)
+        setTimeout(() => {
+          window.location.href = config.route + '?redirect=' + encodeURIComponent(window.location.pathname)
+        })
       }
     })
   }

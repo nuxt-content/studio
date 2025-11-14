@@ -1,4 +1,4 @@
-import { eventHandler, useSession } from 'h3'
+import { eventHandler, useSession, deleteCookie } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
@@ -6,6 +6,11 @@ export default eventHandler(async (event) => {
     name: 'studio-session',
     password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
   })
+
+  if (!session.data) {
+    // Delete the cookie to indicate that the session is inactive
+    deleteCookie(event, 'studio-session-check')
+  }
 
   return {
     ...session.data,
