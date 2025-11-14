@@ -15,19 +15,21 @@ export async function checkConflict(host: StudioHost, draftItem: DraftItem<Datab
     return
   }
 
-  if (draftItem.status === DraftStatus.Created && draftItem.remoteFile) {
-    return {
-      remoteContent: draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(draftItem.remoteFile.content!) : draftItem.remoteFile.content!,
-      localContent: await generateContentFromDocument(draftItem.modified as DatabaseItem) as string,
-    }
-  }
-
   // TODO: No remote file found (might have been deleted remotely)
   if (!draftItem.remoteFile || !draftItem.remoteFile.content) {
     return
   }
 
-  const remoteContent = fromBase64ToUTF8(draftItem.remoteFile.content)
+  const remoteContent = draftItem.remoteFile?.encoding === 'base64'
+    ? fromBase64ToUTF8(draftItem.remoteFile.content!)
+    : draftItem.remoteFile!.content!
+
+  if (draftItem.status === DraftStatus.Created && remoteContent) {
+    return {
+      remoteContent,
+      localContent: await generateContentFromDocument(draftItem.modified as DatabaseItem) as string,
+    }
+  }
 
   if (await isDocumentMatchingContent(remoteContent, draftItem.original! as DatabaseItem)) {
     return
