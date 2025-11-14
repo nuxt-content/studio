@@ -22,18 +22,20 @@ watch(ui.sidebar.sidebarWidth, () => {
   }
 })
 
-const activeDocuments = ref<{ id: string, title: string }[]>([])
+// Nuxt UI Portal element
+const appPortal = ref<HTMLElement>()
+
+const activeDocuments = ref<{ fsPath: string, title: string }[]>([])
 function detectActiveDocuments() {
-  activeDocuments.value = host.document.detectActives().map((content) => {
+  activeDocuments.value = host.document.utils.detectActives().map((content) => {
     return {
-      id: content.id,
+      fsPath: content.fsPath,
       title: content.title,
     }
   })
 }
 
-async function editContentFile(id: string) {
-  const fsPath = host.document.getFileSystemPath(id)
+async function editContentFile(fsPath: string) {
   await context.activeTree.value.selectItemByFsPath(fsPath)
   ui.open()
 }
@@ -77,10 +79,7 @@ router.beforeEach((to, from) => {
 
 <template>
   <div :class="ui.colorMode.value">
-    <UApp
-      :toaster="{ portal: false }"
-      :modal="{ portal: false }"
-    >
+    <UApp :portal="appPortal">
       <AppLayout :open="ui.isOpen.value">
         <RouterView v-slot="{ Component }">
           <Transition
@@ -121,7 +120,7 @@ router.beforeEach((to, from) => {
       >
         <UFieldGroup>
           <UTooltip
-            text="Toggle Studio"
+            :text="$t('studio.tooltips.toggleStudio')"
             :kbds="['meta', '.']"
           >
             <UButton
@@ -140,10 +139,12 @@ router.beforeEach((to, from) => {
             variant="outline"
             class="bg-transparent backdrop-blur-md px-2"
             label="Edit this page"
-            @click="editContentFile(activeDocuments[0].id)"
+            @click="editContentFile(activeDocuments[0].fsPath)"
           />
         </UFieldGroup>
       </div>
+
+      <div ref="appPortal" />
     </UApp>
   </div>
 </template>

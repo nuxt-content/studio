@@ -21,6 +21,7 @@ export interface StudioHost {
   meta: {
     dev: boolean
     components: () => ComponentMeta[]
+    defaultLocale: string
   }
   on: {
     routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => void
@@ -28,8 +29,9 @@ export interface StudioHost {
     beforeUnload: (fn: (event: BeforeUnloadEvent) => void) => void
     colorModeChange: (fn: (colorMode: 'light' | 'dark') => void) => void
     manifestUpdate: (fn: (id: string) => void) => void
-    documentUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
-    mediaUpdate: (fn: (id: string, type: 'remove' | 'update') => void) => void
+    documentUpdate: (fn: (fsPath: string, type: 'remove' | 'update') => void) => void
+    mediaUpdate: (fn: (fsPath: string, type: 'remove' | 'update') => void) => void
+    requestDocumentEdit: (fn: (fsPath: string) => void) => void
   }
   ui: {
     colorMode: 'light' | 'dark'
@@ -41,20 +43,30 @@ export interface StudioHost {
   }
   repository: Repository
   document: {
-    get: (id: string) => Promise<DatabaseItem>
-    getFileSystemPath: (id: string) => string
-    list: () => Promise<DatabaseItem[]>
-    upsert: (id: string, document: DatabaseItem) => Promise<void>
-    create: (fsPath: string, content: string) => Promise<DatabaseItem>
-    delete: (id: string) => Promise<void>
-    detectActives: () => Array<{ id: string, title: string }>
+    db: {
+      get: (fsPath: string) => Promise<DatabaseItem | undefined>
+      list: () => Promise<DatabaseItem[]>
+      upsert: (fsPath: string, document: DatabaseItem) => Promise<void>
+      create: (fsPath: string, content: string) => Promise<DatabaseItem>
+      delete: (fsPath: string) => Promise<void>
+    }
+    utils: {
+      areEqual: (document1: DatabaseItem, document2: DatabaseItem) => boolean
+      isMatchingContent: (content: string, document: DatabaseItem) => Promise<boolean>
+      pickReservedKeys: (document: DatabaseItem) => DatabaseItem
+      removeReservedKeys: (document: DatabaseItem) => DatabaseItem
+      detectActives: () => Array<{ fsPath: string, title: string }>
+    }
+    generate: {
+      documentFromContent: (id: string, content: string) => Promise<DatabaseItem | null>
+      contentFromDocument: (document: DatabaseItem) => Promise<string | null>
+    }
   }
   media: {
-    get: (id: string) => Promise<MediaItem>
-    getFileSystemPath: (id: string) => string
+    get: (fsPath: string) => Promise<MediaItem>
     list: () => Promise<MediaItem[]>
-    upsert: (id: string, media: MediaItem) => Promise<void>
-    delete: (id: string) => Promise<void>
+    upsert: (fsPath: string, media: MediaItem) => Promise<void>
+    delete: (fsPath: string) => Promise<void>
   }
   user: {
     get: () => StudioUser

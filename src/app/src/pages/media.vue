@@ -80,7 +80,7 @@ async function onFileDrop(event: DragEvent) {
                   class="size-3.5 text-muted"
                 />
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Directories
+                  {{ $t('studio.headings.directories') }}
                 </h3>
                 <UBadge
                   v-if="folderTree?.length > 0"
@@ -105,7 +105,7 @@ async function onFileDrop(event: DragEvent) {
                   class="size-3.5 text-muted"
                 />
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Media
+                  {{ $t('studio.headings.media') }}
                 </h3>
                 <UBadge
                   :label="fileTree.length.toString()"

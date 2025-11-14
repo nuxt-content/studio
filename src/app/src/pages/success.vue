@@ -4,11 +4,13 @@ import { useRoute } from 'vue-router'
 import { useStudio } from '../composables/useStudio'
 import { useStudioState } from '../composables/useStudioState'
 import { useGitProviderIcon } from '../composables/useGitProviderIcon'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const { git } = useStudio()
 const { manifestId } = useStudioState()
 const { icon: gitProviderIcon } = useGitProviderIcon()
+const { t } = useI18n()
 
 const isReloadingApp = ref(false)
 const isWaitingForDeployment = ref(true)
@@ -22,9 +24,9 @@ const repositoryInfo = computed(() => git.getRepositoryInfo())
 
 const alertDescription = computed(() => {
   if (isWaitingForDeployment.value) {
-    return 'The website needs to be deployed for changes to be visible in Studio.'
+    return t('studio.publishSuccess.alertDescWaiting')
   }
-  return 'A new version of your website has been deployed. Please refresh your app to see changes in Studio.'
+  return t('studio.publishSuccess.alertDescComplete')
 })
 
 function reload() {
@@ -62,35 +64,45 @@ onMounted(() => {
 
       <div class="text-center">
         <h1 class="text-2xl font-bold text-default mb-2">
-          Changes Published
+          {{ $t('studio.publishSuccess.title') }}
         </h1>
-        <p class="text-dimmed flex items-center flex-wrap justify-center">
-          <span class="font-semibold text-default">{{ changeCount }} &nbsp;</span>
-          {{ changeCount === 1 ? 'change' : 'changes' }} published on
-          <UButton
-            :label="repositoryInfo.branch"
-            icon="i-lucide-git-branch"
-            :to="git.getBranchUrl()"
-            variant="link"
-            target="_blank"
-            :padded="false"
-          />
-          of
-          <UButton
-            :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-            :icon="gitProviderIcon"
-            :to="git.getRepositoryUrl()"
-            variant="link"
-            target="_blank"
-            :padded="false"
-          />
-          repository
-        </p>
+        <i18n-t
+          keypath="studio.publishSuccess.summary"
+          tag="p"
+          class="text-dimmed flex items-center flex-wrap justify-center"
+          :plural="changeCount"
+        >
+          <template #count>
+            <span class="font-semibold text-default">{{ changeCount }}</span>
+          </template>
+
+          <template #branch>
+            <UButton
+              :label="repositoryInfo.branch"
+              icon="i-lucide-git-branch"
+              :to="git.getBranchUrl()"
+              variant="link"
+              target="_blank"
+              :padded="false"
+            />
+          </template>
+
+          <template #repo>
+            <UButton
+              :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
+              :icon="gitProviderIcon"
+              :to="git.getRepositoryUrl()"
+              variant="link"
+              target="_blank"
+              :padded="false"
+            />
+          </template>
+        </i18n-t>
       </div>
 
       <UAlert
         :icon="isWaitingForDeployment ? 'i-lucide-loader' : 'i-lucide-check'"
-        :title="isWaitingForDeployment ? 'Waiting for deployment...' : 'Deployment complete'"
+        :title="isWaitingForDeployment ? $t('studio.publishSuccess.alertTitleWaiting') : $t('studio.publishSuccess.alertTitleComplete')"
         :description="alertDescription"
         :color="isWaitingForDeployment ? 'warning' : 'success'"
         variant="soft"
@@ -105,7 +117,7 @@ onMounted(() => {
           :loading="isReloadingApp"
           @click="reload"
         >
-          Reload application
+          {{ $t('studio.buttons.reloadApp') }}
         </UButton>
       </div>
     </div>

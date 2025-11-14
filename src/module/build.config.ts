@@ -3,6 +3,7 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   outDir: '../../dist/module',
   externals: [
+    'ufo',
     'defu',
     'destr',
     'unstorage',

@@ -6,6 +6,7 @@ import type { PropType } from 'vue'
 import { useStudio } from '../../composables/useStudio'
 import { useGitProviderIcon } from '../../composables/useGitProviderIcon'
 import { joinURL } from 'ufo'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   mediaItem: {
@@ -20,6 +21,7 @@ const props = defineProps({
 
 const { git } = useStudio()
 const { icon: gitProviderIcon, providerName } = useGitProviderIcon()
+const { t } = useI18n()
 
 const imageRef = ref<HTMLImageElement | null>(null)
 const imageDimensions = ref({ width: 0, height: 0 })
@@ -41,13 +43,13 @@ const fileExtension = computed(() => {
 
 const imageInfo = computed(() => {
   const info = [
-    { label: 'Width', value: `${imageDimensions.value.width}px` },
-    { label: 'Height', value: `${imageDimensions.value.height}px` },
-    { label: 'Type', value: fileExtension.value },
+    { label: t('studio.media.metaWidth'), value: `${imageDimensions.value.width}px` },
+    { label: t('studio.media.metaHeight'), value: `${imageDimensions.value.height}px` },
+    { label: t('studio.media.metaType'), value: fileExtension.value },
   ]
 
   if (props.remoteFile) {
-    info.push({ label: 'Size', value: formatBytes(props.remoteFile.size) })
+    info.push({ label: t('studio.media.metaSize'), value: formatBytes(props.remoteFile.size) })
   }
 
   return info
@@ -81,7 +83,7 @@ const remotePath = computed(() => {
       <img
         ref="imageRef"
         :src="mediaItem.path"
-        alt="Image preview"
+        :alt="$t('studio.media.altImagePreview')"
         class="max-w-full max-h-full object-contain"
       >
     </div>
@@ -110,7 +112,7 @@ const remotePath = computed(() => {
           name="i-lucide-file"
           class="w-3.5 h-3.5"
         />
-        <span>File name</span>
+        <span>{{ $t('studio.media.fileName') }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ remoteFile.name }}
@@ -126,7 +128,7 @@ const remotePath = computed(() => {
           name="i-lucide-globe"
           class="w-3.5 h-3.5"
         />
-        <span>Public path</span>
+        <span>{{ $t('studio.media.publicPath') }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ mediaItem.path }}
@@ -145,7 +147,7 @@ const remotePath = computed(() => {
           :name="gitProviderIcon"
           class="w-3.5 h-3.5"
         />
-        <span>{{ providerName }} path</span>
+        <span>{{ $t('studio.media.providerPath', providerName) }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ remoteFile.path }}
@@ -161,7 +163,7 @@ const remotePath = computed(() => {
           name="i-simple-icons:markdown"
           class="w-3.5 h-3.5"
         />
-        <span>Markdown</span>
+        <span>{{ $t('studio.media.markdown') }}</span>
       </div>
       <p class="text-xs font-mono text-highlighted truncate">
         {{ markdownCode }}

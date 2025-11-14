@@ -56,7 +56,7 @@ const showFileForm = computed(() => {
                 class="size-3.5 text-muted"
               />
               <h3 class="text-xs uppercase tracking-wider text-muted">
-                Directories
+                {{ $t('studio.headings.directories') }}
               </h3>
               <UBadge
                 v-if="folderTree?.length > 0"
@@ -81,7 +81,7 @@ const showFileForm = computed(() => {
                 class="size-3.5 text-muted"
               />
               <h3 class="text-xs uppercase tracking-wider text-muted">
-                Files
+                {{ $t('studio.headings.files') }}
               </h3>
               <UBadge
                 v-if="fileTree?.length > 0"

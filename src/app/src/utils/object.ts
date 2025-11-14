@@ -1,15 +1,5 @@
 const dateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}\.\d{3}Z)?$/
 
-export const omit = (obj: Record<string, unknown>, keys: string | string[]) => {
-  return Object.fromEntries(Object.entries(obj)
-    .filter(([key]) => !keys.includes(key)))
-}
-
-export const pick = (obj: Record<string, unknown>, keys: string | string[]) => {
-  return Object.fromEntries(Object.entries(obj)
-    .filter(([key]) => keys.includes(key)))
-}
-
 export function isDeepEqual(obj1: Record<string, unknown>, obj2: Record<string, unknown>) {
   if (typeof obj1 === 'string' && typeof obj2 === 'string') {
     if (String(obj1).match(dateRegex) && String(obj2).match(dateRegex)) {

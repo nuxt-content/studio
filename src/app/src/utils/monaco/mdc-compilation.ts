@@ -6,11 +6,17 @@ import type { TreeItem, ComponentMeta } from '../../types'
 type Monaco = typeof import('modern-monaco/editor-core')
 type CompletionItemType = 'inline' | 'block' | 'all'
 type CompletionItem = languages.CompletionItem & { type: CompletionItemType }
+type TFunction = (key: string, defaultVal?: string) => string
 
 const projectComponents = ref<ComponentMeta[]>([])
 const projectMedias = ref<TreeItem[]>([])
 
-export const setupSuggestion = (monaco: typeof import('modern-monaco/editor-core'), componentsMeta: ComponentMeta[], treeMedia: TreeItem[]) => {
+export const setupSuggestion = (
+  monaco: typeof import('modern-monaco/editor-core'),
+  componentsMeta: ComponentMeta[],
+  treeMedia: TreeItem[],
+  t: TFunction,
+) => {
   projectComponents.value = componentsMeta
   projectMedias.value = treeMedia
 
@@ -60,8 +66,8 @@ export const setupSuggestion = (monaco: typeof import('modern-monaco/editor-core
 
       return {
         suggestions: [
-          ...getGlobalCompletionItems(monaco, range, trigger),
-          ...getProjectCompletionItems(monaco, range, trigger, projectComponents.value as ComponentMeta[]),
+          ...getGlobalCompletionItems(monaco, range, trigger, t),
+          ...getProjectCompletionItems(monaco, range, trigger, projectComponents.value as ComponentMeta[], t),
           ...getMediasCompletionItems(monaco, range, trigger, projectMedias.value),
         ].filter(item => completionType === 'all' || item.type === completionType),
       }
@@ -156,10 +162,10 @@ function findComponentProps(componentName: string, components: ComponentMeta[]) 
   return component.meta.props || []
 }
 
-function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'): CompletionItem[] {
+function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/', t: TFunction): CompletionItem[] {
   return [
     {
-      label: 'Heading 1',
+      label: t('studio.monaco.headings.h1'),
       filterText: trigger + 'heading 1',
       detail: '#',
       insertText: '# ${1:title}',
@@ -169,7 +175,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Heading 2',
+      label: t('studio.monaco.headings.h2'),
       filterText: trigger + 'heading 2',
       detail: '##',
       insertText: '## ${1:title}',
@@ -179,7 +185,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Heading 3',
+      label: t('studio.monaco.headings.h3'),
       filterText: trigger + 'heading 3',
       detail: '###',
       insertText: '### ${1:title}',
@@ -189,7 +195,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Bold',
+      label: t('studio.monaco.styles.bold'),
       filterText: trigger + 'bold',
       insertText: '**${1:title}**',
       detail: '**',
@@ -199,7 +205,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Italic',
+      label: t('studio.monaco.styles.italic'),
       filterText: trigger + 'italic',
       insertText: '_${1:title}_',
       detail: '_',
@@ -209,7 +215,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Emojis',
+      label: t('studio.monaco.other.emojis'),
       filterText: trigger + 'emoji',
       insertText: ':${1}:',
       detail: ':',
@@ -219,7 +225,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Bulleted List',
+      label: t('studio.monaco.lists.bulleted'),
       filterText: trigger + 'bulleted-list',
       insertText: '- ${1:Item 1}\n- ${2:Item 2}\n\n${3}',
       detail: '-',
@@ -229,7 +235,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Numbered List',
+      label: t('studio.monaco.lists.numbered'),
       filterText: trigger + 'numbered-list',
       insertText: '1. ${1:Item 1}\n2. ${2:Item 2}\n\n${3}',
       detail: '1.',
@@ -239,7 +245,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Blockquote',
+      label: t('studio.monaco.other.blockquote'),
       filterText: trigger + 'blockquote',
       insertText: '> ${1}\n> ${2}\n\n${3}',
       detail: '>',
@@ -249,7 +255,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Code',
+      label: t('studio.monaco.other.code'),
       filterText: trigger + 'code',
       insertText: '```${1:language}\n${2:code}\n```\n\n${3}',
       detail: '```',
@@ -259,7 +265,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Inline Code',
+      label: t('studio.monaco.other.inlineCode'),
       filterText: trigger + 'code-inline',
       insertText: '`$1` $2',
       detail: '`',
@@ -269,7 +275,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Link',
+      label: t('studio.monaco.other.link'),
       filterText: trigger + 'link',
       detail: '[]()',
       documentation: [
@@ -282,7 +288,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
       range,
     },
     {
-      label: 'Image',
+      label: t('studio.monaco.other.image'),
       filterText: trigger + 'image',
       detail: '![]()',
       kind: monaco.languages.CompletionItemKind.Field,
@@ -294,7 +300,7 @@ function getGlobalCompletionItems(monaco: Monaco, range: IRange, trigger = '/'):
   ]
 }
 
-function getProjectCompletionItems(monaco: Monaco, range: IRange, trigger = '/', componentsMeta: ComponentMeta[]): CompletionItem[] {
+function getProjectCompletionItems(monaco: Monaco, range: IRange, trigger = '/', componentsMeta: ComponentMeta[], t: TFunction): CompletionItem[] {
   const componentsItems: CompletionItem[] = componentsMeta.map((comp) => {
     let tabIndex = 1
     const isBlock = comp.meta.slots?.length
@@ -310,7 +316,7 @@ function getProjectCompletionItems(monaco: Monaco, range: IRange, trigger = '/',
     }
 
     if (isBlock) {
-      insertText += `\n\${${tabIndex++}:Write Something}`
+      insertText += `\n\${${tabIndex++}:${t('studio.monaco.writeSomething')}}`
     }
 
     if (isBlock) {
@@ -324,7 +330,7 @@ function getProjectCompletionItems(monaco: Monaco, range: IRange, trigger = '/',
       insertText,
       documentation: {
         supportHtml: true,
-        value: getComponentDocumentation(comp),
+        value: getComponentDocumentation(comp, t),
       },
       kind: monaco.languages.CompletionItemKind.Module,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -357,25 +363,25 @@ export const getMediasCompletionItems = (monaco: Monaco, range: IRange, trigger 
   return mediasItems
 }
 
-const getComponentDocumentation = (comp: ComponentMeta) => `
-Path in project: \`${comp.path}\`
+const getComponentDocumentation = (comp: ComponentMeta, t: TFunction) => `
+${t('studio.monaco.docs.path')} \`${comp.path}\`
 
 <br />
 
-## Props
+## ${t('studio.monaco.docs.props')}
 
 ${comp.meta.props.map((prop) => {
   return `
   - **${prop.name}**
-  - - type: ${prop.type},
-  - - required: ${prop.required},
-  - - default: ${prop.default},
+  - - ${t('studio.monaco.docs.type')}: ${prop.type},
+  - - ${t('studio.monaco.docs.required')}: ${prop.required},
+  - - ${t('studio.monaco.docs.default')}: ${prop.default},
   `
 }).join('\n')}
 
 <br />
 
-## Slots
+## ${t('studio.monaco.docs.slots')}
 
 ${comp.meta.slots.map(slot => `- ${slot.name}`).join('\n')}
 

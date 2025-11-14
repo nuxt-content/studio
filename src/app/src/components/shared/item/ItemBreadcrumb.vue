@@ -5,8 +5,10 @@ import { computed, unref } from 'vue'
 import { type TreeItem, TreeStatus } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
 import { findParentFromFsPath } from '../../../utils/tree'
+import { useI18n } from 'vue-i18n'
 
 const { context } = useStudio()
+const { t } = useI18n()
 
 const currentItem = computed(() => context.activeTree.value.currentItem.value)
 const tree = computed(() => context.activeTree.value.root.value)
@@ -15,7 +17,7 @@ const items = computed<BreadcrumbItem[]>(() => {
   const rootTreeItem = context.activeTree.value.rootItem.value
   const rootBreadcrumbItem = {
     icon: 'i-lucide-folder-git',
-    label: rootTreeItem.name,
+    label: t(`studio.nav.${rootTreeItem.name.toLowerCase()}`, rootTreeItem.name),
     onClick: () => {
       context.activeTree.value.select(rootTreeItem)
     },

@@ -4,9 +4,11 @@ import { computed, ref, watch, type PropType } from 'vue'
 import { StudioItemActionId } from '../../../types'
 import type { TreeItem, StudioAction } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
-import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.js'
+import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
+import { useI18n } from 'vue-i18n'
 
 const { context } = useStudio()
+const { t } = useI18n()
 
 const props = defineProps({
   item: {
@@ -36,11 +38,21 @@ watch(context.actionInProgress, (actionInProgress) => {
   }
 })
 
+const getActionLabel = (action: StudioAction<StudioItemActionId>) => {
+  return t(`studio.actions.labels.${action.id}`, action.label || action.id)
+}
+
+const getPendingActionLabel = (action: StudioAction<StudioItemActionId> | null) => {
+  if (!action) return ''
+  const verb = action.id.split('-')[0]
+  return t('studio.actions.confirmAction', { action: t(`studio.actions.verbs.${verb}`, verb) })
+}
+
 const actions = computed<DropdownMenuItem[]>(() => {
   const hasPendingAction = pendingAction.value !== null
   const hasLoadingAction = loadingAction.value !== null
 
-  return computeItemActions(context.itemActions.value, props.item).map((action) => {
+  return computeItemActions(context.itemActions.value, props.item, context.currentFeature.value).map((action) => {
     const isOneStepAction = oneStepActions.includes(action.id)
     const isPending = pendingAction.value?.id === action.id
     const isLoading = loadingAction.value?.id === action.id
@@ -56,6 +68,7 @@ const actions = computed<DropdownMenuItem[]>(() => {
 
     return {
       ...action,
+      label: isPending ? getPendingActionLabel(pendingAction.value) : getActionLabel(action),
       icon,
       color: isPending ? (isDeleteAction ? 'error' : 'secondary') : 'neutral',
       slot: isPending ? 'pending-action' : undefined,
@@ -101,9 +114,7 @@ const actions = computed<DropdownMenuItem[]>(() => {
   })
 })
 
-const pendingActionLabel = computed(() => {
-  return `Click again to ${pendingAction.value?.id.split('-')[0]}`
-})
+const pendingActionLabel = computed(() => getPendingActionLabel(pendingAction.value))
 </script>
 
 <template>
@@ -118,7 +129,7 @@ const pendingActionLabel = computed(() => {
       color="neutral"
       variant="ghost"
       icon="i-ph-dots-three-vertical"
-      aria-label="Open actions"
+      :aria-label="t('studio.aria.openActions')"
       square
       size="sm"
       class="cursor-pointer"

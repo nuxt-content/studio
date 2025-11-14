@@ -14,7 +14,7 @@ defineProps({
 <template>
   <UBadge
     :color="COLOR_UI_STATUS_MAP[status] as never"
-    :label="status"
+    :label="$t(`studio.review.${status.toLowerCase()}`)"
     variant="soft"
     size="sm"
   />

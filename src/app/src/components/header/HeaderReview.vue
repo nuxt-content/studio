@@ -5,18 +5,21 @@ import { useStudio } from '../../composables/useStudio'
 import { useRouter } from 'vue-router'
 import { StudioBranchActionId } from '../../types'
 import { useStudioState } from '../../composables/useStudioState'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const { location } = useStudioState()
 const { context } = useStudio()
+const { t } = useI18n()
 
 const isPublishing = ref(false)
 const openTooltip = ref(false)
 
-type Schema = z.output<typeof schema>
-const schema = z.object({
-  commitMessage: z.string().nonempty('Commit message is required'),
-})
+type Schema = z.output<typeof schema.value>
+
+const schema = computed(() => z.object({
+  commitMessage: z.string().nonempty(t('studio.validation.commitRequired')),
+}))
 
 const state = reactive<Schema>({
   commitMessage: '',
@@ -24,7 +27,7 @@ const state = reactive<Schema>({
 
 const validationErrors = computed(() => {
   try {
-    schema.parse(state)
+    schema.value.parse(state)
     return []
   }
   catch (error) {
@@ -48,7 +51,7 @@ const tooltipText = computed(() => {
   if (validationErrors.value.length > 0) {
     return validationErrors.value[0].message
   }
-  return 'Publish changes'
+  return t('studio.tooltips.publishChanges')
 })
 
 async function publishChanges() {
@@ -67,7 +70,7 @@ async function publishChanges() {
     router.push({
       path: '/error',
       query: {
-        error: err.message || 'Failed to publish changes',
+        error: err.message || t('studio.publish.failedGeneric'),
       },
     })
   }
@@ -100,7 +103,7 @@ defineShortcuts({
   >
     <div class="w-full flex items-center gap-2">
       <UTooltip
-        text="Back to content"
+        :text="$t('studio.tooltips.backToContent')"
         :kbds="['esc']"
       >
         <UButton
@@ -108,7 +111,7 @@ defineShortcuts({
           color="neutral"
           variant="soft"
           size="sm"
-          aria-label="Back"
+          :aria-label="$t('studio.buttons.back')"
           @click="backToEditor"
         />
       </UTooltip>
@@ -124,7 +127,7 @@ defineShortcuts({
 
         <UInput
           v-model="state.commitMessage"
-          placeholder="Commit message"
+          :placeholder="$t('studio.placeholders.commitMessage')"
           size="sm"
           :disabled="isPublishing"
           class="w-full"
@@ -145,7 +148,7 @@ defineShortcuts({
           :loading="isPublishing"
           :disabled="validationErrors.length > 0"
           icon="i-lucide-check"
-          label="Publish"
+          :label="$t('studio.buttons.publish')"
           :ui="{ leadingIcon: 'size-3.5' }"
         />
       </UTooltip>

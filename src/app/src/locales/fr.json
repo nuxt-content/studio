@@ -1,0 +1,176 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Editer la page",
+      "retryPublish": "Réessayer la publication",
+      "reloadApp": "Recharger l'application",
+      "reload": "Recharger",
+      "signOut": "Se déconnecter",
+      "review": "Valider",
+      "publish": "Publier",
+      "back": "Retour"
+    },
+    "headings": {
+      "directories": "Dossiers",
+      "files": "Fichiers",
+      "media": "Médias"
+    },
+    "tooltips": {
+      "toggleStudio": "Afficher/Masquer le Studio",
+      "unlinkEditor": "Délier l'éditeur et l'aperçu",
+      "linkEditor": "Lier l'éditeur et l'aperçu",
+      "copiedToClipboard": "Copié dans le presse-papiers",
+      "copyToClipboard": "Copier dans le presse-papiers",
+      "publishChanges": "Publier les changements",
+      "backToContent": "Retour au contenu"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Une erreur inconnue est survenue"
+      }
+    },
+    "publish": {
+      "failedTitle": "Échec de la publication",
+      "summary": "sur la branche {branch} du dépôt {repo}",
+      "errorTitle": "Erreur lors de la publication sur {providerName}",
+      "failedGeneric": "Échec de la publication des changements"
+    },
+    "review": {
+      "title": "Changements à valider",
+      "created": "Créé",
+      "updated": "Modifié",
+      "deleted": "Supprimé"
+    },
+    "publishSuccess": {
+      "title": "Changements publiés",
+      "summary": "{count} changement publié sur la branche {branch} du dépôt {repo} | {count} changements publiés sur la branche {branch} du dépôt {repo}",
+      "alertTitleWaiting": "En attente de déploiement...",
+      "alertTitleComplete": "Déploiement terminé",
+      "alertDescWaiting": "Le site web doit être déployé pour que les changements soient visibles dans le Studio.",
+      "alertDescComplete": "Une nouvelle version de votre site a été déployée. Veuillez rafraîchir l'application pour voir les changements dans le Studio."
+    },
+    "newVersionBanner": {
+      "title": "Nouvelle version du site détectée",
+      "description": "Une nouvelle version de votre site a été déployée. Rechargez l'application pour voir les derniers changements.",
+      "reloadButton": "Recharger"
+    },
+    "footer": {
+      "developer_view": "Vue développeur"
+    },
+    "alert": {
+      "mdcFormatting": "Formatage appliqué pour s'aligner sur le standard de syntaxe MDC."
+    },
+    "conflict": {
+      "title": "Conflit détecté",
+      "repository": "Dépôt",
+      "branch": "Branche",
+      "file": "Fichier",
+      "description": "Le contenu sur {providerName} diffère de la version de votre site web. Assurez-vous que vos dernières modifications sont déployées et actualisez la page.",
+      "websiteVersion": "Site Web"
+    },
+    "nav": {
+      "content": "Contenu",
+      "media": "Média"
+    },
+    "placeholders": {
+      "commitMessage": "Message de commit",
+      "order": "N°",
+      "fileName": "Nom du fichier"
+    },
+    "validation": {
+      "commitRequired": "Message de commit requis",
+      "nameEmpty": "Le nom ne peut pas être vide",
+      "nameEndsWithDot": "Le nom ne peut pas se terminer par '.'",
+      "nameStartsWithSlash": "Le nom ne peut pas commencer par '/'",
+      "nameExists": "Ce nom existe déjà"
+    },
+    "media": {
+      "altFilePreview": "Aperçu du fichier",
+      "altImagePreview": "Aperçu de l'image",
+      "playAudio": "Lire l'audio",
+      "audioTagNotSupported": "Votre navigateur ne supporte pas la balise audio.",
+      "playVideo": "Lire la vidéo",
+      "videoTagNotSupported": "Votre navigateur ne supporte pas la balise vidéo.",
+      "metaWidth": "Largeur",
+      "metaHeight": "Hauteur",
+      "metaType": "Type",
+      "metaSize": "Taille",
+      "fileName": "Nom du fichier",
+      "publicPath": "Chemin public",
+      "providerPath": "Chemin {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Ouvrir les actions",
+      "cancel": "Annuler",
+      "submit": "Valider"
+    },
+    "actions": {
+      "confirmAction": "Cliquez à nouveau pour {action}",
+      "verbs": {
+        "create": "créer",
+        "delete": "supprimer",
+        "rename": "renommer",
+        "upload": "téléverser",
+        "duplicate": "dupliquer"
+      },
+      "labels": {
+        "create-document": "Nouveau fichier",
+        "create-document-folder": "Nouveau dossier",
+        "create-media-folder": "Nouveau dossier média",
+        "rename-item": "Renommer",
+        "delete-item": "Supprimer",
+        "upload-media": "Téléverser un média",
+        "duplicate-item": "Dupliquer",
+        "revert-item": "Annuler les modifications",
+        "publish-branch": "Publier la branche"
+      },
+      "tooltips": {
+        "revert-item": "Annuler les modifications",
+        "create-document": "Créer un nouveau fichier",
+        "upload-media": "Téléverser un média",
+        "create-document-folder": "Créer un nouveau dossier",
+        "create-media-folder": "Créer un nouveau dossier",
+        "rename-item": "Renommer le fichier",
+        "duplicate-item": "Dupliquer le fichier",
+        "delete-item": "Supprimer le fichier",
+        "publish-branch": "Publier la branche"
+      }
+    },
+    "items": {
+      "itemCount": "1 élément | {count} éléments"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Titre 1",
+        "h2": "Titre 2",
+        "h3": "Titre 3"
+      },
+      "styles": {
+        "bold": "Gras",
+        "italic": "Italique"
+      },
+      "lists": {
+        "bulleted": "Liste à puces",
+        "numbered": "Liste numérotée"
+      },
+      "other": {
+        "emojis": "Émojis",
+        "blockquote": "Citation",
+        "code": "Bloc de code",
+        "inlineCode": "Code (en ligne)",
+        "link": "Lien",
+        "image": "Image"
+      },
+      "writeSomething": "Écrivez quelque chose",
+      "docs": {
+        "path": "Chemin dans le projet :",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "type",
+        "required": "requis",
+        "default": "défaut"
+      }
+    }
+  }
+}

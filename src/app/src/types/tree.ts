@@ -1,8 +1,3 @@
-export enum TreeRootId {
-  Content = 'content',
-  Media = 'public-assets',
-}
-
 export enum TreeStatus {
   Deleted = 'deleted',
   Created = 'created',
@@ -13,10 +8,9 @@ export enum TreeStatus {
 
 export interface TreeItem {
   name: string
-  fsPath: string // can be used as id
+  fsPath: string // unique identifier
   type: 'file' | 'directory' | 'root'
-  prefix: number | null
-  collections: string[]
+  prefix: string | null
   status?: TreeStatus
   routePath?: string
   children?: TreeItem[]

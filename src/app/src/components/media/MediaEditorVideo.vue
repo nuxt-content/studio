@@ -14,7 +14,7 @@
         :ui="{ leadingIcon: 'w-16 h-16', trailingIcon: 'w-16 h-16' }"
       >
         <template #default>
-          <span class="sr-only">Play Video</span>
+          <span class="sr-only">{{ $t('studio.media.playVideo') }}</span>
         </template>
       </UButton>
     </div>
@@ -34,7 +34,7 @@
         :src="src"
         type="video/mp4"
       >
-      Your browser does not support the video tag.
+      {{ $t('studio.media.videoTagNotSupported') }}
     </video>
   </div>
 </template>

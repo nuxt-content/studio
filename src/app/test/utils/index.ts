@@ -1,4 +1,3 @@
-import { TreeRootId } from '../../src/types'
 import { joinURL } from 'ufo'
 
 /**
@@ -17,18 +16,14 @@ export function normalizeKey(key: string): string {
     || ''
 }
 
-export function generateUniqueDocumentId(filename = 'document', collection = 'docs'): string {
+export function generateUniqueDocumentFsPath(filename = 'document', subdirectory = ''): string {
   const uniqueId = Math.random().toString(36).substr(2, 9)
-  // Add dummy collection prefix
-  return joinURL(collection, `${filename}-${uniqueId}.md`)
+  const file = `${filename}-${uniqueId}.md`
+  return subdirectory ? joinURL(subdirectory, file) : file
 }
 
-export function generateUniqueMediaId(filename = 'media'): string {
+export function generateUniqueMediaFsPath(filename = 'media', extension = 'png', subdirectory = ''): string {
   const uniqueId = Math.random().toString(36).substr(2, 9)
-  return `${TreeRootId.Media}/${filename}-${uniqueId}.md`
-}
-
-export function generateUniqueMediaName(filename = 'media', extension = 'png'): string {
-  const uniqueId = Math.random().toString(36).substr(2, 9)
-  return `${filename}-${uniqueId}.${extension}`
+  const file = `${filename}-${uniqueId}.${extension}`
+  return subdirectory ? joinURL(subdirectory, file) : file
 }

@@ -18,19 +18,16 @@ const groupedDrafts = computed(() => {
 const statusConfig = {
   created: {
     icon: 'i-lucide-file-plus-2',
-    label: 'Created',
     color: COLOR_UI_STATUS_MAP[DraftStatus.Created],
     iconClass: 'text-success',
   },
   updated: {
     icon: 'i-lucide-file-edit',
-    label: 'Updated',
     color: COLOR_UI_STATUS_MAP[DraftStatus.Updated],
     iconClass: 'text-warning',
   },
   deleted: {
     icon: 'i-lucide-file-x-2',
-    label: 'Deleted',
     color: COLOR_UI_STATUS_MAP[DraftStatus.Deleted],
     iconClass: 'text-error',
   },
@@ -41,7 +38,7 @@ const statusConfig = {
   <div class="flex flex-col h-full text-default">
     <div class="flex items-center gap-1 px-4 py-2 border-b-[0.5px] border-default bg-muted/70">
       <h2 class="text-xs font-semibold text-muted">
-        Review changes
+        {{ $t('studio.review.title') }}
       </h2>
       <UBadge
         v-if="context.draftCount.value > 0"
@@ -68,7 +65,7 @@ const statusConfig = {
                 :class="statusConfig[status].iconClass"
                 class="w-3.5 h-3.5"
               />
-              <span class="text-xs font-semibold">{{ statusConfig[status].label }}</span>
+              <span class="text-xs font-semibold">{{ $t(`studio.review.${status}`) }}</span>
               <UBadge
                 :label="drafts.length.toString()"
                 :color="statusConfig[status].color as never"
@@ -79,7 +76,7 @@ const statusConfig = {
             <div class="flex flex-col gap-2">
               <template
                 v-for="draft in drafts"
-                :key="draft.id"
+                :key="draft.fsPath"
               >
                 <MediaCardReview
                   v-if="isMediaFile(draft.fsPath)"

@@ -1,0 +1,176 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Edit this page",
+      "retryPublish": "Retry Publish",
+      "reloadApp": "Reload application",
+      "reload": "Reload",
+      "signOut": "Sign out",
+      "review": "Review",
+      "publish": "Publish",
+      "back": "Back"
+    },
+    "headings": {
+      "directories": "Directories",
+      "files": "Files",
+      "media": "Media"
+    },
+    "tooltips": {
+      "toggleStudio": "Toggle Studio",
+      "unlinkEditor": "Unlink editor and preview",
+      "linkEditor": "Link editor and preview",
+      "copiedToClipboard": "Copied to clipboard",
+      "copyToClipboard": "Copy to clipboard",
+      "publishChanges": "Publish changes",
+      "backToContent": "Back to content"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "An unknown error occurred"
+      }
+    },
+    "publish": {
+      "failedTitle": "Publish Failed",
+      "summary": "on {branch} of {repo} repository",
+      "errorTitle": "Error during {providerName} publish",
+      "failedGeneric": "Failed to publish changes"
+    },
+    "review": {
+      "title": "Review changes",
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted"
+    },
+    "publishSuccess": {
+      "title": "Changes Published",
+      "summary": "{count} change published on {branch} of {repo} repository | {count} changes published on {branch} of {repo} repository",
+      "alertTitleWaiting": "Waiting for deployment...",
+      "alertTitleComplete": "Deployment complete",
+      "alertDescWaiting": "The website needs to be deployed for changes to be visible in Studio.",
+      "alertDescComplete": "A new version of your website has been deployed. Please refresh your app to see changes in Studio."
+    },
+    "newVersionBanner": {
+      "title": "New website version detected",
+      "description": "A new version of your website has been deployed. Reload the app to see the latest changes.",
+      "reloadButton": "Reload"
+    },
+    "footer": {
+      "developer_view": "Developer view"
+    },
+    "alert": {
+      "mdcFormatting": "Formatting applied to align with MDC syntax standard."
+    },
+    "conflict": {
+      "title": "Conflict Detected",
+      "repository": "Repository",
+      "branch": "Branch",
+      "file": "File",
+      "description": "The content on {providerName} differs from your website version. Ensure your latest changes are deployed and refresh the page.",
+      "websiteVersion": "Website"
+    },
+    "nav": {
+      "content": "Content",
+      "media": "Media"
+    },
+    "placeholders": {
+      "commitMessage": "Commit message",
+      "order": "N°",
+      "fileName": "File name"
+    },
+    "validation": {
+      "commitRequired": "Commit message is required",
+      "nameEmpty": "Name cannot be empty",
+      "nameEndsWithDot": "Name cannot end with '.'",
+      "nameStartsWithSlash": "Name cannot start with '/'",
+      "nameExists": "Name already exists"
+    },
+    "media": {
+      "altFilePreview": "File preview",
+      "altImagePreview": "Image preview",
+      "playAudio": "Play Audio",
+      "audioTagNotSupported": "Your browser does not support the audio tag.",
+      "playVideo": "Play Video",
+      "videoTagNotSupported": "Your browser does not support the video tag.",
+      "metaWidth": "Width",
+      "metaHeight": "Height",
+      "metaType": "Type",
+      "metaSize": "Size",
+      "fileName": "File name",
+      "publicPath": "Public path",
+      "providerPath": "{providerName} path",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Open actions",
+      "cancel": "Cancel",
+      "submit": "Submit"
+    },
+    "actions": {
+      "confirmAction": "Click again to {action}",
+      "verbs": {
+        "create": "create",
+        "delete": "delete",
+        "rename": "rename",
+        "upload": "upload",
+        "duplicate": "duplicate"
+      },
+      "labels": {
+        "create-document": "New file",
+        "create-document-folder": "New folder",
+        "create-media-folder": "New media folder",
+        "rename-item": "Rename",
+        "delete-item": "Delete",
+        "upload-media": "Upload media",
+        "duplicate-item": "Duplicate",
+        "revert-item": "Revert changes",
+        "publish-branch": "Publish branch"
+      },
+      "tooltips": {
+        "revert-item": "Revert changes",
+        "create-document": "Create a new file",
+        "upload-media": "Upload media",
+        "create-document-folder": "Create a new folder",
+        "create-media-folder": "Create a new folder",
+        "rename-item": "Rename file",
+        "duplicate-item": "Duplicate file",
+        "delete-item": "Delete file",
+        "publish-branch": "Publish branch"
+      }
+    },
+    "items": {
+      "itemCount": "1 item | {count} items"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Heading 1",
+        "h2": "Heading 2",
+        "h3": "Heading 3"
+      },
+      "styles": {
+        "bold": "Bold",
+        "italic": "Italic"
+      },
+      "lists": {
+        "bulleted": "Bulleted List",
+        "numbered": "Numbered List"
+      },
+      "other": {
+        "emojis": "Emojis",
+        "blockquote": "Blockquote",
+        "code": "Code",
+        "inlineCode": "Inline Code",
+        "link": "Link",
+        "image": "Image"
+      },
+      "writeSomething": "Write Something",
+      "docs": {
+        "path": "Path in project:",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "type",
+        "required": "required",
+        "default": "default"
+      }
+    }
+  }
+}

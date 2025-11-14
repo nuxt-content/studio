@@ -46,7 +46,7 @@ const imageSrc = computed(() => isImageFile(props.item.fsPath) ? props.item.rout
           :src="imageSrc"
           width="48"
           height="48"
-          alt="File preview"
+          :alt="$t('studio.media.altFilePreview')"
           class="w-full h-full object-cover"
         />
       </div>

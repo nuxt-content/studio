@@ -55,7 +55,7 @@ useMonacoDiff(diffEditorRef, {
         />
         <div class="flex-1">
           <h3 class="font-semibold text-highlighted text-sm mb-3">
-            Conflict Detected
+            {{ $t('studio.conflict.title') }}
           </h3>
 
           <dl class="space-y-2 text-xs mb-4">
@@ -65,7 +65,7 @@ useMonacoDiff(diffEditorRef, {
                   :name="gitProviderIcon"
                   class="size-3.5"
                 />
-                Repository
+                {{ $t('studio.conflict.repository') }}
               </dt>
               <dd class="text-highlighted font-medium">
                 <UButton
@@ -85,7 +85,7 @@ useMonacoDiff(diffEditorRef, {
                   name="i-lucide-git-branch"
                   class="size-3.5"
                 />
-                Branch
+                {{ $t('studio.conflict.branch') }}
               </dt>
               <dd class="text-highlighted font-medium">
                 <UButton
@@ -105,7 +105,7 @@ useMonacoDiff(diffEditorRef, {
                   name="i-lucide-file"
                   class="size-3.5"
                 />
-                File
+                {{ $t('studio.conflict.file') }}
               </dt>
               <dd class="text-highlighted font-medium">
                 <UButton
@@ -120,7 +120,7 @@ useMonacoDiff(diffEditorRef, {
           </dl>
 
           <p class="text-xs mb-2">
-            The content on {{ providerName }} differs from your website version. Ensure your latest changes are deployed and refresh the page.
+            {{ $t('studio.conflict.description', providerName) }}
           </p>
         </div>
       </div>
@@ -139,7 +139,7 @@ useMonacoDiff(diffEditorRef, {
           name="i-lucide-globe"
           class="size-3.5"
         />
-        Website
+        {{ $t('studio.conflict.websiteVersion') }}
       </div>
     </div>
 

@@ -1,9 +1,6 @@
 import type { H3Event } from 'h3'
 import { createError, eventHandler, getRequestHeader, readRawBody, setResponseHeader } from 'h3'
 import type { StorageMeta } from 'unstorage'
-import { stringifyMarkdown } from '@nuxtjs/mdc/runtime'
-import { decompressTree } from '@nuxt/content/runtime'
-import { removeReservedKeysFromDocument } from 'nuxt-studio/app/utils'
 // @ts-expect-error useStorage is not defined in .nuxt/imports.d.ts
 import { useStorage } from '#imports'
 
@@ -37,16 +34,6 @@ export default eventHandler(async (event) => {
     else if (getRequestHeader(event, 'content-type') === 'text/plain') {
       const value = await readRawBody(event, 'utf8')
       await storage.setItem(key, value)
-    }
-    else {
-      const value = await readRawBody(event, 'utf8')
-      const json = JSON.parse(value || '{}')
-      const content = await stringifyMarkdown(
-        json.body.type === 'minimark' ? decompressTree(json.body) : json.body,
-        removeReservedKeysFromDocument(json),
-      )
-
-      await storage.setItem(key, content)
     }
 
     return 'OK'

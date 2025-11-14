@@ -215,6 +215,10 @@ export default eventHandler(async (event: H3Event) => {
 
   const redirect = decodeURIComponent(getCookie(event, 'studio-redirect') || '')
   deleteCookie(event, 'studio-redirect')
+
+  // Set a cookie to indicate that the session is active
+  setCookie(event, 'studio-session-check', 'true', { httpOnly: false })
+
   // make sure the redirect is a valid relative path (avoid also // which is not a valid URL)
   if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
     return sendRedirect(event, redirect)

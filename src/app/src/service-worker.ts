@@ -61,7 +61,7 @@ self.addEventListener('fetch', event => {
 })
 
 function fetchFromIndexedDB(event, url) {
-  const dbKey = ['public-assets:', url.replace(/^\\//g, '').replace(/\\//g, ':')].join('')
+  const dbKey = url.replace(/^\\//g, '').replace(/\\//g, ':')
   return getData(dbKey).then(data => {
     if (!data) {
       return fetch(event.request);

@@ -5,8 +5,10 @@ import { useStudio } from '../../../composables/useStudio'
 import type { StudioAction } from '../../../types'
 import { StudioItemActionId } from '../../../types'
 import { MEDIA_EXTENSIONS } from '../../../utils/file'
+import { useI18n } from 'vue-i18n'
 
 const { context } = useStudio()
+const { t } = useI18n()
 const fileInputRef = ref<HTMLInputElement>()
 const toolbarRef = ref<HTMLElement>()
 const pendingAction = ref<StudioAction<StudioItemActionId> | null>(null)
@@ -20,11 +22,20 @@ watch(context.actionInProgress, (action) => {
 })
 
 const item = computed(() => context.activeTree.value.currentItem.value)
+
+const getActionTooltip = (action: StudioAction<StudioItemActionId>, isPending: boolean) => {
+  if (isPending) {
+    const verb = action.id.split('-')[0]
+    return t('studio.actions.confirmAction', { action: t(`studio.actions.verbs.${verb}`, verb) })
+  }
+  return action.tooltip ? t(action.tooltip, action.tooltip) : t(`studio.actions.labels.${action.id}`, action.id)
+}
+
 const actions = computed(() => {
   const hasPendingAction = pendingAction.value !== null
   const hasLoadingAction = loadingAction.value !== null
 
-  return computeItemActions(context.itemActions.value, item.value).map((action) => {
+  return computeItemActions(context.itemActions.value, item.value, context.currentFeature.value).map((action) => {
     const isOneStepAction = oneStepActions.includes(action.id)
     const isPending = pendingAction.value?.id === action.id
     const isLoading = loadingAction.value?.id === action.id
@@ -43,7 +54,7 @@ const actions = computed(() => {
       color: isPending ? (isDeleteAction ? 'error' : 'secondary') : 'neutral',
       variant: isPending ? 'soft' : 'ghost',
       icon,
-      tooltip: isPending ? `Click again to ${action.id.split('-')[0].toLowerCase()}` : action.tooltip,
+      tooltip: getActionTooltip(action, isPending),
       disabled: (hasPendingAction && !isPending) || hasLoadingAction,
       isOneStepAction,
       isPending,

@@ -15,7 +15,6 @@ export interface ContentConflict {
 }
 
 export interface DraftItem<T = DatabaseItem | MediaItem> {
-  id: string // nuxt/content id (with collection prefix)
   fsPath: string // file path in content directory
   status: DraftStatus // status
 

@@ -42,7 +42,7 @@ const isImage = computed(() => props.renamedItem && isImageFile(props.renamedIte
           :src="renamedItem.routePath"
           width="48"
           height="48"
-          alt="File preview"
+          :alt="$t('studio.media.altFilePreview')"
           class="w-full h-full object-cover"
         />
       </div>

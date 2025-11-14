@@ -3,14 +3,16 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudio } from '../composables/useStudio'
 import { useGitProviderIcon } from '../composables/useGitProviderIcon'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { git } = useStudio()
 const { icon: gitProviderIcon, providerName } = useGitProviderIcon()
 
 const errorMessage = computed(() => {
-  return (route.query.error as string) || 'An unknown error occurred'
+  return (route.query.error as string) || t('studio.notifications.error.unknown')
 })
 
 const repositoryInfo = computed(() => git.getRepositoryInfo())
@@ -34,34 +36,39 @@ function retry() {
 
       <div class="text-center">
         <h1 class="text-2xl font-bold text-default mb-2">
-          Publish Failed
+          {{ $t('studio.publish.failedTitle') }}
         </h1>
-        <p class="text-dimmed flex items-center flex-wrap justify-center">
-          on
-          <UButton
-            :label="repositoryInfo.branch"
-            icon="i-lucide-git-branch"
-            :to="git.getBranchUrl()"
-            variant="link"
-            target="_blank"
-            :padded="false"
-          />
-          of
-          <UButton
-            :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-            :icon="gitProviderIcon"
-            :to="git.getRepositoryUrl()"
-            variant="link"
-            target="_blank"
-            :padded="false"
-          />
-          repository
-        </p>
+        <i18n-t
+          keypath="studio.publish.summary"
+          tag="p"
+          class="text-dimmed flex items-center flex-wrap justify-center gap-x-1"
+        >
+          <template #branch>
+            <UButton
+              :label="repositoryInfo.branch"
+              icon="i-lucide-git-branch"
+              :to="git.getBranchUrl()"
+              variant="link"
+              target="_blank"
+              :padded="false"
+            />
+          </template>
+          <template #repo>
+            <UButton
+              :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
+              :icon="gitProviderIcon"
+              :to="git.getRepositoryUrl()"
+              variant="link"
+              target="_blank"
+              :padded="false"
+            />
+          </template>
+        </i18n-t>
       </div>
 
       <UAlert
         icon="i-lucide-alert-triangle"
-        :title="`Error during ${providerName} publish`"
+        :title="$t('studio.publish.errorTitle', providerName)"
         :description="errorMessage"
         color="error"
         variant="soft"
@@ -72,7 +79,7 @@ function retry() {
           icon="i-lucide-rotate-ccw"
           @click="retry"
         >
-          Retry Publish
+          {{ $t('studio.buttons.retryPublish') }}
         </UButton>
       </div>
     </div>

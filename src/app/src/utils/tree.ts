@@ -1,17 +1,12 @@
 import {
-  ContentFileExtension,
   DraftStatus,
   TreeStatus,
-  type DatabasePageItem,
   type DraftItem,
   type TreeItem,
 } from '../types'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { BaseItem } from '../types/item'
-import { isEqual } from './database'
-import { studioFlags } from '../composables/useStudio'
 import { getFileExtension, parseName } from './file'
-import { joinURL } from 'ufo'
 
 export const COLOR_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Created]: 'green',
@@ -29,7 +24,7 @@ export const COLOR_UI_STATUS_MAP: { [key in TreeStatus]?: string } = {
   [TreeStatus.Opened]: 'neutral',
 } as const
 
-export function buildTree(dbItems: ((BaseItem) & { fsPath: string })[], draftList: DraftItem[] | null):
+export function buildTree(dbItems: BaseItem[], draftList: DraftItem[] | null, isDev = false):
 TreeItem[] {
   const tree: TreeItem[] = []
   const directoryMap = new Map<string, TreeItem>()
@@ -37,25 +32,26 @@ TreeItem[] {
   const deletedDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Deleted) || []
   const createdDraftItems = draftList?.filter(draft => draft.status === DraftStatus.Created) || []
 
-  function addDeletedDraftItemsInDbItems(dbItems: ((BaseItem) & { fsPath: string })[], deletedItems: DraftItem[]) {
+  function addDeletedDraftItemsInDbItems(dbItems: BaseItem[], deletedItems: DraftItem[]) {
     dbItems = [...dbItems]
     for (const deletedItem of deletedItems) {
+      // TODO: createdDraftItem.original?.fsPath is null ATM
       // Files in both deleted and original created draft are considered as renamed
       // We don't want to add them to the tree and duplicate them
-      const renamedDraftItem = createdDraftItems.find(createdDraftItem => createdDraftItem.original?.id === deletedItem.id)
+      const renamedDraftItem = createdDraftItems.find(createdDraftItem => createdDraftItem.original?.fsPath === deletedItem.fsPath)
       if (renamedDraftItem) {
         continue
       }
 
-      const virtualDbItems: BaseItem & { fsPath: string } = {
-        id: deletedItem.id,
-        extension: getFileExtension(deletedItem.id),
-        stem: '',
+      const virtualDbItem: BaseItem = {
+        id: 'N/A',
         fsPath: deletedItem.fsPath,
+        extension: getFileExtension(deletedItem.fsPath),
+        stem: '',
         path: deletedItem.original?.path,
       }
 
-      dbItems.push(virtualDbItems)
+      dbItems.push(virtualDbItem)
     }
 
     return dbItems
@@ -65,7 +61,7 @@ TreeItem[] {
 
   for (const dbItem of virtualDbItems) {
     const itemHasPathField = 'path' in dbItem && dbItem.path
-    const fsPathSegments = dbItem.fsPath.split('/').filter(Boolean)
+    const fsPathSegments = dbItem.fsPath!.split('/').filter(Boolean)
     const directorySegments = fsPathSegments.slice(0, -1)
     let fileName = fsPathSegments[fsPathSegments.length - 1].replace(/\.[^/.]+$/, '')
 
@@ -77,13 +73,12 @@ TreeItem[] {
       fileName = name === 'index' ? 'home' : name
       const fileItem: TreeItem = {
         name: fileName,
-        fsPath: dbItem.fsPath,
+        fsPath: dbItem.fsPath!,
         type: 'file',
         prefix,
-        collections: [dbItem.id.split('/')[0]],
       }
 
-      if (dbItem.fsPath.endsWith('.gitkeep')) {
+      if (dbItem.fsPath!.endsWith('.gitkeep')) {
         fileItem.hide = true
       }
 
@@ -91,9 +86,9 @@ TreeItem[] {
         fileItem.routePath = dbItem.path as string
       }
 
-      const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+      const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
       if (draftFileItem) {
-        fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+        fileItem.status = getTreeStatus(draftFileItem)
       }
 
       tree.push(fileItem)
@@ -121,19 +116,12 @@ TreeItem[] {
           type: 'directory',
           children: [],
           prefix: dirPrefix,
-          collections: [dbItem.id.split('/')[0]],
         }
 
         directoryMap.set(dirFsPath, directory)
 
         if (!directoryChildren.find(child => child.fsPath === dirFsPath)) {
           directoryChildren.push(directory)
-        }
-      }
-      else {
-        const collection = dbItem.id.split('/')[0]
-        if (!directory.collections.includes(collection)) {
-          directory.collections.push(collection)
         }
       }
 
@@ -146,19 +134,18 @@ TreeItem[] {
     const { name, prefix } = parseName(fileName)
     const fileItem: TreeItem = {
       name,
-      fsPath: dbItem.fsPath,
+      fsPath: dbItem.fsPath!,
       type: 'file',
       prefix,
-      collections: [dbItem.id.split('/')[0]],
     }
 
-    if (dbItem.fsPath.endsWith('.gitkeep')) {
+    if (dbItem.fsPath!.endsWith('.gitkeep')) {
       fileItem.hide = true
     }
 
-    const draftFileItem = draftList?.find(draft => draft.id === dbItem.id)
+    const draftFileItem = draftList?.find(draft => draft.fsPath === dbItem.fsPath)
     if (draftFileItem) {
-      fileItem.status = getTreeStatus(draftFileItem.modified!, draftFileItem.original!)
+      fileItem.status = getTreeStatus(draftFileItem)
     }
 
     if (dbItem.path) {
@@ -168,45 +155,30 @@ TreeItem[] {
     directoryChildren.push(fileItem)
   }
 
-  calculateDirectoryStatuses(tree)
+  calculateDirectoryStatuses(tree, isDev)
 
   return tree
 }
 
-export function generateIdFromFsPath(fsPath: string, collectionName: string): string {
-  return joinURL(collectionName, fsPath)
-}
-
-export function getTreeStatus(modified?: BaseItem, original?: BaseItem): TreeStatus {
-  if (studioFlags.dev) {
+export function getTreeStatus(draftItem: DraftItem): TreeStatus {
+  if (draftItem.status === DraftStatus.Pristine) {
     return TreeStatus.Opened
   }
 
-  if (!original && !modified) {
-    throw new Error('Unconsistent state: both modified and original are undefined')
-  }
-
-  if (!original) {
-    return TreeStatus.Created
-  }
-
-  if (!modified) {
+  if (draftItem.status === DraftStatus.Deleted) {
     return TreeStatus.Deleted
   }
 
-  if (modified.id !== original.id) {
-    return TreeStatus.Renamed
+  if (draftItem.status === DraftStatus.Updated) {
+    return TreeStatus.Updated
   }
 
-  if (original.extension === ContentFileExtension.Markdown) {
-    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
-      return TreeStatus.Updated
+  if (draftItem.status === DraftStatus.Created) {
+    const { original, modified } = draftItem
+    if (original && modified && original.id !== modified.id) {
+      return TreeStatus.Renamed
     }
-  }
-  else {
-    if (JSON.stringify(original) !== JSON.stringify(modified)) {
-      return TreeStatus.Updated
-    }
+    return TreeStatus.Created
   }
 
   return TreeStatus.Opened
@@ -310,8 +282,8 @@ export function findDescendantsFileItemsFromFsPath(tree: TreeItem[], fsPath: str
   return descendants
 }
 
-function calculateDirectoryStatuses(items: TreeItem[]) {
-  if (studioFlags.dev) {
+function calculateDirectoryStatuses(items: TreeItem[], isDev = false) {
+  if (isDev) {
     return
   }
 
@@ -320,7 +292,7 @@ function calculateDirectoryStatuses(items: TreeItem[]) {
       continue
     }
 
-    calculateDirectoryStatuses(item.children)
+    calculateDirectoryStatuses(item.children, isDev)
 
     const childrenWithStatus = item.children.filter(child => child.status && child.status !== TreeStatus.Opened)
 

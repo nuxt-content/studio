@@ -16,11 +16,13 @@ export const createMockFile = (name: string, overrides?: Partial<File>): File =>
 }
 
 export const createMockMedia = (id: string, overrides?: Partial<MediaItem>): MediaItem => {
+  const fsPath = id.split('/').slice(1).join('/')
   const extension = id.split('.').pop()!
   const stem = id.split('.').slice(0, -1).join('.')
 
   return {
     id,
+    fsPath,
     stem,
     extension,
     ...overrides,

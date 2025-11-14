@@ -1,12 +1,13 @@
-import type { DatabaseItem, MediaItem, DatabasePageItem, DraftItem, BaseItem, ContentConflict } from '../types'
-import { DraftStatus, ContentFileExtension, TreeRootId } from '../types'
-import { isEqual } from './database'
-import { studioFlags } from '../composables/useStudio'
-import { generateContentFromDocument, generateDocumentFromContent } from './content'
+import type { DatabaseItem, MediaItem, DraftItem, ContentConflict, StudioHost } from '../types'
+import { DraftStatus } from '../types'
 import { fromBase64ToUTF8 } from '../utils/string'
+import { isMediaFile } from './file'
 
-export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
-  if (draftItem.id.startsWith(TreeRootId.Media)) {
+export async function checkConflict(host: StudioHost, draftItem: DraftItem<DatabaseItem | MediaItem>): Promise<ContentConflict | undefined> {
+  const generateContentFromDocument = host.document.generate.contentFromDocument
+  const isDocumentMatchingContent = host.document.utils.isMatchingContent
+
+  if (isMediaFile(draftItem.fsPath) || draftItem.fsPath.endsWith('.gitkeep')) {
     return
   }
 
@@ -26,14 +27,13 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
     return
   }
 
-  const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
-  const remoteContent = draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(draftItem.remoteFile.content!) : draftItem.remoteFile.content!
-  const remoteDocument = await generateDocumentFromContent(draftItem.id, remoteContent) as DatabaseItem
+  const remoteContent = fromBase64ToUTF8(draftItem.remoteFile.content)
 
-  if (isEqual(draftItem.original as DatabasePageItem, remoteDocument as DatabasePageItem)) {
+  if (await isDocumentMatchingContent(remoteContent, draftItem.original! as DatabaseItem)) {
     return
   }
 
+  const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
   if (localContent.trim() === remoteContent.trim()) {
     return
   }
@@ -44,57 +44,21 @@ export async function checkConflict(draftItem: DraftItem<DatabaseItem | MediaIte
   }
 }
 
-export function getDraftStatus(modified?: BaseItem, original?: BaseItem): DraftStatus {
-  if (studioFlags.dev) {
-    return DraftStatus.Pristine
-  }
-
-  if (!modified && !original) {
-    throw new Error('Unconsistent state: both modified and original are undefined')
-  }
-
-  if (!modified) {
-    return DraftStatus.Deleted
-  }
-
-  if (!original || original.id !== modified.id) {
-    return DraftStatus.Created
-  }
-
-  if (original.extension === ContentFileExtension.Markdown) {
-    if (!isEqual(original as DatabasePageItem, modified as DatabasePageItem)) {
-      return DraftStatus.Updated
-    }
-  }
-  else if (typeof original === 'object' && typeof modified === 'object') {
-    if (!isEqual(original as unknown as Record<string, unknown>, modified as unknown as Record<string, unknown>)) {
-      return DraftStatus.Updated
-    }
-  }
-  else {
-    if (JSON.stringify(original) !== JSON.stringify(modified)) {
-      return DraftStatus.Updated
-    }
-  }
-
-  return DraftStatus.Pristine
-}
-
-export function findDescendantsFromId(list: DraftItem[], id: string): DraftItem[] {
-  if ([TreeRootId.Content, TreeRootId.Media].includes(id as TreeRootId)) {
+export function findDescendantsFromFsPath(list: DraftItem[], fsPath: string): DraftItem[] {
+  if (fsPath === '/') {
     return list
   }
 
   const descendants: DraftItem[] = []
   for (const item of list) {
-    const isExactMatch = item.id === id
+    const isExactMatch = item.fsPath === fsPath
     // If exact match it means id refers to a file, there is no need to browse the list further
     if (isExactMatch) {
       return [item]
     }
 
     // Else it means id refers to a directory, we need to browse the list further to find all descendants
-    const isDescendant = item.id.startsWith(id + '/')
+    const isDescendant = item.fsPath.startsWith(fsPath + '/')
     if (isDescendant) {
       descendants.push(item)
     }

@@ -14,7 +14,7 @@
         :ui="{ leadingIcon: 'w-16 h-16', trailingIcon: 'w-16 h-16' }"
       >
         <template #default>
-          <span class="sr-only">Play Audio</span>
+          <span class="sr-only">{{ $t('studio.media.playAudio') }}</span>
         </template>
       </UButton>
     </div>
@@ -31,7 +31,7 @@
       @ended="isPlaying = false"
     >
       <source :src="src">
-      Your browser does not support the audio tag.
+      {{ $t('studio.media.audioTagNotSupported') }}
     </audio>
   </div>
 </template>

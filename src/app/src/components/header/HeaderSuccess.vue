@@ -11,7 +11,7 @@ function goBack() {
 <template>
   <div class="w-full flex items-center gap-2">
     <UTooltip
-      text="Back to content"
+      :text="$t('studio.tooltips.backToContent')"
       :kbds="['esc']"
     >
       <UButton
@@ -19,7 +19,7 @@ function goBack() {
         color="neutral"
         variant="soft"
         size="sm"
-        aria-label="Back"
+        :aria-label="$t('studio.buttons.back')"
         @click="goBack"
       />
     </UTooltip>

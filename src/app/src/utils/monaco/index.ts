@@ -7,6 +7,43 @@ export type { editor as Editor } from 'modern-monaco/editor-core'
 export type Monaco = Awaited<ReturnType<typeof import('modern-monaco')['init']>>
 
 export const setupMonaco = createSingletonPromise(async () => {
+  // List from https://github.com/microsoft/vscode/blob/2022aede9218d2fe7668115a75fa56032f863014/build/lib/i18n.js#L24C1-L34C3
+  const validNlsLanguages = [
+    'zh-tw',
+    'zh-cn',
+    'ja',
+    'ko',
+    'de',
+    'fr',
+    'es',
+    'ru',
+    'it',
+  ]
+  // @ts-expect-error - global property defined in the nuxt plugin
+  const locale: string = window.__NUXT_STUDIO_DEFAULT_LOCALE__ || 'en'
+
+  let finalLocale: string
+  if (locale === 'en') {
+    finalLocale = 'en'
+  }
+  else if (validNlsLanguages.includes(locale)) {
+    finalLocale = locale
+  }
+  else {
+    console.warn(`[Monaco] could not load locale '${locale}'. Valid locales: ${validNlsLanguages.join(', ')}`)
+    finalLocale = 'en'
+  }
+
+  try {
+    if (finalLocale !== 'en') {
+      const nlsUrl = `https://esm.sh/monaco-editor/esm/nls.messages.${finalLocale}.js`
+      await import(/* @vite-ignore */ nlsUrl)
+    }
+  }
+  catch (e) {
+    console.error(`[Monaco] error while loading locale: ${finalLocale}`, e)
+  }
+
   // @ts-expect-error -- use dynamic import to reduce bundle size
   const init = await import('https://esm.sh/modern-monaco').then(m => m.init)
   // @ts-expect-error -- use dynamic import to reduce bundle size

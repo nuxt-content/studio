@@ -56,10 +56,10 @@ function handleReload() {
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-highlighted">
-              New website version detected
+              {{ $t('studio.newVersionBanner.title') }}
             </p>
             <p class="text-xs text-muted mt-0.5">
-              A new version of your website has been deployed. Reload the app to see the latest changes.
+              {{ $t('studio.newVersionBanner.description') }}
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ function handleReload() {
           :loading="isReloadingApp"
           @click="handleReload"
         >
-          Reload
+          {{ $t('studio.buttons.reload') }}
         </UButton>
       </div>
     </div>

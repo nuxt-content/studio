@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   content: {
@@ -9,6 +10,13 @@ const props = defineProps({
 })
 
 const copied = ref(false)
+const { t } = useI18n()
+
+const tooltipText = computed(() => {
+  return copied.value
+    ? t('studio.tooltips.copiedToClipboard')
+    : t('studio.tooltips.copyToClipboard')
+})
 
 async function handleCopy() {
   if (!props.content) return
@@ -22,7 +30,7 @@ async function handleCopy() {
 </script>
 
 <template>
-  <UTooltip :text="copied ? 'Copied to clipboard' : 'Copy to clipboard'">
+  <UTooltip :text="tooltipText">
     <UButton
       :icon="copied ? 'i-lucide-clipboard-check' : 'i-lucide-clipboard'"
       variant="ghost"

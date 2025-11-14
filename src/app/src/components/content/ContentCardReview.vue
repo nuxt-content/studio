@@ -4,13 +4,13 @@ import type { PropType } from 'vue'
 import { ref, computed, nextTick, watch, onMounted, onUnmounted } from 'vue'
 import { DraftStatus, ContentFileExtension } from '../../types'
 import { getFileExtension } from '../../utils/file'
-import { generateContentFromDocument, isEqual } from '../../utils/content'
 import { useMonacoDiff } from '../../composables/useMonacoDiff'
 import { useMonaco } from '../../composables/useMonaco'
 import { useStudio } from '../../composables/useStudio'
 import { fromBase64ToUTF8 } from '../../utils/string'
+import { areContentEqual } from '../../utils/content'
 
-const { ui } = useStudio()
+const { ui, host } = useStudio()
 
 const props = defineProps({
   draftItem: {
@@ -89,6 +89,7 @@ watch(isOpen, () => {
 async function initializeEditor() {
   isLoadingContent.value = true
 
+  const generateContentFromDocument = host.document.generate.contentFromDocument
   const localOriginal = props.draftItem.original ? await generateContentFromDocument(props.draftItem.original as DatabaseItem) : null
   const remoteOriginal = props.draftItem.remoteFile?.content
     ? (props.draftItem.remoteFile.encoding === 'base64'
@@ -97,7 +98,7 @@ async function initializeEditor() {
     : null
   const modified = props.draftItem.modified ? await generateContentFromDocument(props.draftItem.modified as DatabasePageItem) : null
 
-  isAutomaticFormattingDetected.value = !isEqual(localOriginal, remoteOriginal)
+  isAutomaticFormattingDetected.value = !areContentEqual(localOriginal, remoteOriginal)
 
   // Wait for DOM to update before initializing Monaco
   await nextTick()
