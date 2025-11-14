@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
     password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
   })
 
-  if (!session.data) {
+  if (!session.data || Object.keys(session.data).length === 0) {
     // Delete the cookie to indicate that the session is inactive
     deleteCookie(event, 'studio-session-check')
   }
