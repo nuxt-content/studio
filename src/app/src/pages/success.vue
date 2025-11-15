@@ -6,7 +6,7 @@ import { useStudioState } from '../composables/useStudioState'
 import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
-const { git } = useStudio()
+const { gitProvider } = useStudio()
 const { manifestId } = useStudioState()
 const { t } = useI18n()
 
@@ -18,7 +18,7 @@ const changeCount = computed(() => {
   const queryCount = route.query.changeCount
   return queryCount ? Number.parseInt(queryCount as string, 10) : 0
 })
-const repositoryInfo = computed(() => git.getRepositoryInfo())
+const repositoryInfo = computed(() => gitProvider.api.getRepositoryInfo())
 
 const alertDescription = computed(() => {
   if (isWaitingForDeployment.value) {
@@ -78,7 +78,7 @@ onMounted(() => {
             <UButton
               :label="repositoryInfo.branch"
               icon="i-lucide-git-branch"
-              :to="git.getBranchUrl()"
+              :to="gitProvider.api.getBranchUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -88,8 +88,8 @@ onMounted(() => {
           <template #repo>
             <UButton
               :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-              icon="i-simple-icons:github"
-              :to="git.getRepositoryUrl()"
+              :icon="gitProvider.icon"
+              :to="gitProvider.api.getRepositoryUrl()"
               variant="link"
               target="_blank"
               :padded="false"

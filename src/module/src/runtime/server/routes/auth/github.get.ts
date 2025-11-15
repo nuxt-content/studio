@@ -204,8 +204,8 @@ export default eventHandler(async (event: H3Event) => {
   await session.update(defu({
     user: {
       contentUser: true,
-      githubId: user.id,
-      githubToken: token.access_token,
+      providerId: user.id.toString(),
+      accessToken: token.access_token,
       name: user.name || user.login,
       avatar: user.avatar_url,
       email: user.email,

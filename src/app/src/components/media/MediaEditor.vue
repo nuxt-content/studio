@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
-import type { MediaItem, DraftStatus, GithubFile } from '../../types'
+import type { MediaItem, DraftStatus, GitFile } from '../../types'
 import { isImageFile, isVideoFile, isAudioFile } from '../../utils/file'
 
 const props = defineProps({
@@ -8,8 +8,8 @@ const props = defineProps({
     type: Object as PropType<MediaItem>,
     required: true,
   },
-  githubFile: {
-    type: Object as PropType<GithubFile>,
+  remoteFile: {
+    type: Object as PropType<GitFile>,
     default: null,
   },
   status: {
@@ -28,7 +28,7 @@ const isAudio = computed(() => isAudioFile(props.mediaItem?.path || ''))
     <MediaEditorImage
       v-if="isImage"
       :media-item="mediaItem"
-      :github-file="githubFile"
+      :remote-file="remoteFile"
     />
     <MediaEditorVideo
       v-else-if="isVideo"

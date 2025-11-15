@@ -3,9 +3,9 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStudio } from '../composables/useStudio'
 import { useStudioState } from '../composables/useStudioState'
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 
-const { ui, host, git } = useStudio()
+const { ui, host, gitProvider } = useStudio()
 const { devMode, preferences, updatePreference, unsetActiveLocation } = useStudioState()
 const user = host.user.get()
 const { t } = useI18n()
@@ -17,7 +17,7 @@ const { t } = useI18n()
 //   },
 // })
 
-const repositoryUrl = computed(() => git.getBranchUrl())
+const repositoryUrl = computed(() => gitProvider.api.getBranchUrl())
 const userMenuItems = computed(() => [
   repositoryUrl.value
     ? [
@@ -26,7 +26,7 @@ const userMenuItems = computed(() => [
         // }
         {
           label: `${host.repository.owner}/${host.repository.repo}`,
-          icon: 'i-simple-icons:github',
+          icon: gitProvider.icon,
           to: repositoryUrl.value,
           target: '_blank',
         },

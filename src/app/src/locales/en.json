@@ -32,7 +32,7 @@
     "publish": {
       "failedTitle": "Publish Failed",
       "summary": "on {branch} of {repo} repository",
-      "errorTitle": "Error during GitHub publish",
+      "errorTitle": "Error during {providerName} publish",
       "failedGeneric": "Failed to publish changes"
     },
     "review": {
@@ -65,8 +65,7 @@
       "repository": "Repository",
       "branch": "Branch",
       "file": "File",
-      "description": "The content on GitHub differs from your website version. Ensure your latest changes are deployed and refresh the page.",
-      "githubVersion": "GitHub",
+      "description": "The content on {providerName} differs from your website version. Ensure your latest changes are deployed and refresh the page.",
       "websiteVersion": "Website"
     },
     "nav": {
@@ -98,7 +97,7 @@
       "metaSize": "Size",
       "fileName": "File name",
       "publicPath": "Public path",
-      "githubPath": "GitHub path",
+      "providerPath": "{providerName} path",
       "markdown": "Markdown"
     },
     "aria": {

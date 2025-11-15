@@ -19,7 +19,7 @@ import type {
 import { VirtualMediaCollectionName, generateStemFromFsPath } from '../utils/media'
 import { oneStepActions, STUDIO_ITEM_ACTION_DEFINITIONS, twoStepActions, STUDIO_BRANCH_ACTION_DEFINITIONS } from '../utils/context'
 import type { useTree } from './useTree'
-import type { useGit } from './useGit'
+import type { useGitProvider } from './useGitProvider'
 import type { useDraftMedias } from './useDraftMedias'
 import { useRoute, useRouter } from 'vue-router'
 import { findDescendantsFileItemsFromFsPath } from '../utils/tree'
@@ -28,7 +28,7 @@ import { upperFirst } from 'scule'
 
 export const useContext = createSharedComposable((
   host: StudioHost,
-  git: ReturnType<typeof useGit>,
+  gitProvider: ReturnType<typeof useGitProvider>,
   documentTree: ReturnType<typeof useTree>,
   mediaTree: ReturnType<typeof useTree>,
 ) => {
@@ -221,7 +221,7 @@ export const useContext = createSharedComposable((
       const { commitMessage } = params
       const documentFiles = await documentTree.draft.listAsRawFiles()
       const mediaFiles = await mediaTree.draft.listAsRawFiles()
-      await git.commitFiles([...documentFiles, ...mediaFiles], commitMessage)
+      await gitProvider.api.commitFiles([...documentFiles, ...mediaFiles], commitMessage)
 
       // @ts-expect-error params is null
       await itemActionHandler[StudioItemActionId.RevertAllItems]()

@@ -13,13 +13,13 @@ const props = defineProps({
   },
 })
 
-const { ui, git } = useStudio()
+const { ui, gitProvider } = useStudio()
 
 const diffEditorRef = ref<HTMLDivElement>()
 
 const conflict = computed<ContentConflict>(() => props.draftItem.conflict!)
-const repositoryInfo = computed(() => git.getRepositoryInfo())
-const fileGitHubUrl = computed(() => joinURL(git.getContentRootDirUrl(), props.draftItem.fsPath))
+const repositoryInfo = computed(() => gitProvider.api.getRepositoryInfo())
+const fileRemoteUrl = computed(() => joinURL(gitProvider.api.getContentRootDirUrl(), props.draftItem.fsPath))
 
 const language = computed(() => {
   switch (props.draftItem.fsPath.split('.').pop()) {
@@ -36,7 +36,7 @@ const language = computed(() => {
 })
 
 useMonacoDiff(diffEditorRef, {
-  original: conflict.value?.githubContent || '',
+  original: conflict.value?.remoteContent || '',
   modified: conflict.value?.localContent || '',
   language: language.value,
   colorMode: ui.colorMode,
@@ -49,7 +49,7 @@ useMonacoDiff(diffEditorRef, {
       <div class="flex items-start gap-3">
         <UIcon
           name="i-lucide-alert-triangle"
-          class="size-4 text-warning flex-shrink-0"
+          class="size-4 text-warning shrink-0"
         />
         <div class="flex-1">
           <h3 class="font-semibold text-highlighted text-sm mb-3">
@@ -60,7 +60,7 @@ useMonacoDiff(diffEditorRef, {
             <div class="flex items-center">
               <dt class="text-muted min-w-20 flex items-center gap-1.5">
                 <UIcon
-                  name="i-simple-icons:github"
+                  :name="gitProvider.icon"
                   class="size-3.5"
                 />
                 {{ $t('studio.conflict.repository') }}
@@ -68,7 +68,7 @@ useMonacoDiff(diffEditorRef, {
               <dd class="text-highlighted font-medium">
                 <UButton
                   :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-                  :to="git.getRepositoryUrl()"
+                  :to="gitProvider.api.getRepositoryUrl()"
                   variant="link"
                   target="_blank"
                   :padded="false"
@@ -88,7 +88,7 @@ useMonacoDiff(diffEditorRef, {
               <dd class="text-highlighted font-medium">
                 <UButton
                   :label="repositoryInfo.branch"
-                  :to="git.getBranchUrl()"
+                  :to="gitProvider.api.getBranchUrl()"
                   variant="link"
                   target="_blank"
                   :padded="false"
@@ -108,7 +108,7 @@ useMonacoDiff(diffEditorRef, {
               <dd class="text-highlighted font-medium">
                 <UButton
                   :label="props.draftItem.fsPath"
-                  :to="fileGitHubUrl"
+                  :to="fileRemoteUrl"
                   variant="link"
                   target="_blank"
                   size="xs"
@@ -118,7 +118,7 @@ useMonacoDiff(diffEditorRef, {
           </dl>
 
           <p class="text-xs mb-2">
-            {{ $t('studio.conflict.description') }}
+            {{ $t('studio.conflict.description', gitProvider.name) }}
           </p>
         </div>
       </div>
@@ -127,10 +127,10 @@ useMonacoDiff(diffEditorRef, {
     <div class="grid grid-cols-2 mb-2 px-2">
       <div class="flex items-center gap-1 text-sm text-muted">
         <UIcon
-          name="i-simple-icons:git"
+          :name="gitProvider.icon"
           class="size-3.5"
         />
-        {{ $t('studio.conflict.githubVersion') }}
+        {{ gitProvider.name }}
       </div>
       <div class="flex items-center gap-1 text-sm text-muted">
         <UIcon

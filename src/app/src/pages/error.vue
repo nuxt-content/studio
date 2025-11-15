@@ -7,13 +7,13 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const { git } = useStudio()
+const { gitProvider } = useStudio()
 
 const errorMessage = computed(() => {
   return (route.query.error as string) || t('studio.notifications.error.unknown')
 })
 
-const repositoryInfo = computed(() => git.getRepositoryInfo())
+const repositoryInfo = computed(() => gitProvider.api.getRepositoryInfo())
 
 function retry() {
   router.push('/review')
@@ -39,13 +39,13 @@ function retry() {
         <i18n-t
           keypath="studio.publish.summary"
           tag="p"
-          class="text-gray-600 flex items-center flex-wrap justify-center gap-x-1"
+          class="text-dimmed flex items-center flex-wrap justify-center gap-x-1"
         >
           <template #branch>
             <UButton
               :label="repositoryInfo.branch"
               icon="i-lucide-git-branch"
-              :to="git.getBranchUrl()"
+              :to="gitProvider.api.getBranchUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -54,8 +54,8 @@ function retry() {
           <template #repo>
             <UButton
               :label="`${repositoryInfo.owner}/${repositoryInfo.repo}`"
-              icon="i-simple-icons:github"
-              :to="git.getRepositoryUrl()"
+              :icon="gitProvider.icon"
+              :to="gitProvider.api.getRepositoryUrl()"
               variant="link"
               target="_blank"
               :padded="false"
@@ -66,7 +66,7 @@ function retry() {
 
       <UAlert
         icon="i-lucide-alert-triangle"
-        :title="$t('studio.publish.errorTitle')"
+        :title="$t('studio.publish.errorTitle', gitProvider.name)"
         :description="errorMessage"
         color="error"
         variant="soft"

@@ -2,7 +2,7 @@ import { joinURL, withLeadingSlash } from 'ufo'
 import type { DraftItem, StudioHost, MediaItem, RawFile } from '../types'
 import { VirtualMediaCollectionName, generateStemFromFsPath } from '../utils/media'
 import { DraftStatus } from '../types/draft'
-import type { useGit } from './useGit'
+import type { useGitProvider } from './useGitProvider'
 import { createSharedComposable } from '@vueuse/core'
 import { useDraftBase } from './useDraftBase'
 import { mediaStorage as storage } from '../utils/storage'
@@ -11,7 +11,7 @@ import { useHooks } from './useHooks'
 
 const hooks = useHooks()
 
-export const useDraftMedias = createSharedComposable((host: StudioHost, git: ReturnType<typeof useGit>) => {
+export const useDraftMedias = createSharedComposable((host: StudioHost, gitProvider: ReturnType<typeof useGitProvider>) => {
   const {
     isLoading,
     list,
@@ -25,7 +25,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
     unselect,
     load,
     getStatus,
-  } = useDraftBase('media', host, git, storage)
+  } = useDraftBase('media', host, gitProvider, storage)
 
   async function upload(parentFsPath: string, file: File) {
     const draftItem = await fileToDraftItem(parentFsPath, file)
@@ -40,7 +40,7 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, git: Ret
 
     return {
       fsPath,
-      githubFile: undefined,
+      remoteFile: undefined,
       status: DraftStatus.Created,
       modified: {
         id: joinURL(VirtualMediaCollectionName, fsPath),

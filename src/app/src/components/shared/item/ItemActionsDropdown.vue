@@ -4,7 +4,7 @@ import { computed, ref, watch, type PropType } from 'vue'
 import { StudioItemActionId } from '../../../types'
 import type { TreeItem, StudioAction } from '../../../types'
 import { useStudio } from '../../../composables/useStudio'
-import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.js'
+import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { useI18n } from 'vue-i18n'
 
 const { context } = useStudio()

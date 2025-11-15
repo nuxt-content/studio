@@ -32,7 +32,7 @@
     "publish": {
       "failedTitle": "Échec de la publication",
       "summary": "sur la branche {branch} du dépôt {repo}",
-      "errorTitle": "Erreur lors de la publication sur GitHub",
+      "errorTitle": "Erreur lors de la publication sur {providerName}",
       "failedGeneric": "Échec de la publication des changements"
     },
     "review": {
@@ -65,8 +65,7 @@
       "repository": "Dépôt",
       "branch": "Branche",
       "file": "Fichier",
-      "description": "Le contenu sur GitHub diffère de la version de votre site web. Assurez-vous que vos dernières modifications sont déployées et actualisez la page.",
-      "githubVersion": "GitHub",
+      "description": "Le contenu sur {providerName} diffère de la version de votre site web. Assurez-vous que vos dernières modifications sont déployées et actualisez la page.",
       "websiteVersion": "Site Web"
     },
     "nav": {
@@ -98,7 +97,7 @@
       "metaSize": "Taille",
       "fileName": "Nom du fichier",
       "publicPath": "Chemin public",
-      "githubPath": "Chemin GitHub",
+      "providerPath": "Chemin {providerName}",
       "markdown": "Markdown"
     },
     "aria": {

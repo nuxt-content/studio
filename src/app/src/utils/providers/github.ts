@@ -1,23 +1,11 @@
 import { ofetch } from 'ofetch'
-import { createSharedComposable } from '@vueuse/core'
-import type { RawFile, GithubFile, GitOptions, CommitFilesOptions } from '../types'
-import { DraftStatus } from '../types/draft'
-
 import { joinURL } from 'ufo'
+import type { GitOptions, GitProviderAPI, GitFile, RawFile, CommitResult, CommitFilesOptions } from '../../types'
+import { DraftStatus } from '../../types/draft'
 
-export const useDevelopmentGit = (_options: GitOptions) => {
-  return {
-    fetchFile: (_path: string, _options: { cached?: boolean } = {}): Promise<GithubFile | null> => Promise.resolve(null),
-    commitFiles: (_files: RawFile[], _message: string): Promise<{ success: boolean, commitSha: string, url: string } | null> => Promise.resolve(null),
-    getRepositoryUrl: () => '',
-    getBranchUrl: () => '',
-    getContentRootDirUrl: () => '',
-    getRepositoryInfo: () => ({ owner: '', repo: '', branch: '' }),
-  }
-}
-
-export const useGit = createSharedComposable(({ owner, repo, token, branch, rootDir, authorName, authorEmail }: GitOptions) => {
-  const gitFiles: Record<string, GithubFile> = {}
+export function createGitHubProvider(options: GitOptions): GitProviderAPI {
+  const { owner, repo, token, branch, rootDir, authorName, authorEmail } = options
+  const gitFiles: Record<string, GitFile> = {}
 
   // Support both token formats: "token {token}" for classic PATs, "Bearer {token}" for OAuth/fine-grained PATs
   const authHeader = token.startsWith('ghp_') ? `token ${token}` : `Bearer ${token}`
@@ -30,7 +18,7 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     },
   })
 
-  async function fetchFile(path: string, { cached = false }: { cached?: boolean } = {}): Promise<GithubFile | null> {
+  async function fetchFile(path: string, { cached = false }: { cached?: boolean } = {}): Promise<GitFile | null> {
     path = joinURL(rootDir, path)
     if (cached) {
       const file = gitFiles[path]
@@ -40,7 +28,12 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     }
 
     try {
-      const ghFile: GithubFile = await $api(`/contents/${path}?ref=${branch}`)
+      const ghResponse = await $api(`/contents/${path}?ref=${branch}`)
+      const ghFile: GitFile = {
+        ...ghResponse,
+        provider: 'github' as const,
+      }
+
       if (cached) {
         gitFiles[path] = ghFile
       }
@@ -64,7 +57,7 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     }
   }
 
-  function commitFiles(files: RawFile[], message: string): Promise<{ success: boolean, commitSha: string, url: string } | null> {
+  function commitFiles(files: RawFile[], message: string): Promise<CommitResult | null> {
     if (!token) {
       return Promise.resolve(null)
     }
@@ -168,6 +161,10 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     return `https://github.com/${owner}/${repo}/tree/${branch}`
   }
 
+  function getCommitUrl(sha: string) {
+    return `https://github.com/${owner}/${repo}/commit/${sha}`
+  }
+
   function getContentRootDirUrl() {
     return `https://github.com/${owner}/${repo}/tree/${branch}/${rootDir}/content`
   }
@@ -177,6 +174,7 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
       owner,
       repo,
       branch,
+      provider: 'github' as const,
     }
   }
 
@@ -185,7 +183,8 @@ export const useGit = createSharedComposable(({ owner, repo, token, branch, root
     commitFiles,
     getRepositoryUrl,
     getBranchUrl,
+    getCommitUrl,
     getContentRootDirUrl,
     getRepositoryInfo,
   }
-})
+}

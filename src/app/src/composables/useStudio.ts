@@ -1,5 +1,5 @@
 import { createSharedComposable } from '@vueuse/core'
-import { useDevelopmentGit, useGit } from './useGit'
+import { useGitProvider } from './useGitProvider'
 import { useUI } from './useUI'
 import { useContext } from './useContext'
 import { useDraftDocuments } from './useDraftDocuments'
@@ -23,22 +23,24 @@ export const useStudio = createSharedComposable(() => {
   }
 
   const gitOptions: GitOptions = {
+    provider: host.repository.provider,
     owner: host.repository.owner,
     repo: host.repository.repo,
     branch: host.repository.branch,
     rootDir: host.repository.rootDir,
-    token: host.user.get().githubToken,
+    token: host.user.get().accessToken,
     authorName: host.user.get().name,
     authorEmail: host.user.get().email,
+    instanceUrl: host.repository.instanceUrl,
   }
 
-  const git = devMode.value ? useDevelopmentGit(gitOptions) : useGit(gitOptions)
+  const gitProvider = useGitProvider(gitOptions, devMode.value)
   const ui = useUI(host)
-  const draftDocuments = useDraftDocuments(host, git)
+  const draftDocuments = useDraftDocuments(host, gitProvider)
   const documentTree = useTree(StudioFeature.Content, host, draftDocuments)
-  const draftMedias = useDraftMedias(host, git)
+  const draftMedias = useDraftMedias(host, gitProvider)
   const mediaTree = useTree(StudioFeature.Media, host, draftMedias)
-  const context = useContext(host, git, documentTree, mediaTree)
+  const context = useContext(host, gitProvider, documentTree, mediaTree)
 
   ui.setLocale(host.meta.defaultLocale)
 
@@ -73,7 +75,7 @@ export const useStudio = createSharedComposable(() => {
   return {
     isReady,
     host,
-    git,
+    gitProvider,
     ui,
     context,
     documentTree,

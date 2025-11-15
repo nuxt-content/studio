@@ -11,8 +11,8 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
       provider: 'github',
       email: 'dev@nuxt.com',
       name: 'Dev',
-      githubToken: '',
-      githubId: '',
+      accessToken: '',
+      providerId: '',
       avatar: '',
     })
   }

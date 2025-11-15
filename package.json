@@ -52,6 +52,7 @@
     "unstorage": "1.17.1"
   },
   "devDependencies": {
+    "@gitbeaker/core": "^43.8.0",
     "@iconify-json/simple-icons": "^1.2.57",
     "@nuxt/content": "^3.8.0",
     "@nuxt/eslint-config": "^1.10.0",

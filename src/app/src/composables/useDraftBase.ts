@@ -1,10 +1,10 @@
 import type { Storage } from 'unstorage'
 import { joinURL } from 'ufo'
-import type { DraftItem, StudioHost, GithubFile, DatabaseItem, MediaItem, BaseItem } from '../types'
+import type { DraftItem, StudioHost, GitFile, DatabaseItem, MediaItem, BaseItem } from '../types'
 import { ContentFileExtension } from '../types'
 import { DraftStatus } from '../types/draft'
 import { checkConflict, findDescendantsFromFsPath } from '../utils/draft'
-import type { useGit } from './useGit'
+import type { useGitProvider } from './useGitProvider'
 import { useHooks } from './useHooks'
 import { ref } from 'vue'
 import { useStudioState } from './useStudioState'
@@ -12,14 +12,14 @@ import { useStudioState } from './useStudioState'
 export function useDraftBase<T extends DatabaseItem | MediaItem>(
   type: 'media' | 'document',
   host: StudioHost,
-  git: ReturnType<typeof useGit>,
+  gitProvider: ReturnType<typeof useGitProvider>,
   storage: Storage<DraftItem<T>>,
 ) {
   const isLoading = ref(false)
   const list = ref<DraftItem<DatabaseItem | MediaItem>[]>([])
   const current = ref<DraftItem<DatabaseItem | MediaItem> | null>(null)
 
-  const ghPathPrefix = type === 'media' ? 'public' : 'content'
+  const remotePathPrefix = type === 'media' ? 'public' : 'content'
   const hostDb = type === 'media' ? host.media : host.document.db
   const hookName = `studio:draft:${type}:updated` as const
   const areDocumentsEqual = host.document.utils.areEqual
@@ -37,11 +37,11 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
       throw new Error(`Draft file already exists for document at ${fsPath}`)
     }
 
-    const githubFile = await git.fetchFile(joinURL(ghPathPrefix, fsPath), { cached: true }) as GithubFile
+    const remoteFile = await gitProvider.api.fetchFile(joinURL(remotePathPrefix, fsPath), { cached: true }) as GitFile
 
     const draftItem: DraftItem<T> = {
       fsPath,
-      githubFile,
+      remoteFile,
       status: getStatus(item, original!),
       modified: item,
     }
@@ -83,14 +83,14 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
             list.value = list.value.filter(item => item.fsPath !== fsPath)
           }
           else {
-          // TODO: check if gh file has been updated
-            const githubFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
+            // TODO: check if remote file has been updated
+            const remoteFile = await gitProvider.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
 
             deleteDraftItem = {
               fsPath: existingDraftItem.fsPath,
               status: DraftStatus.Deleted,
               original: existingDraftItem.original,
-              githubFile,
+              remoteFile,
             }
 
             list.value = list.value.map(item => item.fsPath === fsPath ? deleteDraftItem! : item) as DraftItem<T>[]
@@ -98,13 +98,13 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
         }
         else {
         // TODO: check if gh file has been updated
-          const githubFile = await git.fetchFile(joinURL('content', fsPath), { cached: true }) as GithubFile
+          const remoteFile = await gitProvider.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
 
           deleteDraftItem = {
             fsPath,
             status: DraftStatus.Deleted,
             original: originalDbItem,
-            githubFile,
+            remoteFile,
           }
 
           list.value.push(deleteDraftItem)

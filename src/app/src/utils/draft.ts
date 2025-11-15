@@ -15,31 +15,33 @@ export async function checkConflict(host: StudioHost, draftItem: DraftItem<Datab
     return
   }
 
-  if (draftItem.status === DraftStatus.Created && draftItem.githubFile) {
+  // TODO: No remote file found (might have been deleted remotely)
+  if (!draftItem.remoteFile || !draftItem.remoteFile.content) {
+    return
+  }
+
+  const remoteContent = draftItem.remoteFile?.encoding === 'base64'
+    ? fromBase64ToUTF8(draftItem.remoteFile.content!)
+    : draftItem.remoteFile!.content!
+
+  if (draftItem.status === DraftStatus.Created && remoteContent) {
     return {
-      githubContent: fromBase64ToUTF8(draftItem.githubFile.content!),
+      remoteContent,
       localContent: await generateContentFromDocument(draftItem.modified as DatabaseItem) as string,
     }
   }
 
-  // TODO: No GitHub file found (might have been deleted remotely)
-  if (!draftItem.githubFile || !draftItem.githubFile.content) {
-    return
-  }
-
-  const githubContent = fromBase64ToUTF8(draftItem.githubFile.content)
-
-  if (await isDocumentMatchingContent(githubContent, draftItem.original! as DatabaseItem)) {
+  if (await isDocumentMatchingContent(remoteContent, draftItem.original! as DatabaseItem)) {
     return
   }
 
   const localContent = await generateContentFromDocument(draftItem.original as DatabaseItem) as string
-  if (localContent.trim() === githubContent.trim()) {
+  if (localContent.trim() === remoteContent.trim()) {
     return
   }
 
   return {
-    githubContent,
+    remoteContent,
     localContent,
   }
 }
