@@ -8,7 +8,9 @@
       "signOut": "Sign out",
       "review": "Review",
       "publish": "Publish",
-      "back": "Back"
+      "back": "Back",
+      "backToCode": "Back to code",
+      "seeChanges": "See what's changed"
     },
     "headings": {
       "directories": "Directories",

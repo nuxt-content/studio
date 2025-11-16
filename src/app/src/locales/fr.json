@@ -8,7 +8,9 @@
       "signOut": "Se déconnecter",
       "review": "Valider",
       "publish": "Publier",
-      "back": "Retour"
+      "back": "Retour",
+      "backToCode": "Retour au code",
+      "seeChanges": "Voir les changements"
     },
     "headings": {
       "directories": "Dossiers",
