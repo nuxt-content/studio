@@ -183,11 +183,9 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       },
     },
     repository,
-    // New API
     user: {
       get: () => user,
     },
-
     document: {
       db: {
         get: async (fsPath: string): Promise<DatabaseItem | undefined> => {

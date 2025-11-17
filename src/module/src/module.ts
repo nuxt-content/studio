@@ -8,6 +8,42 @@ import { getAssetsStorageDevTemplate, getAssetsStorageTemplate } from './templat
 import { version } from '../../../package.json'
 import { setupDevMode } from './dev'
 
+interface BaseRepository {
+  /**
+   * The owner of the git repository.
+   */
+  owner: string
+  /**
+   * The repository name.
+   */
+  repo: string
+  /**
+   * The branch to use for the git repository.
+   * @default 'main'
+   */
+  branch?: string
+  /**
+   * The root directory to use for the git repository.
+   * @default ''
+   */
+  rootDir?: string
+  /**
+   * Whether the repository is private or public.
+   * If set to false, the 'public_repo' scope will be used instead of the 'repo' scope.
+   * @default true
+   */
+  private?: boolean
+}
+
+interface GitHubRepository extends BaseRepository {
+  provider: 'github'
+}
+
+interface GitLabRepository extends BaseRepository {
+  provider: 'gitlab'
+  instanceUrl?: string
+}
+
 interface ModuleOptions {
   /**
    * The route to access the studio login page.
@@ -58,42 +94,7 @@ interface ModuleOptions {
   /**
    * The git repository information to connect to.
    */
-  repository?: {
-    /**
-     * The provider to use for the git repository.
-     * @default 'github'
-     */
-    provider?: 'github' | 'gitlab'
-    /**
-     * The owner of the git repository.
-     */
-    owner: string
-    /**
-     * The repository name.
-     */
-    repo: string
-    /**
-     * The branch to use for the git repository.
-     * @default 'main'
-     */
-    branch?: string
-    /**
-     * The root directory to use for the git repository.
-     * @default ''
-     */
-    rootDir?: string
-    /**
-     * Whether the repository is private or public.
-     * If set to false, the 'public_repo' scope will be used instead of the 'repo' scope.
-     * @default true
-     */
-    private?: boolean
-    /**
-     * The GitLab instance URL (for self-hosted GitLab).
-     * @default 'https://gitlab.com'
-     */
-    instanceUrl?: string
-  }
+  repository?: GitHubRepository | GitLabRepository
   /**
    * Enable Nuxt Studio to edit content and media files on your filesystem.
    */
@@ -145,7 +146,7 @@ export default defineNuxtModule<ModuleOptions>({
       gitlab: {
         applicationId: process.env.STUDIO_GITLAB_APPLICATION_ID,
         applicationSecret: process.env.STUDIO_GITLAB_APPLICATION_SECRET,
-        instanceUrl: process.env.STUDIO_GITLAB_INSTANCE_URL || 'https://gitlab.com',
+        instanceUrl: process.env.STUDIO_GITLAB_INSTANCE_URL || process.env.CI_SERVER_URL || 'https://gitlab.com',
       },
     },
     i18n: {
