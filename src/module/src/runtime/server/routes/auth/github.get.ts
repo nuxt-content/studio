@@ -19,6 +19,11 @@ export interface OAuthGitHubConfig {
    */
   clientSecret?: string
   /**
+   * A GitHub Personal Access Token (PAT) to bypass OAuth.
+   * @default process.env.STUDIO_GITHUB_PAT
+   */
+  pat?: string
+  /**
    * GitHub OAuth Scope
    * @default []
    * @see https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
@@ -84,6 +89,7 @@ export default eventHandler(async (event: H3Event) => {
   const config = defu(studioConfig?.auth?.github, {
     clientId: process.env.STUDIO_GITHUB_CLIENT_ID,
     clientSecret: process.env.STUDIO_GITHUB_CLIENT_SECRET,
+    pat: process.env.STUDIO_GITHUB_PAT,
     redirectURL: process.env.STUDIO_GITHUB_REDIRECT_URL,
     authorizationURL: 'https://github.com/login/oauth/authorize',
     tokenURL: 'https://github.com/login/oauth/access_token',
@@ -102,10 +108,91 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  if (!config.clientId || !config.clientSecret) {
+  // Check auth strategies
+  const hasOAuth = config.clientId && config.clientSecret
+  const hasPat = !!config.pat
+
+  if (hasPat && hasOAuth) {
+    console.warn('Nuxt Studio: Both PAT and OAuth (clientId/clientSecret) are configured. Defaulting to OAuth flow.')
+  }
+
+  // PAT-only flow
+  // If *only* PAT is provided (no OAuth), log in directly.
+  if (hasPat && !hasOAuth) {
+    const accessToken = config.pat!
+    let user: Endpoints['GET /user']['response']['data']
+    try {
+      user = await $fetch(`${config.apiURL}/user`, {
+        headers: {
+          'User-Agent': `Nuxt-Studio-PAT-Sync`,
+          'Authorization': `token ${accessToken}`,
+        },
+      })
+    }
+    catch (e) {
+      throw createError({ statusCode: 500, message: 'Failed to fetch user with GitHub PAT', data: e })
+    }
+
+    // if no public email, check the private ones
+    if (!user.email && config.emailRequired) {
+      try {
+        const emails: Endpoints['GET /user/emails']['response']['data'] = await $fetch(`${config.apiURL}/user/emails`, {
+          headers: {
+            'User-Agent': `Nuxt-Studio-PAT-Sync`,
+            'Authorization': `token ${accessToken}`,
+          },
+        })
+        const primaryEmail = emails.find((email: { primary: boolean }) => email.primary)
+        if (primaryEmail) {
+          user.email = primaryEmail.email
+        }
+        else {
+          console.warn('Nuxt Studio: Could not find primary email for PAT user.')
+        }
+      }
+      catch (e) {
+        console.error('Nuxt Studio: Failed to fetch emails for PAT user.', e)
+      }
+    }
+
+    // Success: Create session
+    const session = await useSession(event, {
+      name: 'studio-session',
+      password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
+    })
+
+    await session.update(defu({
+      user: {
+        contentUser: true,
+        githubId: user.id,
+        githubToken: accessToken,
+        name: user.name ?? user.login,
+        avatar: user.avatar_url ?? '',
+        email: user.email ?? '',
+        provider: 'github-pat',
+      },
+    }, session.data))
+
+    const redirect = decodeURIComponent(getCookie(event, 'studio-redirect') || '')
+    deleteCookie(event, 'studio-redirect')
+
+    // Set a cookie to indicate that the session is active
+    setCookie(event, 'studio-session-check', 'true', { httpOnly: false })
+
+    // make sure the redirect is a valid relative path (avoid also // which is not a valid URL)
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+      return sendRedirect(event, redirect)
+    }
+
+    return sendRedirect(event, '/')
+  }
+
+  // If we're here, it means PAT-only flow didn't run.
+  // We must now be in OAuth flow, so check for OAuth creds.
+  if (!hasOAuth) {
     throw createError({
       statusCode: 500,
-      message: 'Missing GitHub client ID or secret',
+      message: 'Missing GitHub client ID/secret OR GitHub PAT',
       data: config,
     })
   }
@@ -151,8 +238,8 @@ export default eventHandler(async (event: H3Event) => {
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {
       grant_type: 'authorization_code',
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
+      client_id: config.clientId ?? '',
+      client_secret: config.clientSecret ?? '',
       redirect_uri: config.redirectURL,
       code: query.code,
     },

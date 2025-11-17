@@ -1,6 +1,14 @@
-import { eventHandler, getQuery, sendRedirect, setCookie } from 'h3'
+import { eventHandler, getQuery, sendRedirect, setCookie, useSession } from 'h3'
+import { useRuntimeConfig } from '#imports'
 
-export default eventHandler((event) => {
+export default eventHandler(async (event) => {
+  const session = await useSession(event, {
+    name: 'studio-session',
+    password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
+  })
+  if (session.data?.user) {
+    return sendRedirect(event, '/')
+  }
   const { redirect } = getQuery(event)
   if (redirect) {
     setCookie(event, 'studio-redirect', String(redirect), {
