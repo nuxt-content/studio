@@ -166,6 +166,17 @@
         "image": "Image"
       },
       "writeSomething": "Écrivez quelque chose",
+      "snippets": {
+        "title": "titre",
+        "item1": "Élément 1",
+        "item2": "Élément 2",
+        "language": "langage",
+        "code": "code",
+        "link": "lien",
+        "alt": "alt",
+        "src": "src",
+        "value": "valeur"
+      },
       "docs": {
         "path": "Chemin dans le projet :",
         "props": "Props",

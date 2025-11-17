@@ -166,6 +166,17 @@
         "image": "Image"
       },
       "writeSomething": "Write Something",
+      "snippets": {
+        "title": "title",
+        "item1": "Item 1",
+        "item2": "Item 2",
+        "language": "language",
+        "code": "code",
+        "link": "link",
+        "alt": "alt",
+        "src": "src",
+        "value": "value"
+      },
       "docs": {
         "path": "Path in project:",
         "props": "Props",
