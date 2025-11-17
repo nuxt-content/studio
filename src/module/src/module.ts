@@ -166,6 +166,7 @@ export default defineNuxtModule<ModuleOptions>({
         sessionSecret: createHash('md5').update([
           options.auth?.github?.clientId,
           options.auth?.github?.clientSecret,
+          options.auth?.github?.pat,
         ].join('')).digest('hex'),
         // @ts-expect-error todo fix github type issue
         github: options.auth?.github,
