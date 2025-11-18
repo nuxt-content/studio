@@ -11,11 +11,21 @@ const createDocsSchema = () => z.object({
   })).optional(),
 })
 
+const createAuthorsSchema = () => z.object({
+  name: z.string(),
+  avatar: z.object({
+    src: z.string(),
+    alt: z.string(),
+  }),
+  to: z.string(),
+  username: z.string(),
+})
+
 const collections: Record<string, DefinedCollection> = {
-  custom: defineCollection({
+  pages: defineCollection({
     type: 'page',
     source: {
-      include: '3.custom-case/**/*.md',
+      include: '3.pages/**/*.md',
       prefix: '/',
     },
   }),
@@ -29,9 +39,16 @@ const collections: Record<string, DefinedCollection> = {
     type: 'page',
     source: {
       include: '**',
-      exclude: ['index.md', '3.custom-case/**/*.md'],
+      exclude: ['index.md', '3.pages/**/*.md', 'authors/**/*.yml'],
     },
     schema: createDocsSchema(),
+  }),
+  authors: defineCollection({
+    type: 'data',
+    source: {
+      include: 'authors/**/*.yml',
+    },
+    schema: createAuthorsSchema(),
   }),
 }
 
