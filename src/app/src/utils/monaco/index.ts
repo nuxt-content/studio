@@ -19,8 +19,9 @@ export const setupMonaco = createSingletonPromise(async () => {
     'ru',
     'it',
   ]
-  // @ts-expect-error - global property defined in the nuxt plugin
-  const locale: string = window.__NUXT_STUDIO_DEFAULT_LOCALE__ || 'en'
+
+  const host = window.useStudioHost()
+  const locale: string = host.meta.defaultLocale || 'en'
 
   let finalLocale: string
   if (locale === 'en') {
