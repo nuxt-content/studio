@@ -147,7 +147,7 @@ export function createGitLabProvider(options: GitOptions): GitProviderAPI {
   function getFileUrl(feature: StudioFeature, fsPath: string) {
     const featureDir = feature === StudioFeature.Content ? 'content' : 'public'
     const fullPath = joinURL(rootDir, featureDir, fsPath)
-    return `${instanceUrl}/${owner}/${repo}/-/tree/${branch}/${fullPath}`
+    return `${instanceUrl}/${owner}/${repo}/-/blob/${branch}/${fullPath}`
   }
 
   function getRepositoryInfo() {
