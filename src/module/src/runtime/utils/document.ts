@@ -249,14 +249,19 @@ export async function generateDocumentFromYAMLContent(id: string, content: strin
     parsed = { body: data }
   }
 
-  return {
+  const document = {
     id,
     extension: getFileExtension(id),
     stem: generateStemFromId(id),
     meta: {},
     ...parsed,
-    body: parsed.body || parsed,
   } as DatabaseItem
+
+  if (parsed.body) {
+    document.body = parsed.body
+  }
+
+  return document
 }
 
 export async function generateDocumentFromJSONContent(id: string, content: string): Promise<DatabaseItem> {

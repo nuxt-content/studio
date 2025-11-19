@@ -123,21 +123,21 @@ watch(showAutomaticFormattingDiff, async (show) => {
 
 // Trigger on document changes
 watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
-  if (document.value?.body) {
+  if (document.value) {
     setContent(document.value)
   }
 }, { immediate: true })
 
 async function setContent(document: DatabasePageItem) {
-  const contentFromDocument = host.document.generate.contentFromDocument
-  const md = await contentFromDocument(document) || ''
-  content.value = md
-  setEditorContent(md, true)
+  const generateContentFromDocument = host.document.generate.contentFromDocument
+  const generatedContent = await generateContentFromDocument(document) || ''
+  content.value = generatedContent
+  setEditorContent(generatedContent, true)
   currentDocumentId.value = document.id
 
   isAutomaticFormattingDetected.value = false
   if (props.draftItem.original && props.draftItem.remoteFile?.content) {
-    const localOriginal = await contentFromDocument(props.draftItem.original as DatabaseItem) as string
+    const localOriginal = await generateContentFromDocument(props.draftItem.original as DatabaseItem) as string
     const remoteOriginal = props.draftItem.remoteFile.encoding === 'base64' ? fromBase64ToUTF8(props.draftItem.remoteFile.content!) : props.draftItem.remoteFile.content!
 
     isAutomaticFormattingDetected.value = !areContentEqual(localOriginal, remoteOriginal)
