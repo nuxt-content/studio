@@ -116,9 +116,8 @@ const actions = computed<DropdownMenuItem[][]>(() => {
         }
       },
     }
-  })
+  }) as DropdownMenuItem[]
 
-  // Return groups: main actions and extra actions
   const groups: DropdownMenuItem[][] = [itemActions]
 
   if (props.extraActions.length > 0) {
