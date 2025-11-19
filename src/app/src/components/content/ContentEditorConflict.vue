@@ -3,8 +3,7 @@ import { ref, computed, type PropType } from 'vue'
 import type { ContentConflict, DraftItem } from '../../types'
 import { useMonacoDiff } from '../../composables/useMonacoDiff'
 import { useStudio } from '../../composables/useStudio'
-import { ContentFileExtension } from '../../types'
-import { joinURL } from 'ufo'
+import { ContentFileExtension, StudioFeature } from '../../types'
 
 const props = defineProps({
   draftItem: {
@@ -19,7 +18,7 @@ const diffEditorRef = ref<HTMLDivElement>()
 
 const conflict = computed<ContentConflict>(() => props.draftItem.conflict!)
 const repositoryInfo = computed(() => gitProvider.api.getRepositoryInfo())
-const fileRemoteUrl = computed(() => joinURL(gitProvider.api.getContentRootDirUrl(), props.draftItem.fsPath))
+const fileRemoteUrl = computed(() => gitProvider.api.getFileUrl(StudioFeature.Content, props.draftItem.fsPath))
 
 const language = computed(() => {
   switch (props.draftItem.fsPath.split('.').pop()) {

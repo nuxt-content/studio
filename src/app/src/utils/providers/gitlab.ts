@@ -2,6 +2,7 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import type { GitOptions, GitProviderAPI, GitFile, RawFile, CommitResult, CommitFilesOptions } from '../../types'
 import { DraftStatus } from '../../types/draft'
+import { StudioFeature } from '../../types'
 
 export function createGitLabProvider(options: GitOptions): GitProviderAPI {
   const { owner, repo, token, branch, rootDir, authorName, authorEmail, instanceUrl = 'https://gitlab.com' } = options
@@ -143,8 +144,10 @@ export function createGitLabProvider(options: GitOptions): GitProviderAPI {
     return `${instanceUrl}/${owner}/${repo}/-/commit/${sha}`
   }
 
-  function getContentRootDirUrl() {
-    return `${instanceUrl}/${owner}/${repo}/-/tree/${branch}/${rootDir}/content`
+  function getFileUrl(feature: StudioFeature, fsPath: string) {
+    const featureDir = feature === StudioFeature.Content ? 'content' : 'public'
+    const fullPath = joinURL(rootDir, featureDir, fsPath)
+    return `${instanceUrl}/${owner}/${repo}/-/tree/${branch}/${fullPath}`
   }
 
   function getRepositoryInfo() {
@@ -162,7 +165,7 @@ export function createGitLabProvider(options: GitOptions): GitProviderAPI {
     getRepositoryUrl,
     getBranchUrl,
     getCommitUrl,
-    getContentRootDirUrl,
+    getFileUrl,
     getRepositoryInfo,
   }
 }

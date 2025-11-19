@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { computeItemActions, oneStepActions } from '../../../utils/context'
 import { useStudio } from '../../../composables/useStudio'
 import type { StudioAction } from '../../../types'
-import { StudioItemActionId } from '../../../types'
+import { StudioItemActionId, TreeStatus } from '../../../types'
 import { MEDIA_EXTENSIONS } from '../../../utils/file'
+import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { useI18n } from 'vue-i18n'
 
-const { context } = useStudio()
+const { context, gitProvider } = useStudio()
 const { t } = useI18n()
 const fileInputRef = ref<HTMLInputElement>()
 const toolbarRef = ref<HTMLElement>()
@@ -23,44 +23,25 @@ watch(context.actionInProgress, (action) => {
 
 const item = computed(() => context.activeTree.value.currentItem.value)
 
-const getActionTooltip = (action: StudioAction<StudioItemActionId>, isPending: boolean) => {
-  if (isPending) {
-    const verb = action.id.split('-')[0]
-    return t('studio.actions.confirmAction', { action: t(`studio.actions.verbs.${verb}`, verb) })
+const extraActions = computed<DropdownMenuItem[]>(() => {
+  const actions: DropdownMenuItem[] = []
+
+  if (item.value.type === 'file' && item.value.status !== TreeStatus.Created) {
+    const providerInfo = gitProvider.api.getRepositoryInfo()
+    const provider = providerInfo.provider
+    const feature = context.currentFeature.value
+
+    if (feature) {
+      actions.push({
+        label: t(`studio.actions.labels.openGitProvider`, { providerName: gitProvider.name }),
+        icon: provider === 'gitlab' ? 'i-simple-icons:gitlab' : 'i-simple-icons:github',
+        to: gitProvider.api.getFileUrl(feature, item.value.fsPath),
+        target: '_blank',
+      })
+    }
   }
-  return action.tooltip ? t(action.tooltip) : t(action.label)
-}
 
-const actions = computed(() => {
-  const hasPendingAction = pendingAction.value !== null
-  const hasLoadingAction = loadingAction.value !== null
-
-  return computeItemActions(context.itemActions.value, item.value, context.currentFeature.value).map((action) => {
-    const isOneStepAction = oneStepActions.includes(action.id)
-    const isPending = pendingAction.value?.id === action.id
-    const isLoading = loadingAction.value?.id === action.id
-    const isDeleteAction = action.id === StudioItemActionId.DeleteItem
-
-    let icon = action.icon
-    if (isLoading) {
-      icon = 'i-ph-circle-notch'
-    }
-    else if (isPending) {
-      icon = isDeleteAction ? 'i-ph-x' : 'i-ph-check'
-    }
-
-    return {
-      ...action,
-      color: isPending ? (isDeleteAction ? 'error' : 'secondary') : 'neutral',
-      variant: isPending ? 'soft' : 'ghost',
-      icon,
-      tooltip: getActionTooltip(action, isPending),
-      disabled: (hasPendingAction && !isPending) || hasLoadingAction,
-      isOneStepAction,
-      isPending,
-      isLoading,
-    }
-  })
+  return actions
 })
 
 const handleFileSelection = (event: Event) => {
@@ -72,49 +53,6 @@ const handleFileSelection = (event: Event) => {
       files: Array.from(target.files),
     })
     target.value = ''
-  }
-}
-
-const actionHandler = (action: StudioAction<StudioItemActionId> & { isPending?: boolean, isOneStepAction?: boolean, isLoading?: boolean }, event: Event) => {
-  // Stop propagation to prevent click outside handler from triggering
-  event.stopPropagation()
-
-  // Don't allow action if already loading
-  if (action.isLoading) {
-    return
-  }
-
-  if (action.id === StudioItemActionId.UploadMedia) {
-    fileInputRef.value?.click()
-    return
-  }
-
-  const targetItem = item.value
-
-  // For two-steps actions, execute without confirmation
-  if (!action.isOneStepAction) {
-    if (action.id === StudioItemActionId.RenameItem) {
-      // Navigate to parent since rename form is displayed in the parent tree
-      context.activeTree.value.selectParentByFsPath(targetItem.fsPath)
-    }
-
-    action.handler!(targetItem)
-    return
-  }
-
-  // Second click on pending action - execute it
-  if (action.isPending) {
-    loadingAction.value = action
-    action.handler!(targetItem)
-    pendingAction.value = null
-  }
-  // Click on different action while one is pending - cancel pending state
-  else if (pendingAction.value !== null) {
-    pendingAction.value = null
-  }
-  // First click - enter pending state
-  else {
-    pendingAction.value = action
   }
 }
 
@@ -138,23 +76,10 @@ onUnmounted(() => {
     ref="toolbarRef"
     class="flex items-center -mr-1"
   >
-    <UTooltip
-      v-for="action in actions"
-      :key="action.id"
-      :text="action.tooltip"
-      :open="action.isPending ? true : undefined"
-    >
-      <UButton
-        :key="action.id"
-        :icon="action.icon"
-        :disabled="action.disabled"
-        size="sm"
-        :color="action.color as never"
-        :variant="action.variant as never"
-        :loading="action.isLoading"
-        @click="actionHandler(action, $event)"
-      />
-    </UTooltip>
+    <ItemActionsDropdown
+      :item="item"
+      :extra-actions="extraActions"
+    />
 
     <input
       ref="fileInputRef"

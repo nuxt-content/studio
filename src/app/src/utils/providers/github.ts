@@ -1,6 +1,7 @@
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import type { GitOptions, GitProviderAPI, GitFile, RawFile, CommitResult, CommitFilesOptions } from '../../types'
+import { StudioFeature } from '../../types'
 import { DraftStatus } from '../../types/draft'
 
 export function createGitHubProvider(options: GitOptions): GitProviderAPI {
@@ -165,8 +166,10 @@ export function createGitHubProvider(options: GitOptions): GitProviderAPI {
     return `https://github.com/${owner}/${repo}/commit/${sha}`
   }
 
-  function getContentRootDirUrl() {
-    return `https://github.com/${owner}/${repo}/tree/${branch}/${rootDir}/content`
+  function getFileUrl(feature: StudioFeature, fsPath: string) {
+    const featureDir = feature === StudioFeature.Content ? 'content' : 'public'
+    const fullPath = joinURL(rootDir, featureDir, fsPath)
+    return `https://github.com/${owner}/${repo}/blob/${branch}/${fullPath}`
   }
 
   function getRepositoryInfo() {
@@ -184,7 +187,7 @@ export function createGitHubProvider(options: GitOptions): GitProviderAPI {
     getRepositoryUrl,
     getBranchUrl,
     getCommitUrl,
-    getContentRootDirUrl,
+    getFileUrl,
     getRepositoryInfo,
   }
 }

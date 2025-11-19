@@ -15,6 +15,10 @@ const props = defineProps({
     type: Object as PropType<TreeItem>,
     required: true,
   },
+  extraActions: {
+    type: Array as PropType<DropdownMenuItem[]>,
+    default: () => [],
+  },
 })
 
 const isOpen = ref(false)
@@ -44,11 +48,11 @@ const getPendingActionLabel = (action: StudioAction<StudioItemActionId> | null) 
   return t('studio.actions.confirmAction', { action: t(`studio.actions.verbs.${verb}`, verb) })
 }
 
-const actions = computed<DropdownMenuItem[]>(() => {
+const actions = computed<DropdownMenuItem[][]>(() => {
   const hasPendingAction = pendingAction.value !== null
   const hasLoadingAction = loadingAction.value !== null
 
-  return computeItemActions(context.itemActions.value, props.item, context.currentFeature.value).map((action) => {
+  const itemActions = computeItemActions(context.itemActions.value, props.item, context.currentFeature.value).map((action) => {
     const isOneStepAction = oneStepActions.includes(action.id)
     const isPending = pendingAction.value?.id === action.id
     const isLoading = loadingAction.value?.id === action.id
@@ -79,9 +83,14 @@ const actions = computed<DropdownMenuItem[]>(() => {
 
         // For two-step actions, execute it without confirmation
         if (!isOneStepAction) {
+          // Navigate into folder before adding form creation
           if (props.item.type === 'directory' && [StudioItemActionId.CreateDocument, StudioItemActionId.CreateDocumentFolder, StudioItemActionId.CreateMediaFolder].includes(action.id)) {
-            // Navigate into folder before adding form creation
             context.activeTree.value.selectItemByFsPath(props.item.fsPath)
+          }
+
+          // Navigate to parent folder if needed before renaming
+          if (action.id === StudioItemActionId.RenameItem && context.activeTree.value.currentItem.value.fsPath === props.item.fsPath) {
+            context.activeTree.value.selectParentByFsPath(props.item.fsPath)
           }
 
           action.handler!(props.item)
@@ -108,6 +117,15 @@ const actions = computed<DropdownMenuItem[]>(() => {
       },
     }
   })
+
+  // Return groups: main actions and extra actions
+  const groups: DropdownMenuItem[][] = [itemActions]
+
+  if (props.extraActions.length > 0) {
+    groups.push(props.extraActions)
+  }
+
+  return groups
 })
 
 const pendingActionLabel = computed(() => getPendingActionLabel(pendingAction.value))

@@ -1,4 +1,5 @@
 import type { DraftStatus } from './draft'
+import type { StudioFeature } from '../types'
 
 export type GitProviderType = 'github' | 'gitlab'
 
@@ -48,7 +49,7 @@ export interface GitProviderAPI {
   getRepositoryUrl(): string
   getBranchUrl(): string
   getCommitUrl(sha: string): string
-  getContentRootDirUrl(): string
+  getFileUrl(feature: StudioFeature, fsPath: string): string
   getRepositoryInfo(): { owner: string, repo: string, branch: string, provider: GitProviderType | null }
 }
 

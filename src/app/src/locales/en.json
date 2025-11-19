@@ -127,7 +127,8 @@
         "uploadMedia": "Upload media",
         "duplicateItem": "Duplicate",
         "revertItem": "Revert changes",
-        "publishBranch": "Publish branch"
+        "publishBranch": "Publish branch",
+        "openGitProvider": "Open on {providerName}"
       },
       "tooltips": {
         "createDocument": "Create a new file",
