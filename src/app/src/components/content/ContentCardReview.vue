@@ -157,7 +157,7 @@ async function initializeEditor() {
           v-else
           class="relative w-full h-full"
         >
-          <AlertMDCFormatting v-if="isAutomaticFormattingDetected" />
+          <MDCFormattingBanner v-if="isAutomaticFormattingDetected" />
           <div
             ref="diffEditorRef"
             class="w-full h-full"

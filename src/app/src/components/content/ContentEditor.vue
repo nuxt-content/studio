@@ -4,6 +4,7 @@ import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
 import { DraftStatus, type DatabasePageItem, type DraftItem } from '../../types'
 import { useStudio } from '../../composables/useStudio'
+import { useStudioState } from '../../composables/useStudioState'
 
 const props = defineProps({
   draftItem: {
@@ -18,6 +19,7 @@ const props = defineProps({
 })
 
 const { context } = useStudio()
+const { preferences } = useStudioState()
 
 const document = computed<DatabasePageItem>({
   get() {
@@ -60,6 +62,12 @@ const document = computed<DatabasePageItem>({
     <ContentEditorConflict
       v-if="draftItem.conflict"
       :draft-item="draftItem"
+    />
+    <ContentEditorTipTap
+      v-else-if="preferences.editorMode === 'tiptap'"
+      v-model="document"
+      :draft-item="draftItem"
+      :read-only="readOnly"
     />
     <ContentEditorCode
       v-else

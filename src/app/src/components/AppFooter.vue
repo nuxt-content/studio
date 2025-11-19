@@ -96,6 +96,17 @@ function closeStudio() {
 
     <div class="flex items-center">
       <UTooltip
+        :text="preferences.editorMode === 'code' ? $t('studio.tooltips.switchToTipTap') : $t('studio.tooltips.switchToCode')"
+        :delay-duration="0"
+      >
+        <UButton
+          :icon="preferences.editorMode === 'code' ? 'i-lucide-whole-word' : 'i-lucide-code'"
+          variant="ghost"
+          color="neutral"
+          @click="updatePreference('editorMode', preferences.editorMode === 'code' ? 'tiptap' : 'code')"
+        />
+      </UTooltip>
+      <UTooltip
         :text="syncTooltipText"
         :delay-duration="0"
       >

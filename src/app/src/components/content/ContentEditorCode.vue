@@ -155,7 +155,7 @@ function toggleDiffView() {
 
 <template>
   <div class="relative h-full flex flex-col">
-    <AlertMDCFormatting
+    <MDCFormattingBanner
       v-if="isAutomaticFormattingDetected"
       show-action
       :is-diff-shown="showAutomaticFormattingDiff"
