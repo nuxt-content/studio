@@ -127,7 +127,8 @@
         "uploadMedia": "Medien hochladen",
         "duplicateItem": "Duplizieren",
         "revertItem": "Änderungen rückgängig machen",
-        "publishBranch": "Branch veröffentlichen"
+        "publishBranch": "Branch veröffentlichen",
+        "openGitProvider": "Auf {providerName} öffnen"
       },
       "tooltips": {
         "createDocument": "Neue Datei erstellen",
