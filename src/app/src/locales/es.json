@@ -1,0 +1,192 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Editar esta página",
+      "retryPublish": "Reintentar publicación",
+      "reloadApp": "Recargar aplicación",
+      "reload": "Recargar",
+      "signOut": "Cerrar sesión",
+      "review": "Revisar",
+      "publish": "Publicar",
+      "back": "Atrás",
+      "backToCode": "Volver al código",
+      "seeChanges": "Ver cambios"
+    },
+    "headings": {
+      "directories": "Directorios",
+      "files": "Archivos",
+      "media": "Multimedia"
+    },
+    "tooltips": {
+      "toggleStudio": "Alternar Studio",
+      "unlinkEditor": "Desvincular editor y vista previa",
+      "linkEditor": "Vincular editor y vista previa",
+      "copiedToClipboard": "Copiado al portapapeles",
+      "copyToClipboard": "Copiar al portapapeles",
+      "publishChanges": "Publicar cambios",
+      "backToContent": "Volver al contenido"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Ocurrió un error desconocido"
+      }
+    },
+    "publish": {
+      "failedTitle": "Falló la publicación",
+      "summary": "en la rama {branch} del repositorio {repo}",
+      "errorTitle": "Error durante la publicación en {providerName}",
+      "failedGeneric": "Error al publicar los cambios"
+    },
+    "review": {
+      "title": "Revisar cambios",
+      "created": "Creado",
+      "updated": "Actualizado",
+      "renamed": "Renombrado",
+      "deleted": "Eliminado"
+    },
+    "publishSuccess": {
+      "title": "Cambios publicados",
+      "summary": "{count} cambio publicado en la rama {branch} del repositorio {repo} | {count} cambios publicados en la rama {branch} del repositorio {repo}",
+      "alertTitleWaiting": "Esperando despliegue...",
+      "alertTitleComplete": "Despliegue completado",
+      "alertDescWaiting": "El sitio web necesita ser desplegado para que los cambios sean visibles en Studio.",
+      "alertDescComplete": "Se ha desplegado una nueva versión de su sitio web. Por favor, actualice su aplicación para ver los cambios en Studio."
+    },
+    "newVersionBanner": {
+      "title": "Nueva versión del sitio web detectada",
+      "description": "Se ha desplegado una nueva versión de su sitio web. Recargue la aplicación para ver los últimos cambios.",
+      "reloadButton": "Recargar"
+    },
+    "footer": {
+      "developer_view": "Vista de desarrollador",
+      "localFilesystem": "Usando sistema de archivos local"
+    },
+    "alert": {
+      "mdcFormatting": "Formato aplicado para alinear con el estándar de sintaxis MDC."
+    },
+    "conflict": {
+      "title": "Conflicto detectado",
+      "repository": "Repositorio",
+      "branch": "Rama",
+      "file": "Archivo",
+      "description": "El contenido en {providerName} difiere de su versión del sitio web. Asegúrese de que sus últimos cambios estén desplegados y actualice la página.",
+      "websiteVersion": "Sitio web"
+    },
+    "nav": {
+      "content": "Contenido",
+      "media": "Multimedia"
+    },
+    "placeholders": {
+      "commitMessage": "Mensaje del commit",
+      "order": "N°",
+      "fileName": "Nombre del archivo"
+    },
+    "validation": {
+      "commitRequired": "El mensaje del commit es obligatorio",
+      "nameEmpty": "El nombre no puede estar vacío",
+      "nameEndsWithDot": "El nombre no puede terminar en '.'",
+      "nameStartsWithSlash": "El nombre no puede empezar con '/'",
+      "nameExists": "El nombre ya existe"
+    },
+    "media": {
+      "altFilePreview": "Vista previa del archivo",
+      "altImagePreview": "Vista previa de la imagen",
+      "playAudio": "Reproducir audio",
+      "audioTagNotSupported": "Su navegador no soporta la etiqueta de audio.",
+      "playVideo": "Reproducir video",
+      "videoTagNotSupported": "Su navegador no soporta la etiqueta de video.",
+      "metaWidth": "Ancho",
+      "metaHeight": "Alto",
+      "metaType": "Tipo",
+      "metaSize": "Tamaño",
+      "fileName": "Nombre del archivo",
+      "publicPath": "Ruta pública",
+      "providerPath": "Ruta de {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Abrir acciones",
+      "cancel": "Cancelar",
+      "submit": "Enviar"
+    },
+    "actions": {
+      "confirmAction": "Haga clic de nuevo para {action}",
+      "verbs": {
+        "create": "crear",
+        "delete": "eliminar",
+        "rename": "renombrar",
+        "upload": "subir",
+        "duplicate": "duplicar"
+      },
+      "labels": {
+        "createDocument": "Nuevo archivo",
+        "createDocumentFolder": "Nueva carpeta",
+        "createMediaFolder": "Nueva carpeta multimedia",
+        "renameItem": "Renombrar",
+        "deleteItem": "Eliminar",
+        "uploadMedia": "Subir multimedia",
+        "duplicateItem": "Duplicar",
+        "revertItem": "Revertir cambios",
+        "publishBranch": "Publicar rama",
+        "openGitProvider": "Abrir en {providerName}"
+      },
+      "tooltips": {
+        "createDocument": "Crear un nuevo archivo",
+        "createDocumentFolder": "Crear una nueva carpeta",
+        "createMediaFolder": "Crear una nueva carpeta",
+        "renameItem": "Renombrar archivo",
+        "deleteItem": "Eliminar archivo",
+        "uploadMedia": "Subir multimedia",
+        "duplicateItem": "Duplicar archivo",
+        "revertItem": "Revertir cambios",
+        "publishBranch": "Publicar rama"
+      }
+    },
+    "items": {
+      "itemCount": "1 elemento | {count} elementos"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Encabezado 1",
+        "h2": "Encabezado 2",
+        "h3": "Encabezado 3"
+      },
+      "styles": {
+        "bold": "Negrita",
+        "italic": "Cursiva"
+      },
+      "lists": {
+        "bulleted": "Lista con viñetas",
+        "numbered": "Lista numerada"
+      },
+      "other": {
+        "emojis": "Emojis",
+        "blockquote": "Cita en bloque",
+        "code": "Código",
+        "inlineCode": "Código en línea",
+        "link": "Enlace",
+        "image": "Imagen"
+      },
+      "writeSomething": "Escribe algo",
+      "snippets": {
+        "title": "título",
+        "item1": "Elemento 1",
+        "item2": "Elemento 2",
+        "language": "lenguaje",
+        "code": "código",
+        "link": "enlace",
+        "alt": "alt",
+        "src": "src",
+        "value": "valor"
+      },
+      "docs": {
+        "path": "Ruta en el proyecto:",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "tipo",
+        "required": "requerido",
+        "default": "por defecto"
+      }
+    }
+  }
+}
