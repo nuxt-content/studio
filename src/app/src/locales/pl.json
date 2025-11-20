@@ -1,0 +1,192 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Edytuj tę stronę",
+      "retryPublish": "Ponów publikację",
+      "reloadApp": "Przeładuj aplikację",
+      "reload": "Przeładuj",
+      "signOut": "Wyloguj się",
+      "review": "Przeglądaj",
+      "publish": "Opublikuj",
+      "back": "Wstecz",
+      "backToCode": "Powrót do kodu",
+      "seeChanges": "Zobacz zmiany"
+    },
+    "headings": {
+      "directories": "Katalogi",
+      "files": "Pliki",
+      "media": "Media"
+    },
+    "tooltips": {
+      "toggleStudio": "Przełącz Studio",
+      "unlinkEditor": "Rozłącz edytor i podgląd",
+      "linkEditor": "Połącz edytor i podgląd",
+      "copiedToClipboard": "Skopiowano do schowka",
+      "copyToClipboard": "Kopiuj do schowka",
+      "publishChanges": "Opublikuj zmiany",
+      "backToContent": "Powrót do treści"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Wystąpił nieznany błąd"
+      }
+    },
+    "publish": {
+      "failedTitle": "Publikacja nie powiodła się",
+      "summary": "na gałęzi {branch} repozytorium {repo}",
+      "errorTitle": "Błąd podczas publikacji {providerName}",
+      "failedGeneric": "Nie udało się opublikować zmian"
+    },
+    "review": {
+      "title": "Przeglądaj zmiany",
+      "created": "Utworzono",
+      "updated": "Zaktualizowano",
+      "renamed": "Zmieniono nazwę",
+      "deleted": "Usunięto"
+    },
+    "publishSuccess": {
+      "title": "Zmiany opublikowane",
+      "summary": "{count} zmiana opublikowana na gałęzi {branch} repozytorium {repo} | {count} zmiany opublikowane na gałęzi {branch} repozytorium {repo} | {count} zmian opublikowanych na gałęzi {branch} repozytorium {repo}",
+      "alertTitleWaiting": "Oczekiwanie na wdrożenie...",
+      "alertTitleComplete": "Wdrożenie zakończone",
+      "alertDescWaiting": "Strona musi zostać wdrożona, aby zmiany były widoczne w Studio.",
+      "alertDescComplete": "Nowa wersja Twojej strony została wdrożona. Odśwież aplikację, aby zobaczyć zmiany w Studio."
+    },
+    "newVersionBanner": {
+      "title": "Wykryto nową wersję strony",
+      "description": "Nowa wersja Twojej strony została wdrożona. Przeładuj aplikację, aby zobaczyć najnowsze zmiany.",
+      "reloadButton": "Przeładuj"
+    },
+    "footer": {
+      "developer_view": "Widok deweloperski",
+      "localFilesystem": "Używanie lokalnego systemu plików"
+    },
+    "alert": {
+      "mdcFormatting": "Zastosowano formatowanie zgodne ze standardem składni MDC."
+    },
+    "conflict": {
+      "title": "Wykryto konflikt",
+      "repository": "Repozytorium",
+      "branch": "Gałąź",
+      "file": "Plik",
+      "description": "Treść na {providerName} różni się od wersji Twojej strony. Upewnij się, że najnowsze zmiany są wdrożone i odśwież stronę.",
+      "websiteVersion": "Strona"
+    },
+    "nav": {
+      "content": "Treść",
+      "media": "Media"
+    },
+    "placeholders": {
+      "commitMessage": "Wiadomość zatwierdzenia",
+      "order": "Nr",
+      "fileName": "Nazwa pliku"
+    },
+    "validation": {
+      "commitRequired": "Opis zmian jest wymagany",
+      "nameEmpty": "Nazwa nie może być pusta",
+      "nameEndsWithDot": "Nazwa nie może kończyć się kropką '.'",
+      "nameStartsWithSlash": "Nazwa nie może zaczynać się od '/'",
+      "nameExists": "Nazwa już istnieje"
+    },
+    "media": {
+      "altFilePreview": "Podgląd pliku",
+      "altImagePreview": "Podgląd obrazu",
+      "playAudio": "Odtwórz dźwięk",
+      "audioTagNotSupported": "Twoja przeglądarka nie obsługuje tagu audio.",
+      "playVideo": "Odtwórz wideo",
+      "videoTagNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
+      "metaWidth": "Szerokość",
+      "metaHeight": "Wysokość",
+      "metaType": "Typ",
+      "metaSize": "Rozmiar",
+      "fileName": "Nazwa pliku",
+      "publicPath": "Ścieżka publiczna",
+      "providerPath": "Ścieżka {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Otwórz akcje",
+      "cancel": "Anuluj",
+      "submit": "Wyślij"
+    },
+    "actions": {
+      "confirmAction": "Kliknij ponownie, aby {action}",
+      "verbs": {
+        "create": "utworzyć",
+        "delete": "usunąć",
+        "rename": "zmienić nazwę",
+        "upload": "przesłać",
+        "duplicate": "zduplikować"
+      },
+      "labels": {
+        "createDocument": "Nowy plik",
+        "createDocumentFolder": "Nowy folder",
+        "createMediaFolder": "Nowy folder mediów",
+        "renameItem": "Zmień nazwę",
+        "deleteItem": "Usuń",
+        "uploadMedia": "Prześlij media",
+        "duplicateItem": "Duplikuj",
+        "revertItem": "Cofnij zmiany",
+        "publishBranch": "Opublikuj gałąź",
+        "openGitProvider": "Otwórz w {providerName}"
+      },
+      "tooltips": {
+        "createDocument": "Utwórz nowy plik",
+        "createDocumentFolder": "Utwórz nowy folder",
+        "createMediaFolder": "Utwórz nowy folder",
+        "renameItem": "Zmień nazwę pliku",
+        "deleteItem": "Usuń plik",
+        "uploadMedia": "Prześlij media",
+        "duplicateItem": "Zduplikuj plik",
+        "revertItem": "Cofnij zmiany",
+        "publishBranch": "Opublikuj gałąź"
+      }
+    },
+    "items": {
+      "itemCount": "1 element | {count} elementy | {count} elementów"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Nagłówek 1",
+        "h2": "Nagłówek 2",
+        "h3": "Nagłówek 3"
+      },
+      "styles": {
+        "bold": "Pogrubienie",
+        "italic": "Kursywa"
+      },
+      "lists": {
+        "bulleted": "Lista punktowana",
+        "numbered": "Lista numerowana"
+      },
+      "other": {
+        "emojis": "Emoji",
+        "blockquote": "Blok cytatu",
+        "code": "Kod",
+        "inlineCode": "Kod w tekście",
+        "link": "Link",
+        "image": "Obraz"
+      },
+      "writeSomething": "Napisz coś",
+      "snippets": {
+        "title": "tytuł",
+        "item1": "Element 1",
+        "item2": "Element 2",
+        "language": "język",
+        "code": "kod",
+        "link": "link",
+        "alt": "tekst alternatywny",
+        "src": "źródło",
+        "value": "wartość"
+      },
+      "docs": {
+        "path": "Ścieżka w projekcie:",
+        "props": "Propy",
+        "slots": "Sloty",
+        "type": "typ",
+        "required": "wymagane",
+        "default": "domyślny"
+      }
+    }
+  }
+}
