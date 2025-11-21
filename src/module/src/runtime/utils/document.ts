@@ -14,6 +14,7 @@ import { stringify } from 'minimark/stringify'
 // import type { ParsedContentFile } from '@nuxt/content'
 import { stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import type { Node } from 'unist'
+import type { MarkdownParsingOptions } from '~/src/types/content'
 
 const reservedKeys = ['id', 'fsPath', 'stem', 'extension', '__hash__', 'path', 'body', 'meta', 'rawbody']
 
@@ -220,12 +221,12 @@ export function areDocumentsEqual(document1: Record<string, unknown>, document2:
 /*
 ** Generation utils
 */
-export async function generateDocumentFromContent(id: string, content: string): Promise<DatabaseItem | null> {
+export async function generateDocumentFromContent(id: string, content: string, options: MarkdownParsingOptions = { compress: true }): Promise<DatabaseItem | null> {
   const [_id, _hash] = id.split('#')
   const extension = getFileExtension(id)
 
   if (extension === ContentFileExtension.Markdown) {
-    return await generateDocumentFromMarkdownContent(id, content)
+    return await generateDocumentFromMarkdownContent(id, content, options)
   }
 
   if (extension === ContentFileExtension.YAML || extension === ContentFileExtension.YML) {
@@ -286,7 +287,7 @@ export async function generateDocumentFromJSONContent(id: string, content: strin
   } as DatabaseItem
 }
 
-export async function generateDocumentFromMarkdownContent(id: string, content: string): Promise<DatabaseItem> {
+export async function generateDocumentFromMarkdownContent(id: string, content: string, options: MarkdownParsingOptions = { compress: true }): Promise<DatabaseItem> {
   const document = await parseMarkdown(content, {
     remark: {
       plugins: {
@@ -306,7 +307,10 @@ export async function generateDocumentFromMarkdownContent(id: string, content: s
     }
   })
 
-  const body = document.body.type === 'root' ? compressTree(document.body) : document.body as never as MarkdownRoot
+  let body = document.body as never as MarkdownRoot
+  if (options.compress && document.body.type === 'root') {
+    body = compressTree(document.body)
+  }
 
   const result = {
     id,

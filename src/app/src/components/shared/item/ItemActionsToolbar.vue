@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
+import { useStudioState } from '../../../composables/useStudioState'
 import type { StudioAction } from '../../../types'
 import { StudioItemActionId, TreeStatus } from '../../../types'
-import { MEDIA_EXTENSIONS } from '../../../utils/file'
+import { MEDIA_EXTENSIONS, getFileExtension } from '../../../utils/file'
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { useI18n } from 'vue-i18n'
 
 const { context, gitProvider } = useStudio()
+const { preferences, updatePreference } = useStudioState()
 const { t } = useI18n()
 const fileInputRef = ref<HTMLInputElement>()
 const toolbarRef = ref<HTMLElement>()
@@ -19,6 +21,10 @@ watch(context.actionInProgress, (action) => {
     pendingAction.value = null
     loadingAction.value = null
   }
+
+  if (action?.id === StudioItemActionId.UploadMedia) {
+    fileInputRef.value?.click()
+  }
 })
 
 const item = computed(() => context.activeTree.value.currentItem.value)
@@ -26,18 +32,37 @@ const item = computed(() => context.activeTree.value.currentItem.value)
 const extraActions = computed<DropdownMenuItem[]>(() => {
   const actions: DropdownMenuItem[] = []
 
-  if (item.value.type === 'file' && item.value.status !== TreeStatus.Created) {
-    const providerInfo = gitProvider.api.getRepositoryInfo()
-    const provider = providerInfo.provider
-    const feature = context.currentFeature.value
+  if (item.value.type === 'file') {
+    const fileExtension = getFileExtension(item.value.fsPath)
+    const isMarkdown = fileExtension === 'md'
 
-    if (feature) {
+    // Add editor mode switch for markdown files
+    if (isMarkdown) {
       actions.push({
-        label: t(`studio.actions.labels.openGitProvider`, { providerName: gitProvider.name }),
-        icon: provider === 'gitlab' ? 'i-simple-icons:gitlab' : 'i-simple-icons:github',
-        to: gitProvider.api.getFileUrl(feature, item.value.fsPath),
-        target: '_blank',
+        label: preferences.value.editorMode === 'code'
+          ? t('studio.actions.labels.switchToTipTap')
+          : t('studio.actions.labels.switchToCode'),
+        icon: preferences.value.editorMode === 'code' ? 'i-lucide-file-pen' : 'i-lucide-file-code',
+        onClick: () => {
+          updatePreference('editorMode', preferences.value.editorMode === 'code' ? 'tiptap' : 'code')
+        },
       })
+    }
+
+    // Add git provider link for existing files
+    if (item.value.status !== TreeStatus.Created) {
+      const providerInfo = gitProvider.api.getRepositoryInfo()
+      const provider = providerInfo.provider
+      const feature = context.currentFeature.value
+
+      if (feature) {
+        actions.push({
+          label: t(`studio.actions.labels.openGitProvider`, { providerName: gitProvider.name }),
+          icon: provider === 'gitlab' ? 'i-simple-icons:gitlab' : 'i-simple-icons:github',
+          to: gitProvider.api.getFileUrl(feature, item.value.fsPath),
+          target: '_blank',
+        })
+      }
     }
   }
 
@@ -52,6 +77,7 @@ const handleFileSelection = (event: Event) => {
       parentFsPath: item.value.fsPath,
       files: Array.from(target.files),
     })
+
     target.value = ''
   }
 }

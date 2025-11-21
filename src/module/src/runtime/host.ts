@@ -5,7 +5,7 @@ import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
 import { normalizeDocument, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument } from './utils/document'
 import { kebabCase } from 'scule'
-import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
+import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository, MarkdownParsingOptions } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
 import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections, useRuntimeConfig } from '#imports'
@@ -197,6 +197,8 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           const id = generateIdFromFsPath(fsPath, collectionInfo)
           const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
 
+          // item.meta = {}
+
           if (!item) {
             return undefined
           }
@@ -296,7 +298,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         },
       },
       generate: {
-        documentFromContent: async (id: string, content: string) => generateDocumentFromContent(id, content),
+        documentFromContent: async (id: string, content: string, options: MarkdownParsingOptions = { compress: true }) => generateDocumentFromContent(id, content, options),
         contentFromDocument: async (document: DatabaseItem) => generateContentFromDocument(document),
       },
     },

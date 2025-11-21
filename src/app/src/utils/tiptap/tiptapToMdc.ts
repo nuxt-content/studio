@@ -1,0 +1,397 @@
+// import type { MarkdownNode, MarkdownRoot, Toc } from '@nuxt/content'
+import type { JSONContent } from '@tiptap/vue-3'
+import { parseFrontMatter } from 'remark-mdc'
+import Slugger from 'github-slugger'
+// import rehypeShiki from '@nuxtjs/mdc/dist/runtime/highlighter/rehype'
+// import { createShikiHighlighter } from '@nuxtjs/mdc/runtime/highlighter/shiki'
+// import { generateToc } from '@nuxtjs/mdc/dist/runtime/parser/toc'
+// import { bundledThemes, bundledLanguages as bundledLangs, createJavaScriptRegexEngine } from 'shiki'
+// import { visit } from 'unist-util-visit'
+import type { MDCElement, MDCNode, MDCRoot, MDCText } from '@nuxtjs/mdc'
+// import type { RehypeMarkdownNode } from '../types'
+
+let slugs = new Slugger()
+// let shikiHighlighter: Highlighter
+
+type TiptapToMDCMap = Record<string, (node: JSONContent) => MDCRoot | MDCNode | MDCNode[]>
+
+const markToTag: Record<string, string> = {
+  bold: 'strong',
+  italic: 'em',
+  strike: 'del',
+  code: 'code',
+}
+
+const tiptapToMDCMap: TiptapToMDCMap = {
+  'doc': (node: JSONContent) => ({ type: 'root', children: (node.content || []).flatMap(tiptapNodeToMDC) } as MDCRoot),
+  'element': createElement,
+  'inline-element': createElement,
+  'span-style': createElement,
+  'link-element': createElement,
+  'link-block-element': createElement,
+  'text': createTextElement,
+  'comment': (node: JSONContent) => ({ type: 'comment', value: node.attrs!.text }),
+  'listItem': createListItemElement,
+  'slot': (node: JSONContent) => createElement(node, 'template', { props: { [`v-slot:${node.attrs?.name}`]: '' } }),
+  'paragraph': (node: JSONContent) => createElement(node, 'p'),
+  'bulletList': (node: JSONContent) => createElement(node, 'ul'),
+  'orderedList': (node: JSONContent) => createElement(node, 'ol', { props: { start: node.attrs?.start } }),
+  'heading': (node: JSONContent) => createHeadingElement(node),
+  'blockquote': (node: JSONContent) => createElement(node, 'blockquote'),
+  'horizontalRule': (node: JSONContent) => createElement(node, 'hr'),
+  'bold': (node: JSONContent) => createElement(node, 'strong'),
+  'italic': (node: JSONContent) => createElement(node, 'em'),
+  'strike': (node: JSONContent) => createElement(node, 'del'),
+  'code': (node: JSONContent) => createElement(node, 'code', { props: node.attrs }),
+  'codeBlock': (node: JSONContent) => createCodeBlockElement(node),
+  'image': (node: JSONContent) => createImageElement(node),
+  'video': (node: JSONContent) => createElement(node, 'video'),
+  'binding': (node: JSONContent) => ({ type: 'element', tag: 'binding', props: { value: (node.content?.[0].text || '').trim() }, children: [] }),
+  'br': (node: JSONContent) => createElement(node, 'br'),
+}
+
+/* Parsing methods */
+export async function tiptapToMDC(node: JSONContent) {
+  // re-create slugs
+  slugs = new Slugger()
+
+  const mdc: { body: MDCRoot, data: Record<string, unknown> } = {
+    body: {} as MDCRoot,
+    data: {},
+  }
+
+  const _node = JSON.parse(JSON.stringify(node))
+  const fmIndex = _node.content?.findIndex((child: { type: string }) => child.type === 'frontmatter')
+  if (fmIndex > -1) {
+    const fm = _node.content?.[fmIndex]
+    _node.content?.splice(fmIndex, 1)
+    try {
+      const { data } = parseFrontMatter(`---\n${fm.attrs?.frontmatter || ''}\n---`)
+      mdc.data = data
+    }
+    catch (error) {
+      mdc.data = {
+        __error__: error,
+      }
+    }
+  }
+
+  mdc.body = tiptapNodeToMDC(_node) as MDCRoot
+
+  // await applyShikiSyntaxHighlighting(mdc.body)
+
+  // Generate toc from AST
+  // mdc.body.toc = generateToc(mdc.body as MDCRoot, {} as Toc)
+
+  return mdc
+}
+
+export function tiptapNodeToMDC(node: JSONContent): MDCRoot | MDCNode | MDCNode[] {
+  // New list items create an undefined node, so we need to handle it
+  if (!node) {
+    return {
+      type: 'element',
+      tag: 'p',
+      children: [],
+      props: {},
+    }
+  }
+
+  if (tiptapToMDCMap[node.type!]) {
+    return tiptapToMDCMap[node.type!](node)
+  }
+
+  // fallback to unknown node
+  // TODO: all unknown nodes should be handled
+
+  return {
+    type: 'element',
+    tag: 'p',
+    children: [
+      {
+        type: 'text',
+        value: 'XXX',
+      },
+    ],
+    props: {},
+  }
+}
+
+// async function applyShikiSyntaxHighlighting(mdc: MarkdownRoot) {
+//   // convert tag to tagName and props to properties to be compatible with rehype
+//   // TODO: we may refactor tiptapToMDC to use tagName and properties instead of tag and props to avoid this step
+//   visit(
+//     mdc,
+//     (n: MarkdownNode) => n.tag !== undefined,
+//     (n: MarkdownNode) => { Object.assign(n, { tagName: n.tag, properties: n.props }) },
+//   )
+
+//   if (typeof useProjects !== 'undefined') {
+//     const { project } = useProjects()
+//     if (project.value) {
+//       const { meta } = useProjectMeta(project.value)
+//       const theme = meta.value?.content?.highlight?.theme || { default: 'github-light', dark: 'github-dark' }
+
+//       if (!shikiHighlighter) {
+//         shikiHighlighter = createShikiHighlighter({ bundledThemes, bundledLangs, engine: createJavaScriptRegexEngine({ forgiving: true }) })
+//       }
+//       const shikit = rehypeShiki({ theme, highlighter: shikiHighlighter })
+//       // highlight code blocks
+//       await shikit(mdc as never)
+//     }
+//   }
+
+//   // convert back tagName to tag and properties to props to be compatible with MDC
+//   visit(
+//     mdc,
+//     (n: MarkdownNode) => (n as RehypeMarkdownNode).tagName !== undefined,
+//     (n: MarkdownNode) => { Object.assign(n, { tag: (n as RehypeMarkdownNode).tagName, props: (n as RehypeMarkdownNode).properties, tagName: undefined, properties: undefined }) },
+//   )
+
+//   // remove empty newline text nodes
+//   visit(
+//     mdc,
+//     (n: MarkdownNode) => n.tag === 'pre',
+//     (n: MarkdownNode) => {
+//       n.children[0].children = n.children[0].children.filter((child: MarkdownNode) => child.type !== 'text' || child.value.trim())
+//     },
+//   )
+// }
+
+/* Create element methods */
+function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MDCElement {
+  const { props = {}, ...rest } = extra as { props: object }
+
+  // If text has been enclosed in a paragraph mannualy in 'mdcToTiptap', we need to remove the paragraph in mdc
+  if (node.attrs?.props?.__tiptapWrap) {
+    if (node.content!.length === 1 && node.content![0]?.type === 'slot') {
+      const slot = node.content![0]
+      if (slot.content!.length === 1 && slot.content![0]?.type === 'paragraph') {
+        slot.content = slot.content![0].content
+      }
+    }
+    delete node.attrs.props.__tiptapWrap
+  }
+
+  const propsArray = Object.entries({ ...node.attrs?.props, ...props }).map(([key, value]) => {
+    if (key === 'className') {
+      return ['class', typeof value === 'string' ? value : (value as Array<string>).join(' ')]
+    }
+    return [key.trim(), String(value).trim()]
+  }).filter(([key]) => Boolean(String(key).trim()))
+
+  if (node.type === 'paragraph') {
+    if (!node.content || node.content!.length === 0) {
+      return {
+        type: 'element',
+        tag: 'p',
+        children: [],
+        props: {},
+      }
+    }
+
+    return createParagraphElement(node, propsArray, rest)
+  }
+
+  return {
+    type: 'element',
+    tag: tag || node.attrs?.tag,
+    children: node.children || (node.content || []).flatMap(tiptapNodeToMDC),
+    ...rest,
+    props: Object.fromEntries(propsArray),
+  }
+}
+
+export const createParagraphElement = (node: JSONContent, propsArray: string[][], rest: object = {}): MDCElement => {
+  const blocks: Array<{ mark: string, content: JSONContent[] }> = []
+  let currentBlockContent: JSONContent[] = []
+  let currentBlockMarkType: string | null = null
+
+  // Separate children into blocks based on number of marks (1 or not one)
+  node.content!.forEach((child) => {
+    let markType = null
+    if (
+    // Text node with only one mark
+      (child.type === 'text' && child.marks?.length === 1 && child.marks?.[0]?.type)
+      // Link node with only one text child with only one mark
+      || (child.type === 'link-element'
+        && child.content
+        && child.content.length === 1
+        && child.content[0].type === 'text'
+        && child.content[0].marks?.length === 1
+        && child.content[0].marks?.[0]?.type)
+    ) {
+      markType = child.marks?.[0]?.type || child.content?.[0]?.marks?.[0]?.type
+    }
+
+    // If the current mark count is different from the previous block, start a new block
+    if (markType !== currentBlockMarkType) {
+      if (currentBlockContent.length > 0) {
+        blocks.push({ mark: currentBlockMarkType!, content: currentBlockContent })
+      }
+      currentBlockContent = []
+      currentBlockMarkType = markType!
+    }
+
+    // Add the child to the current block
+    currentBlockContent.push(child)
+  })
+
+  // Push the last block to blocks
+  if (currentBlockContent.length > 0) {
+    blocks.push({ mark: currentBlockMarkType!, content: currentBlockContent })
+  }
+
+  const children = blocks.map((block) => {
+    // If the block has more than one child and a mark
+    if (block.content.length > 1 && block.mark && markToTag[block.mark]) {
+      // Remove all marks from children
+      block.content.forEach((child: JSONContent) => {
+        if (child.type === 'text') {
+          delete child.marks
+        }
+        else if (child.type === 'link-element') {
+          delete child.content![0].marks
+        }
+      })
+
+      // Encapsulate children in a new element with the mark
+      return {
+        type: 'element',
+        tag: markToTag[block.mark],
+        children: block.content.flatMap(tiptapNodeToMDC),
+      }
+    }
+
+    return block.content.flatMap(tiptapNodeToMDC)
+  }) as MDCElement[]
+
+  const mergedChildren = mergeSiblingsWithSameTag(children.flat(), Object.values(markToTag))
+
+  return {
+    type: 'element',
+    tag: 'p',
+    ...rest,
+    props: Object.fromEntries(propsArray),
+    children: mergedChildren,
+  }
+}
+
+function createHeadingElement(node: JSONContent): MDCElement {
+  const mdcNode = createElement(node, `h${node.attrs?.level}`)
+
+  mdcNode.props!.id = slugs
+    .slug(getNodeContent(node)!)
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .replace(/^(\d)/, '_$1')
+
+  return mdcNode
+}
+
+function createCodeBlockElement(node: JSONContent): MDCElement {
+  const mdcNode = createElement(node, 'pre')
+  mdcNode.props!.code = node.attrs?.code || getNodeContent(node)
+  mdcNode.props!.language = node.attrs!.language
+  mdcNode.props!.filename = node.attrs!.filename
+  mdcNode.children = [{
+    type: 'element',
+    tag: 'code',
+    props: { __ignoreMap: '' },
+    children: [{ type: 'text', value: mdcNode.props!.code }],
+  }]
+  return mdcNode
+}
+
+function createImageElement(node: JSONContent): MDCElement {
+  // handle nuxt image components
+  if (['nuxt-img', 'nuxt-picture'].includes(node.attrs?.tag)) {
+    return createElement(node, node.attrs?.tag, { props: { alt: node.attrs?.alt, src: node.attrs?.src } })
+  }
+  else {
+    return createElement(node, 'img', { props: { alt: node.attrs?.alt, src: node.attrs?.src } })
+  }
+}
+
+function createTextElement(node: JSONContent): MDCText | MDCText[] {
+  const prefix = node.text?.match(/^\s+/)?.[0] || ''
+  const suffix = node.text?.match(/\s+$/)?.[0] || ''
+  const text = node.text?.trim() || ''
+  if (!node.marks?.length) {
+    return { type: 'text', value: node.text! }
+  }
+
+  const res = node.marks!.reduce((acc: MDCText, mark: Record<string, unknown>) => {
+    if (tiptapToMDCMap[mark.type as string]) {
+      return tiptapToMDCMap[mark.type as string]({ ...mark, children: [acc] }) as MDCText
+    }
+    return acc
+  }, { type: 'text', value: text })
+
+  return [
+    prefix ? { type: 'text', value: prefix } : null,
+    res,
+    suffix ? { type: 'text', value: suffix } : null,
+  ].filter(Boolean) as MDCText[]
+}
+
+function createListItemElement(node: JSONContent) {
+  // Remove paragraph children
+  node.content = (node.content || []).flatMap((child: JSONContent) => {
+    if (child.type === 'paragraph') {
+      return child.content
+    }
+
+    return child
+  })
+  return createElement(node, 'li')
+}
+
+// Merge adjacent children with the same tag if separated by a single space text node
+function mergeSiblingsWithSameTag(children: MDCNode[], allowedTags: string[]): MDCNode[] {
+  if (!Array.isArray(children)) return children
+  const merged: MDCNode[] = []
+  let i = 0
+  while (i < children.length) {
+    const current = children[i]
+    const next = children[i + 1]
+    const afterNext = children[i + 2]
+    // Check if current and afterNext are elements with the same tag, tag is in allowedTags, and next is a single space text node
+    if (
+      current && afterNext
+      && current.type === 'element' && afterNext.type === 'element'
+      && current.tag === afterNext.tag
+      && allowedTags.includes(current.tag)
+      && next && next.type === 'text' && next.value === ' '
+    ) {
+      // Merge their children with a space in between
+      merged.push({
+        ...current,
+        children: [
+          ...(current.children || []),
+          { type: 'text', value: ' ' },
+          ...(afterNext.children || []),
+        ],
+      })
+      i += 3 // Skip next and afterNext
+    }
+    else {
+      merged.push(current)
+      i++
+    }
+  }
+  return merged
+}
+
+function getNodeContent(node: JSONContent) {
+  if (node.type === 'text') {
+    return node.text
+  }
+
+  let content = ''
+  node.content?.forEach((childNode) => {
+    content += getNodeContent(childNode)
+  })
+
+  return content
+}

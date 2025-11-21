@@ -128,7 +128,9 @@
         "duplicateItem": "Dupliquer",
         "revertItem": "Annuler les changements",
         "publishBranch": "Publier la branche",
-        "openGitProvider": "Ouvrir sur {providerName}"
+        "openGitProvider": "Ouvrir sur {providerName}",
+        "switchToTipTap": "Utiliser l'éditeur visuel",
+        "switchToCode": "Utiliser l'éditeur de code"
       },
       "tooltips": {
         "createDocument": "Créer un nouveau fichier",

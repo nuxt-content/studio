@@ -33,6 +33,9 @@ const userMenuItems = computed(() => [
       ]
     : undefined,
   [{
+    slot: 'debug-mode' as const,
+  }],
+  [{
     label: t('studio.buttons.signOut'),
     icon: 'i-lucide-log-out',
     onClick: () => {
@@ -84,6 +87,20 @@ function closeStudio() {
           />
         </div>
       </template> -->
+      <template #debug-mode>
+        <div
+          class="w-full"
+          @click.stop="updatePreference('debug', !preferences.debug)"
+        >
+          <USwitch
+            :model-value="preferences.debug"
+            label="Debug Mode"
+            size="xs"
+            :ui="{ root: 'w-full flex-row-reverse justify-between', wrapper: 'ms-0' }"
+            @update:model-value="updatePreference('debug', $event)"
+          />
+        </div>
+      </template>
       <UButton
         color="neutral"
         variant="ghost"

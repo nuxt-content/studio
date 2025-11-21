@@ -20,3 +20,18 @@ export function isDeepEqual(obj1: Record<string, unknown>, obj2: Record<string, 
 
   return true
 }
+
+export function isEmpty(obj: Array<unknown> | Record<string, unknown> | string | boolean | number | undefined): boolean {
+  if (obj === undefined || obj === null || obj === '' || obj === false) return true
+
+  if (Array.isArray(obj)) {
+    return obj.length === 0 || obj.every(item => isEmpty(item as Record<string, unknown>))
+  }
+
+  return Object.keys(obj as Record<string, unknown>).length === 0 || Object.values(obj as Record<string, unknown>).every(value => value === null || value === undefined)
+}
+
+export function omit(obj: Record<string, unknown>, keys: string | string[]) {
+  return Object.fromEntries(Object.entries(obj)
+    .filter(([key]) => !keys.includes(key)))
+}

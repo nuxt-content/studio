@@ -4,6 +4,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { MediaItem } from './media'
 import type { Repository } from './git'
 import type { ComponentMeta } from './component'
+import type { MarkdownParsingOptions } from './content'
 
 export * from './file'
 export * from './item'
@@ -16,6 +17,7 @@ export * from './context'
 export * from './component'
 export * from './config'
 export * from './media'
+export * from './content'
 
 export interface StudioHost {
   meta: {
@@ -58,7 +60,7 @@ export interface StudioHost {
       detectActives: () => Array<{ fsPath: string, title: string }>
     }
     generate: {
-      documentFromContent: (id: string, content: string) => Promise<DatabaseItem | null>
+      documentFromContent: (id: string, content: string, options?: MarkdownParsingOptions) => Promise<DatabaseItem | null>
       contentFromDocument: (document: DatabaseItem) => Promise<string | null>
     }
   }
