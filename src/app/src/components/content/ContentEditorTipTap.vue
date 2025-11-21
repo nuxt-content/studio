@@ -5,7 +5,8 @@ import type { EditorSuggestionMenuItem } from '@nuxt/ui/runtime/components/Edito
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { mapEditorItems } from '@nuxt/ui/utils/editor'
 // import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
-// import { ImageUpload } from '../../utils/editor/image-upload'
+import { ImagePicker } from '../../utils/tiptap/extensions/image-picker'
+import type { EditorHandlers } from '@nuxt/ui'
 import { ref, watch, computed } from 'vue'
 import type { Editor, JSONContent } from '@tiptap/vue-3'
 import type { PropType } from 'vue'
@@ -31,9 +32,6 @@ const document = defineModel<DatabasePageItem>()
 const tiptapJSON = ref<JSONContent>()
 
 // Debug
-const initialMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
-const initialContent = ref<string>()
-const initialTiptap = ref<JSONContent>()
 const currentTiptap = ref<JSONContent>()
 const currentMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
 const currentContent = ref<string>()
@@ -52,19 +50,18 @@ watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
 }, { immediate: true })
 
 async function setEditorJSON(document: DatabasePageItem) {
-  const generateContentFromDocument = host.document.generate.contentFromDocument
-  const generatedContent = await generateContentFromDocument(document) || ''
-
   tiptapJSON.value = mdcToTiptap(document.body as unknown as MDCRoot, '')
 
   // Debug: Capture initial state
-  if (debug.value && !initialMDC.value) {
-    initialMDC.value = {
+  if (debug.value && !currentMDC.value) {
+    const generateContentFromDocument = host.document.generate.contentFromDocument
+    const generatedContent = await generateContentFromDocument(document) || ''
+    currentMDC.value = {
       body: document.body as unknown as MDCRoot,
       data: omit(document, reservedKeys) as Record<string, unknown>,
     }
-    initialContent.value = generatedContent
-    initialTiptap.value = JSON.parse(JSON.stringify(tiptapJSON.value))
+    currentContent.value = generatedContent
+    currentTiptap.value = JSON.parse(JSON.stringify(tiptapJSON.value))
   }
 
   // TODO: conflicts detection
@@ -106,14 +103,14 @@ watch(tiptapJSON, async (json) => {
   // const generatedContent = await host.document.generate.contentFromDocument(updatedDocument
 })
 
-// const customHandlers: EditorHandlers = {
-//   image: {
-//     canExecute: (editor: Editor) => (editor.can() as any).insertContent({ type: 'imageUpload' }),
-//     execute: (editor: Editor) => editor.chain().focus().insertContent({ type: 'imageUpload' }),
-//     isActive: (editor: Editor) => editor.isActive('imageUpload'),
-//     isDisabled: undefined,
-//   },
-// }
+const customHandlers: EditorHandlers = {
+  image: {
+    canExecute: (editor: Editor) => editor.can().insertContent({ type: 'image-picker' }),
+    execute: (editor: Editor) => editor.chain().focus().insertContent({ type: 'image-picker' }),
+    isActive: (editor: Editor) => editor.isActive('image-picker'),
+    isDisabled: undefined,
+  },
+} as EditorHandlers
 
 const toolbarItems = [[{
   kind: 'undo',
@@ -239,10 +236,10 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [[{
 //   label: 'Emoji',
 //   icon: 'i-lucide-smile-plus',
 // }, {
-//   kind: 'image',
-//   label: 'Image',
-//   icon: 'i-lucide-image',
-// }, {
+  kind: 'image',
+  label: 'Image',
+  icon: 'i-lucide-image',
+}, {
   kind: 'horizontalRule',
   label: 'Horizontal Rule',
   icon: 'i-lucide-separator-horizontal',
@@ -252,7 +249,7 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [[{
 
 const selectedNode = ref<JSONContent | null>(null)
 
-const handleItems = (editor: Editor): DropdownMenuItem[][] => {
+const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
   if (!selectedNode.value) {
     return []
   }
@@ -324,19 +321,16 @@ const handleItems = (editor: Editor): DropdownMenuItem[][] => {
       icon: 'i-lucide-trash',
     },
   ]],
-  // , customHandlers
+  customHandlers,
   ) as DropdownMenuItem[][]
 }
 </script>
 
 <template>
-  <div class="h-full flex flex-col my-4">
+  <div class="h-full flex flex-col">
     <!-- Debug Panel -->
     <ContentEditorTipTapDebug
       v-if="preferences.debug"
-      :initial-mdc="initialMDC"
-      :initial-content="initialContent"
-      :initial-tiptap="initialTiptap"
       :current-tiptap="currentTiptap"
       :current-mdc="currentMDC"
       :current-content="currentContent"
@@ -344,7 +338,10 @@ const handleItems = (editor: Editor): DropdownMenuItem[][] => {
     <UEditor
       v-slot="{ editor }"
       v-model="tiptapJSON"
+      class="my-4"
       content-type="json"
+      :handlers="customHandlers"
+      :extensions="[ImagePicker]"
       placeholder="Write, type '/' for commands..."
     >
       <UEditorToolbar
@@ -375,7 +372,7 @@ const handleItems = (editor: Editor): DropdownMenuItem[][] => {
         <UDropdownMenu
           v-slot="{ open }"
           :modal="false"
-          :items="handleItems(editor)"
+          :items="dragHandleItems(editor)"
           :content="{ side: 'left' }"
           :ui="{ content: 'w-48', label: 'text-xs' }"
           @update:open="editor.chain().setMeta('lockDragHandle', $event).run()"

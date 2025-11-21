@@ -21,6 +21,10 @@ watch(context.actionInProgress, (action) => {
     pendingAction.value = null
     loadingAction.value = null
   }
+
+  if (action?.id === StudioItemActionId.UploadMedia) {
+    fileInputRef.value?.click()
+  }
 })
 
 const item = computed(() => context.activeTree.value.currentItem.value)
@@ -73,6 +77,7 @@ const handleFileSelection = (event: Event) => {
       parentFsPath: item.value.fsPath,
       files: Array.from(target.files),
     })
+
     target.value = ''
   }
 }
