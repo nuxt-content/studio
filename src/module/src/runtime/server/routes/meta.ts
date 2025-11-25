@@ -1,10 +1,8 @@
 import type { ComponentMeta } from 'vue-component-meta'
 import { eventHandler, useSession } from 'h3'
-import type { RuntimeConfig } from '@nuxt/content'
-import { useRuntimeConfig, useAppConfig, createError } from '#imports'
+import { useRuntimeConfig, createError } from '#imports'
 // @ts-expect-error import does exist
 import components from '#nuxt-component-meta/nitro'
-import { collections, gitInfo, appConfigSchema } from '#content/preview'
 
 interface NuxtComponentMeta {
   pascalName: string
@@ -39,17 +37,7 @@ export default eventHandler(async (event) => {
       }
     })
 
-  const appConfig = useAppConfig()
-  const runtimeConfig = useRuntimeConfig()
-  const { content } = runtimeConfig
-  const { version } = content as RuntimeConfig['content']
-
   return {
-    version,
-    gitInfo,
-    collections,
-    appConfigSchema,
-    appConfig,
     components: mappedComponents,
   }
 })

@@ -49,6 +49,7 @@
     "@vueuse/core": "^13.9.0",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
+    "nuxt-component-meta": "^0.14.2",
     "unstorage": "1.17.1"
   },
   "devDependencies": {
@@ -84,7 +85,8 @@
     "zod": "^4.1.12"
   },
   "resolutions": {
-    "remark-mdc": "3.8.1"
+    "remark-mdc": "3.8.1",
+    "nuxt-component-meta": "^0.14.2"
   },
   "packageManager": "pnpm@10.21.0",
   "keywords": [

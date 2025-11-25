@@ -6,10 +6,6 @@ import { titleCase, kebabCase } from 'scule'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { useStudio } from '../../../composables/useStudio'
 import { standardElements } from '../../../utils/tiptap/editor'
-// import { lowerCase } from 'lodash-es'
-// import { tiptapParentNode } from '../../utils/tiptap'
-// import MDCEditorComponentPropxs from '../../MDCEditorComponentProps.vue'
-// import { mdcStandardElementsName, mdcStandardElementsIcon } from '../../utils/mdc'
 
 const nodeProps = defineProps(nodeViewProps)
 
@@ -23,25 +19,23 @@ const collapsed = ref(false)
 const openPropsPopover = ref(false)
 const isEditable = ref(true) // TODO: Connect to editor state
 
-// Computed Properties
 const componentTag = computed(() => nodeProps.node.attrs.tag)
 const componentName = computed(() => titleCase(componentTag.value).replace(/^U /, ''))
+const slots = computed(() => componentMeta.value?.meta.slots || [])
 const hasSlots = computed(() => nodeProps.node.content.size > 0)
 const componentProps = computed(() => nodeProps.node.attrs.props || {})
-const componentMeta = computed(() => host.meta.components.find(c => kebabCase(c.name) === kebabCase(node.value.attrs?.tag)))
+const componentMeta = computed(() => host.meta.getComponents().find(c => kebabCase(c.name) === kebabCase(node.value.attrs?.tag)))
 
 const standardElement = computed(() => standardElements[componentTag.value])
 const displayName = computed(() => standardElement.value?.name || componentName.value)
 const displayIcon = computed(() => standardElement.value?.icon || 'i-lucide-box')
 
-// TODO: Get from component metadata
-const availableSlots = computed(() => ['default', 'header', 'footer'])
+const availableSlots = computed(() => componentMeta.value?.meta.slots.map(s => s.name) || ['default'])
 const usedSlots = computed(() => {
   const slots = (node.value.content?.content || []) as ProseMirrorNode[]
   return slots.map(s => s.attrs.name)
 })
 
-// Event Handlers
 function onToggleCollapse(event: Event) {
   event.stopPropagation()
   event.preventDefault()
@@ -54,18 +48,6 @@ function onToggleCollapse(event: Event) {
   }
 }
 
-function onEditProps(event: Event) {
-  event.stopPropagation()
-  event.preventDefault()
-  openPropsPopover.value = !openPropsPopover.value
-}
-
-function onDelete(event: Event) {
-  event.stopPropagation()
-  event.preventDefault()
-  nodeProps.deleteNode()
-}
-
 function onAddSlot(event: Event) {
   event.stopPropagation()
   event.preventDefault()
@@ -74,6 +56,12 @@ function onAddSlot(event: Event) {
   if (unusedSlot) {
     addSlot(unusedSlot)
   }
+}
+
+function onDelete(event: Event) {
+  event.stopPropagation()
+  event.preventDefault()
+  nodeProps.deleteNode()
 }
 
 function addSlot(name: string) {
@@ -107,39 +95,41 @@ function _updateProps(props: Record<string, unknown>) {
 
 <template>
   <NodeViewWrapper as="div">
-    <div class="my-3">
+    <div
+      class="my-3"
+      :contenteditable="false"
+    >
       <!-- Component Header -->
       <div
-        class="group flex items-center justify-between px-3 py-2 rounded-lg border border-default bg-elevated hover:bg-muted cursor-pointer transition-colors duration-150"
-        :contenteditable="false"
+        class="group flex items-center justify-between px-2 py-1.5 rounded-md border border-transparent hover:border-muted hover:bg-muted/50 cursor-pointer transition-all duration-150"
         @click="onToggleCollapse"
       >
         <!-- Left: Icon + Name -->
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2">
           <!-- Collapse/Expand Icon for components with slots -->
           <UIcon
             v-if="hasSlots"
             :name="collapsed ? 'i-lucide-chevron-right' : 'i-lucide-chevron-down'"
-            class="size-4 text-muted transition-transform duration-150"
+            class="size-3.5 text-muted group-hover:text-default transition-all duration-150"
             :class="{ 'text-dimmed': collapsed }"
           />
           <!-- Component Icon -->
           <UIcon
             v-else
             :name="displayIcon"
-            class="size-4 text-muted"
+            class="size-3.5 text-muted group-hover:text-default transition-colors duration-150"
             :class="{ 'text-dimmed': collapsed }"
           />
 
           <!-- Component Name -->
           <span
-            class="text-sm font-mono font-medium text-default"
-            :class="{ 'text-muted': collapsed }"
+            class="text-xs font-mono font-medium text-muted group-hover:text-default transition-colors duration-150"
+            :class="{ 'text-dimmed': collapsed }"
           >
             {{ displayName }}
           </span>
 
-          <!-- Props Count Badge (if has props) -->
+          <!-- Props Count Badge -->
           <UBadge
             v-if="Object.keys(componentProps).length > 0"
             color="neutral"
@@ -155,6 +145,7 @@ function _updateProps(props: Record<string, unknown>) {
           <!-- Add Slot -->
           <UTooltip text="Add slot">
             <UButton
+              v-if="slots.length > 1"
               variant="ghost"
               size="xs"
               icon="i-lucide-plus"
@@ -166,31 +157,29 @@ function _updateProps(props: Record<string, unknown>) {
 
           <!-- Edit Props -->
           <UPopover v-model:open="openPropsPopover">
-            <UTooltip text="Edit props">
+            <UTooltip
+              text="Edit props"
+              :disabled="openPropsPopover"
+            >
               <UButton
                 variant="ghost"
                 size="xs"
                 icon="i-lucide-settings"
                 :disabled="!isEditable"
                 aria-label="Edit props"
-                @click="onEditProps"
+                @click.stop
               />
             </UTooltip>
 
             <template #content>
-              <div class="p-4 w-80">
+              <UCard>
                 <div class="text-sm font-medium text-highlighted mb-3">
                   Component Props
                 </div>
                 <div class="text-xs text-muted">
                   Props editor will be implemented soon...
                 </div>
-                <!-- TODO: Implement MDCEditorComponentProps or create new component -->
-                <!-- <MDCEditorComponentProps
-                  :node="node"
-                  :update-props="updateProps"
-                /> -->
-              </div>
+              </UCard>
             </template>
           </UPopover>
 
@@ -207,26 +196,14 @@ function _updateProps(props: Record<string, unknown>) {
           </UTooltip>
         </div>
       </div>
-
-      <!-- Component Content (Slots) -->
-      <div
-        v-if="hasSlots"
-        v-show="!collapsed"
-        class="ml-7 mt-2"
-      >
-        <NodeViewContent ref="nodeViewContent" />
-      </div>
+    </div>
+    <!-- Component Content (Slots) -->
+    <div
+      v-if="hasSlots"
+      v-show="!collapsed"
+      class="ml-5 mt-2"
+    >
+      <NodeViewContent ref="nodeViewContent" />
     </div>
   </NodeViewWrapper>
 </template>
-
-<style scoped>
-/* Modern styling using Nuxt UI v4 design tokens */
-/* Additional custom styles can be added here if needed */
-</style>
-
-<!-- <style lang="postcss">
-.prose :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-  @apply bg-white dark:bg-gray-950/50;
-}
-</style> -->

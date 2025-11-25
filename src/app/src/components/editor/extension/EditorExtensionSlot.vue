@@ -4,65 +4,17 @@ import { nodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/vue-3'
 import { titleCase } from 'scule'
 // import { pascalCase } from 'scule'
 // import { tiptapChildrenNodes, tiptapParentNode } from '../../utils/tiptap'
+import { useStudio } from '../../../composables/useStudio'
 
 const nodeProps = defineProps(nodeViewProps)
 
-// const parentNodeEl = ref(null)
+const { host } = useStudio()
 
-// const { project } = useProjects()
-// const { meta } = useProjectMeta(project.value)
-// const { isEditable } = useTiptapEditor()
-
-// const isHovered = ref(false)
-
-// onMounted(() => {
-//   setTimeout(() => {
-//     applyBg()
-//   }, 100)
-// })
-
-/* Computed */
-// const slotName = computed({
-//   get: () => nodeProps.node.attrs.name,
-//   set: (value) => {
-//     value = (typeof value === 'string' ? value : value.value) || 'default'
-//     nodeProps.updateAttributes({ name: value })
-//   },
-// })
-
-// const parent = computed(() => tiptapParentNode(nodeProps.editor.state.doc, nodeProps.getPos()))
-// const children = computed(() => tiptapChildrenNodes(nodeProps.editor.state.doc, toRaw(parent.value)) || [])
-// const isLastRemainingSlot = computed(() => parent.value?.childCount === 1)
-// const slots = computed(() => meta.value?.components.find(c => c.name === pascalCase(parent.value?.attrs?.tag))?.meta?.slots || [])
-// const availableSlots = computed(() => {
-//   const slotsArray = slots.value.reduce((acc, slot) => {
-//     if (!children.value.map(c => c.attrs.name).includes(slot.name) || slot.name === slotName.value) {
-//       acc.push({ label: slot.name, value: slot.name })
-//     }
-//     return acc
-//   }, [] as { label: string, value: string }[])
-//   return slotsArray
-// })
-// const slotSelection = computed(() => !isLastRemainingSlot.value || slots.value?.length > 1)
-
-// const deleteSlot = () => {
-//   nodeProps.editor.commands.command(({ tr }) => {
-//     const pos = nodeProps.getPos()
-//     tr.delete(pos, pos + nodeProps.node.nodeSize)
-//     return true
-//   })
-// }
-
-// ========================================
-// NEW IMPLEMENTATION - Nuxt UI v4
-// ========================================
-
-// State
 const nodeViewContentEl = ref<HTMLElement>()
+
 const isHovered = ref(false)
 const isEditable = ref(true) // TODO: Connect to editor state
 
-// Computed Properties
 const slotName = computed({
   get: () => nodeProps.node.attrs.name || 'default',
   set: (value: string | { value: string, label: string }) => {
@@ -71,7 +23,6 @@ const slotName = computed({
   },
 })
 
-// Get parent element context
 const parent = computed(() => {
   const pos = nodeProps.getPos()
   if (typeof pos === 'undefined') return null
@@ -80,29 +31,12 @@ const parent = computed(() => {
   return $pos.parent
 })
 
-// Check if this is the last slot in the component
-const isLastRemainingSlot = computed(() => {
-  return parent.value?.childCount === 1
-})
+const componentMeta = computed(() => host.meta.getComponents().find(c => c.name === parent.value?.attrs.tag))
+const slots = computed(() => componentMeta.value?.meta.slots || [])
+const showSlotSelection = computed(() => slots.value.length > 1)
+const availableSlots = computed(() => slots.value.map(s => s.name))
+const isLastRemainingSlot = computed(() => parent.value?.childCount === 1)
 
-// Available slots for selection
-// TODO: Get from component metadata
-const slots = [
-  { label: 'Default', value: 'default' },
-]
-
-const availableSlots = computed(() => {
-  return slots
-})
-
-// Show slot selection UI
-const showSlotSelection = computed(() => {
-  return !isLastRemainingSlot.value || availableSlots.value.length > 1
-})
-
-const slotLabel = computed(() => titleCase(slotName.value))
-
-// Event Handlers
 function deleteSlot() {
   nodeProps.editor.commands.command(({ tr }) => {
     const pos = nodeProps.getPos()
@@ -113,8 +47,8 @@ function deleteSlot() {
   })
 }
 
-function createSlot(name: string) {
-  slots.push({ label: titleCase(name), value: name })
+function createSlot(_name: string) {
+  // slots.push({ label: titleCase(name), value: name })
 }
 </script>
 
@@ -147,7 +81,7 @@ function createSlot(name: string) {
           </template>
 
           <template #label>
-            {{ slotLabel }}
+            {{ titleCase(slotName) }}
           </template>
 
           <template #empty>
@@ -170,21 +104,12 @@ function createSlot(name: string) {
         </UTooltip>
       </div>
 
-      <!-- Simple Label (when slot selection is disabled) -->
-      <div
-        v-else
-        class="flex items-center gap-2 mb-2 text-muted text-xs font-mono"
-        :contenteditable="false"
-      >
-        <span>#</span>
-        <span>{{ slotLabel }}</span>
-      </div>
-
       <!-- Slot Content -->
-      <div class="pl-5 border-l-2 border-dashed border-default">
+      <div
+        class="pl-5 border-l-2 border-dashed border-default"
+      >
         <NodeViewContent ref="nodeViewContentEl" />
       </div>
     </div>
   </NodeViewWrapper>
 </template>
-
