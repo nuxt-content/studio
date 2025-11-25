@@ -130,29 +130,6 @@ export default defineNuxtConfig({
 })
 ```
 
-## Development Mode
-
-Nuxt Studio includes an **experimental** development mode that enables real-time file system synchronization:
-
-> You must setup a local GitHub OAuth App to use this feature (pointing to `http://localhost:3000` as callback URL).
-
-```ts
-export default defineNuxtConfig({
-  studio: {
-    development: {
-      sync: true // Enable development mode
-    }
-  }
-})
-```
-
-When enabled, Nuxt Studio will:
-
-- ✅ Write changes directly to your local `content/` directory
-- ✅ Write media changes to your local `public/` directory
-- ❌ Listen for file system changes and update the editor
-- ❌ Commit changes to your repository (use your classical workflow instead)
-
 ## Contributing
 You must clone the repository and create a local GitHub OAuth App (pointing to `http://localhost:3000` as callback URL).
 

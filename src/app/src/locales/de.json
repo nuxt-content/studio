@@ -1,0 +1,192 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Diese Seite bearbeiten",
+      "retryPublish": "Veröffentlichung erneut versuchen",
+      "reloadApp": "App neu laden",
+      "reload": "Neu laden",
+      "signOut": "Abmelden",
+      "review": "Überprüfen",
+      "publish": "Veröffentlichen",
+      "back": "Zurück",
+      "backToCode": "Zurück zum Code",
+      "seeChanges": "Änderungen anzeigen"
+    },
+    "headings": {
+      "directories": "Ordner",
+      "files": "Dateien",
+      "media": "Medien"
+    },
+    "tooltips": {
+      "toggleStudio": "Studio umschalten",
+      "unlinkEditor": "Editor und Vorschau trennen",
+      "linkEditor": "Editor und Vorschau verbinden",
+      "copiedToClipboard": "In die Zwischenablage kopiert",
+      "copyToClipboard": "In die Zwischenablage kopieren",
+      "publishChanges": "Änderungen veröffentlichen",
+      "backToContent": "Zurück zu den Inhalten"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Ein unbekannter Fehler ist aufgetreten"
+      }
+    },
+    "publish": {
+      "failedTitle": "Veröffentlichung fehlgeschlagen",
+      "summary": "auf {branch} des {repo}-Repositories",
+      "errorTitle": "Fehler während der Veröffentlichung bei {providerName}",
+      "failedGeneric": "Fehler beim Veröffentlichen der Änderungen"
+    },
+    "review": {
+      "title": "Änderungen überprüfen",
+      "created": "Erstellt",
+      "updated": "Bearbeitet",
+      "renamed": "Umbenannt",
+      "deleted": "Gelöscht"
+    },
+    "publishSuccess": {
+      "title": "Änderungen veröffentlicht",
+      "summary": "{count} Änderung veröffentlicht auf {branch} von {repo} Repository | {count} Änderungen veröffentlicht auf {branch} von {repo} Repository",
+      "alertTitleWaiting": "Warte auf Deployment...",
+      "alertTitleComplete": "Deployment abgeschlossen",
+      "alertDescWaiting": "Die Webseite muss deployed werden, damit Änderungen im Studio sichtbar sind.",
+      "alertDescComplete": "Eine neue Version deiner Webseite wurde deployed. Bitte lade die App neu, um die Änderungen im Studio zu sehen."
+    },
+    "newVersionBanner": {
+      "title": "Neue Version der Webseite erkannt",
+      "description": "Eine neue Version deiner Webseite wurde deployed. Lade die App neu, um die neuesten Änderungen zu sehen.",
+      "reloadButton": "Neu laden"
+    },
+    "footer": {
+      "developer_view": "Entwicklermodus",
+      "localFilesystem": "Verwendung des lokalen Dateisystems"
+    },
+    "alert": {
+      "mdcFormatting": "Formatierung angewendet, um dem MDC-Syntaxstandard zu entsprechen."
+    },
+    "conflict": {
+      "title": "Konflikt erkannt",
+      "repository": "Repository",
+      "branch": "Branch",
+      "file": "Datei",
+      "description": "Der Inhalt auf {providerName} unterscheidet sich von der Webseite-Version. Stelle sicher, dass deine neuesten Änderungen deployed sind, und aktualisiere die Seite.",
+      "websiteVersion": "Webseite"
+    },
+    "nav": {
+      "content": "Inhalte",
+      "media": "Medien"
+    },
+    "placeholders": {
+      "commitMessage": "Commit-Nachricht",
+      "order": "N°",
+      "fileName": "Dateiname"
+    },
+    "validation": {
+      "commitRequired": "Commit-Nachricht ist erforderlich",
+      "nameEmpty": "Name darf nicht leer sein",
+      "nameEndsWithDot": "Name darf nicht mit '.' enden",
+      "nameStartsWithSlash": "Name darf nicht mit '/' beginnen",
+      "nameExists": "Name existiert bereits"
+    },
+    "media": {
+      "altFilePreview": "Dateivorschau",
+      "altImagePreview": "Bildvorschau",
+      "playAudio": "Audio abspielen",
+      "audioTagNotSupported": "Dein Browser unterstützt den Audio-Tag nicht.",
+      "playVideo": "Video abspielen",
+      "videoTagNotSupported": "Dein Browser unterstützt den Video-Tag nicht.",
+      "metaWidth": "Breite",
+      "metaHeight": "Höhe",
+      "metaType": "Typ",
+      "metaSize": "Größe",
+      "fileName": "Dateiname",
+      "publicPath": "Öffentlicher Pfad",
+      "providerPath": "{providerName} Pfad",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Aktionen öffnen",
+      "cancel": "Abbrechen",
+      "submit": "Absenden"
+    },
+    "actions": {
+      "confirmAction": "Klicke erneut, um {action}",
+      "verbs": {
+        "create": "zu erstellen",
+        "delete": "zu löschen",
+        "rename": "umzubenennen",
+        "upload": "hochzuladen",
+        "duplicate": "zu duplizieren"
+      },
+      "labels": {
+        "createDocument": "Neue Datei",
+        "createDocumentFolder": "Neuer Ordner",
+        "createMediaFolder": "Neuer Medienordner",
+        "renameItem": "Umbenennen",
+        "deleteItem": "Löschen",
+        "uploadMedia": "Medien hochladen",
+        "duplicateItem": "Duplizieren",
+        "revertItem": "Änderungen rückgängig machen",
+        "publishBranch": "Branch veröffentlichen",
+        "openGitProvider": "Auf {providerName} öffnen"
+      },
+      "tooltips": {
+        "createDocument": "Neue Datei erstellen",
+        "createDocumentFolder": "Neuen Ordner erstellen",
+        "createMediaFolder": "Neuen Medienordner erstellen",
+        "renameItem": "Datei umbenennen",
+        "deleteItem": "Datei löschen",
+        "uploadMedia": "Medien hochladen",
+        "duplicateItem": "Datei duplizieren",
+        "revertItem": "Änderungen rückgängig machen",
+        "publishBranch": "Branch veröffentlichen"
+      }
+    },
+    "items": {
+      "itemCount": "1 Eintrag | {count} Einträge"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Überschrift 1",
+        "h2": "Überschrift 2",
+        "h3": "Überschrift 3"
+      },
+      "styles": {
+        "bold": "Fett",
+        "italic": "Kursiv"
+      },
+      "lists": {
+        "bulleted": "Aufzählung",
+        "numbered": "Nummerierte Liste"
+      },
+      "other": {
+        "emojis": "Emojis",
+        "blockquote": "Blockzitat",
+        "code": "Code",
+        "inlineCode": "Inline Code",
+        "link": "Link",
+        "image": "Bild"
+      },
+      "writeSomething": "Schreibe etwas...",
+      "snippets": {
+        "title": "titel",
+        "item1": "Eintrag 1",
+        "item2": "Eintrag 2",
+        "language": "sprache",
+        "code": "code",
+        "link": "link",
+        "alt": "alt",
+        "src": "src",
+        "value": "wert"
+      },
+      "docs": {
+        "path": "Pfad im Projekt:",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "typ",
+        "required": "erforderlich",
+        "default": "standard"
+      }
+    }
+  }
+}

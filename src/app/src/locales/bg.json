@@ -1,0 +1,192 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Редактиране на страницата",
+      "retryPublish": "Повторен опит за публикуване",
+      "reloadApp": "Презареждане на приложението",
+      "reload": "Презареждане",
+      "signOut": "Изход",
+      "review": "Преглеждане",
+      "publish": "Публикуване",
+      "back": "Назад",
+      "backToCode": "Връщане към кода",
+      "seeChanges": "Преглед на промените"
+    },
+    "headings": {
+      "directories": "Директории",
+      "files": "Файлове",
+      "media": "Медия"
+    },
+    "tooltips": {
+      "toggleStudio": "Превключване на Студио",
+      "unlinkEditor": "Разкачване на редактора и прегледа",
+      "linkEditor": "Свързване на редактора и прегледа",
+      "copiedToClipboard": "Съдържанието е копирано",
+      "copyToClipboard": "Копиране на съдържанието",
+      "publishChanges": "Публикуване на промените",
+      "backToContent": "Връщане към съдържанието"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Възникна неизвестна грешка"
+      }
+    },
+    "publish": {
+      "failedTitle": "Публикуването е неуспешно",
+      "summary": "в клон {branch} на хранилището {repo}",
+      "errorTitle": "Грешка при публикуване в {providerName}",
+      "failedGeneric": "Неуспешно публикуване на промените"
+    },
+    "review": {
+      "title": "Преглед на промените",
+      "created": "Дата на създаване",
+      "updated": "Дата на обновяване",
+      "renamed": "Дата на преименуване",
+      "deleted": "Дата на изтриване"
+    },
+    "publishSuccess": {
+      "title": "Промените са публикувани успешно",
+      "summary": "{count} промяна е публикувана в клон {branch} на хранилище {repo} | {count} промени са публикувани в клон {branch} на хранилище {repo}",
+      "alertTitleWaiting": "Очаква се качване на промените...",
+      "alertTitleComplete": "Качването е завършено",
+      "alertDescWaiting": "Уебсайта трябва да бъде качен, за да се видят промените в Студио.",
+      "alertDescComplete": "Беше качена нова версия на Вашия уебсайт. Моля, презаредете приложението, за да видите промените в Студио."
+    },
+    "newVersionBanner": {
+      "title": "Налична е нова версия на уебсайта",
+      "description": "Беше качена нова версия на Вашия уебсайт. Презаредете приложението, за да видите последните промени.",
+      "reloadButton": "Презареждане"
+    },
+    "footer": {
+      "developer_view": "Изглед за разработчици",
+      "localFilesystem": "Използване на локална файлова система"
+    },
+    "alert": {
+      "mdcFormatting": "Приложено е форматиране, за да се съобрази със стандарта за MDC синтаксис."
+    },
+    "conflict": {
+      "title": "Открит е конфликт",
+      "repository": "Хранилище",
+      "branch": "Клон",
+      "file": "Файл",
+      "description": "Съдържанието в {providerName} се различава от версията на Вашия уебсайт. Уверете се, че последните промени са качени и обновете страницата.",
+      "websiteVersion": "Уебсайт"
+    },
+    "nav": {
+      "content": "Съдържание",
+      "media": "Медия"
+    },
+    "placeholders": {
+      "commitMessage": "Съобщение за публикуване",
+      "order": "№",
+      "fileName": "Име на файл"
+    },
+    "validation": {
+      "commitRequired": "Съобщението за публикуване е задължително",
+      "nameEmpty": "Името не може да бъде празно",
+      "nameEndsWithDot": "Името не може да завършва с '.'",
+      "nameStartsWithSlash": "Името не може да започва с '/'",
+      "nameExists": "Името вече съществува"
+    },
+    "media": {
+      "altFilePreview": "Преглед на файл",
+      "altImagePreview": "Преглед на изображение",
+      "playAudio": "Възпроизвеждане на аудио",
+      "audioTagNotSupported": "Вашият браузър не поддържа аудио тага.",
+      "playVideo": "Възпроизвеждане на видео",
+      "videoTagNotSupported": "Вашият браузър не поддържа видео тага.",
+      "metaWidth": "Ширина",
+      "metaHeight": "Височина",
+      "metaType": "Тип",
+      "metaSize": "Размер",
+      "fileName": "Име на файл",
+      "publicPath": "Публичен път",
+      "providerPath": "Път в {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Отваряне на действия",
+      "cancel": "Отказ",
+      "submit": "Изпращане"
+    },
+    "actions": {
+      "confirmAction": "Кликнете отново, за да {action}.",
+      "verbs": {
+        "create": "създадете",
+        "delete": "изтриете",
+        "rename": "преименувате",
+        "upload": "качите",
+        "duplicate": "дублирате"
+      },
+      "labels": {
+        "createDocument": "Нов файл",
+        "createDocumentFolder": "Нова папка",
+        "createMediaFolder": "Нова медийна папка",
+        "renameItem": "Преименуване",
+        "deleteItem": "Изтриване",
+        "uploadMedia": "Качване на медия",
+        "duplicateItem": "Дублиране",
+        "revertItem": "Връщане на промените",
+        "publishBranch": "Публикуване на клон",
+        "openGitProvider": "Отваряне в {providerName}"
+      },
+      "tooltips": {
+        "createDocument": "Създаване на нов файл",
+        "createDocumentFolder": "Създаване на нова папка",
+        "createMediaFolder": "Създаване на нова медийна папка",
+        "renameItem": "Преименуване на файл",
+        "deleteItem": "Изтриване на файл",
+        "uploadMedia": "Качване на медия",
+        "duplicateItem": "Дублиране на файл",
+        "revertItem": "Връщане на промените",
+        "publishBranch": "Публикуване на клон"
+      }
+    },
+    "items": {
+      "itemCount": "1 файл | {count} файла"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Заглавие 1",
+        "h2": "Заглавие 2",
+        "h3": "Заглавие 3"
+      },
+      "styles": {
+        "bold": "Удебеляване (получер)",
+        "italic": "Накланяне (курсив)"
+      },
+      "lists": {
+        "bulleted": "Списък с водещи символи",
+        "numbered": "Номериран списък"
+      },
+      "other": {
+        "emojis": "Емоджита",
+        "blockquote": "Цитат",
+        "code": "Блок с код",
+        "inlineCode": "Ред с код",
+        "link": "Връзка (препратка)",
+        "image": "Изображение"
+      },
+      "writeSomething": "Въведете текст...",
+      "snippets": {
+        "title": "заглавие",
+        "item1": "Елемент 1",
+        "item2": "Елемент 2",
+        "language": "език",
+        "code": "код",
+        "link": "връзка",
+        "alt": "алт",
+        "src": "източник",
+        "value": "стойност"
+      },
+      "docs": {
+        "path": "Път в проекта:",
+        "props": "Свойства",
+        "slots": "Слотове",
+        "type": "тип",
+        "required": "задължително",
+        "default": "по подразбиране"
+      }
+    }
+  }
+}
