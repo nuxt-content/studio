@@ -22,7 +22,7 @@ export * from './content'
 export interface StudioHost {
   meta: {
     dev: boolean
-    components: ComponentMeta[]
+    getComponents: () => ComponentMeta[]
     defaultLocale: string
   }
   on: {

@@ -1,6 +1,5 @@
 import type { EditorSuggestionMenuItem } from '@nuxt/ui/runtime/components/EditorSuggestionMenu.vue.js'
 import type { EditorToolbarItem } from '@nuxt/ui/runtime/components/EditorToolbar.vue.js'
-import { titleCase } from 'scule'
 import { omit } from '../object'
 
 export const headingItems = [
@@ -106,23 +105,30 @@ export const standardSuggestionItems = [
 ] satisfies EditorSuggestionMenuItem[][]
 
 export const standardElements: Record<string, { name: string, icon: string }> = {
+  'icon-menu-toggle': { name: 'Icon Menu Toggle', icon: 'i-lucide-menu' },
+  'accordion': { name: 'Accordion', icon: 'i-lucide-chevron-down' },
+  'accordion-item': { name: 'Accordion Item', icon: 'i-lucide-minus' },
+  'badge': { name: 'Badge', icon: 'i-lucide-tag' },
+  'callout': { name: 'Callout', icon: 'i-lucide-message-square' },
   'card': { name: 'Card', icon: 'i-lucide-square' },
-  'alert': { name: 'Alert', icon: 'i-lucide-alert-circle' },
+  'card-group': { name: 'Card Group', icon: 'i-lucide-braces' },
+  'code-collapse': { name: 'Code Collapse', icon: 'i-lucide-unfold-vertical' },
+  'code-group': { name: 'Code Group', icon: 'i-lucide-braces' },
+  'code-icon': { name: 'Code Icon', icon: 'i-lucide-code-2' },
+  'code-preview': { name: 'Code Preview', icon: 'i-lucide-eye' },
+  'code-tree': { name: 'Code Tree', icon: 'i-lucide-folder-tree' },
+  'collapsible': { name: 'Collapsible', icon: 'i-lucide-fold-vertical' },
+  'field': { name: 'Field', icon: 'i-lucide-box' },
+  'field-group': { name: 'Field Group', icon: 'i-lucide-boxes' },
+  'icon': { name: 'Icon', icon: 'i-lucide-circle-dot' },
+  'kbd': { name: 'Kbd', icon: 'i-lucide-keyboard' },
+  'script': { name: 'Script', icon: 'i-lucide-file-code' },
+  'steps': { name: 'Steps', icon: 'i-lucide-list-ordered' },
+  'table': { name: 'Table', icon: 'i-lucide-table' },
+  'tabs': { name: 'Tabs', icon: 'i-lucide-panels-top-left' },
+  'tabs-item': { name: 'Tabs Item', icon: 'i-lucide-rectangle-horizontal' },
+  'caution': { name: 'Caution', icon: 'i-lucide-triangle-alert' },
+  'note': { name: 'Note', icon: 'i-lucide-info' },
   'tip': { name: 'Tip', icon: 'i-lucide-lightbulb' },
   'warning': { name: 'Warning', icon: 'i-lucide-alert-triangle' },
-  'note': { name: 'Note', icon: 'i-lucide-info' },
-  'callout': { name: 'Callout', icon: 'i-lucide-message-square' },
-  'accordion': { name: 'Accordion', icon: 'i-lucide-accordion' },
-  'badge': { name: 'Badge', icon: 'i-lucide-tag' },
-  'code-collapse': { name: 'Code Collapse', icon: 'i-lucide-code-collapse' },
-  'code-group': { name: 'Code Group', icon: 'i-lucide-braces' },
-  'code-preview': { name: 'Code Preview', icon: 'i-lucide-code-preview' },
-  'code-tree': { name: 'Code Tree', icon: 'i-lucide-code-tree' },
-  'collapsible': { name: 'Collapsible', icon: 'i-lucide-collapsible' },
-  'field': { name: 'Field', icon: 'i-lucide-field' },
-  'field-group': { name: 'Field Group', icon: 'i-lucide-field-group' },
-  'icon': { name: 'Icon', icon: 'i-lucide-icon' },
-  'kbd': { name: 'Kbd', icon: 'i-lucide-kbd' },
-  'steps': { name: 'Steps', icon: 'i-lucide-steps' },
-  'tabs': { name: 'Tabs', icon: 'i-lucide-tabs' },
 }

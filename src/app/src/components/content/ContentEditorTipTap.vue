@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { upperFirst } from 'scule'
+import { upperFirst, titleCase } from 'scule'
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { mapEditorItems } from '@nuxt/ui/utils/editor'
 // import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
@@ -104,11 +104,11 @@ watch(tiptapJSON, async (json) => {
 })
 
 const componentItems = computed(() => {
-  return host.meta.components.map(component => ({
+  return host.meta.getComponents().map(component => ({
     kind: component.name,
     type: undefined as never,
-    label: component.name,
-    icon: standardElements[component.name].icon || 'i-lucide-box',
+    label: titleCase(component.name),
+    icon: standardElements[component.name]?.icon || 'i-lucide-box',
   }))
 })
 
@@ -119,14 +119,17 @@ const customHandlers = computed(() => ({
     isActive: (editor: Editor) => editor.isActive('image-picker'),
     isDisabled: undefined,
   },
-  ...componentItems.value.map(item => ({
-    [item.kind]: {
-      canExecute: (editor: Editor) => editor.can().setElement(item.kind, 'default'),
-      execute: (editor: Editor) => editor.chain().focus().setElement(item.kind, 'default'),
-      isActive: (editor: Editor) => editor.isActive(item.kind),
-      isDisabled: undefined,
-    },
-  })),
+  ...Object.fromEntries(
+    componentItems.value.map(item => [
+      item.kind,
+      {
+        canExecute: (editor: Editor) => editor.can().setElement(item.kind, 'default'),
+        execute: (editor: Editor) => editor.chain().focus().setElement(item.kind, 'default'),
+        isActive: (editor: Editor) => editor.isActive(item.kind),
+        isDisabled: undefined,
+      },
+    ]),
+  ),
 }))
 
 const suggestionItems = computed(() => [
@@ -141,6 +144,16 @@ const suggestionItems = computed(() => [
 ])
 
 const selectedNode = ref<JSONContent | null>(null)
+
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// const shouldShowBubbleMenu = ({ state, view }: any) => {
+//   if (!view.hasFocus()) {
+//     return false
+//   }
+//   const { selection } = state
+//   const { empty } = selection
+//   return !empty
+// }
 
 const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
   if (!selectedNode.value) {
@@ -241,15 +254,8 @@ const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
         :editor="editor"
         :items="standardToolbarItems"
         layout="bubble"
-        :should-show="({ state, view }) => {
-          if (!view.hasFocus()) {
-            return false
-          }
-          const { selection } = state
-          const { empty } = selection
-          return !empty
-        }"
       >
+        <!-- :should-show="shouldShowBubbleMenu" -->
         <template #link>
           <EditorLinkPopover :editor="editor" />
         </template>
