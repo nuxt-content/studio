@@ -35,9 +35,10 @@ const extraActions = computed<DropdownMenuItem[]>(() => {
   if (item.value.type === 'file') {
     const fileExtension = getFileExtension(item.value.fsPath)
     const isMarkdown = fileExtension === 'md'
+    const isConflictDetected = context.activeTree.value.draft.current.value?.conflict
 
     // Add editor mode switch for markdown files
-    if (isMarkdown) {
+    if (isMarkdown && !isConflictDetected) {
       actions.push({
         label: preferences.value.editorMode === 'code'
           ? t('studio.actions.labels.switchToTipTap')
