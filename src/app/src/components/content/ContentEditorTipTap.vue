@@ -17,6 +17,7 @@ import type { DraftItem, DatabasePageItem } from '../../types'
 import { Element } from '../../utils/tiptap/extensions/element'
 import { Slot } from '../../utils/tiptap/extensions/slot'
 import { Frontmatter } from '../../utils/tiptap/extensions/frontmatter'
+import { CodeBlock } from '../../utils/tiptap/extensions/code-block'
 import { standardToolbarItems, standardSuggestionItems, standardElements, headingItems, listItems, codeBlockItem } from '../../utils/tiptap/editor'
 
 const props = defineProps({
@@ -248,11 +249,15 @@ const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
       class="my-4"
       content-type="json"
       :handlers="customHandlers"
+      :starter-kit="{
+        codeBlock: false,
+      }"
       :extensions="[
         Frontmatter,
         ImagePicker,
         Element,
         Slot,
+        CodeBlock,
       ]"
       placeholder="Write, type '/' for commands..."
     >
