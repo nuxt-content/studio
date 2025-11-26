@@ -1,0 +1,192 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "ویرایش این صفحه",
+      "retryPublish": "تلاش مجدد برای انتشار",
+      "reloadApp": "بارگذاری مجدد برنامه",
+      "reload": "بارگذاری مجدد",
+      "signOut": "خروج",
+      "review": "بررسی",
+      "publish": "انتشار",
+      "back": "بازگشت",
+      "backToCode": "بازگشت به کد",
+      "seeChanges": "مشاهده تغییرات"
+    },
+    "headings": {
+      "directories": "پوشه‌ها",
+      "files": "فایل‌ها",
+      "media": "رسانه"
+    },
+    "tooltips": {
+      "toggleStudio": "تغییر وضعیت Studio",
+      "unlinkEditor": "جدا کردن ویرایشگر و پیش‌نمایش",
+      "linkEditor": "اتصال ویرایشگر و پیش‌نمایش",
+      "copiedToClipboard": "به کلیپ‌بورد کپی شد",
+      "copyToClipboard": "کپی به کلیپ‌بورد",
+      "publishChanges": "انتشار تغییرات",
+      "backToContent": "بازگشت به محتوا"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "خطای نامشخصی رخ داد"
+      }
+    },
+    "publish": {
+      "failedTitle": "انتشار ناموفق بود",
+      "summary": "در {branch} مخزن {repo}",
+      "errorTitle": "خطا در حین انتشار {providerName}",
+      "failedGeneric": "انتشار تغییرات ناموفق بود"
+    },
+    "review": {
+      "title": "بررسی تغییرات",
+      "created": "ایجاد شد",
+      "updated": "به‌روزرسانی شد",
+      "renamed": "تغییر نام داد",
+      "deleted": "حذف شد"
+    },
+    "publishSuccess": {
+      "title": "تغییرات منتشر شد",
+      "summary": "{count} تغییر منتشر شد در {branch} مخزن {repo} | {count} تغییر منتشر شدند در {branch} مخزن {repo}",
+      "alertTitleWaiting": "در انتظار استقرار...",
+      "alertTitleComplete": "استقرار کامل شد",
+      "alertDescWaiting": "وب‌سایت برای نمایش تغییرات در Studio باید استقرار یابد.",
+      "alertDescComplete": "نسخه جدید وب‌سایت شما استقرار یافته است. لطفا برنامه را بارگذاری مجدد کنید تا تغییرات در Studio را ببینید."
+    },
+    "newVersionBanner": {
+      "title": "نسخه جدید وب‌سایت شناسایی شد",
+      "description": "نسخه جدید وب‌سایت شما استقرار یافته است. برنامه را بارگذاری مجدد کنید تا آخرین تغییرات را ببینید.",
+      "reloadButton": "بارگذاری مجدد"
+    },
+    "footer": {
+      "developer_view": "نمای توسعه‌دهنده",
+      "localFilesystem": "استفاده از سیستم فایل محلی"
+    },
+    "alert": {
+      "mdcFormatting": "قالب‌بندی برای هماهنگی با استاندارد نوشتار MDC اعمال شد."
+    },
+    "conflict": {
+      "title": "ناهماهنگی شناسایی شد",
+      "repository": "مخزن",
+      "branch": "شاخه",
+      "file": "فایل",
+      "description": "محتوا در {providerName} با نسخه وب‌سایت شما متفاوت است. اطمینان حاصل کنید که آخرین تغییرات استقرار یافته‌اند و صفحه را تازه کنید.",
+      "websiteVersion": "وب‌سایت"
+    },
+    "nav": {
+      "content": "محتوا",
+      "media": "رسانه"
+    },
+    "placeholders": {
+      "commitMessage": "پیام commit",
+      "order": "شماره",
+      "fileName": "نام فایل"
+    },
+    "validation": {
+      "commitRequired": "پیام commit الزامی است",
+      "nameEmpty": "نام نمی‌تواند خالی باشد",
+      "nameEndsWithDot": "نام نمی‌تواند با '.' پایان یابد",
+      "nameStartsWithSlash": "نام نمی‌تواند با '/' شروع شود",
+      "nameExists": "نام از پیش وجود دارد"
+    },
+    "media": {
+      "altFilePreview": "پیش‌نمایش فایل",
+      "altImagePreview": "پیش‌نمایش تصویر",
+      "playAudio": "پخش صدا",
+      "audioTagNotSupported": "مرورگر شما از تگ صدا پشتیبانی نمی‌کند.",
+      "playVideo": "پخش ویدیو",
+      "videoTagNotSupported": "مرورگر شما از تگ ویدیو پشتیبانی نمی‌کند.",
+      "metaWidth": "عرض",
+      "metaHeight": "ارتفاع",
+      "metaType": "نوع",
+      "metaSize": "اندازه",
+      "fileName": "نام فایل",
+      "publicPath": "مسیر عمومی",
+      "providerPath": "مسیر {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "باز کردن اقدامات",
+      "cancel": "لغو",
+      "submit": "ارسال"
+    },
+    "actions": {
+      "confirmAction": "برای {action} دوباره کلیک کنید",
+      "verbs": {
+        "create": "ایجاد",
+        "delete": "حذف",
+        "rename": "تغییر نام",
+        "upload": "آپلود",
+        "duplicate": "تکرار"
+      },
+      "labels": {
+        "createDocument": "فایل جدید",
+        "createDocumentFolder": "پوشه جدید",
+        "createMediaFolder": "پوشه رسانه جدید",
+        "renameItem": "تغییر نام",
+        "deleteItem": "حذف",
+        "uploadMedia": "آپلود رسانه",
+        "duplicateItem": "تکرار",
+        "revertItem": "بازگرداندن تغییرات",
+        "publishBranch": "انتشار شاخه",
+        "openGitProvider": "باز کردن در {providerName}"
+      },
+      "tooltips": {
+        "createDocument": "ایجاد فایل جدید",
+        "createDocumentFolder": "ایجاد پوشه جدید",
+        "createMediaFolder": "ایجاد پوشه رسانه جدید",
+        "renameItem": "تغییر نام فایل",
+        "deleteItem": "حذف فایل",
+        "uploadMedia": "آپلود رسانه",
+        "duplicateItem": "تکرار فایل",
+        "revertItem": "بازگرداندن تغییرات",
+        "publishBranch": "انتشار شاخه"
+      }
+    },
+    "items": {
+      "itemCount": "1 آیتم | {count} آیتم"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "عنوان 1",
+        "h2": "عنوان 2",
+        "h3": "عنوان 3"
+      },
+      "styles": {
+        "bold": "درشت",
+        "italic": "کج"
+      },
+      "lists": {
+        "bulleted": "لیست نقطه‌ای",
+        "numbered": "لیست شماره‌دار"
+      },
+      "other": {
+        "emojis": "شکلک‌ها",
+        "blockquote": "نقل قول",
+        "code": "کد",
+        "inlineCode": "کد درون‌خطی",
+        "link": "پیوند",
+        "image": "تصویر"
+      },
+      "writeSomething": "چیزی بنویسید",
+      "snippets": {
+        "title": "عنوان",
+        "item1": "آیتم 1",
+        "item2": "آیتم 2",
+        "language": "زبان",
+        "code": "کد",
+        "link": "پیوند",
+        "alt": "متن جایگزین",
+        "src": "منبع",
+        "value": "مقدار"
+      },
+      "docs": {
+        "path": "مسیر در پروژه:",
+        "props": "ویژگی‌ها",
+        "slots": "اسلات‌ها",
+        "type": "نوع",
+        "required": "الزامی",
+        "default": "پیش‌فرض"
+      }
+    }
+  }
+}
