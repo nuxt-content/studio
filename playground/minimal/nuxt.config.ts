@@ -16,7 +16,7 @@ export default defineNuxtConfig({
       owner: 'nuxt-content',
       repo: 'studio',
       branch: 'main',
-      rootDir: 'playground/minimal',
+      rootDir: 'playground/minimal/content',
       private: false,
     },
   },

@@ -19,7 +19,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
   const list = ref<DraftItem<DatabaseItem | MediaItem>[]>([])
   const current = ref<DraftItem<DatabaseItem | MediaItem> | null>(null)
 
-  const remotePathPrefix = type === 'media' ? 'public' : 'content'
+  const remotePathPrefix = type === 'media' ? 'public' : ''
   const hostDb = type === 'media' ? host.media : host.document.db
   const hookName = `studio:draft:${type}:updated` as const
   const areDocumentsEqual = host.document.utils.areEqual
@@ -31,13 +31,26 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
     return list.value.find(item => item.fsPath === fsPath) as DraftItem<T>
   }
 
+  // Helper to fetch file with fallback strategy
+  async function fetchRemoteFile(fsPath: string): Promise<GitFile | null> {
+    const path = joinURL(remotePathPrefix, fsPath)
+    let remoteFile = await gitProvider.api.fetchFile(path, { cached: true })
+
+    if (!remoteFile && type === 'document' && !path.startsWith('content/')) {
+      const standardPath = joinURL('content', fsPath)
+      remoteFile = await gitProvider.api.fetchFile(standardPath, { cached: true })
+    }
+
+    return remoteFile
+  }
+
   async function create(fsPath: string, item: T, original?: T, { rerender = true }: { rerender?: boolean } = {}): Promise<DraftItem<T>> {
     const existingItem = list.value?.find(draft => draft.fsPath === fsPath)
     if (existingItem) {
       throw new Error(`Draft file already exists for document at ${fsPath}`)
     }
 
-    const remoteFile = await gitProvider.api.fetchFile(joinURL(remotePathPrefix, fsPath), { cached: true }) as GitFile
+    const remoteFile = await fetchRemoteFile(fsPath) as GitFile
 
     const draftItem: DraftItem<T> = {
       fsPath,
@@ -83,8 +96,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
             list.value = list.value.filter(item => item.fsPath !== fsPath)
           }
           else {
-            // TODO: check if remote file has been updated
-            const remoteFile = await gitProvider.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
+            const remoteFile = await fetchRemoteFile(fsPath) as GitFile
 
             deleteDraftItem = {
               fsPath: existingDraftItem.fsPath,
@@ -97,8 +109,7 @@ export function useDraftBase<T extends DatabaseItem | MediaItem>(
           }
         }
         else {
-        // TODO: check if gh file has been updated
-          const remoteFile = await gitProvider.api.fetchFile(joinURL('content', fsPath), { cached: true }) as GitFile
+          const remoteFile = await fetchRemoteFile(fsPath) as GitFile
 
           deleteDraftItem = {
             fsPath,

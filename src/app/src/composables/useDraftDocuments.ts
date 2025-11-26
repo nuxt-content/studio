@@ -3,7 +3,6 @@ import { DraftStatus } from '../types/draft'
 import type { useGitProvider } from './useGitProvider'
 import { createSharedComposable } from '@vueuse/core'
 import { useHooks } from './useHooks'
-import { joinURL } from 'ufo'
 import { documentStorage as storage } from '../utils/storage'
 import { getFileExtension } from '../utils/file'
 import { useDraftBase } from './useDraftBase'
@@ -112,14 +111,18 @@ export const useDraftDocuments = createSharedComposable((host: StudioHost, gitPr
   async function listAsRawFiles(): Promise<RawFile[]> {
     const files = [] as RawFile[]
     for (const draftItem of list.value) {
+      // FIX: Do NOT force 'content/' prefix. Use fsPath directly.
+      // This allows custom paths from remote repositories (e.g. '1.docs/...')
+      const filePath = draftItem.fsPath
+
       if (draftItem.status === DraftStatus.Deleted) {
-        files.push({ path: joinURL('content', draftItem.fsPath), content: null, status: draftItem.status, encoding: 'utf-8' })
+        files.push({ path: filePath, content: null, status: draftItem.status, encoding: 'utf-8' })
         continue
       }
 
       const content = await generateContentFromDocument(draftItem.modified as DatabaseItem)
       files.push({
-        path: joinURL('content', draftItem.fsPath),
+        path: filePath,
         content: content!,
         status: draftItem.status,
         encoding: 'utf-8',
