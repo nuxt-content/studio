@@ -37,7 +37,7 @@ function toggleAction() {
         class="bg-white hover:bg-muted dark:bg-accented dark:hover:bg-elevated"
         @click="toggleAction"
       >
-        {{ isDiffShown ? $t('studio.buttons.backToCode') : $t('studio.buttons.seeChanges') }}
+        {{ isDiffShown ? $t('studio.buttons.backToEdition') : $t('studio.buttons.seeChanges') }}
       </UButton>
     </template>
   </UAlert>

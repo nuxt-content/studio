@@ -44,7 +44,7 @@ const { preferences } = useStudioState()
 const debug = computed(() => preferences.value.debug)
 
 // Trigger on document changes
-watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
+watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.status}`, async () => {
   if (document.value) {
     setEditorJSON(document.value)
   }
