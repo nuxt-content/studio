@@ -68,6 +68,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.39.1",
     "idb-keyval": "^6.2.2",
+    "mdclint": "https://pkg.pr.new/nuxt-content/mdclint@ed001fc",
     "minimark": "^0.2.0",
     "modern-monaco": "^0.2.2",
     "nuxt-studio": "workspace:*",

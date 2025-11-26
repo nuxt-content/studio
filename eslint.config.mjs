@@ -1,5 +1,6 @@
 // @ts-check
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
+import { mdcLint } from 'mdclint'
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt({
@@ -21,4 +22,15 @@ export default createConfigForNuxt({
         'vue/multi-word-component-names': 'off',
       },
     },
-  )
+  ).append(mdcLint({
+    files: [
+      'docs/**/*.md',
+      'playground/**/*.md',
+      'README.md',
+    ],
+    markdownlint: {
+      config: {
+        MD013: false,
+      },
+    },
+  }))

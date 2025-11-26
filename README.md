@@ -26,7 +26,7 @@
 
 Visual edition in production for your [Nuxt Content](https://content.nuxt.com) website.
 
-Originally offered as a standalone premium platform at https://nuxt.studio, Studio has evolved into a free, open-source, and self-hostable Nuxt module. Enable your entire team to edit website content right in production.
+Originally offered as a standalone premium platform at <https://nuxt.studio>, Studio has evolved into a free, open-source, and self-hostable Nuxt module. Enable your entire team to edit website content right in production.
 
 **Current Features (Alpha):**
 
@@ -39,16 +39,19 @@ Originally offered as a standalone premium platform at https://nuxt.studio, Stud
 - 🚀 **Development Mode** - Directly edit your content files and media files in your local filesystem using the module interface
 
 **Coming in Beta:**
+
 - 🎨 **Visual Editor** - Visual editor for content management, from text edition to media management - all without touching code
 - 🔐 **Google OAuth Authentication** - Secure OAuth-based login with Google
 
 **Future Features:**
+
 - 📂 **Collections view** - View and manage your content collections in a unified interface
 - 🖼️ **Media optimization** - Optimize your media files in the editor
 - 🤖 **AI Content Assistant** — Receive smart, AI-powered suggestions to enhance your content creation flow
 - 💡 **Community-driven Features** — Have an idea? [Share your suggestions](https://github.com/nuxt-content/studio/discussions) to shape the future of Nuxt Studio
 
 ### Resources
+
 - [📖 Documentation](https://content.nuxt.com/docs/studio/setup)
 - [🎮 Live Demo](https://docus.dev/admin)
 
@@ -158,7 +161,7 @@ pnpm dev:app
 
 ### Project Structure
 
-```
+```text
 studio/
 ├── src/
 │   ├── app/           # Studio editor Vue app
@@ -184,6 +187,7 @@ pnpm lint
 ## Roadmap
 
 ### ✅ Phase 1 - Alpha (Current)
+
 - [x] Monaco code editor
 - [x] File operations (create, edit, delete, rename)
 - [x] Media management
@@ -193,6 +197,7 @@ pnpm lint
 - [x] Real-time preview
 
 ### 🚧 Phase 2 - Beta (In Development)
+
 - [ ] Google OAuth authentication
 - [ ] Visual editor
 - [ ] Frontmatter edition as form
