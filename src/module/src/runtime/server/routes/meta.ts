@@ -12,16 +12,18 @@ interface NuxtComponentMeta {
 }
 
 export default eventHandler(async (event) => {
-  const session = await useSession(event, {
-    name: 'studio-session',
-    password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
-  })
-
-  if (!session?.data?.user) {
-    throw createError({
-      statusCode: 404,
-      message: 'Not found',
+  if (!import.meta.dev) {
+    const session = await useSession(event, {
+      name: 'studio-session',
+      password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
     })
+
+    if (!session?.data?.user) {
+      throw createError({
+        statusCode: 404,
+        message: 'Not found',
+      })
+    }
   }
 
   const mappedComponents = (Object.values(components) as NuxtComponentMeta[])
