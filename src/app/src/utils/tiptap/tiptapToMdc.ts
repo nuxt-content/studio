@@ -159,6 +159,7 @@ export function tiptapNodeToMDC(node: JSONContent): MDCRoot | MDCNode | MDCNode[
 /* Create element methods */
 function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MDCElement {
   const { props = {}, ...rest } = extra as { props: object }
+  let nodeContent = node.content || []
 
   /**
    * If text has been enclosed in a paragraph mannualy in 'mdcToTiptap', we need to remove the paragraph in mdc
@@ -166,13 +167,20 @@ function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MD
    * We clear the paragraphs which are added for TipTap editing purpose.
    */
   if (node.attrs?.props?.__tiptapWrap) {
-    if (node.content!.length === 1 && node.content![0]?.type === 'slot') {
-      const slot = node.content![0]
+    if (nodeContent!.length === 1 && nodeContent![0]?.type === 'slot') {
+      const slot = nodeContent![0]
       if (slot.content!.length === 1 && slot.content![0]?.type === 'paragraph') {
         slot.content = slot.content![0].content
       }
     }
     delete node.attrs.props.__tiptapWrap
+  }
+
+  // Automatically unwrap the element children if it element has only one child
+  // and the child is a paragraph
+  // This ensures that MDC ast is consistent with MDC auto-unwrap feature
+  if (nodeContent.length === 1 && nodeContent[0]?.type === 'paragraph') {
+    nodeContent = nodeContent[0].content || []
   }
 
   const propsArray = Object.entries({ ...node.attrs?.props, ...props }).map(([key, value]) => {
@@ -183,7 +191,7 @@ function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MD
   }).filter(([key]) => Boolean(String(key).trim()))
 
   if (node.type === 'paragraph') {
-    if (!node.content || node.content!.length === 0) {
+    if (!nodeContent || nodeContent!.length === 0) {
       return {
         type: 'element',
         tag: 'p',
@@ -198,7 +206,7 @@ function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MD
   return {
     type: 'element',
     tag: tag || node.attrs?.tag,
-    children: node.children || (node.content || []).flatMap(tiptapNodeToMDC),
+    children: node.children || (nodeContent || []).flatMap(tiptapNodeToMDC),
     ...rest,
     props: Object.fromEntries(propsArray),
   }
