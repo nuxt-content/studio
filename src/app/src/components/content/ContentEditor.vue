@@ -124,7 +124,7 @@ const language = computed(() => {
       />
       <template v-else>
         <ContentEditorTipTap
-          v-if="preferences.editorMode === 'tiptap'"
+          v-if="preferences.editorMode === 'tiptap' && document.extension === ContentFileExtension.Markdown"
           v-model="document"
           :draft-item="draftItem"
           :read-only="readOnly"
