@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
+import type { EditorSuggestionMenuItem } from '@nuxt/ui/runtime/components/EditorSuggestionMenu.vue.d.ts'
 // import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
 import type { PropType } from 'vue'
 import type { Editor, JSONContent } from '@tiptap/vue-3'
-import type { MDCRoot } from '@nuxtjs/mdc'
-import type { MarkdownRoot } from '@nuxt/content'
+import type { MDCRoot, Toc } from '@nuxtjs/mdc'
+import { generateToc } from '@nuxtjs/mdc/dist/runtime/parser/toc'
 import type { DraftItem, DatabasePageItem } from '../../types'
+import type { MarkdownRoot } from '@nuxt/content'
 import { mapEditorItems } from '@nuxt/ui/utils/editor'
+import type { EditorCustomHandlers } from '@nuxt/ui'
 import { ref, watch, computed } from 'vue'
 import { upperFirst, titleCase } from 'scule'
 import { useStudio } from '../../composables/useStudio'
@@ -20,6 +23,7 @@ import { Slot } from '../../utils/tiptap/extensions/slot'
 import { Frontmatter } from '../../utils/tiptap/extensions/frontmatter'
 import { CodeBlock } from '../../utils/tiptap/extensions/code-block'
 import { InlineElement } from '../../utils/tiptap/extensions/inline-element'
+import { compressTree } from '@nuxt/content/runtime'
 
 const props = defineProps({
   draftItem: {
@@ -83,12 +87,18 @@ async function setEditorJSON(document: DatabasePageItem) {
 
 // TipTap to Markdown
 watch(tiptapJSON, async (json) => {
-  const mdc = await tiptapToMDC(json!)
+  const { body, data } = await tiptapToMDC(json!)
+
+  const compressedBody: MarkdownRoot = compressTree(body)
+  const toc: Toc = generateToc(body, {} as Toc)
 
   const updatedDocument: DatabasePageItem = {
     ...document.value!,
-    ...mdc.data,
-    body: mdc.body as unknown as MarkdownRoot,
+    ...data,
+    body: {
+      ...compressedBody,
+      toc,
+    } as MarkdownRoot,
   }
 
   document.value = updatedDocument
@@ -102,8 +112,6 @@ watch(tiptapJSON, async (json) => {
     }
     currentContent.value = await host.document.generate.contentFromDocument(updatedDocument) as string
   }
-
-  // const generatedContent = await host.document.generate.contentFromDocument(updatedDocument
 })
 
 const componentItems = computed(() => {
@@ -133,7 +141,7 @@ const customHandlers = computed(() => ({
       },
     ]),
   ),
-}))
+}) satisfies EditorCustomHandlers)
 
 const suggestionItems = computed(() => [
   ...standardSuggestionItems,
@@ -144,7 +152,7 @@ const suggestionItems = computed(() => [
     },
     ...componentItems.value,
   ],
-])
+] satisfies EditorSuggestionMenuItem[][])
 
 const selectedNode = ref<JSONContent | null>(null)
 
@@ -248,7 +256,7 @@ const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
     <UEditor
       v-slot="{ editor }"
       v-model="tiptapJSON"
-      class="mb-4"
+      class="mb-4 ml-1"
       content-type="json"
       :handlers="customHandlers"
       :starter-kit="{

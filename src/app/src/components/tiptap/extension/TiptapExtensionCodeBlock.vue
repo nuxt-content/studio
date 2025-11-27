@@ -29,7 +29,7 @@ const filename = computed({
     >
       <div
         :contenteditable="false"
-        class="flex items-center gap-2 px-3 py-1.5 bg-muted/40 border-b border-default"
+        class="flex items-center gap-2 px-2 py-1.5 bg-muted/40 border-b border-default"
       >
         <USelect
           v-model="selectedLanguage"

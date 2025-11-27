@@ -1,5 +1,6 @@
 import type { EditorSuggestionMenuItem } from '@nuxt/ui/runtime/components/EditorSuggestionMenu.vue.js'
 import type { EditorToolbarItem } from '@nuxt/ui/runtime/components/EditorToolbar.vue.js'
+
 import { omit } from '../object'
 
 export const headingItems = [
@@ -67,7 +68,7 @@ export const standardToolbarItems = [
   ],
 ] satisfies EditorToolbarItem[][]
 
-export const standardSuggestionItems = [
+export const standardSuggestionItems: EditorSuggestionMenuItem[][] = [
   [
     {
       type: 'label',
@@ -102,7 +103,7 @@ export const standardSuggestionItems = [
       icon: 'i-lucide-separator-horizontal',
     },
   ],
-] satisfies EditorSuggestionMenuItem[][]
+]
 
 export const standardNuxtUIComponents: Record<string, { name: string, icon: string }> = {
   'icon-menu-toggle': { name: 'Icon Menu Toggle', icon: 'i-lucide-menu' },

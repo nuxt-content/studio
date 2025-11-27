@@ -3,7 +3,6 @@ import type { JSONContent } from '@tiptap/vue-3'
 import Slugger from 'github-slugger'
 // import rehypeShiki from '@nuxtjs/mdc/dist/runtime/highlighter/rehype'
 // import { createShikiHighlighter } from '@nuxtjs/mdc/runtime/highlighter/shiki'
-// import { generateToc } from '@nuxtjs/mdc/dist/runtime/parser/toc'
 // import { bundledThemes, bundledLanguages as bundledLangs, createJavaScriptRegexEngine } from 'shiki'
 // import { visit } from 'unist-util-visit'
 import type { MDCElement, MDCNode, MDCRoot, MDCText } from '@nuxtjs/mdc'
@@ -51,7 +50,7 @@ const tiptapToMDCMap: TiptapToMDCMap = {
 }
 
 /* Parsing methods */
-export async function tiptapToMDC(node: JSONContent) {
+export async function tiptapToMDC(node: JSONContent): Promise<{ body: MDCRoot, data: Record<string, unknown> }> {
   // re-create slugs
   slugs = new Slugger()
 
@@ -60,11 +59,11 @@ export async function tiptapToMDC(node: JSONContent) {
     data: {},
   }
 
-  const _node = JSON.parse(JSON.stringify(node))
-  const fmIndex = _node.content?.findIndex((child: { type: string }) => child.type === 'frontmatter')
+  const nodeCopy = JSON.parse(JSON.stringify(node))
+  const fmIndex = nodeCopy.content?.findIndex((child: { type: string }) => child.type === 'frontmatter')
   if (fmIndex > -1) {
-    const fm = _node.content?.[fmIndex]
-    _node.content?.splice(fmIndex, 1)
+    const fm = nodeCopy.content?.[fmIndex]
+    nodeCopy.content?.splice(fmIndex, 1)
     try {
       if (fm.attrs?.frontmatter && typeof fm.attrs.frontmatter === 'object') {
         mdc.data = fm.attrs.frontmatter
@@ -80,12 +79,9 @@ export async function tiptapToMDC(node: JSONContent) {
     }
   }
 
-  mdc.body = tiptapNodeToMDC(_node) as MDCRoot
+  mdc.body = tiptapNodeToMDC(nodeCopy) as MDCRoot
 
   // await applyShikiSyntaxHighlighting(mdc.body)
-
-  // Generate toc from AST
-  // mdc.body.toc = generateToc(mdc.body as MDCRoot, {} as Toc)
 
   return mdc
 }
@@ -105,15 +101,14 @@ export function tiptapNodeToMDC(node: JSONContent): MDCRoot | MDCNode | MDCNode[
     return tiptapToMDCMap[node.type!](node)
   }
 
-  // TODO: all unknown nodes should be handled
-
+  // All unknown nodes should be handled
   return {
     type: 'element',
     tag: 'p',
     children: [
       {
         type: 'text',
-        value: 'XXX',
+        value: `--- Unknown node: ${node.type} ---`,
       },
     ],
     props: {},

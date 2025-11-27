@@ -118,29 +118,31 @@ export function mdcNodeToTiptap(node: MDCRoot | MDCNode, parent?: MDCNode): JSON
   //   }]
   // }
 
-  const children = [...((node as MDCElement).children || []).filter(child => (child as MDCElement).tag === 'template')]
-  const defaultSlotChildren = ((node as MDCElement).children || []).filter(child => (child as MDCElement).tag !== 'template')
-  if (defaultSlotChildren.length) {
-    const defaultSlot = children.find(child => (child as MDCElement).attributes?.['v-slot:default']) as MDCElement
-    if (defaultSlot) {
-      defaultSlot.children = [
-        ...(defaultSlot.children || []),
-        ...defaultSlotChildren,
-      ]
-    }
-    else {
-      children.unshift({
-        type: 'element',
-        tag: 'template',
-        attributes: {
-          'v-slot:default': '',
-        },
-        children: defaultSlotChildren,
-      })
-    }
-  }
+  // const children = [...((node as MDCElement).children || []).filter(child => (child as MDCElement).tag === 'template')]
+  // console.log('children', children)
+  // const defaultSlotChildren = ((node as MDCElement).children || []).filter(child => (child as MDCElement).tag !== 'template')
+  // if (defaultSlotChildren.length) {
+  //   console.log('defaultSlotChildren', defaultSlotChildren)
+  //   const defaultSlot = children.find(child => (child as MDCElement).attributes?.['v-slot:default']) as MDCElement
+  //   if (defaultSlot) {
+  //     defaultSlot.children = [
+  //       ...(defaultSlot.children || []),
+  //       ...defaultSlotChildren,
+  //     ]
+  //   }
+  //   else {
+  //     children.unshift({
+  //       type: 'element',
+  //       tag: 'template',
+  //       attributes: {
+  //         'v-slot:default': '',
+  //       },
+  //       children: defaultSlotChildren,
+  //     })
+  //   }
+  // }
 
-  return createTipTapNode(node as MDCElement, 'element', { attrs: { tag: type }, children })
+  return createTipTapNode(node as MDCElement, 'element', { attrs: { tag: type }, children: (node as MDCElement).children || [] })
 }
 
 /* Create nodes methods */

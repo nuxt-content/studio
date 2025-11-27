@@ -86,7 +86,6 @@ const onDelete = () => {
 }
 
 watch(() => contentForm.text, (slotText) => {
-  console.log('slotText', slotText)
   const pos = nodeProps.getPos() as number
   if (isEmpty(slotText)) {
     nodeProps.editor.chain().deleteRange({
