@@ -434,7 +434,7 @@ This is content`
 
 describe('elements', () => {
   test('block element with named default slot', async () => {
-    const inputContent = `::button
+    const inputContent = `::block-element
 #default
 Hello
 ::`
@@ -444,7 +444,7 @@ Hello
       children: [
         {
           type: 'element',
-          tag: 'button',
+          tag: 'block-element',
           props: {},
           children: [
             {
@@ -468,7 +468,7 @@ Hello
         {
           type: 'element',
           attrs: {
-            tag: 'button',
+            tag: 'block-element',
             props: {
               __tiptapWrap: true, // This is added by mdcToTiptap to wrap the content in a paragraph
             },
@@ -517,11 +517,16 @@ Hello
 
     const outputContent = await generateContentFromDocument(generatedDocument)
 
-    expect(outputContent).toBe(`${inputContent}\n`)
+    // Remove #default slot and move children at root
+    const expectedOutputContent = `::block-element
+Hello
+::`
+
+    expect(outputContent).toBe(`${expectedOutputContent}\n`)
   })
 
-  test.only('block element with unnamed default slot', async () => {
-    const inputContent = `::button
+  test('block element with unnamed default slot', async () => {
+    const inputContent = `::block-element
 Hello
 ::`
 
@@ -530,7 +535,7 @@ Hello
       children: [
         {
           type: 'element',
-          tag: 'button',
+          tag: 'block-element',
           props: {},
           children: [
             {
@@ -554,7 +559,7 @@ Hello
         {
           type: 'element',
           attrs: {
-            tag: 'button',
+            tag: 'block-element',
             props: {
               __tiptapWrap: true, // This is added by mdcToTiptap to wrap the content in a paragraph
             },
@@ -607,7 +612,7 @@ Hello
   })
 
   test('block element with named custom slot', async () => {
-    const inputContent = `::button
+    const inputContent = `::block-element
 #custom
 Hello
 ::`
@@ -617,7 +622,7 @@ Hello
       children: [
         {
           type: 'element',
-          tag: 'button',
+          tag: 'block-element',
           children: [
             {
               type: 'element',
@@ -650,7 +655,7 @@ Hello
         {
           type: 'element',
           attrs: {
-            tag: 'button',
+            tag: 'block-element',
           },
           content: [
             {
