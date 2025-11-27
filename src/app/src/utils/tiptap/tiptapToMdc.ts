@@ -162,7 +162,7 @@ function createElement(node: JSONContent, tag?: string, extra: unknown = {}): MD
 
   /**
    * If text has been enclosed in a paragraph mannualy in 'mdcToTiptap', we need to remove the paragraph in mdc
-   * 
+   *
    * We clear the paragraphs which are added for TipTap editing purpose.
    */
   if (node.attrs?.props?.__tiptapWrap) {

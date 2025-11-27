@@ -109,7 +109,7 @@ export function mdcNodeToTiptap(node: MDCRoot | MDCNode, parent?: MDCNode): JSON
 
   /**
    * In tiptap side only, inside element, text must be enclosed in a paragraph
-   * 
+   *
    * Note: without having the wrapper paragraph, contents of an element can't be
    * modified, TipTap depend on the paragraph to allow text editing.
    */

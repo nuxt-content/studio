@@ -3,7 +3,7 @@ import { ensure } from './utils/ensure'
 import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
-import { normalizeDocument, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, cleanupDocumentBeforeReturning } from './utils/document'
+import { applyCollectionSchema, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, sanitizeDocument } from './utils/document'
 import { kebabCase } from 'scule'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository, MarkdownParsingOptions } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
@@ -203,7 +203,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
             return undefined
           }
 
-          return cleanupDocumentBeforeReturning({
+          return sanitizeDocument({
             ...item,
             fsPath,
           })
@@ -217,7 +217,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
               const source = getCollectionSourceById(document.id, collection.source)
               const fsPath = generateFsPathFromId(document.id, source!)
 
-              return cleanupDocumentBeforeReturning({
+              return sanitizeDocument({
                 ...document,
                 fsPath,
               })
@@ -239,11 +239,11 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
           const id = generateIdFromFsPath(fsPath, collectionInfo!)
           const document = await generateDocumentFromContent(id, content)
-          const normalizedDocument = normalizeDocument(id, collectionInfo, document!)
+          const normalizedDocument = applyCollectionSchema(id, collectionInfo, document!)
 
           await host.document.db.upsert(fsPath, normalizedDocument)
 
-          return cleanupDocumentBeforeReturning({
+          return sanitizeDocument({
             ...normalizedDocument,
             fsPath,
           })
@@ -256,7 +256,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
           const id = generateIdFromFsPath(fsPath, collectionInfo)
 
-          const normalizedDocument = normalizeDocument(id, collectionInfo, document)
+          const normalizedDocument = applyCollectionSchema(id, collectionInfo, document)
 
           await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
           await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, normalizedDocument))

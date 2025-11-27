@@ -21,7 +21,7 @@ const reservedKeys = ['id', 'fsPath', 'stem', 'extension', '__hash__', 'path', '
 /*
 ** Normalization utils
 */
-export function normalizeDocument(id: string, collectionInfo: CollectionInfo, document: CollectionItemBase) {
+export function applyCollectionSchema(id: string, collectionInfo: CollectionInfo, document: CollectionItemBase) {
   const parsedContent = [
     pathMetaTransform,
   ].reduce((acc, fn) => collectionInfo.type === 'page' ? fn(acc as PageCollectionItemBase) : acc, { ...document, id } as PageCollectionItemBase)
@@ -58,6 +58,16 @@ export function normalizeDocument(id: string, collectionInfo: CollectionInfo, do
   }
 
   return result
+}
+
+export function sanitizeDocument(document: DatabaseItem) {
+  if ((document.body as unknown as MinimarkTree)?.type === 'minimark') {
+    document.body = withoutLastStyles(document.body as MarkdownRoot)
+  }
+
+  // remove the codeblock token and convert highlighted code blocks to plain code blocks
+
+  return document
 }
 
 export function pickReservedKeysFromDocument(document: DatabaseItem): DatabaseItem {
@@ -383,14 +393,6 @@ export async function generateContentFromMarkdownDocument(document: DatabasePage
   })
 
   return typeof markdown === 'string' ? markdown.replace(/&#x2A;/g, '*') : markdown
-}
-
-export function cleanupDocumentBeforeReturning(document: DatabaseItem) {
-  if ((document.body as unknown as MinimarkTree)?.type === 'minimark') {
-    document.body = withoutLastStyles(document.body as MarkdownRoot)
-  }
-
-  return document
 }
 
 function generateStemFromId(id: string) {
