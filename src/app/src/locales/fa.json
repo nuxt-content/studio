@@ -59,7 +59,8 @@
     },
     "footer": {
       "developer_view": "نمای توسعه‌دهنده",
-      "localFilesystem": "استفاده از سیستم فایل محلی"
+      "localFilesystem": "استفاده از سیستم فایل محلی",
+      "debugMode": "حالت اشکال‌زدایی"
     },
     "alert": {
       "mdcFormatting": "قالب‌بندی برای هماهنگی با استاندارد نوشتار MDC اعمال شد."
@@ -86,7 +87,9 @@
       "nameEmpty": "نام نمی‌تواند خالی باشد",
       "nameEndsWithDot": "نام نمی‌تواند با '.' پایان یابد",
       "nameStartsWithSlash": "نام نمی‌تواند با '/' شروع شود",
-      "nameExists": "نام از پیش وجود دارد"
+      "nameExists": "نام از پیش وجود دارد",
+      "prefixDigitsOnly": "پیشوند باید رشته‌ای باشد که فقط شامل ارقام است",
+      "prefixNonNegativeInteger": "پیشوند باید عدد صحیح غیر منفی باشد"
     },
     "media": {
       "altFilePreview": "پیش‌نمایش فایل",
@@ -128,7 +131,9 @@
         "duplicateItem": "تکرار",
         "revertItem": "بازگرداندن تغییرات",
         "publishBranch": "انتشار شاخه",
-        "openGitProvider": "باز کردن در {providerName}"
+        "openGitProvider": "باز کردن در {providerName}",
+        "switchToTipTap": "استفاده از ویرایشگر بصری",
+        "switchToCode": "استفاده از ویرایشگر کد"
       },
       "tooltips": {
         "createDocument": "ایجاد فایل جدید",
@@ -187,6 +192,48 @@
         "required": "الزامی",
         "default": "پیش‌فرض"
       }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "بنویسید، برای دستورات '/' تایپ کنید...",
+        "components": "کامپوننت‌ها"
+      },
+      "element": {
+        "addSlot": "افزودن اسلات",
+        "editProps": "ویرایش ویژگی‌ها",
+        "delete": "حذف",
+        "prop": "ویژگی",
+        "props": "ویژگی‌ها",
+        "propsEditorComingSoon": "ویرایشگر ویژگی‌ها به‌زودی پیاده‌سازی خواهد شد..."
+      },
+      "slot": {
+        "searchPlaceholder": "جستجو یا ایجاد اسلات...",
+        "deleteSlot": "حذف اسلات",
+        "noSlotsAvailable": "هیچ اسلات از پیش تعریف شده‌ای در دسترس نیست"
+      },
+      "inlineElement": {
+        "editContent": "ویرایش محتوا",
+        "editProps": "ویرایش ویژگی‌ها",
+        "delete": "حذف",
+        "editContentLabel": "ویرایش محتوای {name}",
+        "enterContentPlaceholder": "محتوا را وارد کنید...",
+        "propsEditorComingSoon": "ویرایشگر ویژگی‌ها به‌زودی در دسترس خواهد بود"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "نام-فایل.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "پیوند را جایگذاری کنید...",
+        "applyLink": "اعمال پیوند",
+        "openInNewWindow": "باز کردن در پنجره جدید",
+        "removeLink": "حذف پیوند"
+      }
+    },
+    "mediaPicker": {
+      "title": "انتخاب تصویر",
+      "description": "تصویری از کتابخانه رسانه خود انتخاب کنید",
+      "noImagesAvailable": "هیچ تصویری در کتابخانه رسانه شما موجود نیست",
+      "upload": "آپلود"
     }
   }
 }

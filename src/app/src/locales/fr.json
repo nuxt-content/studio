@@ -59,7 +59,8 @@
     },
     "footer": {
       "developer_view": "Vue développeur",
-      "localFilesystem": "Utilisation des fichiers locaux"
+      "localFilesystem": "Utilisation des fichiers locaux",
+      "debugMode": "Mode debug"
     },
     "alert": {
       "mdcFormatting": "Formatage appliqué pour s'aligner sur le standard de syntaxe MDC."
@@ -86,7 +87,9 @@
       "nameEmpty": "Le nom ne peut pas être vide",
       "nameEndsWithDot": "Le nom ne peut pas se terminer par '.'",
       "nameStartsWithSlash": "Le nom ne peut pas commencer par '/'",
-      "nameExists": "Ce nom existe déjà"
+      "nameExists": "Ce nom existe déjà",
+      "prefixDigitsOnly": "Le préfixe doit être doit contenir uniquement des chiffres",
+      "prefixNonNegativeInteger": "Le préfixe doit être un chiffre non négatif"
     },
     "media": {
       "altFilePreview": "Aperçu du fichier",
@@ -189,6 +192,48 @@
         "required": "requis",
         "default": "défaut"
       }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Tapez '/' pour les commandes...",
+        "components": "Composants"
+      },
+      "element": {
+        "addSlot": "Ajouter un slot",
+        "editProps": "Modifier les propriétés",
+        "delete": "Supprimer",
+        "prop": "propriété",
+        "props": "propriétés",
+        "propsEditorComingSoon": "L'éditeur de propriétés sera bientôt disponible..."
+      },
+      "slot": {
+        "searchPlaceholder": "Rechercher ou créer un slot...",
+        "deleteSlot": "Supprimer le slot",
+        "noSlotsAvailable": "Aucun slot prédéfini disponible"
+      },
+      "inlineElement": {
+        "editContent": "Modifier le contenu",
+        "editProps": "Modifier les propriétés",
+        "delete": "Supprimer",
+        "editContentLabel": "Modifier le contenu de {name}",
+        "enterContentPlaceholder": "Saisir le contenu...",
+        "propsEditorComingSoon": "L'éditeur de propriétés arrive bientôt"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "nomfichier.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Coller un lien...",
+        "applyLink": "Appliquer le lien",
+        "openInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+        "removeLink": "Supprimer le lien"
+      }
+    },
+    "mediaPicker": {
+      "title": "Sélectionner une image",
+      "description": "Choisissez une image depuis votre bibliothèque de médias",
+      "noImagesAvailable": "Aucune image disponible dans votre bibliothèque de médias",
+      "upload": "Importer"
     }
   }
 }

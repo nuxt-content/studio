@@ -59,7 +59,8 @@
     },
     "footer": {
       "developer_view": "Изглед за разработчици",
-      "localFilesystem": "Използване на локална файлова система"
+      "localFilesystem": "Използване на локална файлова система",
+      "debugMode": "Режим за отстраняване на грешки"
     },
     "alert": {
       "mdcFormatting": "Приложено е форматиране, за да се съобрази със стандарта за MDC синтаксис."
@@ -86,7 +87,9 @@
       "nameEmpty": "Името не може да бъде празно",
       "nameEndsWithDot": "Името не може да завършва с '.'",
       "nameStartsWithSlash": "Името не може да започва с '/'",
-      "nameExists": "Името вече съществува"
+      "nameExists": "Името вече съществува",
+      "prefixDigitsOnly": "Префиксът трябва да бъде низ, съдържащ само цифри",
+      "prefixNonNegativeInteger": "Префиксът трябва да бъде неотрицателно цяло число"
     },
     "media": {
       "altFilePreview": "Преглед на файл",
@@ -128,7 +131,9 @@
         "duplicateItem": "Дублиране",
         "revertItem": "Връщане на промените",
         "publishBranch": "Публикуване на клон",
-        "openGitProvider": "Отваряне в {providerName}"
+        "openGitProvider": "Отваряне в {providerName}",
+        "switchToTipTap": "Използвай визуален редактор",
+        "switchToCode": "Използвай код редактор"
       },
       "tooltips": {
         "createDocument": "Създаване на нов файл",
@@ -187,6 +192,48 @@
         "required": "задължително",
         "default": "по подразбиране"
       }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Пишете, въведете '/' за команди...",
+        "components": "Компоненти"
+      },
+      "element": {
+        "addSlot": "Добави слот",
+        "editProps": "Редактирай свойства",
+        "delete": "Изтрий",
+        "prop": "свойство",
+        "props": "свойства",
+        "propsEditorComingSoon": "Редактор на свойства ще бъде внедрен скоро..."
+      },
+      "slot": {
+        "searchPlaceholder": "Търси или създай слот...",
+        "deleteSlot": "Изтрий слот",
+        "noSlotsAvailable": "Няма налични предефинирани слотове"
+      },
+      "inlineElement": {
+        "editContent": "Редактирай съдържание",
+        "editProps": "Редактирай свойства",
+        "delete": "Изтрий",
+        "editContentLabel": "Редактирай съдържание на {name}",
+        "enterContentPlaceholder": "Въведи съдържание...",
+        "propsEditorComingSoon": "Редактор на свойства идва скоро"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "имефайл.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Постави връзка...",
+        "applyLink": "Приложи връзка",
+        "openInNewWindow": "Отвори в нов прозорец",
+        "removeLink": "Премахни връзка"
+      }
+    },
+    "mediaPicker": {
+      "title": "Избери изображение",
+      "description": "Изберете изображение от вашата медийна библиотека",
+      "noImagesAvailable": "Няма налични изображения във вашата медийна библиотека",
+      "upload": "Качи"
     }
   }
 }

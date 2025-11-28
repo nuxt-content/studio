@@ -59,7 +59,8 @@
     },
     "footer": {
       "developer_view": "Entwicklermodus",
-      "localFilesystem": "Verwendung des lokalen Dateisystems"
+      "localFilesystem": "Verwendung des lokalen Dateisystems",
+      "debugMode": "Debug-Modus"
     },
     "alert": {
       "mdcFormatting": "Formatierung angewendet, um dem MDC-Syntaxstandard zu entsprechen."
@@ -86,7 +87,9 @@
       "nameEmpty": "Name darf nicht leer sein",
       "nameEndsWithDot": "Name darf nicht mit '.' enden",
       "nameStartsWithSlash": "Name darf nicht mit '/' beginnen",
-      "nameExists": "Name existiert bereits"
+      "nameExists": "Name existiert bereits",
+      "prefixDigitsOnly": "Präfix muss eine Zeichenkette sein, die nur Ziffern enthält",
+      "prefixNonNegativeInteger": "Präfix muss eine nicht-negative Ganzzahl sein"
     },
     "media": {
       "altFilePreview": "Dateivorschau",
@@ -128,7 +131,9 @@
         "duplicateItem": "Duplizieren",
         "revertItem": "Änderungen rückgängig machen",
         "publishBranch": "Branch veröffentlichen",
-        "openGitProvider": "Auf {providerName} öffnen"
+        "openGitProvider": "Auf {providerName} öffnen",
+        "switchToTipTap": "Visuellen Editor verwenden",
+        "switchToCode": "Code-Editor verwenden"
       },
       "tooltips": {
         "createDocument": "Neue Datei erstellen",
@@ -187,6 +192,48 @@
         "required": "erforderlich",
         "default": "standard"
       }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Schreiben Sie, geben Sie '/' für Befehle ein...",
+        "components": "Komponenten"
+      },
+      "element": {
+        "addSlot": "Slot hinzufügen",
+        "editProps": "Eigenschaften bearbeiten",
+        "delete": "Löschen",
+        "prop": "Eigenschaft",
+        "props": "Eigenschaften",
+        "propsEditorComingSoon": "Eigenschaften-Editor wird bald implementiert..."
+      },
+      "slot": {
+        "searchPlaceholder": "Slot suchen oder erstellen...",
+        "deleteSlot": "Slot löschen",
+        "noSlotsAvailable": "Keine vordefinierten Slots verfügbar"
+      },
+      "inlineElement": {
+        "editContent": "Inhalt bearbeiten",
+        "editProps": "Eigenschaften bearbeiten",
+        "delete": "Löschen",
+        "editContentLabel": "{name}-Inhalt bearbeiten",
+        "enterContentPlaceholder": "Inhalt eingeben...",
+        "propsEditorComingSoon": "Eigenschaften-Editor kommt bald"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "dateiname.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Link einfügen...",
+        "applyLink": "Link anwenden",
+        "openInNewWindow": "In neuem Fenster öffnen",
+        "removeLink": "Link entfernen"
+      }
+    },
+    "mediaPicker": {
+      "title": "Bild auswählen",
+      "description": "Wählen Sie ein Bild aus Ihrer Medienbibliothek",
+      "noImagesAvailable": "Keine Bilder in Ihrer Medienbibliothek verfügbar",
+      "upload": "Hochladen"
     }
   }
 }

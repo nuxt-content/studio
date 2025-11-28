@@ -59,7 +59,8 @@
     },
     "footer": {
       "developer_view": "Widok deweloperski",
-      "localFilesystem": "Używanie lokalnego systemu plików"
+      "localFilesystem": "Używanie lokalnego systemu plików",
+      "debugMode": "Tryb debugowania"
     },
     "alert": {
       "mdcFormatting": "Zastosowano formatowanie zgodne ze standardem składni MDC."
@@ -86,7 +87,9 @@
       "nameEmpty": "Nazwa nie może być pusta",
       "nameEndsWithDot": "Nazwa nie może kończyć się kropką '.'",
       "nameStartsWithSlash": "Nazwa nie może zaczynać się od '/'",
-      "nameExists": "Nazwa już istnieje"
+      "nameExists": "Nazwa już istnieje",
+      "prefixDigitsOnly": "Prefiks musi być ciągiem zawierającym tylko cyfry",
+      "prefixNonNegativeInteger": "Prefiks musi być nieujemną liczbą całkowitą"
     },
     "media": {
       "altFilePreview": "Podgląd pliku",
@@ -128,7 +131,9 @@
         "duplicateItem": "Duplikuj",
         "revertItem": "Cofnij zmiany",
         "publishBranch": "Opublikuj gałąź",
-        "openGitProvider": "Otwórz w {providerName}"
+        "openGitProvider": "Otwórz w {providerName}",
+        "switchToTipTap": "Użyj edytora wizualnego",
+        "switchToCode": "Użyj edytora kodu"
       },
       "tooltips": {
         "createDocument": "Utwórz nowy plik",
@@ -187,6 +192,48 @@
         "required": "wymagane",
         "default": "domyślny"
       }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Pisz, wpisz '/' dla poleceń...",
+        "components": "Komponenty"
+      },
+      "element": {
+        "addSlot": "Dodaj slot",
+        "editProps": "Edytuj właściwości",
+        "delete": "Usuń",
+        "prop": "właściwość",
+        "props": "właściwości",
+        "propsEditorComingSoon": "Edytor właściwości będzie wkrótce dostępny..."
+      },
+      "slot": {
+        "searchPlaceholder": "Wyszukaj lub utwórz slot...",
+        "deleteSlot": "Usuń slot",
+        "noSlotsAvailable": "Brak dostępnych predefiniowanych slotów"
+      },
+      "inlineElement": {
+        "editContent": "Edytuj treść",
+        "editProps": "Edytuj właściwości",
+        "delete": "Usuń",
+        "editContentLabel": "Edytuj treść {name}",
+        "enterContentPlaceholder": "Wprowadź treść...",
+        "propsEditorComingSoon": "Edytor właściwości wkrótce dostępny"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "nazwapliku.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Wklej link...",
+        "applyLink": "Zastosuj link",
+        "openInNewWindow": "Otwórz w nowym oknie",
+        "removeLink": "Usuń link"
+      }
+    },
+    "mediaPicker": {
+      "title": "Wybierz obraz",
+      "description": "Wybierz obraz z biblioteki mediów",
+      "noImagesAvailable": "Brak dostępnych obrazów w bibliotece mediów",
+      "upload": "Prześlij"
     }
   }
 }
