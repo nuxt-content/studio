@@ -268,7 +268,7 @@ function createParagraphNode(node: MDCElement) {
   return {
     type: 'paragraph',
     content,
-    attrs: node.props,
+    attrs: isEmpty(node.props) ? undefined : node.props,
   }
 }
 

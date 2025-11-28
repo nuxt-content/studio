@@ -33,43 +33,39 @@ const props = defineProps({
 
 const document = defineModel<DatabasePageItem>()
 
-// const content = ref<string>('')
+const { host } = useStudio()
+const { preferences } = useStudioState()
+
 const tiptapJSON = ref<JSONContent>()
 
+const removeReservedKeys = host.document.utils.removeReservedKeys
+
 // Debug
+const debug = computed(() => preferences.value.debug)
 const currentTiptap = ref<JSONContent>()
 const currentMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
 const currentContent = ref<string>()
 
-const { host } = useStudio()
-const { preferences } = useStudioState()
-
-const debug = computed(() => preferences.value.debug)
-
 // Trigger on document changes
 watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.status}`, async () => {
-  if (document.value) {
-    setEditorJSON(document.value)
+  const frontmatterJson = removeReservedKeys(document.value!)
+  const newTiptapJSON = mdcToTiptap(document.value?.body as unknown as MDCRoot, frontmatterJson)
+
+  if (!tiptapJSON.value || JSON.stringify(newTiptapJSON) !== JSON.stringify(removeLastEmptyParagraph(tiptapJSON.value))) {
+    tiptapJSON.value = newTiptapJSON
+
+    if (debug.value && !currentMDC.value) {
+      const generateContentFromDocument = host.document.generate.contentFromDocument
+      const generatedContent = await generateContentFromDocument(document.value!) || ''
+      currentMDC.value = {
+        body: document.value!.body as unknown as MDCRoot,
+        data: frontmatterJson,
+      }
+      currentContent.value = generatedContent
+      currentTiptap.value = JSON.parse(JSON.stringify(tiptapJSON.value))
+    }
   }
 }, { immediate: true })
-
-async function setEditorJSON(document: DatabasePageItem) {
-  const frontmatterJson = host.document.utils.removeReservedKeys(document)
-
-  tiptapJSON.value = mdcToTiptap(document.body as unknown as MDCRoot, frontmatterJson)
-
-  // Debug: Capture initial state
-  if (debug.value && !currentMDC.value) {
-    const generateContentFromDocument = host.document.generate.contentFromDocument
-    const generatedContent = await generateContentFromDocument(document) || ''
-    currentMDC.value = {
-      body: document.body as unknown as MDCRoot,
-      data: frontmatterJson,
-    }
-    currentContent.value = generatedContent
-    currentTiptap.value = JSON.parse(JSON.stringify(tiptapJSON.value))
-  }
-}
 
 // TipTap to Markdown
 watch(tiptapJSON, async (json) => {
@@ -96,7 +92,7 @@ watch(tiptapJSON, async (json) => {
     currentTiptap.value = cleanedTiptap
     currentMDC.value = {
       body,
-      data: host.document.utils.removeReservedKeys(updatedDocument),
+      data: removeReservedKeys(updatedDocument),
     }
     currentContent.value = await host.document.generate.contentFromDocument(updatedDocument) as string
   }
