@@ -1,0 +1,239 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Sunting halaman ini",
+      "retryPublish": "Coba Terbitkan Ulang",
+      "reloadApp": "Muat ulang aplikasi",
+      "reload": "Muat ulang",
+      "signOut": "Keluar",
+      "review": "Tinjau",
+      "publish": "Terbitkan",
+      "back": "Kembali",
+      "backToEdition": "Kembali ke penyuntingan",
+      "seeChanges": "Lihat perubahan"
+    },
+    "headings": {
+      "directories": "Direktori",
+      "files": "Berkas",
+      "media": "Media"
+    },
+    "tooltips": {
+      "toggleStudio": "Buka/Tutup Studio",
+      "unlinkEditor": "Putuskan hubungan editor dan pratinjau",
+      "linkEditor": "Hubungkan editor dan pratinjau",
+      "copiedToClipboard": "Disalin ke papan klip",
+      "copyToClipboard": "Salin ke papan klip",
+      "publishChanges": "Terbitkan perubahan",
+      "backToContent": "Kembali ke konten"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Terjadi kesalahan yang tidak diketahui"
+      }
+    },
+    "publish": {
+      "failedTitle": "Penerbitan Gagal",
+      "summary": "pada branch {branch} di repositori {repo}",
+      "errorTitle": "Kesalahan saat penerbitan ke {providerName}",
+      "failedGeneric": "Gagal menerbitkan perubahan"
+    },
+    "review": {
+      "title": "Tinjau perubahan",
+      "created": "Dibuat",
+      "updated": "Diperbarui",
+      "renamed": "Diganti nama",
+      "deleted": "Dihapus"
+    },
+    "publishSuccess": {
+      "title": "Perubahan Diterbitkan",
+      "summary": "{count} perubahan diterbitkan pada branch {branch} di repositori {repo} | {count} perubahan diterbitkan pada branch {branch} di repositori {repo}",
+      "alertTitleWaiting": "Menunggu deployment...",
+      "alertTitleComplete": "Deployment selesai",
+      "alertDescWaiting": "Situs web perlu di-deploy agar perubahan terlihat di Studio.",
+      "alertDescComplete": "Versi baru situs web Anda telah di-deploy. Silakan segarkan aplikasi Anda untuk melihat perubahan di Studio."
+    },
+    "newVersionBanner": {
+      "title": "Versi situs web baru terdeteksi",
+      "description": "Versi baru situs web Anda telah di-deploy. Muat ulang aplikasi untuk melihat perubahan terbaru.",
+      "reloadButton": "Muat ulang"
+    },
+    "footer": {
+      "developer_view": "Tampilan pengembang",
+      "localFilesystem": "Menggunakan sistem berkas lokal",
+      "debugMode": "Mode Debug"
+    },
+    "alert": {
+      "mdcFormatting": "Pemformatan diterapkan untuk menyesuaikan dengan standar sintaksis MDC."
+    },
+    "conflict": {
+      "title": "Konflik Terdeteksi",
+      "repository": "Repositori",
+      "branch": "Branch",
+      "file": "Berkas",
+      "description": "Konten pada {providerName} berbeda dengan versi situs web Anda. Pastikan perubahan terbaru Anda telah di-deploy dan segarkan halaman.",
+      "websiteVersion": "Situs Web"
+    },
+    "nav": {
+      "content": "Konten",
+      "media": "Media"
+    },
+    "placeholders": {
+      "commitMessage": "Pesan commit",
+      "order": "No.",
+      "fileName": "Nama berkas"
+    },
+    "validation": {
+      "commitRequired": "Pesan commit wajib diisi",
+      "nameEmpty": "Nama tidak boleh kosong",
+      "nameEndsWithDot": "Nama tidak boleh diakhiri dengan '.'",
+      "nameStartsWithSlash": "Nama tidak boleh diawali dengan '/'",
+      "nameExists": "Nama sudah ada",
+      "prefixDigitsOnly": "Awalan harus berupa string yang hanya berisi angka",
+      "prefixNonNegativeInteger": "Awalan harus berupa bilangan bulat non-negatif"
+    },
+    "media": {
+      "altFilePreview": "Pratinjau berkas",
+      "altImagePreview": "Pratinjau gambar",
+      "playAudio": "Putar Audio",
+      "audioTagNotSupported": "Peramban Anda tidak mendukung tag audio.",
+      "playVideo": "Putar Video",
+      "videoTagNotSupported": "Peramban Anda tidak mendukung tag video.",
+      "metaWidth": "Lebar",
+      "metaHeight": "Tinggi",
+      "metaType": "Tipe",
+      "metaSize": "Ukuran",
+      "fileName": "Nama berkas",
+      "publicPath": "Path publik",
+      "providerPath": "Path {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Buka tindakan",
+      "cancel": "Batal",
+      "submit": "Kirim"
+    },
+    "actions": {
+      "confirmAction": "Klik lagi untuk {action}",
+      "verbs": {
+        "create": "membuat",
+        "delete": "menghapus",
+        "rename": "mengganti nama",
+        "upload": "mengunggah",
+        "duplicate": "menduplikasi"
+      },
+      "labels": {
+        "createDocument": "Berkas baru",
+        "createDocumentFolder": "Folder baru",
+        "createMediaFolder": "Folder media baru",
+        "renameItem": "Ganti nama",
+        "deleteItem": "Hapus",
+        "uploadMedia": "Unggah media",
+        "duplicateItem": "Duplikasi",
+        "revertItem": "Kembalikan perubahan",
+        "publishBranch": "Terbitkan branch",
+        "openGitProvider": "Buka di {providerName}",
+        "switchToTipTap": "Gunakan editor visual",
+        "switchToCode": "Gunakan editor kode"
+      },
+      "tooltips": {
+        "createDocument": "Buat berkas baru",
+        "createDocumentFolder": "Buat folder baru",
+        "createMediaFolder": "Buat folder baru",
+        "renameItem": "Ganti nama berkas",
+        "deleteItem": "Hapus berkas",
+        "uploadMedia": "Unggah media",
+        "duplicateItem": "Duplikasi berkas",
+        "revertItem": "Kembalikan perubahan",
+        "publishBranch": "Terbitkan branch"
+      }
+    },
+    "items": {
+      "itemCount": "1 item | {count} item"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Judul 1",
+        "h2": "Judul 2",
+        "h3": "Judul 3"
+      },
+      "styles": {
+        "bold": "Tebal",
+        "italic": "Miring"
+      },
+      "lists": {
+        "bulleted": "Daftar Poin",
+        "numbered": "Daftar Bernomor"
+      },
+      "other": {
+        "emojis": "Emoji",
+        "blockquote": "Kutipan Blok",
+        "code": "Kode",
+        "inlineCode": "Kode Baris (Inline)",
+        "link": "Tautan",
+        "image": "Gambar"
+      },
+      "writeSomething": "Tulis Sesuatu",
+      "snippets": {
+        "title": "judul",
+        "item1": "Item 1",
+        "item2": "Item 2",
+        "language": "bahasa",
+        "code": "kode",
+        "link": "tautan",
+        "alt": "alt",
+        "src": "sumber",
+        "value": "nilai"
+      },
+      "docs": {
+        "path": "Path dalam proyek:",
+        "props": "Props",
+        "slots": "Slot",
+        "type": "tipe",
+        "required": "wajib",
+        "default": "default"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Tulis, ketik '/' untuk perintah...",
+        "components": "Komponen"
+      },
+      "element": {
+        "addSlot": "Tambah slot",
+        "editProps": "Sunting props",
+        "delete": "Hapus",
+        "prop": "prop",
+        "props": "props",
+        "propsEditorComingSoon": "Editor props akan segera diimplementasikan..."
+      },
+      "slot": {
+        "searchPlaceholder": "Cari atau buat slot...",
+        "deleteSlot": "Hapus slot",
+        "noSlotsAvailable": "Tidak ada slot yang tersedia"
+      },
+      "inlineElement": {
+        "editContent": "Sunting konten",
+        "editProps": "Sunting props",
+        "delete": "Hapus",
+        "editContentLabel": "Sunting konten {name}",
+        "enterContentPlaceholder": "Masukkan konten...",
+        "propsEditorComingSoon": "Editor properti akan segera hadir"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "namaberkas.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Tempel tautan...",
+        "applyLink": "Terapkan tautan",
+        "openInNewWindow": "Buka di jendela baru",
+        "removeLink": "Hapus tautan"
+      }
+    },
+    "mediaPicker": {
+      "title": "Pilih Gambar",
+      "description": "Pilih gambar dari pustaka media Anda",
+      "noImagesAvailable": "Tidak ada gambar yang tersedia di pustaka media Anda",
+      "upload": "Unggah"
+    }
+  }
+}
