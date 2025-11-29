@@ -1,0 +1,239 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Modifica questa pagina",
+      "retryPublish": "Riprova a pubblicare",
+      "reloadApp": "Ricarica applicazione",
+      "reload": "Ricarica",
+      "signOut": "Disconnetti",
+      "review": "Rivedi",
+      "publish": "Pubblica",
+      "back": "Indietro",
+      "backToEdition": "Torna all'edizione",
+      "seeChanges": "Vedi differenze"
+    },
+    "headings": {
+      "directories": "Cartelle",
+      "files": "File",
+      "media": "Media"
+    },
+    "tooltips": {
+      "toggleStudio": "Attiva/Disattiva Studio",
+      "unlinkEditor": "Scollega editor e anteprima",
+      "linkEditor": "Collega editor e anteprima",
+      "copiedToClipboard": "Copiato negli appunti",
+      "copyToClipboard": "Copia negli appunti",
+      "publishChanges": "Pubblica modifiche",
+      "backToContent": "Torna al contenuto"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Si è verificato un errore sconosciuto"
+      }
+    },
+    "publish": {
+      "failedTitle": "Pubblicazione fallita",
+      "summary": "su {branch} del repository {repo}",
+      "errorTitle": "Errore durante la pubblicazione su {providerName}",
+      "failedGeneric": "Impossibile pubblicare le modifiche"
+    },
+    "review": {
+      "title": "Rivedi modifiche",
+      "created": "Creato",
+      "updated": "Aggiornato",
+      "renamed": "Rinominato",
+      "deleted": "Eliminato"
+    },
+    "publishSuccess": {
+      "title": "Modifiche pubblicate",
+      "summary": "{count} modifica pubblicata su {branch} del repository {repo} | {count} modifiche pubblicate su {branch} del repository {repo}",
+      "alertTitleWaiting": "Pubblicazione in corso...",
+      "alertTitleComplete": "Pubblicazione completata",
+      "alertDescWaiting": "Il sito web deve essere pubblicato affinché le modifiche siano visibili in Studio.",
+      "alertDescComplete": "Una nuova versione del tuo sito web è stata pubblicata. Ricarica l'app per vedere le modifiche in Studio."
+    },
+    "newVersionBanner": {
+      "title": "Nuova versione del sito web rilevata",
+      "description": "Una nuova versione del tuo sito web è stata pubblicata. Ricarica l'app per vedere le ultime modifiche.",
+      "reloadButton": "Ricarica"
+    },
+    "footer": {
+      "developer_view": "Vista sviluppatore",
+      "localFilesystem": "Filesystem locale in uso",
+      "debugMode": "Modalità Debug"
+    },
+    "alert": {
+      "mdcFormatting": "Formattazione applicata per allinearsi allo standard di sintassi MDC."
+    },
+    "conflict": {
+      "title": "Conflitto rilevato",
+      "repository": "Repository",
+      "branch": "Branch",
+      "file": "File",
+      "description": "Il contenuto su {providerName} differisce dalla versione del tuo sito web. Assicurati che le tue ultime modifiche siano pubblicate e aggiorna la pagina.",
+      "websiteVersion": "Sito web"
+    },
+    "nav": {
+      "content": "Content",
+      "media": "Media"
+    },
+    "placeholders": {
+      "commitMessage": "Messaggio di commit",
+      "order": "N°",
+      "fileName": "Nome file"
+    },
+    "validation": {
+      "commitRequired": "Il messaggio di commit è obbligatorio",
+      "nameEmpty": "Il nome non può essere vuoto",
+      "nameEndsWithDot": "Il nome non può terminare con '.'",
+      "nameStartsWithSlash": "Il nome non può iniziare con '/'",
+      "nameExists": "Il nome esiste già",
+      "prefixDigitsOnly": "Il prefisso deve essere una stringa contenente solo cifre",
+      "prefixNonNegativeInteger": "Il prefisso deve essere un intero non negativo"
+    },
+    "media": {
+      "altFilePreview": "Anteprima file",
+      "altImagePreview": "Anteprima immagine",
+      "playAudio": "Riproduci audio",
+      "audioTagNotSupported": "Il tuo browser non supporta il tag audio.",
+      "playVideo": "Riproduci video",
+      "videoTagNotSupported": "Il tuo browser non supporta il tag video.",
+      "metaWidth": "Larghezza",
+      "metaHeight": "Altezza",
+      "metaType": "Tipo",
+      "metaSize": "Dimensione",
+      "fileName": "Nome file",
+      "publicPath": "Percorso pubblico",
+      "providerPath": "Percorso {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Apri azioni",
+      "cancel": "Annulla",
+      "submit": "Invia"
+    },
+    "actions": {
+      "confirmAction": "Clicca nuovamente per {action}",
+      "verbs": {
+        "create": "creare",
+        "delete": "eliminare",
+        "rename": "rinominare",
+        "upload": "caricare",
+        "duplicate": "duplicare"
+      },
+      "labels": {
+        "createDocument": "Nuovo file",
+        "createDocumentFolder": "Nuova cartella",
+        "createMediaFolder": "Nuova cartella media",
+        "renameItem": "Rinomina",
+        "deleteItem": "Elimina",
+        "uploadMedia": "Carica media",
+        "duplicateItem": "Duplica",
+        "revertItem": "Ripristina modifiche",
+        "publishBranch": "Pubblica branch",
+        "openGitProvider": "Apri su {providerName}",
+        "switchToTipTap": "Usa editor visuale",
+        "switchToCode": "Usa editor di codice"
+      },
+      "tooltips": {
+        "createDocument": "Crea un nuovo file",
+        "createDocumentFolder": "Crea una nuova cartella",
+        "createMediaFolder": "Crea una nuova cartella",
+        "renameItem": "Rinomina file",
+        "deleteItem": "Elimina file",
+        "uploadMedia": "Carica media",
+        "duplicateItem": "Duplica file",
+        "revertItem": "Ripristina modifiche",
+        "publishBranch": "Pubblica branch"
+      }
+    },
+    "items": {
+      "itemCount": "1 elemento | {count} elementi"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Titolo 1",
+        "h2": "Titolo 2",
+        "h3": "Titolo 3"
+      },
+      "styles": {
+        "bold": "Grassetto",
+        "italic": "Corsivo"
+      },
+      "lists": {
+        "bulleted": "Elenco puntato",
+        "numbered": "Elenco numerato"
+      },
+      "other": {
+        "emojis": "Emoji",
+        "blockquote": "Citazione",
+        "code": "Codice",
+        "inlineCode": "Codice in linea",
+        "link": "Link",
+        "image": "Immagine"
+      },
+      "writeSomething": "Scrivi qualcosa",
+      "snippets": {
+        "title": "titolo",
+        "item1": "Elemento 1",
+        "item2": "Elemento 2",
+        "language": "lingua",
+        "code": "codice",
+        "link": "link",
+        "alt": "alt",
+        "src": "src",
+        "value": "valore"
+      },
+      "docs": {
+        "path": "Percorso nel progetto:",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "tipo",
+        "required": "obbligatorio",
+        "default": "predefinito"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Scrivi, digita '/' per i comandi...",
+        "components": "Componenti"
+      },
+      "element": {
+        "addSlot": "Aggiungi slot",
+        "editProps": "Modifica props",
+        "delete": "Elimina",
+        "prop": "prop",
+        "props": "props",
+        "propsEditorComingSoon": "L'editor delle props sarà implementato presto..."
+      },
+      "slot": {
+        "searchPlaceholder": "Cerca o crea uno slot...",
+        "deleteSlot": "Elimina slot",
+        "noSlotsAvailable": "Nessuno slot predefinito disponibile"
+      },
+      "inlineElement": {
+        "editContent": "Modifica contenuto",
+        "editProps": "Modifica props",
+        "delete": "Elimina",
+        "editContentLabel": "Modifica contenuto {name}",
+        "enterContentPlaceholder": "Inserisci contenuto...",
+        "propsEditorComingSoon": "Editor delle proprietà in arrivo"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Incolla un link...",
+        "applyLink": "Applica link",
+        "openInNewWindow": "Apri in una nuova finestra",
+        "removeLink": "Rimuovi link"
+      }
+    },
+    "mediaPicker": {
+      "title": "Seleziona immagine",
+      "description": "Scegli un'immagine dalla tua libreria media",
+      "noImagesAvailable": "Nessuna immagine disponibile nella tua libreria media",
+      "upload": "Carica"
+    }
+  }
+}
