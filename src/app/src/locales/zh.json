@@ -1,0 +1,239 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "编辑此页面",
+      "retryPublish": "重试发布",
+      "reloadApp": "重新加载应用",
+      "reload": "重新加载",
+      "signOut": "退出登录",
+      "review": "审阅",
+      "publish": "发布",
+      "back": "返回",
+      "backToEdition": "返回编辑",
+      "seeChanges": "查看更改"
+    },
+    "headings": {
+      "directories": "目录",
+      "files": "文件",
+      "media": "媒体"
+    },
+    "tooltips": {
+      "toggleStudio": "切换Studio",
+      "unlinkEditor": "取消编辑器与预览的关联",
+      "linkEditor": "关联编辑器与预览",
+      "copiedToClipboard": "已复制到剪贴板",
+      "copyToClipboard": "复制到剪贴板",
+      "publishChanges": "发布更改",
+      "backToContent": "返回内容"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "发生未知错误"
+      }
+    },
+    "publish": {
+      "failedTitle": "发布失败",
+      "summary": "在 {repo} 仓库的 {branch} 分支上",
+      "errorTitle": "在 {providerName} 发布时出错",
+      "failedGeneric": "发布更改失败"
+    },
+    "review": {
+      "title": "审阅更改",
+      "created": "已创建",
+      "updated": "已更新",
+      "renamed": "已重命名",
+      "deleted": "已删除"
+    },
+    "publishSuccess": {
+      "title": "更改已发布",
+      "summary": "{count} 个更改已发布到 {repo} 仓库的 {branch} 分支 | {count} 个更改已发布到 {repo} 仓库的 {branch} 分支",
+      "alertTitleWaiting": "等待部署...",
+      "alertTitleComplete": "部署完成",
+      "alertDescWaiting": "网站需要部署后更改才能在 Studio 中可见。",
+      "alertDescComplete": "您的网站已部署新版本。请刷新应用以在 Studio 中查看更改。"
+    },
+    "newVersionBanner": {
+      "title": "检测到新的网站版本",
+      "description": "您的网站已部署新版本。重新加载应用以查看最新更改。",
+      "reloadButton": "重新加载"
+    },
+    "footer": {
+      "developer_view": "开发者视图",
+      "localFilesystem": "使用本地文件系统",
+      "debugMode": "调试模式"
+    },
+    "alert": {
+      "mdcFormatting": "已应用格式以符合 MDC 语法标准。"
+    },
+    "conflict": {
+      "title": "检测到冲突",
+      "repository": "仓库",
+      "branch": "分支",
+      "file": "文件",
+      "description": "{providerName} 上的内容与您的网站版本不同。请确保您的最新更改已部署并刷新页面。",
+      "websiteVersion": "网站"
+    },
+    "nav": {
+      "content": "内容",
+      "media": "媒体"
+    },
+    "placeholders": {
+      "commitMessage": "提交信息",
+      "order": "编号",
+      "fileName": "文件名"
+    },
+    "validation": {
+      "commitRequired": "必须填写提交信息",
+      "nameEmpty": "名称不能为空",
+      "nameEndsWithDot": "名称不能以 '.' 结尾",
+      "nameStartsWithSlash": "名称不能以 '/' 开头",
+      "nameExists": "名称已存在",
+      "prefixDigitsOnly": "前缀必须是仅包含数字的字符串",
+      "prefixNonNegativeInteger": "前缀必须是非负整数"
+    },
+    "media": {
+      "altFilePreview": "文件预览",
+      "altImagePreview": "图片预览",
+      "playAudio": "播放音频",
+      "audioTagNotSupported": "您的浏览器不支持 audio 标签。",
+      "playVideo": "播放视频",
+      "videoTagNotSupported": "您的浏览器不支持 video 标签。",
+      "metaWidth": "宽度",
+      "metaHeight": "高度",
+      "metaType": "类型",
+      "metaSize": "大小",
+      "fileName": "文件名",
+      "publicPath": "公共路径",
+      "providerPath": "{providerName} 路径",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "打开操作",
+      "cancel": "取消",
+      "submit": "提交"
+    },
+    "actions": {
+      "confirmAction": "再次点击以{action}",
+      "verbs": {
+        "create": "创建",
+        "delete": "删除",
+        "rename": "重命名",
+        "upload": "上传",
+        "duplicate": "复制"
+      },
+      "labels": {
+        "createDocument": "新建文件",
+        "createDocumentFolder": "新建文件夹",
+        "createMediaFolder": "新建媒体文件夹",
+        "renameItem": "重命名",
+        "deleteItem": "删除",
+        "uploadMedia": "上传媒体",
+        "duplicateItem": "复制",
+        "revertItem": "撤销更改",
+        "publishBranch": "发布分支",
+        "openGitProvider": "在 {providerName} 打开",
+        "switchToTipTap": "使用可视化编辑器",
+        "switchToCode": "使用代码编辑器"
+      },
+      "tooltips": {
+        "createDocument": "创建新文件",
+        "createDocumentFolder": "创建新文件夹",
+        "createMediaFolder": "创建新文件夹",
+        "renameItem": "重命名文件",
+        "deleteItem": "删除文件",
+        "uploadMedia": "上传媒体",
+        "duplicateItem": "复制文件",
+        "revertItem": "撤销更改",
+        "publishBranch": "发布分支"
+      }
+    },
+    "items": {
+      "itemCount": "1 个项目 | {count} 个项目"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "标题 1",
+        "h2": "标题 2",
+        "h3": "标题 3"
+      },
+      "styles": {
+        "bold": "加粗",
+        "italic": "斜体"
+      },
+      "lists": {
+        "bulleted": "项目符号列表",
+        "numbered": "编号列表"
+      },
+      "other": {
+        "emojis": "表情符号",
+        "blockquote": "引用",
+        "code": "代码",
+        "inlineCode": "行内代码",
+        "link": "链接",
+        "image": "图片"
+      },
+      "writeSomething": "写点什么",
+      "snippets": {
+        "title": "标题",
+        "item1": "项目 1",
+        "item2": "项目 2",
+        "language": "语言",
+        "code": "代码",
+        "link": "链接",
+        "alt": "替代文本",
+        "src": "来源",
+        "value": "值"
+      },
+      "docs": {
+        "path": "项目路径：",
+        "props": "属性",
+        "slots": "插槽",
+        "type": "类型",
+        "required": "必填",
+        "default": "默认"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "开始写作，输入 '/' 使用命令...",
+        "components": "组件"
+      },
+      "element": {
+        "addSlot": "添加插槽",
+        "editProps": "编辑属性",
+        "delete": "删除",
+        "prop": "属性",
+        "props": "属性",
+        "propsEditorComingSoon": "属性编辑器即将上线..."
+      },
+      "slot": {
+        "searchPlaceholder": "搜索或创建插槽...",
+        "deleteSlot": "删除插槽",
+        "noSlotsAvailable": "没有可用的预定义插槽"
+      },
+      "inlineElement": {
+        "editContent": "编辑内容",
+        "editProps": "编辑属性",
+        "delete": "删除",
+        "editContentLabel": "编辑 {name} 内容",
+        "enterContentPlaceholder": "输入内容...",
+        "propsEditorComingSoon": "属性编辑器即将上线"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "粘贴链接...",
+        "applyLink": "应用链接",
+        "openInNewWindow": "在新窗口中打开",
+        "removeLink": "移除链接"
+      }
+    },
+    "mediaPicker": {
+      "title": "选择图片",
+      "description": "从媒体库中选择一张图片",
+      "noImagesAvailable": "媒体库中没有可用图片",
+      "upload": "上传"
+    }
+  }
+}
