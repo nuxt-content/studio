@@ -49,15 +49,13 @@ self.addEventListener('fetch', event => {
   const isSameDomain = url.origin === self.location.origin;
 
   if (!isSameDomain) {
-    return event.respondWith(fetch(event.request));
+    return
   }
 
   const imageUrl = extractImagePath(url);
   if (imageUrl) {
     return event.respondWith(fetchFromIndexedDB(event, imageUrl));
   }
-
-  event.respondWith(fetch(event.request))
 })
 
 function fetchFromIndexedDB(event, url) {
