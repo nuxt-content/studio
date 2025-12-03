@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Cartelle",
       "files": "File",
-      "media": "Media"
+      "media": "Media",
+      "pageSettings": "Impostazioni pagina"
     },
     "tooltips": {
       "toggleStudio": "Attiva/Disattiva Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Scrivi, digita '/' per i comandi...",
         "components": "Componenti"
+      },
+      "toolbar": {
+        "h1": "Titolo 1",
+        "h2": "Titolo 2",
+        "h3": "Titolo 3",
+        "h4": "Titolo 4",
+        "bulletList": "Elenco puntato",
+        "orderedList": "Elenco numerato",
+        "blockquote": "Citazione",
+        "codeBlock": "Blocco di codice",
+        "bold": "Grassetto",
+        "italic": "Corsivo",
+        "strike": "Barrato",
+        "code": "Codice",
+        "headings": "Titoli"
+      },
+      "suggestion": {
+        "style": "Stile",
+        "paragraph": "Paragrafo",
+        "insert": "Inserisci",
+        "image": "Immagine",
+        "horizontalRule": "Linea orizzontale"
+      },
+      "drag": {
+        "turnInto": "Trasforma in",
+        "resetFormatting": "Reimposta formattazione",
+        "duplicate": "Duplica",
+        "copyToClipboard": "Copia negli appunti",
+        "moveUp": "Sposta su",
+        "moveDown": "Sposta giù",
+        "delete": "Elimina"
       },
       "element": {
         "addSlot": "Aggiungi slot",

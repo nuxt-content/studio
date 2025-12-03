@@ -15,7 +15,8 @@
     "headings": {
       "directories": "پوشه‌ها",
       "files": "فایل‌ها",
-      "media": "رسانه"
+      "media": "رسانه",
+      "pageSettings": "تنظیمات صفحه"
     },
     "tooltips": {
       "toggleStudio": "تغییر وضعیت Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "بنویسید، برای دستورات '/' تایپ کنید...",
         "components": "کامپوننت‌ها"
+      },
+      "toolbar": {
+        "h1": "عنوان ۱",
+        "h2": "عنوان ۲",
+        "h3": "عنوان ۳",
+        "h4": "عنوان ۴",
+        "bulletList": "لیست نقطه‌ای",
+        "orderedList": "لیست شماره‌دار",
+        "blockquote": "نقل قول",
+        "codeBlock": "بلوک کد",
+        "bold": "درشت",
+        "italic": "کج",
+        "strike": "خط خورده",
+        "code": "کد",
+        "headings": "عنوان‌ها"
+      },
+      "suggestion": {
+        "style": "سبک",
+        "paragraph": "پاراگراف",
+        "insert": "درج",
+        "image": "تصویر",
+        "horizontalRule": "خط افقی"
+      },
+      "drag": {
+        "turnInto": "تبدیل به",
+        "resetFormatting": "بازنشانی قالب‌بندی",
+        "duplicate": "تکرار",
+        "copyToClipboard": "کپی به کلیپ‌بورد",
+        "moveUp": "حرکت به بالا",
+        "moveDown": "حرکت به پایین",
+        "delete": "حذف"
       },
       "element": {
         "addSlot": "افزودن اسلات",

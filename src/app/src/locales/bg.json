@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Директории",
       "files": "Файлове",
-      "media": "Медия"
+      "media": "Медия",
+      "pageSettings": "Настройки на страницата"
     },
     "tooltips": {
       "toggleStudio": "Превключване на Студио",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Пишете, въведете '/' за команди...",
         "components": "Компоненти"
+      },
+      "toolbar": {
+        "h1": "Заглавие 1",
+        "h2": "Заглавие 2",
+        "h3": "Заглавие 3",
+        "h4": "Заглавие 4",
+        "bulletList": "Списък с водещи символи",
+        "orderedList": "Номериран списък",
+        "blockquote": "Цитат",
+        "codeBlock": "Кодов блок",
+        "bold": "Удебеляване",
+        "italic": "Курсив",
+        "strike": "Зачеркнат",
+        "code": "Код",
+        "headings": "Заглавия"
+      },
+      "suggestion": {
+        "style": "Стил",
+        "paragraph": "Параграф",
+        "insert": "Вмъкни",
+        "image": "Изображение",
+        "horizontalRule": "Хоризонтална линия"
+      },
+      "drag": {
+        "turnInto": "Превърни в",
+        "resetFormatting": "Изчисти форматирането",
+        "duplicate": "Дублиране",
+        "copyToClipboard": "Копиране в клипборда",
+        "moveUp": "Премести нагоре",
+        "moveDown": "Премести надолу",
+        "delete": "Изтриване"
       },
       "element": {
         "addSlot": "Добави слот",
