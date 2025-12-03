@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Diretórios",
       "files": "Arquivos",
-      "media": "Mídia"
+      "media": "Mídia",
+      "pageSettings": "Configurações da página"
     },
     "tooltips": {
       "toggleStudio": "Alternar Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Escreva, digite '/' para comandos...",
         "components": "Componentes"
+      },
+      "toolbar": {
+        "h1": "Título 1",
+        "h2": "Título 2",
+        "h3": "Título 3",
+        "h4": "Título 4",
+        "bulletList": "Lista com marcadores",
+        "orderedList": "Lista numerada",
+        "blockquote": "Bloco de citação",
+        "codeBlock": "Bloco de código",
+        "bold": "Negrito",
+        "italic": "Itálico",
+        "strike": "Tachado",
+        "code": "Código",
+        "headings": "Títulos"
+      },
+      "suggestion": {
+        "style": "Estilo",
+        "paragraph": "Parágrafo",
+        "insert": "Inserir",
+        "image": "Imagem",
+        "horizontalRule": "Regra horizontal"
+      },
+      "drag": {
+        "turnInto": "Transformar em",
+        "resetFormatting": "Redefinir formatação",
+        "duplicate": "Duplicar",
+        "copyToClipboard": "Copiar para a área de transferência",
+        "moveUp": "Mover para cima",
+        "moveDown": "Mover para baixo",
+        "delete": "Excluir"
       },
       "element": {
         "addSlot": "Adicionar slot",

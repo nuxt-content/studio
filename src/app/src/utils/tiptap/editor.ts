@@ -7,31 +7,33 @@ import { upperFirst } from 'scule'
 
 import { isEmpty, omit } from '../object'
 
-export const headingItems = [
-  { kind: 'heading', level: 1, label: 'Heading 1', icon: 'i-lucide-heading-1' },
-  { kind: 'heading', level: 2, label: 'Heading 2', icon: 'i-lucide-heading-2' },
-  { kind: 'heading', level: 3, label: 'Heading 3', icon: 'i-lucide-heading-3' },
-  { kind: 'heading', level: 4, label: 'Heading 4', icon: 'i-lucide-heading-4' },
+type TFunction = (key: string) => string
+
+export const getHeadingItems = (t: TFunction) => [
+  { kind: 'heading', level: 1, label: t('studio.tiptap.toolbar.h1'), icon: 'i-lucide-heading-1' },
+  { kind: 'heading', level: 2, label: t('studio.tiptap.toolbar.h2'), icon: 'i-lucide-heading-2' },
+  { kind: 'heading', level: 3, label: t('studio.tiptap.toolbar.h3'), icon: 'i-lucide-heading-3' },
+  { kind: 'heading', level: 4, label: t('studio.tiptap.toolbar.h4'), icon: 'i-lucide-heading-4' },
 ] satisfies EditorToolbarItem[]
 
-export const listItems = [
-  { kind: 'bulletList', label: 'Bullet List', icon: 'i-lucide-list' },
-  { kind: 'orderedList', label: 'Ordered List', icon: 'i-lucide-list-ordered' },
+export const getListItems = (t: TFunction) => [
+  { kind: 'bulletList', label: t('studio.tiptap.toolbar.bulletList'), icon: 'i-lucide-list' },
+  { kind: 'orderedList', label: t('studio.tiptap.toolbar.orderedList'), icon: 'i-lucide-list-ordered' },
 ] satisfies EditorToolbarItem[]
 
-export const codeBlockItem = [
-  { kind: 'blockquote', label: 'Blockquote', icon: 'i-lucide-text-quote' },
-  { kind: 'codeBlock', label: 'Code Block', icon: 'i-lucide-square-code' },
+export const getCodeBlockItem = (t: TFunction) => [
+  { kind: 'blockquote', label: t('studio.tiptap.toolbar.blockquote'), icon: 'i-lucide-text-quote' },
+  { kind: 'codeBlock', label: t('studio.tiptap.toolbar.codeBlock'), icon: 'i-lucide-square-code' },
 ] satisfies EditorToolbarItem[]
 
-export const markItems = [
-  { kind: 'mark', mark: 'bold', label: 'Bold', icon: 'i-lucide-bold' },
-  { kind: 'mark', mark: 'italic', label: 'Italic', icon: 'i-lucide-italic' },
-  { kind: 'mark', mark: 'strike', label: 'Strike', icon: 'i-lucide-strikethrough' },
-  { kind: 'mark', mark: 'code', label: 'Code', icon: 'i-lucide-code' },
+export const getMarkItems = (t: TFunction) => [
+  { kind: 'mark', mark: 'bold', label: t('studio.tiptap.toolbar.bold'), icon: 'i-lucide-bold' },
+  { kind: 'mark', mark: 'italic', label: t('studio.tiptap.toolbar.italic'), icon: 'i-lucide-italic' },
+  { kind: 'mark', mark: 'strike', label: t('studio.tiptap.toolbar.strike'), icon: 'i-lucide-strikethrough' },
+  { kind: 'mark', mark: 'code', label: t('studio.tiptap.toolbar.code'), icon: 'i-lucide-code' },
 ] satisfies EditorToolbarItem[]
 
-export const standardToolbarItems = [
+export const getStandardToolbarItems = (t: TFunction) => [
   [
     {
       kind: 'undo',
@@ -51,20 +53,20 @@ export const standardToolbarItems = [
       items: [
         {
           type: 'label',
-          label: 'Headings',
+          label: t('studio.tiptap.toolbar.headings'),
         },
-        ...headingItems,
+        ...getHeadingItems(t),
       ],
     },
     {
       kind: 'dropdown',
       icon: 'i-lucide-list',
-      items: listItems,
+      items: getListItems(t),
     },
-    ...codeBlockItem.map(item => (omit(item, ['label']) as EditorSuggestionMenuItem)),
+    ...getCodeBlockItem(t).map(item => (omit(item, ['label']) as EditorSuggestionMenuItem)),
   ],
   [
-    ...markItems.map(item => (omit(item, ['label']) as EditorSuggestionMenuItem)),
+    ...getMarkItems(t).map(item => (omit(item, ['label']) as EditorSuggestionMenuItem)),
     {
       kind: 'slot',
       slot: 'link' as const,
@@ -72,25 +74,25 @@ export const standardToolbarItems = [
   ],
 ] satisfies EditorToolbarItem[][]
 
-export const standardSuggestionItems: EditorSuggestionMenuItem[][] = [
+export const getStandardSuggestionItems = (t: TFunction): EditorSuggestionMenuItem[][] => [
   [
     {
       type: 'label',
-      label: 'Style',
+      label: t('studio.tiptap.suggestion.style'),
     }, {
       kind: 'paragraph',
-      label: 'Paragraph',
+      label: t('studio.tiptap.suggestion.paragraph'),
       icon: 'i-lucide-type',
     },
-    ...headingItems as EditorSuggestionMenuItem[],
-    ...listItems as EditorSuggestionMenuItem[],
-    ...codeBlockItem as EditorSuggestionMenuItem[],
-    ...markItems as EditorSuggestionMenuItem[],
+    ...getHeadingItems(t) as EditorSuggestionMenuItem[],
+    ...getListItems(t) as EditorSuggestionMenuItem[],
+    ...getCodeBlockItem(t) as EditorSuggestionMenuItem[],
+    ...getMarkItems(t) as EditorSuggestionMenuItem[],
   ],
   [
     {
       type: 'label',
-      label: 'Insert',
+      label: t('studio.tiptap.suggestion.insert'),
     },
     {
     //   kind: 'emoji',
@@ -98,12 +100,12 @@ export const standardSuggestionItems: EditorSuggestionMenuItem[][] = [
     //   icon: 'i-lucide-smile-plus',
     // }, {
       kind: 'image',
-      label: 'Image',
+      label: t('studio.tiptap.suggestion.image'),
       icon: 'i-lucide-image',
     },
     {
       kind: 'horizontalRule',
-      label: 'Horizontal Rule',
+      label: t('studio.tiptap.suggestion.horizontalRule'),
       icon: 'i-lucide-separator-horizontal',
     },
   ],
@@ -138,27 +140,46 @@ export const standardNuxtUIComponents: Record<string, { name: string, icon: stri
   'warning': { name: 'Warning', icon: 'i-lucide-alert-triangle' },
 }
 
-export function computeStandardDragActions(editor: Editor, selectedNode: JSONContent): DropdownMenuItem[][] {
+export function computeStandardDragActions(editor: Editor, selectedNode: JSONContent, t: TFunction): DropdownMenuItem[][] {
+  const type = selectedNode.node.type
+  let label: string = upperFirst(type)
+
+  // Map known types to their translation keys
+  const typeTranslationMap: Record<string, string> = {
+    paragraph: 'studio.tiptap.suggestion.paragraph',
+    heading: 'studio.tiptap.toolbar.headings',
+    bulletList: 'studio.tiptap.toolbar.bulletList',
+    orderedList: 'studio.tiptap.toolbar.orderedList',
+    blockquote: 'studio.tiptap.toolbar.blockquote',
+    codeBlock: 'studio.tiptap.toolbar.codeBlock',
+    image: 'studio.tiptap.suggestion.image',
+    horizontalRule: 'studio.tiptap.suggestion.horizontalRule',
+  }
+
+  if (typeTranslationMap[type]) {
+    label = t(typeTranslationMap[type])
+  }
+
   return mapEditorItems(editor, [
     [
       {
         type: 'label',
-        label: upperFirst(selectedNode.node.type),
+        label,
       },
       {
-        label: 'Turn into',
+        label: t('studio.tiptap.drag.turnInto'),
         icon: 'i-lucide-repeat-2',
         children: [
-          { kind: 'paragraph', label: 'Paragraph', icon: 'i-lucide-type' },
-          ...headingItems,
-          ...listItems,
-          ...codeBlockItem,
+          { kind: 'paragraph', label: t('studio.tiptap.suggestion.paragraph'), icon: 'i-lucide-type' },
+          ...getHeadingItems(t),
+          ...getListItems(t),
+          ...getCodeBlockItem(t),
         ],
       },
       {
         kind: 'clearFormatting',
         pos: selectedNode?.pos,
-        label: 'Reset formatting',
+        label: t('studio.tiptap.drag.resetFormatting'),
         icon: 'i-lucide-rotate-ccw',
       },
     ],
@@ -166,11 +187,11 @@ export function computeStandardDragActions(editor: Editor, selectedNode: JSONCon
       {
         kind: 'duplicate',
         pos: selectedNode?.pos,
-        label: 'Duplicate',
+        label: t('studio.tiptap.drag.duplicate'),
         icon: 'i-lucide-copy',
       },
       {
-        label: 'Copy to clipboard',
+        label: t('studio.tiptap.drag.copyToClipboard'),
         icon: 'i-lucide-clipboard',
         onSelect: async () => {
           if (!selectedNode) return
@@ -187,13 +208,13 @@ export function computeStandardDragActions(editor: Editor, selectedNode: JSONCon
       {
         kind: 'moveUp',
         pos: selectedNode?.pos,
-        label: 'Move up',
+        label: t('studio.tiptap.drag.moveUp'),
         icon: 'i-lucide-arrow-up',
       },
       {
         kind: 'moveDown',
         pos: selectedNode?.pos,
-        label: 'Move down',
+        label: t('studio.tiptap.drag.moveDown'),
         icon: 'i-lucide-arrow-down',
       },
     ],
@@ -201,7 +222,7 @@ export function computeStandardDragActions(editor: Editor, selectedNode: JSONCon
       {
         kind: 'delete',
         pos: selectedNode?.pos,
-        label: 'Delete',
+        label: t('studio.tiptap.drag.delete'),
         icon: 'i-lucide-trash',
       },
     ],

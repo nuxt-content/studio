@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Dossiers",
       "files": "Fichiers",
-      "media": "Médias"
+      "media": "Médias",
+      "pageSettings": "Paramètres de la page"
     },
     "tooltips": {
       "toggleStudio": "Afficher/Masquer le Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Tapez '/' pour les commandes...",
         "components": "Composants"
+      },
+      "toolbar": {
+        "h1": "Titre 1",
+        "h2": "Titre 2",
+        "h3": "Titre 3",
+        "h4": "Titre 4",
+        "bulletList": "Liste à puces",
+        "orderedList": "Liste numérotée",
+        "blockquote": "Citation",
+        "codeBlock": "Bloc de code",
+        "bold": "Gras",
+        "italic": "Italique",
+        "strike": "Barré",
+        "code": "Code",
+        "headings": "Titres"
+      },
+      "suggestion": {
+        "style": "Style",
+        "paragraph": "Paragraphe",
+        "insert": "Insérer",
+        "image": "Image",
+        "horizontalRule": "Ligne horizontale"
+      },
+      "drag": {
+        "turnInto": "Transformer en",
+        "resetFormatting": "Réinitialiser le formatage",
+        "duplicate": "Dupliquer",
+        "copyToClipboard": "Copier dans le presse-papiers",
+        "moveUp": "Monter",
+        "moveDown": "Descendre",
+        "delete": "Supprimer"
       },
       "element": {
         "addSlot": "Ajouter un slot",

@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.0.0-alpha.3](https://github.com/nuxt-content/studio/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-12-03)
+
+### Features
+
+* **actions:** use ellipsis in toolbar + add git repo ([#120](https://github.com/nuxt-content/studio/issues/120)) ([7e1ab68](https://github.com/nuxt-content/studio/commit/7e1ab683dab914ecc68f8b9bedbfc634e27e5895))
+* **editor:** tiptap integration with Nuxt UI Editor ([#125](https://github.com/nuxt-content/studio/issues/125)) ([420791d](https://github.com/nuxt-content/studio/commit/420791db9a4e35e0dcecf55f01a67d7f0764e0b6))
+* **i18n:** add Bulgarian (bg) locales ([#121](https://github.com/nuxt-content/studio/issues/121)) ([ada76a7](https://github.com/nuxt-content/studio/commit/ada76a7bbef948324c7eb9a1f60d5b261152b300))
+* **i18n:** add Chinese (zh) locale ([#143](https://github.com/nuxt-content/studio/issues/143)) ([77a2848](https://github.com/nuxt-content/studio/commit/77a28481782c3b18f15c0ccc6dae65a090619dac))
+* **i18n:** add Farsi (fa) locale ([#134](https://github.com/nuxt-content/studio/issues/134)) ([75d9494](https://github.com/nuxt-content/studio/commit/75d9494053dd8690a2e7ab4c831264dab437dd29))
+* **i18n:** add German (de) locale ([#119](https://github.com/nuxt-content/studio/issues/119)) ([1ac2d5e](https://github.com/nuxt-content/studio/commit/1ac2d5ee005947207f33cd8cd97a8f3df486dd16))
+* **i18n:** add Italian (it) locale ([#142](https://github.com/nuxt-content/studio/issues/142)) ([1ed9622](https://github.com/nuxt-content/studio/commit/1ed9622e1e70f174e4584343a495ddd439e3f1a7))
+* **i18n:** add Polish (pl) locales ([#124](https://github.com/nuxt-content/studio/issues/124)) ([2d95889](https://github.com/nuxt-content/studio/commit/2d958898922b487f92dfbe93e89254759dd798a8))
+* **i18n:** Add Portuguese Brazil (pt-br) locales ([#138](https://github.com/nuxt-content/studio/issues/138)) ([a936cf2](https://github.com/nuxt-content/studio/commit/a936cf24aa8f6ae3fee43b1a03f83699589099bd))
+* **i18n:** add spanish (es) locale ([#123](https://github.com/nuxt-content/studio/issues/123)) ([e28bd6a](https://github.com/nuxt-content/studio/commit/e28bd6a81063fe02e8791523cbd203b9b16c157c))
+* **i18n:** Footer dev mode text + Edit Page button ([#108](https://github.com/nuxt-content/studio/issues/108)) ([0ee6023](https://github.com/nuxt-content/studio/commit/0ee60233c890616494d69b699ec4d440fbaec74b))
+* **locales:** add Indonesian (id) locale ([#141](https://github.com/nuxt-content/studio/issues/141)) ([3e49d2b](https://github.com/nuxt-content/studio/commit/3e49d2bd4007166b95feca76a8bdcb662ac51497))
+
+### Bug Fixes
+
+* **dev:** service-worker and dev api timeout ([#145](https://github.com/nuxt-content/studio/issues/145)) ([ae2717a](https://github.com/nuxt-content/studio/commit/ae2717a8efecf02c46ad23db87cc0264c0a8e9cc))
+* **editor:** data type edition ([#117](https://github.com/nuxt-content/studio/issues/117)) ([93fe90c](https://github.com/nuxt-content/studio/commit/93fe90c2c3e785a93f01e4ba581ff5088fa0eca9))
+* improve document equality check ([2850168](https://github.com/nuxt-content/studio/commit/28501684a6efa42d1be0e9f15ecf9b1c81263786))
+
 ## [1.0.0-alpha.2](https://github.com/nuxt-content/studio/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-11-17)
 
 ### Features
