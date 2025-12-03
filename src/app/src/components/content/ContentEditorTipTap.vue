@@ -47,11 +47,12 @@ const debug = computed(() => preferences.value.debug)
 const currentTiptap = ref<JSONContent>()
 const currentMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
 const currentContent = ref<string>()
+const documentBody = computed(() => document.value?.body as unknown as MDCRoot || (document.value?.meta as Record<string, unknown>).body as unknown as MDCRoot)
 
 // Trigger on document changes
 watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.status}`, async () => {
   const frontmatterJson = removeReservedKeys(document.value!)
-  const newTiptapJSON = mdcToTiptap(document.value?.body as unknown as MDCRoot, frontmatterJson)
+  const newTiptapJSON = mdcToTiptap(documentBody.value, frontmatterJson)
 
   if (!tiptapJSON.value || JSON.stringify(newTiptapJSON) !== JSON.stringify(removeLastEmptyParagraph(tiptapJSON.value))) {
     tiptapJSON.value = newTiptapJSON

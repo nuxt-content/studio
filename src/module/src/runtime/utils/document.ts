@@ -164,11 +164,13 @@ export function areDocumentsEqual(document1: Record<string, unknown>, document2:
 
   // Compare body first
   if (document1.extension === ContentFileExtension.Markdown) {
+    const mdcBody1 = body1 as MDCRoot | MarkdownRoot || (meta1 as Record<string, unknown>).body as MDCRoot | MarkdownRoot
+    const mdcBody2 = body2 as MDCRoot | MarkdownRoot || (meta2 as Record<string, unknown>).body as MDCRoot | MarkdownRoot
     const minifiedBody1 = withoutLastStyles(
-      (document1 as DatabasePageItem).body.type === 'minimark' ? document1.body as MarkdownRoot : compressTree(document1.body as unknown as MDCRoot),
+      mdcBody1.type === 'minimark' ? mdcBody1 as unknown as MarkdownRoot : compressTree(mdcBody1 as unknown as MDCRoot),
     )
     const minifiedBody2 = withoutLastStyles(
-      (document2 as DatabasePageItem).body.type === 'minimark' ? document2.body as MarkdownRoot : compressTree(document2.body as unknown as MDCRoot),
+      mdcBody2.type === 'minimark' ? mdcBody2 as unknown as MarkdownRoot : compressTree(mdcBody2 as unknown as MDCRoot),
     )
 
     if (stringify(minifiedBody1) !== stringify(minifiedBody2)) {
