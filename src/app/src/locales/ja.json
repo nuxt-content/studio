@@ -46,7 +46,7 @@
     },
     "publishSuccess": {
       "title": "変更が公開されました",
-      "summary": "{repo} リポジトリの {branch} にて {count} 件の変更が公開されました | {repo} リポジトリの {branch} にて {count} 件の変更が公開されました",
+      "summary": "{repo} リポジトリの {branch} にて {count} 件の変更が公開されました",
       "alertTitleWaiting": "デプロイの待機中です...",
       "alertTitleComplete": "デプロイが完了しました",
       "alertDescWaiting": "変更を表示するには、ウェブサイトのデプロイが必要です。",
@@ -113,7 +113,7 @@
       "submit": "送信"
     },
     "actions": {
-      "confirmAction": "もう一度クリックして{action}を実行",
+      "confirmAction": "もう一度クリックして {action} を実行",
       "verbs": {
         "create": "作成",
         "delete": "削除",
