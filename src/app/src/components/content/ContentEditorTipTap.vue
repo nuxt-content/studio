@@ -6,7 +6,7 @@ import type { PropType } from 'vue'
 import type { Editor, JSONContent } from '@tiptap/vue-3'
 import type { MDCRoot, Toc } from '@nuxtjs/mdc'
 import { generateToc } from '@nuxtjs/mdc/dist/runtime/parser/toc'
-import type { DraftItem, DatabasePageItem } from '../../types'
+import type { DraftItem, DatabaseItem, DatabasePageItem, DatabaseDataItem } from '../../types'
 import type { MarkdownRoot } from '@nuxt/content'
 import type { EditorCustomHandlers } from '@nuxt/ui'
 import { ref, watch, computed } from 'vue'
@@ -32,7 +32,7 @@ const props = defineProps({
   },
 })
 
-const document = defineModel<DatabasePageItem>()
+const document = defineModel<DatabaseItem>()
 
 const { host } = useStudio()
 const { preferences } = useStudioState()
@@ -79,13 +79,25 @@ watch(tiptapJSON, async (json) => {
   const compressedBody: MarkdownRoot = compressTree(body)
   const toc: Toc = generateToc(body, { searchDepth: 2, depth: 2 } as Toc)
 
-  const updatedDocument: DatabasePageItem = {
+  const updatedDocument: DatabaseItem = {
     ...document.value!,
     ...data,
-    body: {
+  }
+
+  // Page type
+  if ((updatedDocument as DatabasePageItem).body) {
+    updatedDocument.body = {
       ...compressedBody,
       toc,
-    } as MarkdownRoot,
+    }
+  }
+
+  // Data type
+  if ((updatedDocument as DatabaseDataItem).meta?.body) {
+    updatedDocument.meta.body = {
+      ...compressedBody,
+      toc,
+    } as MarkdownRoot
   }
 
   document.value = updatedDocument

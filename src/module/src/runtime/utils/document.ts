@@ -1,7 +1,7 @@
 import type { CollectionInfo, CollectionItemBase, MarkdownRoot, PageCollectionItemBase } from '@nuxt/content'
 import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
-import type { DatabaseItem, DatabasePageItem, MarkdownParsingOptions } from 'nuxt-studio/app'
+import type { DatabaseItem, DatabasePageItem, DatabaseDataItem, MarkdownParsingOptions } from 'nuxt-studio/app'
 import { doObjectsMatch, omit, pick } from './object'
 import { ContentFileExtension } from '../types/content'
 import { parseMarkdown } from '@nuxtjs/mdc/runtime/parser/index'
@@ -100,6 +100,7 @@ export function pickReservedKeysFromDocument(document: DatabaseItem): DatabaseIt
 
 export function removeReservedKeysFromDocument(document: DatabaseItem): DatabaseItem {
   const result = omit(document, reservedKeys)
+
   // Default value of navigation is true, so we can safely remove it
   if (result.navigation === true) {
     Reflect.deleteProperty(result, 'navigation')
@@ -124,7 +125,7 @@ export function removeReservedKeysFromDocument(document: DatabaseItem): Database
 
   // expand meta to the root
   for (const key in (document.meta || {})) {
-    if (key !== '__hash__') {
+    if (!reservedKeys.includes(key)) {
       result[key] = (document.meta as Record<string, unknown>)[key]
     }
   }
@@ -393,9 +394,20 @@ export async function generateContentFromJSONDocument(document: DatabaseItem): P
   return JSON.stringify(removeReservedKeysFromDocument(document), null, 2)
 }
 
-export async function generateContentFromMarkdownDocument(document: DatabasePageItem): Promise<string | null> {
-  // @ts-expect-error todo fix MarkdownRoot/MDCRoot conversion in MDC module
-  const body = document.body.type === 'minimark' ? decompressTree(document.body) : (document.body as MDCRoot)
+export async function generateContentFromMarkdownDocument(document: DatabaseItem): Promise<string | null> {
+  let body: MDCRoot
+
+  // Page type
+  if (document.body) {
+    body = (document as DatabasePageItem).body.type === 'minimark' ? decompressTree((document as DatabasePageItem).body) : document.body as MDCRoot
+  }
+  // Data type
+  else if (document.meta?.body) {
+    body = ((document as DatabaseDataItem).meta?.body as MarkdownRoot)?.type === 'minimark' ? decompressTree(document.meta?.body as MarkdownRoot) : document.meta?.body as MDCRoot
+  }
+  else {
+    throw new Error('No body found in document')
+  }
 
   // Remove nofollow from links
   visit(body, (node: Node) => (node as MDCElement).type === 'element' && (node as MDCElement).tag === 'a', (node: Node) => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { ContentFileExtension, type DatabasePageItem, type DraftItem, DraftStatus } from '../../types'
+import { ContentFileExtension, type DatabaseItem, type DraftItem, DraftStatus } from '../../types'
 import type { PropType } from 'vue'
 import { setupSuggestion } from '../../utils/monaco'
 import { useStudio } from '../../composables/useStudio'
@@ -19,7 +19,7 @@ const props = defineProps({
   },
 })
 
-const document = defineModel<DatabasePageItem>()
+const document = defineModel<DatabaseItem>()
 
 const { mediaTree, host, ui } = useStudio()
 const { t } = useI18n()
@@ -71,9 +71,9 @@ const { editor, setContent: setEditorContent } = useMonaco(editorRef, {
       localStatus.value = DraftStatus.Updated
 
       document.value = {
-        ...host.document.utils.pickReservedKeys(props.draftItem.modified as DatabasePageItem || document.value!),
+        ...host.document.utils.pickReservedKeys(props.draftItem.modified as DatabaseItem || document.value!),
         ...doc,
-      } as DatabasePageItem
+      }
     })
   },
 })
@@ -83,7 +83,7 @@ watch(() => props.draftItem.status, (newStatus) => {
   if (editor.value && newStatus !== localStatus.value) {
     const document = newStatus === DraftStatus.Deleted ? props.draftItem.original : props.draftItem.modified
     localStatus.value = newStatus
-    setContent(document as DatabasePageItem)
+    setContent(document as DatabaseItem)
   }
 })
 
@@ -109,7 +109,7 @@ watch(() => document.value?.id + '-' + props.draftItem.version, async () => {
   }
 }, { immediate: true })
 
-async function setContent(document: DatabasePageItem) {
+async function setContent(document: DatabaseItem) {
   const generateContentFromDocument = host.document.generate.contentFromDocument
   const generatedContent = await generateContentFromDocument(document) || ''
   content.value = generatedContent
