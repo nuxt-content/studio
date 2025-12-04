@@ -8,8 +8,8 @@ export function createGitHubProvider(options: GitOptions): GitProviderAPI {
   const { owner, repo, token, branch, rootDir, authorName, authorEmail } = options
   const gitFiles: Record<string, GitFile> = {}
 
-  // Support both token formats: "token {token}" for classic PATs, "Bearer {token}" for OAuth/fine-grained PATs
-  const authHeader = token.startsWith('ghp_') ? `token ${token}` : `Bearer ${token}`
+  // Support both token formats: "token {token}" for fine grained PATs, "Bearer {token}" for OAuth PATs
+  const authHeader = token.startsWith('github_pat_') ? `token ${token}` : `Bearer ${token}`
 
   const $api = ofetch.create({
     baseURL: `https://api.github.com/repos/${owner}/${repo}`,
