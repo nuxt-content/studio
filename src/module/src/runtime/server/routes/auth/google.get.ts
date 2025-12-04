@@ -115,6 +115,10 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
+  const repositoryToken = provider === 'github'
+    ? process.env.STUDIO_GITHUB_TOKEN
+    : process.env.STUDIO_GITLAB_TOKEN
+
   const requestURL = getRequestURL(event)
 
   config.redirectURL = config.redirectURL || `${requestURL.protocol}//${requestURL.host}${requestURL.pathname}`
@@ -195,7 +199,7 @@ export default eventHandler(async (event: H3Event) => {
     user: {
       contentUser: true,
       providerId: String(user.sub).toString(),
-      accessToken: process.env.STUDIO_GITHUB_TOKEN,
+      accessToken: repositoryToken,
       name: user.name || `${user.given_name || ''} ${user.family_name || ''}`.trim(),
       avatar: user.picture,
       email: user.email,

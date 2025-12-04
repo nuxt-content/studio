@@ -197,7 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
         logger.warn([
           'In order to authenticate users, you need to set up a GitLab OAuth application.',
           'Please set the `STUDIO_GITLAB_APPLICATION_ID` and `STUDIO_GITLAB_APPLICATION_SECRET` environment variables,',
-          'Alternatively, you can set up a Google OAuth application and set the `STUDIO_GOOGLE_CLIENT_ID` and `STUDIO_GOOGLE_CLIENT_SECRET` environment variables alongside with `STUDIO_GITHUB_TOKEN` to push changes to the repository.',
+          'Alternatively, you can set up a Google OAuth application and set the `STUDIO_GOOGLE_CLIENT_ID` and `STUDIO_GOOGLE_CLIENT_SECRET` environment variables alongside with `STUDIO_GITLAB_TOKEN` to push changes to the repository.',
         ].join(' '))
       }
     }
