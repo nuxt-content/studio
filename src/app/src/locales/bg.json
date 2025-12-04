@@ -196,7 +196,7 @@
     },
     "tiptap": {
       "editor": {
-        "placeholder": "Пишете, въведете '/' за команди...",
+        "placeholder": "Започнете да пишете или въведете '/' за команди...",
         "components": "Компоненти"
       },
       "toolbar": {
@@ -207,65 +207,65 @@
         "bulletList": "Списък с водещи символи",
         "orderedList": "Номериран списък",
         "blockquote": "Цитат",
-        "codeBlock": "Кодов блок",
-        "bold": "Удебеляване",
-        "italic": "Курсив",
-        "strike": "Зачеркнат",
-        "code": "Код",
+        "codeBlock": "Блок с код",
+        "bold": "Удебеляване (получер)",
+        "italic": "Накланяне (курсив)",
+        "strike": "Зачертаване",
+        "code": "Ред с код",
         "headings": "Заглавия"
       },
       "suggestion": {
         "style": "Стил",
         "paragraph": "Параграф",
-        "insert": "Вмъкни",
+        "insert": "Вмъкване",
         "image": "Изображение",
         "horizontalRule": "Хоризонтална линия"
       },
       "drag": {
-        "turnInto": "Превърни в",
-        "resetFormatting": "Изчисти форматирането",
+        "turnInto": "Превръщане в",
+        "resetFormatting": "Изчистване на форматирането",
         "duplicate": "Дублиране",
         "copyToClipboard": "Копиране в клипборда",
-        "moveUp": "Премести нагоре",
-        "moveDown": "Премести надолу",
+        "moveUp": "Преместане нагоре",
+        "moveDown": "Преместване надолу",
         "delete": "Изтриване"
       },
       "element": {
-        "addSlot": "Добави слот",
-        "editProps": "Редактирай свойства",
-        "delete": "Изтрий",
+        "addSlot": "Добавяне на слот",
+        "editProps": "Редактиране на свойствата",
+        "delete": "Изтриване",
         "prop": "свойство",
         "props": "свойства",
-        "propsEditorComingSoon": "Редактор на свойства ще бъде внедрен скоро..."
+        "propsEditorComingSoon": "Редакторът на свойства предстои да бъде разработен скоро..."
       },
       "slot": {
-        "searchPlaceholder": "Търси или създай слот...",
-        "deleteSlot": "Изтрий слот",
+        "searchPlaceholder": "Търсене или създаване на слот...",
+        "deleteSlot": "Изтриване на слот",
         "noSlotsAvailable": "Няма налични предефинирани слотове"
       },
       "inlineElement": {
-        "editContent": "Редактирай съдържание",
-        "editProps": "Редактирай свойства",
-        "delete": "Изтрий",
-        "editContentLabel": "Редактирай съдържание на {name}",
-        "enterContentPlaceholder": "Въведи съдържание...",
-        "propsEditorComingSoon": "Редактор на свойства идва скоро"
+        "editContent": "Редактиране на съдържанието",
+        "editProps": "Редактиране на свойствата",
+        "delete": "Изтриване",
+        "editContentLabel": "Редактиране съдържанието на {name}",
+        "enterContentPlaceholder": "Въведете съдържание...",
+        "propsEditorComingSoon": "Редакторът на свойства скоро ще бъде достъпен"
       },
       "codeBlock": {
-        "filenamePlaceholder": "имефайл.js"
+        "filenamePlaceholder": "ime-na-fail.js"
       },
       "link": {
-        "pasteLinkPlaceholder": "Постави връзка...",
-        "applyLink": "Приложи връзка",
-        "openInNewWindow": "Отвори в нов прозорец",
-        "removeLink": "Премахни връзка"
+        "pasteLinkPlaceholder": "Поставете връзка...",
+        "applyLink": "Прилагане на връзка",
+        "openInNewWindow": "Отваряне в нов прозорец",
+        "removeLink": "Премахване на връзката"
       }
     },
     "mediaPicker": {
-      "title": "Избери изображение",
-      "description": "Изберете изображение от вашата медийна библиотека",
-      "noImagesAvailable": "Няма налични изображения във вашата медийна библиотека",
-      "upload": "Качи"
+      "title": "Избиране на изображение",
+      "description": "Изберете изображение от Вашата медийна библиотека",
+      "noImagesAvailable": "Няма налични изображения във Вашата медийна библиотека",
+      "upload": "Качване"
     }
   }
 }
