@@ -47,7 +47,7 @@ const debug = computed(() => preferences.value.debug)
 const currentTiptap = ref<JSONContent>()
 const currentMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
 const currentContent = ref<string>()
-const documentBody = computed(() => document.value?.body as unknown as MDCRoot || (document.value?.meta as Record<string, unknown>).body as unknown as MDCRoot)
+const documentBody = computed(() => document.value?.body as MDCRoot || document.value?.meta?.body as MDCRoot)
 
 // Trigger on document changes
 watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.status}`, async () => {
