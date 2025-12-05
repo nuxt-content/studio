@@ -62,6 +62,11 @@ export function applyCollectionSchema(id: string, collectionInfo: CollectionInfo
 }
 
 export function sanitizeDocument(document: DatabaseItem) {
+  if (!document.body && (document.meta?.body as unknown as MinimarkTree)?.type === 'minimark') {
+    document.body = (document.meta?.body as unknown as MinimarkTree)
+    Reflect.deleteProperty(document.meta, 'body')
+  }
+
   if ((document.body as unknown as MinimarkTree)?.type === 'minimark') {
     document.body = withoutLastStyles(document.body as MarkdownRoot)
 
@@ -124,7 +129,7 @@ export function removeReservedKeysFromDocument(document: DatabaseItem): Database
 
   // expand meta to the root
   for (const key in (document.meta || {})) {
-    if (key !== '__hash__') {
+    if (!reservedKeys.includes(key)) {
       result[key] = (document.meta as Record<string, unknown>)[key]
     }
   }
