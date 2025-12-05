@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Katalogi",
       "files": "Pliki",
-      "media": "Media"
+      "media": "Media",
+      "pageSettings": "Ustawienia strony"
     },
     "tooltips": {
       "toggleStudio": "Przełącz Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Pisz, wpisz '/' dla poleceń...",
         "components": "Komponenty"
+      },
+      "toolbar": {
+        "h1": "Nagłówek 1",
+        "h2": "Nagłówek 2",
+        "h3": "Nagłówek 3",
+        "h4": "Nagłówek 4",
+        "bulletList": "Lista punktowana",
+        "orderedList": "Lista numerowana",
+        "blockquote": "Cytat",
+        "codeBlock": "Blok kodu",
+        "bold": "Pogrubienie",
+        "italic": "Kursywa",
+        "strike": "Przekreślenie",
+        "code": "Kod",
+        "headings": "Nagłówki"
+      },
+      "suggestion": {
+        "style": "Styl",
+        "paragraph": "Akapit",
+        "insert": "Wstaw",
+        "image": "Obraz",
+        "horizontalRule": "Linia pozioma"
+      },
+      "drag": {
+        "turnInto": "Zmień na",
+        "resetFormatting": "Resetuj formatowanie",
+        "duplicate": "Duplikuj",
+        "copyToClipboard": "Kopiuj do schowka",
+        "moveUp": "Przesuń w górę",
+        "moveDown": "Przesuń w dół",
+        "delete": "Usuń"
       },
       "element": {
         "addSlot": "Dodaj slot",

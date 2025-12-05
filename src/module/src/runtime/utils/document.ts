@@ -11,7 +11,8 @@ import { compressTree, decompressTree } from '@nuxt/content/runtime'
 import destr from 'destr'
 import { parseFrontMatter, stringifyFrontMatter } from 'remark-mdc'
 import { stringify } from 'minimark/stringify'
-import type { MinimarkTree } from 'minimark'
+import { visit as minimarkVisit } from 'minimark'
+import type { MinimarkNode, MinimarkTree } from 'minimark'
 // import type { ParsedContentFile } from '@nuxt/content'
 import { stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import type { Node } from 'unist'
@@ -63,9 +64,32 @@ export function applyCollectionSchema(id: string, collectionInfo: CollectionInfo
 export function sanitizeDocument(document: DatabaseItem) {
   if ((document.body as unknown as MinimarkTree)?.type === 'minimark') {
     document.body = withoutLastStyles(document.body as MarkdownRoot)
-  }
 
-  // remove the codeblock token and convert highlighted code blocks to plain code blocks
+    // remove the codeblock token and convert highlighted code blocks to plain code blocks
+    minimarkVisit(document.body as MinimarkTree, (node: MinimarkNode) => node[0] === 'pre', (node: MinimarkNode) => {
+      const tag = node[0]
+      const props = node[1] as Record<string, unknown>
+
+      if ((props as Record<string, unknown> || {}).code) {
+        // TODO: We need to make sure that there is no custom class
+        Reflect.deleteProperty(props, 'className')
+        return [
+          tag,
+          {
+            ...(props || {}),
+            style: props.style || undefined,
+            meta: props.meta || undefined,
+          },
+          [
+            'code',
+            { __ignoreMap: '' },
+            (props as Record<string, unknown> || {}).code,
+          ],
+        ]
+      }
+      return node
+    })
+  }
 
   return document
 }

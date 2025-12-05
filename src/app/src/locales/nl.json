@@ -1,0 +1,271 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Bewerk deze pagina",
+      "retryPublish": "Opnieuw publiceren",
+      "reloadApp": "App opnieuw laden",
+      "reload": "Opnieuw laden",
+      "signOut": "Afmelden",
+      "review": "Beoordelen",
+      "publish": "Publiceren",
+      "back": "Terug",
+      "backToEdition": "Terug naar bewerken",
+      "seeChanges": "Bekijk wat er is veranderd"
+    },
+    "headings": {
+      "directories": "Mappen",
+      "files": "Bestanden",
+      "media": "Media",
+      "pageSettings": "Pagina-instellingen"
+    },
+    "tooltips": {
+      "toggleStudio": "Studio aan/uit",
+      "unlinkEditor": "Editor en preview ontkoppelen",
+      "linkEditor": "Editor en preview koppelen",
+      "copiedToClipboard": "Gekopieerd naar klembord",
+      "copyToClipboard": "Kopieer naar klembord",
+      "publishChanges": "Wijzigingen publiceren",
+      "backToContent": "Terug naar inhoud"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Er is een onbekende fout opgetreden"
+      }
+    },
+    "publish": {
+      "failedTitle": "Publiceren mislukt",
+      "summary": "op {branch} van de {repo}-repository",
+      "errorTitle": "Fout tijdens publiceren met {providerName}",
+      "failedGeneric": "Publiceren van wijzigingen mislukt"
+    },
+    "review": {
+      "title": "Wijzigingen beoordelen",
+      "created": "Aangemaakt",
+      "updated": "Bijgewerkt",
+      "renamed": "Hernoemd",
+      "deleted": "Verwijderd"
+    },
+    "publishSuccess": {
+      "title": "Wijzigingen gepubliceerd",
+      "summary": "{count} wijziging gepubliceerd op {branch} van de {repo}-repository | {count} wijzigingen gepubliceerd op {branch} van de {repo}-repository",
+      "alertTitleWaiting": "Wachten op deployment...",
+      "alertTitleComplete": "Deployment voltooid",
+      "alertDescWaiting": "De website moet worden gedeployed voordat wijzigingen zichtbaar zijn in Studio.",
+      "alertDescComplete": "Er is een nieuwe versie van je website gedeployed. Vernieuw je app om de wijzigingen in Studio te zien."
+    },
+    "newVersionBanner": {
+      "title": "Nieuwe websiteversie gedetecteerd",
+      "description": "Er is een nieuwe versie van je website gedeployed. Laad de app opnieuw om de laatste wijzigingen te zien.",
+      "reloadButton": "Opnieuw laden"
+    },
+    "footer": {
+      "developer_view": "Ontwikkelaarsweergave",
+      "localFilesystem": "Lokaal bestandssysteem",
+      "debugMode": "Debugmodus"
+    },
+    "alert": {
+      "mdcFormatting": "Formattering toegepast conform MDC-syntaxstandaard."
+    },
+    "conflict": {
+      "title": "Conflict gedetecteerd",
+      "repository": "Repository",
+      "branch": "Branch",
+      "file": "Bestand",
+      "description": "De inhoud op {providerName} verschilt van je websiteversie. Zorg dat je laatste wijzigingen zijn gedeployed en ververs de pagina.",
+      "websiteVersion": "Website"
+    },
+    "nav": {
+      "content": "Inhoud",
+      "media": "Media"
+    },
+    "placeholders": {
+      "commitMessage": "Commitbericht",
+      "order": "Nr",
+      "fileName": "Bestandsnaam"
+    },
+    "validation": {
+      "commitRequired": "Commitbericht is vereist",
+      "nameEmpty": "Naam mag niet leeg zijn",
+      "nameEndsWithDot": "Naam mag niet eindigen op '.'",
+      "nameStartsWithSlash": "Naam mag niet beginnen met '/'",
+      "nameExists": "Naam bestaat al",
+      "prefixDigitsOnly": "Prefix moet een string zijn met alleen cijfers",
+      "prefixNonNegativeInteger": "Prefix moet een niet-negatief geheel getal zijn"
+    },
+    "media": {
+      "altFilePreview": "Bestandsvoorbeeld",
+      "altImagePreview": "Afbeeldingsvoorbeeld",
+      "playAudio": "Audio afspelen",
+      "audioTagNotSupported": "Je browser ondersteunt het audio-element niet.",
+      "playVideo": "Video afspelen",
+      "videoTagNotSupported": "Je browser ondersteunt het video-element niet.",
+      "metaWidth": "Breedte",
+      "metaHeight": "Hoogte",
+      "metaType": "Type",
+      "metaSize": "Grootte",
+      "fileName": "Bestandsnaam",
+      "publicPath": "Publiek pad",
+      "providerPath": "{providerName}-pad",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Acties openen",
+      "cancel": "Annuleren",
+      "submit": "Verzenden"
+    },
+    "actions": {
+      "confirmAction": "Klik nogmaals om te {action}",
+      "verbs": {
+        "create": "maken",
+        "delete": "verwijderen",
+        "rename": "hernoemen",
+        "upload": "uploaden",
+        "duplicate": "dupliceren"
+      },
+      "labels": {
+        "createDocument": "Nieuw bestand",
+        "createDocumentFolder": "Nieuwe map",
+        "createMediaFolder": "Nieuwe mediamap",
+        "renameItem": "Hernoemen",
+        "deleteItem": "Verwijderen",
+        "uploadMedia": "Media uploaden",
+        "duplicateItem": "Dupliceren",
+        "revertItem": "Wijzigingen terugdraaien",
+        "publishBranch": "Branch publiceren",
+        "openGitProvider": "Openen op {providerName}",
+        "switchToTipTap": "Visuele editor gebruiken",
+        "switchToCode": "Code-editor gebruiken"
+      },
+      "tooltips": {
+        "createDocument": "Nieuw bestand maken",
+        "createDocumentFolder": "Nieuwe map maken",
+        "createMediaFolder": "Nieuwe map maken",
+        "renameItem": "Bestand hernoemen",
+        "deleteItem": "Bestand verwijderen",
+        "uploadMedia": "Media uploaden",
+        "duplicateItem": "Bestand dupliceren",
+        "revertItem": "Wijzigingen terugdraaien",
+        "publishBranch": "Branch publiceren"
+      }
+    },
+    "items": {
+      "itemCount": "1 item | {count} items"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Kop 1",
+        "h2": "Kop 2",
+        "h3": "Kop 3"
+      },
+      "styles": {
+        "bold": "Dikgedrukt",
+        "italic": "Cursief"
+      },
+      "lists": {
+        "bulleted": "Opsomming",
+        "numbered": "Genummerde lijst"
+      },
+      "other": {
+        "emojis": "Emoji's",
+        "blockquote": "Citaat",
+        "code": "Code",
+        "inlineCode": "Inline code",
+        "link": "Link",
+        "image": "Afbeelding"
+      },
+      "writeSomething": "Schrijf iets",
+      "snippets": {
+        "title": "titel",
+        "item1": "Item 1",
+        "item2": "Item 2",
+        "language": "taal",
+        "code": "code",
+        "link": "link",
+        "alt": "alt",
+        "src": "src",
+        "value": "waarde"
+      },
+      "docs": {
+        "path": "Pad in project:",
+        "props": "Props",
+        "slots": "Slots",
+        "type": "type",
+        "required": "verplicht",
+        "default": "standaard"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Schrijf, typ '/' voor commando's...",
+        "components": "Componenten"
+      },
+      "toolbar": {
+        "h1": "Kop 1",
+        "h2": "Kop 2",
+        "h3": "Kop 3",
+        "h4": "Kop 4",
+        "bulletList": "Opsomming",
+        "orderedList": "Genummerde lijst",
+        "blockquote": "Citaat",
+        "codeBlock": "Codeblok",
+        "bold": "Vet",
+        "italic": "Cursief",
+        "strike": "Doorhalen",
+        "code": "Code",
+        "headings": "Koppen"
+      },
+      "suggestion": {
+        "style": "Stijl",
+        "paragraph": "Paragraaf",
+        "insert": "Invoegen",
+        "image": "Afbeelding",
+        "horizontalRule": "Horizontale lijn"
+      },
+      "drag": {
+        "turnInto": "Omzetten naar",
+        "resetFormatting": "Opmaak resetten",
+        "duplicate": "Dupliceren",
+        "copyToClipboard": "Kopiëren naar klembord",
+        "moveUp": "Omhoog",
+        "moveDown": "Omlaag",
+        "delete": "Verwijderen"
+      },
+      "element": {
+        "addSlot": "Slot toevoegen",
+        "editProps": "Props bewerken",
+        "delete": "Verwijderen",
+        "prop": "prop",
+        "props": "props",
+        "propsEditorComingSoon": "Props-editor wordt binnenkort geïmplementeerd..."
+      },
+      "slot": {
+        "searchPlaceholder": "Zoek of maak een slot...",
+        "deleteSlot": "Slot verwijderen",
+        "noSlotsAvailable": "Geen vooraf gedefinieerde slots beschikbaar"
+      },
+      "inlineElement": {
+        "editContent": "Inhoud bewerken",
+        "editProps": "Props bewerken",
+        "delete": "Verwijderen",
+        "editContentLabel": "Bewerk {name}-inhoud",
+        "enterContentPlaceholder": "Voer inhoud in...",
+        "propsEditorComingSoon": "Eigenschappen-editor komt binnenkort"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "bestandsnaam.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Plak een link...",
+        "applyLink": "Link toepassen",
+        "openInNewWindow": "Openen in nieuw venster",
+        "removeLink": "Link verwijderen"
+      }
+    },
+    "mediaPicker": {
+      "title": "Afbeelding selecteren",
+      "description": "Kies een afbeelding uit je mediabibliotheek",
+      "noImagesAvailable": "Geen afbeeldingen beschikbaar in je mediabibliotheek",
+      "upload": "Uploaden"
+    }
+  }
+}

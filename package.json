@@ -1,6 +1,6 @@
 {
   "name": "nuxt-studio",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Nuxt Studio for Nuxt Content",
   "private": false,
   "repository": {
@@ -87,7 +87,7 @@
   },
   "resolutions": {
     "nuxt-component-meta": "^0.15.0",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@0a59a15"
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@049b182"
   },
   "packageManager": "pnpm@10.21.0",
   "keywords": [

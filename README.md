@@ -10,15 +10,16 @@
 
 > **Current Status: Alpha Testing**
 >
-> Nuxt Studio is currently in **alpha** and uses the Monaco code editor for content editing. This phase focuses on testing and stabilizing core functionality:
+> Nuxt Studio is currently in **alpha** and now includes both the Monaco code editor and the new **TipTap visual editor** for Markdown content. This phase focuses on testing and stabilizing core functionality:
 >
 > - ✅ File operations (create, edit, delete, rename)
-> - ✅ Content editing with Monaco editor
+> - ✅ Content editing with Monaco code editor
+> - ✅ **NEW:** Visual editing with TipTap editor for Markdown
 > - ✅ Media management and uploads
 > - ✅ GitHub authentication and publishing workflow
 >
 >
-> Once all file operations and GitHub publishing workflows are tested and stable, we'll release **Phase 2 (Beta)** with the full visual editor for Markdown, Vue components, and medias...
+> The TipTap visual editor provides a WYSIWYG editing experience for Markdown content, including support for MDC components, with seamless conversion between visual and code modes.
 >
 > Read the [announcement blog post](https://content.nuxt.com/blog/studio-module-alpha) for more details.
 
@@ -31,15 +32,17 @@ Originally offered as a standalone premium platform at https://nuxt.studio, Stud
 **Current Features (Alpha):**
 
 - 💻 **Monaco Code Editor** - Code editor for enhanced Markdown with MDC syntax, YAML, and JSON
+- ✨ **TipTap Visual Editor** - Markdown editor with MDC component support
 - 🔄 **Real-time Preview** - See your changes instantly on your production website
 - 🔐 **GitHub Authentication** - Secure OAuth-based login with GitHub
 - 📝 **File Management** - Create, edit, delete, and rename content files (`content/` directory)
-- 🖼️ **Media Management** - Centralized media library for all your assets (`public/` directory)
+- 🖼️ **Media Management** - Centralized media library for all your assets (`public/` directory) with visual media picker
 - 🌳 **Git Integration** - Commit changes directly from your production website and just wait your CI/CD pipeline to deploy your changes
 - 🚀 **Development Mode** - Directly edit your content files and media files in your local filesystem using the module interface
 
 **Coming in Beta:**
-- 🎨 **Visual Editor** - Visual editor for content management, from text edition to media management - all without touching code
+- 📝 **Frontmatter Form Editor** - Edit frontmatter metadata with auto-generated forms based on collection schemas
+- 🎨 **Vue Component Props Editor** - Visual interface for editing Vue component props and slots
 - 🔐 **Google OAuth Authentication** - Secure OAuth-based login with Google
 
 **Future Features:**
@@ -54,7 +57,7 @@ Originally offered as a standalone premium platform at https://nuxt.studio, Stud
 
 ## Quick Setup
 
-> **Note**: This alpha release provides a Monaco-based code editor. The visual WYSIWYG editor will be available in the beta release.
+> **Note**: This alpha release provides both a Monaco code editor and a TipTap visual WYSIWYG editor for Markdown content. You can switch between them at any time.
 
 ### 1. Module Installation
 
@@ -185,22 +188,24 @@ pnpm lint
 
 ### ✅ Phase 1 - Alpha (Current)
 - [x] Monaco code editor
+- [x] TipTap visual editor with MDC support
+- [x] Editor mode switching (code ↔ visual)
 - [x] File operations (create, edit, delete, rename)
-- [x] Media management
+- [x] Media management with visual picker
+- [x] Enhanced component slot editing
 - [x] GitHub authentication
+- [x] GitLab provider support
 - [x] Development mode (**experimental**)
 - [x] Git integration
 - [x] Real-time preview
 
 ### 🚧 Phase 2 - Beta (In Development)
 - [ ] Google OAuth authentication
-- [ ] Visual editor
-- [ ] Frontmatter edition as form
-- [ ] Vue Component edition (props, slots)
+- [ ] Frontmatter edition as form (schema-based)
+- [ ] Vue Component props editor (visual interface)
 
 ### 🔮 Future
 
-- [ ] GitLab provider support
 - [ ] Other provider support
 - [ ] Advanced conflict resolution
 - [ ] Pull request generation (from a branch to the main one)

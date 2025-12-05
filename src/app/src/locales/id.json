@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Direktori",
       "files": "Berkas",
-      "media": "Media"
+      "media": "Media",
+      "pageSettings": "Pengaturan Halaman"
     },
     "tooltips": {
       "toggleStudio": "Buka/Tutup Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Tulis, ketik '/' untuk perintah...",
         "components": "Komponen"
+      },
+      "toolbar": {
+        "h1": "Judul 1",
+        "h2": "Judul 2",
+        "h3": "Judul 3",
+        "h4": "Judul 4",
+        "bulletList": "Daftar Poin",
+        "orderedList": "Daftar Bernomor",
+        "blockquote": "Kutipan Blok",
+        "codeBlock": "Blok Kode",
+        "bold": "Tebal",
+        "italic": "Miring",
+        "strike": "Coret",
+        "code": "Kode",
+        "headings": "Judul"
+      },
+      "suggestion": {
+        "style": "Gaya",
+        "paragraph": "Paragraf",
+        "insert": "Sisipkan",
+        "image": "Gambar",
+        "horizontalRule": "Garis Horizontal"
+      },
+      "drag": {
+        "turnInto": "Ubah menjadi",
+        "resetFormatting": "Atur ulang format",
+        "duplicate": "Duplikasi",
+        "copyToClipboard": "Salin ke papan klip",
+        "moveUp": "Pindah ke atas",
+        "moveDown": "Pindah ke bawah",
+        "delete": "Hapus"
       },
       "element": {
         "addSlot": "Tambah slot",

@@ -15,7 +15,8 @@
     "headings": {
       "directories": "Ordner",
       "files": "Dateien",
-      "media": "Medien"
+      "media": "Medien",
+      "pageSettings": "Seiteneinstellungen"
     },
     "tooltips": {
       "toggleStudio": "Studio umschalten",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "Schreiben Sie, geben Sie '/' für Befehle ein...",
         "components": "Komponenten"
+      },
+      "toolbar": {
+        "h1": "Überschrift 1",
+        "h2": "Überschrift 2",
+        "h3": "Überschrift 3",
+        "h4": "Überschrift 4",
+        "bulletList": "Aufzählungsliste",
+        "orderedList": "Nummerierte Liste",
+        "blockquote": "Blockzitat",
+        "codeBlock": "Code-Block",
+        "bold": "Fett",
+        "italic": "Kursiv",
+        "strike": "Durchgestrichen",
+        "code": "Code",
+        "headings": "Überschriften"
+      },
+      "suggestion": {
+        "style": "Stil",
+        "paragraph": "Absatz",
+        "insert": "Einfügen",
+        "image": "Bild",
+        "horizontalRule": "Horizontale Linie"
+      },
+      "drag": {
+        "turnInto": "Umwandeln in",
+        "resetFormatting": "Formatierung zurücksetzen",
+        "duplicate": "Duplizieren",
+        "copyToClipboard": "In die Zwischenablage kopieren",
+        "moveUp": "Nach oben bewegen",
+        "moveDown": "Nach unten bewegen",
+        "delete": "Löschen"
       },
       "element": {
         "addSlot": "Slot hinzufügen",

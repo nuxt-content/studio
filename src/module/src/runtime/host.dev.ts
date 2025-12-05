@@ -39,11 +39,12 @@ export function useStudioHost(user: StudioUser, repository: Repository) {
 
     const content = await host.document.generate.contentFromDocument(document)
 
-    await devStorage.setItem(fsPath, content, {
-      headers: {
-        'content-type': 'text/plain',
-      },
-    })
+    await $fetch('/__nuxt_studio/dev/content/' + fsPath, {
+      method: 'PUT',
+      body: content,
+      headers: { 'content-type': 'text/plain' },
+      timeout: 100,
+    }).catch(() => { /* do nothing, expected error if request timeout, API errors can be detected in server logs */ })
   }, 100)
 
   // TODO @farnabaz to check

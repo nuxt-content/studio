@@ -16,7 +16,7 @@ import { useStudio } from '../../composables/useStudio'
 import { useStudioState } from '../../composables/useStudioState'
 import { mdcToTiptap } from '../../utils/tiptap/mdcToTiptap'
 import { tiptapToMDC } from '../../utils/tiptap/tiptapToMdc'
-import { standardToolbarItems, standardSuggestionItems, standardNuxtUIComponents, computeStandardDragActions, removeLastEmptyParagraph } from '../../utils/tiptap/editor'
+import { getStandardToolbarItems, getStandardSuggestionItems, standardNuxtUIComponents, computeStandardDragActions, removeLastEmptyParagraph } from '../../utils/tiptap/editor'
 import { Element } from '../../utils/tiptap/extensions/element'
 import { ImagePicker } from '../../utils/tiptap/extensions/image-picker'
 import { Slot } from '../../utils/tiptap/extensions/slot'
@@ -130,7 +130,7 @@ const customHandlers = computed(() => ({
 }) satisfies EditorCustomHandlers)
 
 const suggestionItems = computed(() => [
-  ...standardSuggestionItems,
+  ...getStandardSuggestionItems(t),
   [
     {
       type: 'label',
@@ -146,13 +146,14 @@ const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
     return []
   }
 
-  return computeStandardDragActions(editor, selectedNode.value)
+  return computeStandardDragActions(editor, selectedNode.value, t)
 }
+
+const toolbarItems = computed(() => getStandardToolbarItems(t))
 </script>
 
 <template>
   <div class="h-full flex flex-col">
-    <!-- Debug Panel -->
     <ContentEditorTipTapDebug
       v-if="preferences.debug"
       :current-tiptap="currentTiptap"
@@ -181,7 +182,7 @@ const dragHandleItems = (editor: Editor): DropdownMenuItem[][] => {
     >
       <UEditorToolbar
         :editor="editor"
-        :items="standardToolbarItems"
+        :items="toolbarItems"
         layout="bubble"
       >
         <template #link>

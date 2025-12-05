@@ -1,0 +1,270 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "このページを編集",
+      "retryPublish": "公開を再試行",
+      "reloadApp": "アプリをリロード",
+      "reload": "リロード",
+      "signOut": "サインアウト",
+      "review": "レビュー",
+      "publish": "公開",
+      "back": "戻る",
+      "backToEdition": "編集に戻る",
+      "seeChanges": "変更点を見る"
+    },
+    "headings": {
+      "directories": "ディレクトリ",
+      "files": "ファイル",
+      "media": "メディア"
+    },
+    "tooltips": {
+      "toggleStudio": "Studio の表示/非表示",
+      "unlinkEditor": "エディタとプレビューのリンクを解除",
+      "linkEditor": "エディタとプレビューをリンク",
+      "copiedToClipboard": "クリップボードにコピーしました",
+      "copyToClipboard": "クリップボードにコピー",
+      "publishChanges": "変更を公開",
+      "backToContent": "コンテンツに戻る"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "不明なエラーが発生しました"
+      }
+    },
+    "publish": {
+      "failedTitle": "公開に失敗しました",
+      "summary": "{repo} リポジトリの {branch} ブランチ",
+      "errorTitle": "{providerName} に公開中にエラーが発生しました",
+      "failedGeneric": "変更の公開に失敗しました"
+    },
+    "review": {
+      "title": "変更をレビュー",
+      "created": "作成",
+      "updated": "更新",
+      "renamed": "名前の変更",
+      "deleted": "削除"
+    },
+    "publishSuccess": {
+      "title": "変更が公開されました",
+      "summary": "{repo} リポジトリの {branch} にて {count} 件の変更が公開されました",
+      "alertTitleWaiting": "デプロイの待機中です...",
+      "alertTitleComplete": "デプロイが完了しました",
+      "alertDescWaiting": "変更を表示するには、ウェブサイトのデプロイが必要です。",
+      "alertDescComplete": "ウェブサイトの新しいバージョンがデプロイされました。Studioで変更を確認するには、アプリをリロードしてください。"
+    },
+    "newVersionBanner": {
+      "title": "新しいウェブサイトのバージョンが検出されました",
+      "description": "ウェブサイトの新しいバージョンがデプロイされました。最新の変更を確認するには、アプリをリロードしてください。",
+      "reloadButton": "リロード"
+    },
+    "footer": {
+      "developer_view": "開発者ビュー",
+      "localFilesystem": "ローカルファイルシステムを使用中",
+      "debugMode": "デバッグモード"
+    },
+    "alert": {
+      "mdcFormatting": "MDC 書式標準に合わせてフォーマットが適用されました。"
+    },
+    "conflict": {
+      "title": "コンテンツの競合が検出されました",
+      "repository": "リポジトリ",
+      "branch": "ブランチ",
+      "file": "ファイル",
+      "description": "{providerName} 上のコンテンツが現在のウェブサイト上のものと異なります。最新の変更がデプロイされていることを確認し、ページをリロードしてください。",
+      "websiteVersion": "ウェブサイト"
+    },
+    "nav": {
+      "content": "コンテンツ",
+      "media": "メディア"
+    },
+    "placeholders": {
+      "commitMessage": "コミットメッセージ",
+      "order": "順序",
+      "fileName": "ファイル名"
+    },
+    "validation": {
+      "commitRequired": "コミットメッセージは必須です",
+      "nameEmpty": "名前を入力してください",
+      "nameEndsWithDot": "名前を '.' で終えることはできません",
+      "nameStartsWithSlash": "名前を '/' で始めることはできません",
+      "nameExists": "名前は既に存在します",
+      "prefixDigitsOnly": "接頭辞は数字のみを含める必要があります",
+      "prefixNonNegativeInteger": "接頭辞は非負の整数である必要があります"
+    },
+    "media": {
+      "altFilePreview": "ファイルプレビュー",
+      "altImagePreview": "画像プレビュー",
+      "playAudio": "音声を再生",
+      "audioTagNotSupported": "お使いのブラウザは audio タグに対応していません。",
+      "playVideo": "映像を再生",
+      "videoTagNotSupported": "お使いのブラウザは video タグに対応していません。",
+      "metaWidth": "幅",
+      "metaHeight": "高さ",
+      "metaType": "タイプ",
+      "metaSize": "サイズ",
+      "fileName": "ファイル名",
+      "publicPath": "公開パス",
+      "providerPath": "{providerName} 上のパス",
+      "markdown": "マークダウン"
+    },
+    "aria": {
+      "openActions": "アクションを開く",
+      "cancel": "キャンセル",
+      "submit": "送信"
+    },
+    "actions": {
+      "confirmAction": "もう一度クリックして {action} を実行",
+      "verbs": {
+        "create": "作成",
+        "delete": "削除",
+        "rename": "名前の変更",
+        "upload": "アップロード",
+        "duplicate": "複製"
+      },
+      "labels": {
+        "createDocument": "新しいファイル",
+        "createDocumentFolder": "新しいフォルダ",
+        "createMediaFolder": "新しいメディアフォルダ",
+        "renameItem": "名前を変更",
+        "deleteItem": "削除",
+        "uploadMedia": "メディアをアップロード",
+        "duplicateItem": "複製",
+        "revertItem": "変更を元に戻す",
+        "publishBranch": "ブランチを公開",
+        "openGitProvider": "{providerName} で開く",
+        "switchToTipTap": "ビジュアルエディタを使用",
+        "switchToCode": "コードエディタを使用"
+      },
+      "tooltips": {
+        "createDocument": "新しいファイルを作成",
+        "createDocumentFolder": "新しいフォルダを作成",
+        "createMediaFolder": "新しいフォルダを作成",
+        "renameItem": "ファイルの名前を変更",
+        "deleteItem": "ファイルを削除",
+        "uploadMedia": "メディアをアップロード",
+        "duplicateItem": "複製",
+        "revertItem": "変更を元に戻す",
+        "publishBranch": "ブランチを公開"
+      }
+    },
+    "items": {
+      "itemCount": "{count} 件のアイテム"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "見出し 1",
+        "h2": "見出し 2",
+        "h3": "見出し 3"
+      },
+      "styles": {
+        "bold": "太字",
+        "italic": "斜体"
+      },
+      "lists": {
+        "bulleted": "箇条書き",
+        "numbered": "番号付きリスト"
+      },
+      "other": {
+        "emojis": "絵文字",
+        "blockquote": "引用ブロック",
+        "code": "コードブロック",
+        "inlineCode": "インラインコード",
+        "link": "リンク",
+        "image": "画像"
+      },
+      "writeSomething": "何か書いてください",
+      "snippets": {
+        "title": "タイトル",
+        "item1": "アイテム 1",
+        "item2": "アイテム 2",
+        "language": "言語",
+        "code": "コード",
+        "link": "リンク",
+        "alt": "代替テキスト",
+        "src": "ソース",
+        "value": "値"
+      },
+      "docs": {
+        "path": "プロジェクト上のパス:",
+        "props": "プロパティ",
+        "slots": "スロット",
+        "type": "タイプ",
+        "required": "必須",
+        "default": "デフォルト"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "何か書いてください。コマンドは '/' を入力...",
+        "components": "コンポーネント"
+      },
+      "toolbar": {
+        "h1": "見出し 1",
+        "h2": "見出し 2",
+        "h3": "見出し 3",
+        "h4": "見出し 4",
+        "bulletList": "箇条書き",
+        "orderedList": "番号付きリスト",
+        "blockquote": "引用ブロック",
+        "codeBlock": "コードブロック",
+        "bold": "太字",
+        "italic": "斜体",
+        "strike": "打ち消し線",
+        "code": "コード",
+        "headings": "見出し"
+      },
+      "suggestion": {
+        "style": "スタイル",
+        "paragraph": "段落",
+        "insert": "挿入",
+        "image": "画像",
+        "horizontalRule": "水平線"
+      },
+      "drag": {
+        "turnInto": "変換",
+        "resetFormatting": "書式をリセット",
+        "duplicate": "複製",
+        "copyToClipboard": "クリップボードにコピー",
+        "moveUp": "上に移動",
+        "moveDown": "下に移動",
+        "delete": "削除"
+      },
+      "element": {
+        "addSlot": "スロットを追加",
+        "editProps": "プロパティを編集",
+        "delete": "削除",
+        "prop": "プロパティ",
+        "props": "プロパティ",
+        "propsEditorComingSoon": "プロパティエディタはまもなく実装されます"
+      },
+      "slot": {
+        "searchPlaceholder": "スロットを検索または作成...",
+        "deleteSlot": "スロットを削除",
+        "noSlotsAvailable": "利用可能なスロットがありません"
+      },
+      "inlineElement": {
+        "editContent": "コンテンツを編集",
+        "editProps": "プロパティを編集",
+        "delete": "削除",
+        "editContentLabel": "{name} のコンテンツを編集",
+        "enterContentPlaceholder": "コンテンツを入力してください...",
+        "propsEditorComingSoon": "プロパティエディタはまもなく実装されます"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "リンクを貼り付けてください...",
+        "applyLink": "リンクを適用",
+        "openInNewWindow": "新しいウィンドウで開く",
+        "removeLink": "リンクを削除"
+      }
+    },
+    "mediaPicker": {
+      "title": "画像を選択",
+      "description": "メディアライブラリから画像を選択してください",
+      "noImagesAvailable": "メディアライブラリに利用可能な画像がありません",
+      "upload": "アップロード"
+    }
+  }
+}

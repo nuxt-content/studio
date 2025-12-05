@@ -15,7 +15,8 @@
     "headings": {
       "directories": "目录",
       "files": "文件",
-      "media": "媒体"
+      "media": "媒体",
+      "pageSettings": "页面设置"
     },
     "tooltips": {
       "toggleStudio": "切换Studio",
@@ -197,6 +198,37 @@
       "editor": {
         "placeholder": "开始写作，输入 '/' 使用命令...",
         "components": "组件"
+      },
+      "toolbar": {
+        "h1": "标题 1",
+        "h2": "标题 2",
+        "h3": "标题 3",
+        "h4": "标题 4",
+        "bulletList": "项目符号列表",
+        "orderedList": "编号列表",
+        "blockquote": "引用",
+        "codeBlock": "代码块",
+        "bold": "加粗",
+        "italic": "斜体",
+        "strike": "删除线",
+        "code": "代码",
+        "headings": "标题"
+      },
+      "suggestion": {
+        "style": "样式",
+        "paragraph": "段落",
+        "insert": "插入",
+        "image": "图片",
+        "horizontalRule": "水平线"
+      },
+      "drag": {
+        "turnInto": "转换为",
+        "resetFormatting": "重置格式",
+        "duplicate": "复制",
+        "copyToClipboard": "复制到剪贴板",
+        "moveUp": "上移",
+        "moveDown": "下移",
+        "delete": "删除"
       },
       "element": {
         "addSlot": "添加插槽",

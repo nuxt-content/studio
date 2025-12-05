@@ -72,7 +72,7 @@ watch(frontmatter, () => {
             class="text-xs font-medium transition-colors duration-150"
             :class="textColor"
           >
-            Page Settings
+            {{ $t('studio.headings.pageSettings') }}
           </span>
         </div>
 

@@ -702,9 +702,11 @@ Hello
     expect(outputContent).toBe(`${inputContent}\n`)
   })
 
-  test('block element with props', async () => {
-    const inputContent = `::block-element{color="neutral"}
-Hello
+  test('block element nested in other block element', async () => {
+    const inputContent = `::first-level-element
+  :::second-level-element
+  Hello
+  :::
 ::`
 
     const expectedMDCJSON: MDCRoot = {
@@ -712,14 +714,19 @@ Hello
       children: [
         {
           type: 'element',
-          tag: 'block-element',
-          props: {
-            color: 'neutral',
-          },
+          tag: 'first-level-element',
+          props: {},
           children: [
             {
-              type: 'text',
-              value: 'Hello',
+              type: 'element',
+              tag: 'second-level-element',
+              props: {},
+              children: [
+                {
+                  type: 'text',
+                  value: 'Hello',
+                },
+              ],
             },
           ],
         },
@@ -738,11 +745,7 @@ Hello
         {
           type: 'element',
           attrs: {
-            tag: 'block-element',
-            props: {
-              __tiptapWrap: true,
-              color: 'neutral',
-            },
+            tag: 'first-level-element',
           },
           content: [
             {
@@ -755,11 +758,27 @@ Hello
               },
               content: [
                 {
-                  type: 'paragraph',
+                  type: 'element',
+                  attrs: {
+                    tag: 'second-level-element',
+                  },
                   content: [
                     {
-                      type: 'text',
-                      text: 'Hello',
+                      type: 'slot',
+                      attrs: {
+                        name: 'default',
+                        props: {
+                          'v-slot:default': '',
+                        },
+                      },
+                      content: [
+                        {
+                          type: 'paragraph',
+                          content: [
+                            { type: 'text', text: 'Hello' },
+                          ],
+                        },
+                      ],
                     },
                   ],
                 },
