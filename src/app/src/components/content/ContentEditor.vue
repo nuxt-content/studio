@@ -2,12 +2,12 @@
 import { computed, ref, watch, type PropType } from 'vue'
 import { decompressTree } from '@nuxt/content/runtime'
 import type { MarkdownRoot } from '@nuxt/content'
-import type { DatabaseDataItem, DatabasePageItem, DraftItem, DatabaseItem } from '../../types'
-import { DraftStatus, ContentFileExtension } from '../../types'
+import { DraftStatus, type DatabasePageItem, type DraftItem, type DatabaseItem } from '../../types'
 import { useStudio } from '../../composables/useStudio'
 import { useStudioState } from '../../composables/useStudioState'
 import { fromBase64ToUTF8 } from '../../utils/string'
 import { areContentEqual } from '../../utils/content'
+import { ContentFileExtension } from '../../types'
 
 const props = defineProps({
   draftItem: {
@@ -33,7 +33,7 @@ function toggleDiffView(show: boolean) {
   showAutomaticFormattingDiff.value = show
 }
 
-const document = computed<DatabaseItem>({
+const document = computed<DatabasePageItem>({
   get() {
     if (!props.draftItem) {
       return {} as DatabasePageItem
@@ -43,28 +43,21 @@ const document = computed<DatabaseItem>({
       return props.draftItem.original as DatabasePageItem
     }
 
-    let doc: DatabaseItem = props.draftItem.modified as DatabaseItem
+    const dbItem = props.draftItem.modified as DatabasePageItem
 
-    // Page type
-    if ((doc as DatabasePageItem).body?.type === 'minimark') {
-      doc = {
-        ...doc,
-        body: decompressTree((doc as DatabasePageItem).body),
+    let result: DatabasePageItem
+    if (dbItem.body?.type === 'minimark') {
+      result = {
+        ...props.draftItem.modified as DatabasePageItem,
+        // @ts-expect-error todo fix MarkdownRoot/MDCRoot conversion in MDC module
+        body: decompressTree(dbItem.body) as MarkdownRoot,
       }
     }
-
-    // Data type
-    if (((doc as DatabaseDataItem).meta?.body as MarkdownRoot)?.type === 'minimark') {
-      doc = {
-        ...doc,
-        meta: {
-          ...doc.meta,
-          body: decompressTree((doc as DatabaseDataItem).meta?.body as MarkdownRoot),
-        },
-      }
+    else {
+      result = dbItem
     }
 
-    return doc
+    return result
   },
   set(value) {
     if (props.readOnly) {

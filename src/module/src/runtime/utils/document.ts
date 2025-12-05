@@ -1,7 +1,7 @@
 import type { CollectionInfo, CollectionItemBase, MarkdownRoot, PageCollectionItemBase } from '@nuxt/content'
 import { getOrderedSchemaKeys } from './collection'
 import { pathMetaTransform } from './path-meta'
-import type { DatabaseItem, DatabasePageItem, DatabaseDataItem, MarkdownParsingOptions } from 'nuxt-studio/app'
+import type { DatabaseItem, DatabasePageItem, MarkdownParsingOptions } from 'nuxt-studio/app'
 import { doObjectsMatch, omit, pick } from './object'
 import { ContentFileExtension } from '../types/content'
 import { parseMarkdown } from '@nuxtjs/mdc/runtime/parser/index'
@@ -62,6 +62,11 @@ export function applyCollectionSchema(id: string, collectionInfo: CollectionInfo
 }
 
 export function sanitizeDocument(document: DatabaseItem) {
+  if (!document.body && (document.meta?.body as unknown as MinimarkTree)?.type === 'minimark') {
+    document.body = (document.meta?.body as unknown as MinimarkTree)
+    Reflect.deleteProperty(document.meta, 'body')
+  }
+
   if ((document.body as unknown as MinimarkTree)?.type === 'minimark') {
     document.body = withoutLastStyles(document.body as MarkdownRoot)
 
@@ -100,7 +105,6 @@ export function pickReservedKeysFromDocument(document: DatabaseItem): DatabaseIt
 
 export function removeReservedKeysFromDocument(document: DatabaseItem): DatabaseItem {
   const result = omit(document, reservedKeys)
-
   // Default value of navigation is true, so we can safely remove it
   if (result.navigation === true) {
     Reflect.deleteProperty(result, 'navigation')
@@ -165,13 +169,11 @@ export function areDocumentsEqual(document1: Record<string, unknown>, document2:
 
   // Compare body first
   if (document1.extension === ContentFileExtension.Markdown) {
-    const mdcBody1 = body1 as MDCRoot | MarkdownRoot || (meta1 as Record<string, unknown>).body as MDCRoot | MarkdownRoot
-    const mdcBody2 = body2 as MDCRoot | MarkdownRoot || (meta2 as Record<string, unknown>).body as MDCRoot | MarkdownRoot
     const minifiedBody1 = withoutLastStyles(
-      mdcBody1.type === 'minimark' ? mdcBody1 as unknown as MarkdownRoot : compressTree(mdcBody1 as unknown as MDCRoot),
+      (document1 as DatabasePageItem).body.type === 'minimark' ? document1.body as MarkdownRoot : compressTree(document1.body as unknown as MDCRoot),
     )
     const minifiedBody2 = withoutLastStyles(
-      mdcBody2.type === 'minimark' ? mdcBody2 as unknown as MarkdownRoot : compressTree(mdcBody2 as unknown as MDCRoot),
+      (document2 as DatabasePageItem).body.type === 'minimark' ? document2.body as MarkdownRoot : compressTree(document2.body as unknown as MDCRoot),
     )
 
     if (stringify(minifiedBody1) !== stringify(minifiedBody2)) {
@@ -394,20 +396,9 @@ export async function generateContentFromJSONDocument(document: DatabaseItem): P
   return JSON.stringify(removeReservedKeysFromDocument(document), null, 2)
 }
 
-export async function generateContentFromMarkdownDocument(document: DatabaseItem): Promise<string | null> {
-  let body: MDCRoot
-
-  // Page type
-  if (document.body) {
-    body = (document as DatabasePageItem).body.type === 'minimark' ? decompressTree((document as DatabasePageItem).body) : document.body as MDCRoot
-  }
-  // Data type
-  else if (document.meta?.body) {
-    body = ((document as DatabaseDataItem).meta?.body as MarkdownRoot)?.type === 'minimark' ? decompressTree(document.meta?.body as MarkdownRoot) : document.meta?.body as MDCRoot
-  }
-  else {
-    throw new Error('No body found in document')
-  }
+export async function generateContentFromMarkdownDocument(document: DatabasePageItem): Promise<string | null> {
+  // @ts-expect-error todo fix MarkdownRoot/MDCRoot conversion in MDC module
+  const body = document.body.type === 'minimark' ? decompressTree(document.body) : (document.body as MDCRoot)
 
   // Remove nofollow from links
   visit(body, (node: Node) => (node as MDCElement).type === 'element' && (node as MDCElement).tag === 'a', (node: Node) => {

@@ -197,6 +197,8 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           const id = generateIdFromFsPath(fsPath, collectionInfo)
           const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
 
+          // item.meta = {}
+
           if (!item) {
             return undefined
           }

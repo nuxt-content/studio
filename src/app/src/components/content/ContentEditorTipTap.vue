@@ -6,7 +6,7 @@ import type { PropType } from 'vue'
 import type { Editor, JSONContent } from '@tiptap/vue-3'
 import type { MDCRoot, Toc } from '@nuxtjs/mdc'
 import { generateToc } from '@nuxtjs/mdc/dist/runtime/parser/toc'
-import type { DraftItem, DatabaseItem, DatabasePageItem, DatabaseDataItem } from '../../types'
+import type { DraftItem, DatabasePageItem } from '../../types'
 import type { MarkdownRoot } from '@nuxt/content'
 import type { EditorCustomHandlers } from '@nuxt/ui'
 import { ref, watch, computed } from 'vue'
@@ -32,7 +32,7 @@ const props = defineProps({
   },
 })
 
-const document = defineModel<DatabaseItem>()
+const document = defineModel<DatabasePageItem>()
 
 const { host } = useStudio()
 const { preferences } = useStudioState()
@@ -47,12 +47,11 @@ const debug = computed(() => preferences.value.debug)
 const currentTiptap = ref<JSONContent>()
 const currentMDC = ref<{ body: MDCRoot, data: Record<string, unknown> }>()
 const currentContent = ref<string>()
-const documentBody = computed(() => document.value?.body as MDCRoot || document.value?.meta?.body as MDCRoot)
 
 // Trigger on document changes
 watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.status}`, async () => {
   const frontmatterJson = removeReservedKeys(document.value!)
-  const newTiptapJSON = mdcToTiptap(documentBody.value, frontmatterJson)
+  const newTiptapJSON = mdcToTiptap(document.value?.body as unknown as MDCRoot, frontmatterJson)
 
   if (!tiptapJSON.value || JSON.stringify(newTiptapJSON) !== JSON.stringify(removeLastEmptyParagraph(tiptapJSON.value))) {
     tiptapJSON.value = newTiptapJSON
@@ -79,25 +78,13 @@ watch(tiptapJSON, async (json) => {
   const compressedBody: MarkdownRoot = compressTree(body)
   const toc: Toc = generateToc(body, { searchDepth: 2, depth: 2 } as Toc)
 
-  const updatedDocument: DatabaseItem = {
+  const updatedDocument: DatabasePageItem = {
     ...document.value!,
     ...data,
-  }
-
-  // Page type
-  if ((updatedDocument as DatabasePageItem).body) {
-    updatedDocument.body = {
+    body: {
       ...compressedBody,
       toc,
-    }
-  }
-
-  // Data type
-  if ((updatedDocument as DatabaseDataItem).meta?.body) {
-    updatedDocument.meta.body = {
-      ...compressedBody,
-      toc,
-    } as MarkdownRoot
+    } as MarkdownRoot,
   }
 
   document.value = updatedDocument

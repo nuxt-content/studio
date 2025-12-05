@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { areDocumentsEqual, isDocumentMatchingContent } from '../../src/runtime/utils/document'
 import { ContentFileExtension } from '../../src/types/content'
-import type { DatabaseDataItem, DatabasePageItem } from 'nuxt-studio/app'
+import type { DatabasePageItem } from 'nuxt-studio/app'
 
 describe('areDocumentsEqual', () => {
   it('should return true for two identical markdown documents with diffrent hash', () => {
@@ -304,38 +304,6 @@ describe('areDocumentsEqual', () => {
       },
       meta: {
         title: 'Test Document',
-      },
-    }
-
-    expect(areDocumentsEqual(document1, document2)).toBe(true)
-  })
-
-  it('should return true for two identical markdown data documents (body in meta) ', () => {
-    const document1: DatabaseDataItem = {
-      id: 'content:index.md',
-      title: 'Test Document',
-      description: 'A test document',
-      stem: 'index.md',
-      extension: 'md',
-      meta: {
-        body: {
-          type: 'minimark',
-          value: ['Same content'],
-        },
-      },
-    }
-
-    const document2: DatabaseDataItem = {
-      id: 'content:index.md',
-      title: 'Test Document',
-      description: 'A test document',
-      stem: 'index.md',
-      extension: 'md',
-      meta: {
-        body: {
-          type: 'minimark',
-          value: ['Same content'],
-        },
       },
     }
 
