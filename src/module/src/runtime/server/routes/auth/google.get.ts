@@ -189,6 +189,22 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
+  const moderators = process.env.STUDIO_MODERATORS?.split(',') || []
+
+  if (!moderators.includes(user.email)) {
+    if (import.meta.dev && moderators.length === 0) {
+      console.warn([
+        '[Nuxt Studio] No moderators defined. Moderators are required for Google authentication.',
+        'Please set the `STUDIO_MODERATORS` environment variable to a comma-separated list of email addresses of the moderators.',
+      ].join('\n'))
+    }
+
+    throw createError({
+      statusCode: 403,
+      message: 'You are not authorized to access the studio',
+    })
+  }
+
   // Success
   const session = await useSession(event, {
     name: 'studio-session',

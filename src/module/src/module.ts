@@ -92,6 +92,9 @@ interface ModuleOptions {
     }
     /**
      * The Google OAuth credentials.
+     * Note: When using Google OAuth, you must set STUDIO_MODERATORS to a comma-separated
+     * list of authorized email addresses, and either STUDIO_GITHUB_TOKEN or STUDIO_GITLAB_TOKEN
+     * to push changes to your repository.
      */
     google?: {
       /**
