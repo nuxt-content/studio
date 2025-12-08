@@ -1,11 +1,10 @@
 import type { JSONContent } from '@tiptap/vue-3'
 import Slugger from 'github-slugger'
-import type { Highlighter } from '@nuxtjs/mdc';
+import type { Highlighter, Element, MDCElement, MDCNode, MDCRoot, MDCText } from '@nuxtjs/mdc'
 import rehypeShiki from '@nuxtjs/mdc/dist/runtime/highlighter/rehype'
 import { createShikiHighlighter } from '@nuxtjs/mdc/runtime/highlighter/shiki'
 import { bundledThemes, bundledLanguages as bundledLangs, createJavaScriptRegexEngine } from 'shiki'
 import { visit } from 'unist-util-visit'
-import type { Element, MDCElement, MDCNode, MDCRoot, MDCText } from '@nuxtjs/mdc'
 
 let slugs = new Slugger()
 let shikiHighlighter: Highlighter | undefined
@@ -121,7 +120,7 @@ async function applyShikiSyntaxHighlighting(mdc: MDCRoot, options: TiptapToMDCOp
   // convert tag to tagName and props to properties to be compatible with rehype
   // TODO: we may refactor tiptapToMDC to use tagName and properties instead of tag and props to avoid this step
   // @ts-expect-error MDCNode is not compatible with the type of the visitor
-  visit(mdc, (n: MDCNode) => n.tag !== undefined, (n: MDCNode) => { Object.assign(n, { tagName: n.tag, properties: n.props }) },)
+  visit(mdc, (n: MDCNode) => n.tag !== undefined, (n: MDCNode) => Object.assign(n, { tagName: n.tag, properties: n.props }))
 
   if (!shikiHighlighter) {
     shikiHighlighter = createShikiHighlighter({ bundledThemes, bundledLangs, engine: createJavaScriptRegexEngine({ forgiving: true }) })

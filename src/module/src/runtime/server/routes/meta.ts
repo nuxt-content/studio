@@ -4,7 +4,7 @@ import { useRuntimeConfig, createError } from '#imports'
 // @ts-expect-error import does exist
 import components from '#nuxt-component-meta/nitro'
 // @ts-expect-error import does exist
-import { highlight } from '@mdc-imports' 
+import { highlight } from '@mdc-imports'
 
 interface NuxtComponentMeta {
   pascalName: string
