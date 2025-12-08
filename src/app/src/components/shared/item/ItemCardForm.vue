@@ -159,22 +159,16 @@ const handleClickOutside = (event: MouseEvent) => {
     return
   }
 
-  const target = event.target as HTMLElement
-  const body = document.body
-  const bodyPointerEvents = window.getComputedStyle(body).pointerEvents
+  const path = event.composedPath() as HTMLElement[]
 
-  // Click on select extension dropdown
-  if (bodyPointerEvents === 'none' || target.tagName === 'HTML') {
-    const hasOpenDropdown = document.querySelector('[role="listbox"]')
-      || document.querySelector('[data-radix-popper-content-wrapper]')
-    if (hasOpenDropdown) {
-      return
-    }
+  // Do not unset action when selecting extension
+  // Path is [HTML, document, Window] for floating element (because of portal false)
+  if (path.length <= 3) {
+    return
   }
 
-  const path = event.composedPath() as HTMLElement[]
-  const clickInsideCard = path.includes(formRef.value)
-  if (clickInsideCard) {
+  // Check if click is inside the card
+  if (path.includes(formRef.value)) {
     return
   }
 
