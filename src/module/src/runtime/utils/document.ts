@@ -16,6 +16,7 @@ import type { MinimarkNode, MinimarkTree } from 'minimark'
 // import type { ParsedContentFile } from '@nuxt/content'
 import { stringifyMarkdown } from '@nuxtjs/mdc/runtime'
 import type { Node } from 'unist'
+import { useHostMeta } from '../composables/useMeta'
 
 const reservedKeys = ['id', 'fsPath', 'stem', 'extension', '__hash__', 'path', 'body', 'meta', 'rawbody']
 
@@ -323,6 +324,9 @@ export async function generateDocumentFromJSONContent(id: string, content: strin
 
 export async function generateDocumentFromMarkdownContent(id: string, content: string, options: MarkdownParsingOptions = { compress: true }): Promise<DatabaseItem> {
   const document = await parseMarkdown(content, {
+    highlight: {
+      theme: useHostMeta().syntaxHighlightTheme.value,
+    },
     remark: {
       plugins: {
         'remark-mdc': {

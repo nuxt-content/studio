@@ -73,7 +73,9 @@ watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.
 watch(tiptapJSON, async (json) => {
   const cleanedTiptap = removeLastEmptyParagraph(json!)
 
-  const { body, data } = await tiptapToMDC(cleanedTiptap)
+  const { body, data } = await tiptapToMDC(cleanedTiptap, {
+    syntaxHighlightTheme: host.meta.getSyntaxHighlightTheme(),
+  })
 
   const compressedBody: MarkdownRoot = compressTree(body)
   const toc: Toc = generateToc(body, { searchDepth: 2, depth: 2 } as Toc)

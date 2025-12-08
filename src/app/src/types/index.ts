@@ -23,7 +23,8 @@ export interface StudioHost {
   meta: {
     dev: boolean
     getComponents: () => ComponentMeta[]
-    defaultLocale: string
+    defaultLocale: string,
+    getSyntaxHighlightTheme: () => { default: string, dark?: string, light?: string }
   }
   on: {
     routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => void

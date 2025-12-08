@@ -108,6 +108,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       dev: false,
       getComponents: () => meta.components.value,
       defaultLocale: useRuntimeConfig().public.studio.i18n?.defaultLocale || 'en',
+      getSyntaxHighlightTheme: () => meta.syntaxHighlightTheme.value || { default: 'github-light', dark: 'github-dark' },
     },
     on: {
       routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => {
