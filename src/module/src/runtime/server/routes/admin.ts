@@ -20,7 +20,7 @@ export default eventHandler((event) => {
   }
 
   // Directly redirect to the Google auth endpoint if no other authentication provider is configured
-  if (!process.env.STUDIO_GITHUB_CLIENT_ID && !process.env.STUDIO_GITLAB_CLIENT_ID) {
+  if (!process.env.STUDIO_GITHUB_CLIENT_ID && !process.env.STUDIO_GITLAB_APPLICATION_ID) {
     return sendRedirect(event, '/__nuxt_studio/auth/google')
   }
 
