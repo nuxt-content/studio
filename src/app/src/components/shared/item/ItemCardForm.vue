@@ -167,6 +167,12 @@ const handleClickOutside = (event: MouseEvent) => {
     return
   }
 
+  // Do not unset action when selecting extension from select
+  const firstElementId = path[0].getAttribute('id')
+  if (firstElementId?.includes('reka-select-item')) {
+    return
+  }
+
   // Check if click is inside the card
   if (path.includes(formRef.value)) {
     return

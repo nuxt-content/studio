@@ -1,11 +1,10 @@
-import { FetchError } from 'ofetch'
-import { getRandomValues } from 'uncrypto'
 import type { H3Event } from 'h3'
 import { eventHandler, getQuery, sendRedirect, createError, getRequestURL, setCookie, deleteCookie, getCookie, useSession } from 'h3'
 import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import type { Endpoints } from '@octokit/types'
 import { useRuntimeConfig } from '#imports'
+import { handleState, requestAccessToken } from '../../../utils/auth'
 
 export interface OAuthGitHubConfig {
   /**
@@ -62,21 +61,6 @@ export interface OAuthGitHubConfig {
    * @default is ${hostname}/__nuxt_studio/auth/github
    */
   redirectURL?: string
-}
-
-interface RequestAccessTokenResponse {
-  access_token?: string
-  scope?: string
-  token_type?: string
-  error?: string
-  error_description?: string
-  error_uri?: string
-}
-
-interface RequestAccessTokenOptions {
-  headers?: Record<string, string>
-  body?: Record<string, string>
-  params?: Record<string, string>
 }
 
 export default eventHandler(async (event: H3Event) => {
@@ -195,6 +179,14 @@ export default eventHandler(async (event: H3Event) => {
     user.email = primaryEmail.email
   }
 
+  const moderators = process.env.STUDIO_GITHUB_MODERATORS?.split(',') || []
+  if (moderators.length > 0 && !moderators.includes(String(user.email))) {
+    throw createError({
+      statusCode: 403,
+      message: 'You are not authorized to access the studio',
+    })
+  }
+
   // Success
   const session = await useSession(event, {
     name: 'studio-session',
@@ -226,53 +218,3 @@ export default eventHandler(async (event: H3Event) => {
 
   return sendRedirect(event, '/')
 })
-
-async function requestAccessToken(url: string, options: RequestAccessTokenOptions): Promise<RequestAccessTokenResponse> {
-  const headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    ...options.headers,
-  }
-
-  // Encode the body as a URLSearchParams if the content type is 'application/x-www-form-urlencoded'.
-  const body = headers['Content-Type'] === 'application/x-www-form-urlencoded'
-    ? new URLSearchParams(options.body || options.params || {},
-      ).toString()
-    : options.body
-
-  return $fetch<RequestAccessTokenResponse>(url, {
-    method: 'POST',
-    headers,
-    body,
-  }).catch((error) => {
-    /**
-     * For a better error handling, only unauthorized errors are intercepted, and other errors are re-thrown.
-     */
-    if (error instanceof FetchError && error.status === 401) {
-      return error.data
-    }
-    throw error
-  })
-}
-
-async function handleState(event: H3Event) {
-  let state = getCookie(event, 'nuxt-auth-state')
-  if (state) {
-    deleteCookie(event, 'nuxt-auth-state')
-    return state
-  }
-
-  state = encodeBase64Url(getRandomBytes(8))
-  setCookie(event, 'nuxt-auth-state', state)
-  return state
-}
-
-function encodeBase64Url(input: Uint8Array): string {
-  return btoa(String.fromCharCode.apply(null, Array.from(input)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/g, '')
-}
-
-function getRandomBytes(size: number = 32) {
-  return getRandomValues(new Uint8Array(size))
-}

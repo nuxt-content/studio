@@ -1,0 +1,271 @@
+{
+    "studio": {
+      "buttons": {
+        "edit": "Muokkaa sivua",
+        "retryPublish": "Julkaise uudelleen",
+        "reloadApp": "Lataa uudelleen",
+        "reload": "Uudelleenlataus",
+        "signOut": "Kirjaudu ulos",
+        "review": "Tarkasta",
+        "publish": "Julkaise",
+        "back": "Takaisin",
+        "backToEdition": "Takaisin muokkaukseen",
+        "seeChanges": "Katso muutokset"
+      },
+      "headings": {
+        "directories": "Hakemistot",
+        "files": "Tiedostot",
+        "media": "Media",
+        "pageSettings": "Sivuasetukset"
+      },
+      "tooltips": {
+        "toggleStudio": "Vaihda Studioon",
+        "unlinkEditor": "Poista muokkaimen ja esiketselun linkitys",
+        "linkEditor": "Linkitä muokkain ja esiketselu",
+        "copiedToClipboard": "Kopioitu leikepöydälle",
+        "copyToClipboard": "Kopioi leikepöydälle",
+        "publishChanges": "Julkaise muutokset",
+        "backToContent": "Takaisin sisältöön"
+      },
+      "notifications": {
+        "error": {
+          "unknown": "Tuntematon virhe"
+        }
+      },
+      "publish": {
+        "failedTitle": "Julkaiseminen epäonnistui",
+        "summary": "haarassa {branch}, arkistossa {repo}",
+        "errorTitle": "Virhe {providerName} julkaisemisessa",
+        "failedGeneric": "Muutosten julkaisu epäonnistui"
+      },
+      "review": {
+        "title": "Tarkasta muutokset",
+        "created": "Luotu",
+        "updated": "Päivitetty",
+        "renamed": "Nimetty uudelleen",
+        "deleted": "Poistettu"
+      },
+      "publishSuccess": {
+        "title": "Julkaistut muutokset",
+        "summary": "{count} muutosta julkaistu haaraan {branch} arkistoon {repo} | {count} muutosta julkaistu haaraan {branch} arkistoon {repo}",
+        "alertTitleWaiting": "Odotetaan käyttöönottoa...",
+        "alertTitleComplete": "Käyttöönotto onnistui",
+        "alertDescWaiting": "Sivusto pitää ottaa käyttöön, jotta muutokset näkyisivät Muokkaimessa.",
+        "alertDescComplete": "Sivuston uusi versio on otettu käyttöön. Päivitä nähdäksesi muutokset Muokkaimessa."
+      },
+      "newVersionBanner": {
+        "title": "Uusi nettisivuversio havaittu",
+        "description": "Sivuston uusi versio on otettu käyttöön. Päivitä nähdäksesi muutokset.",
+        "reloadButton": "Lataa uudelleen"
+      },
+      "footer": {
+        "developer_view": "Kehittäjänäkymä",
+        "localFilesystem": "Käytetään paikallista tiedostojärjestelmää",
+        "debugMode": "Virheenjäljitystila"
+      },
+      "alert": {
+        "mdcFormatting": "Muotoilu on tehty MDC-syntaksin standardin mukaiseksi."
+      },
+      "conflict": {
+        "title": "Ristiriitoja havaittu",
+        "repository": "Arkisto",
+        "branch": "Haara",
+        "file": "Tiedosto",
+        "description": "{providerName} sisältö poikkeaa nettisivun versiosta. Varmista että uusimmat muutokset on otettu käyttöön ja sivu ladattuna uudelleen.",
+        "websiteVersion": "Sivusto"
+      },
+      "nav": {
+        "content": "Sisältö",
+        "media": "Media"
+      },
+      "placeholders": {
+        "commitMessage": "Vahvistusviesti",
+        "order": "N°",
+        "fileName": "Tiedostonimi"
+      },
+      "validation": {
+        "commitRequired": "Vahvistusviesti vaaditaan",
+        "nameEmpty": "Nimi ei voi olla tyhjä",
+        "nameEndsWithDot": "Nimi ei voi loppua '.'-merkkiin",
+        "nameStartsWithSlash": "Nimi ei voi alkaa '/'-merkillä",
+        "nameExists": "Nimi on jo olemassa",
+        "prefixDigitsOnly": "Etuliitteen pitää olla merkkijono, joka sisältää vain numeroita",
+        "prefixNonNegativeInteger": "Etuliitteen pitää olla positiivinen kokonaisluku"
+      },
+      "media": {
+        "altFilePreview": "Tiedoston esikatselu",
+        "altImagePreview": "Kuvan esikatselu",
+        "playAudio": "Soita äänet",
+        "audioTagNotSupported": "Selaimesi ei tue äänitunnistetta.",
+        "playVideo": "Näytä video",
+        "videoTagNotSupported": "Selaimesi ei tue videotunnistetta.",
+        "metaWidth": "Leveys",
+        "metaHeight": "Korkeus",
+        "metaType": "Tyyppi",
+        "metaSize": "Koko",
+        "fileName": "Tiedostonimi",
+        "publicPath": "Julkinen polky",
+        "providerPath": "{providerName} polku",
+        "markdown": "Markdown"
+      },
+      "aria": {
+        "openActions": "Avaa toiminnot",
+        "cancel": "Peru",
+        "submit": "Lähetä"
+      },
+      "actions": {
+        "confirmAction": "Klikkaa uudelleen toimintoa {action}",
+        "verbs": {
+          "create": "luo",
+          "delete": "poista",
+          "rename": "nimeä uudelleen",
+          "upload": "lataa",
+          "duplicate": "monista"
+        },
+        "labels": {
+          "createDocument": "Uusi tiedosto",
+          "createDocumentFolder": "Uusi kansio",
+          "createMediaFolder": "Uusi mediakansio",
+          "renameItem": "Nimeä uudelleen",
+          "deleteItem": "Poista",
+          "uploadMedia": "Lataa mediaa",
+          "duplicateItem": "Monista",
+          "revertItem": "Palauta muutokset",
+          "publishBranch": "Julkaise haara",
+          "openGitProvider": "Avaa käyttäen {providerName}",
+          "switchToTipTap": "Käytä visuaalista muokkainta",
+          "switchToCode": "Käytä koodimuokkainta"
+        },
+        "tooltips": {
+          "createDocument": "Luo uusi tiedosto",
+          "createDocumentFolder": "Luo uusi kansio",
+          "createMediaFolder": "Luo uusi mediakansio",
+          "renameItem": "Nimeä uudelleen",
+          "deleteItem": "Poista",
+          "uploadMedia": "Lataa mediaa",
+          "duplicateItem": "Monista",
+          "revertItem": "Palauta muutokset",
+          "publishBranch": "Julkaise haara"
+        }
+      },
+      "items": {
+        "itemCount": "1 tiedosto | {count} tiedostoa"
+      },
+      "monaco": {
+        "headings": {
+          "h1": "Otsikko 1",
+          "h2": "Otsikko 2",
+          "h3": "Otsikko 3"
+        },
+        "styles": {
+          "bold": "Lihavoitu",
+          "italic": "Kursivoitu"
+        },
+        "lists": {
+          "bulleted": "Numeroimaton lista",
+          "numbered": "Numeroitu lista"
+        },
+        "other": {
+          "emojis": "Emojit",
+          "blockquote": "Lainaus",
+          "code": "Koodi",
+          "inlineCode": "Sisennetty koodi",
+          "link": "Linkki",
+          "image": "Kuva"
+        },
+        "writeSomething": "Kirjoita jotain",
+        "snippets": {
+          "title": "otsikko",
+          "item1": "Kohde 1",
+          "item2": "Kohde 2",
+          "language": "kieli",
+          "code": "koodi",
+          "link": "linkki",
+          "alt": "varalla",
+          "src": "lähde",
+          "value": "arvo"
+        },
+        "docs": {
+          "path": "Polku projektissa:",
+          "props": "Rekvisiitat",
+          "slots": "Paikat",
+          "type": "tyyppi",
+          "required": "vaaditaan",
+          "default": "oletus"
+        }
+      },
+      "tiptap": {
+        "editor": {
+          "placeholder": "Kirjoita, käytä '/' komennoille...",
+          "components": "Komponentit"
+        },
+        "toolbar": {
+          "h1": "Otsikko 1",
+          "h2": "Otsikko 2",
+          "h3": "Otsikko 3",
+          "h4": "Otsikko 4",
+          "bulletList": "Numeroitu lista",
+          "orderedList": "Numeroimaton lista",
+          "blockquote": "Lainaus",
+          "codeBlock": "Koodilohkp",
+          "bold": "Lihavoitu",
+          "italic": "Kursivoitu",
+          "strike": "Yliviivaus",
+          "code": "Koodi",
+          "headings": "Otsikot"
+        },
+        "suggestion": {
+          "style": "Tyyli",
+          "paragraph": "Kappale",
+          "insert": "Lisää",
+          "image": "Kuva",
+          "horizontalRule": "Vaakasuora viiva"
+        },
+        "drag": {
+          "turnInto": "Muuta",
+          "resetFormatting": "Palauta muotoilu",
+          "duplicate": "Monista",
+          "copyToClipboard": "Kopioi leikepöydälle",
+          "moveUp": "Siirrä ylös",
+          "moveDown": "Siirrä alas",
+          "delete": "Poista"
+        },
+        "element": {
+          "addSlot": "Lisää paikka",
+          "editProps": "Muokkaa rekvisiittaa",
+          "delete": "Poista",
+          "prop": "rekvisiitta",
+          "props": "rekvisiitat",
+          "propsEditorComingSoon": "Rekvissiittamuokkain lisätään tulevaisuudessa..."
+        },
+        "slot": {
+          "searchPlaceholder": "Etsi tai luo paikka...",
+          "deleteSlot": "Poista paikka",
+          "noSlotsAvailable": "Valmiiksi määritettyjä paikkoja ei saatavilla"
+        },
+        "inlineElement": {
+          "editContent": "Muokkaa sisältöä",
+          "editProps": "Muokkaa rekvisiittoja",
+          "delete": "Poista",
+          "editContentLabel": "Muokkaa {name} sisältöä",
+          "enterContentPlaceholder": "Lisää sisältöä...",
+          "propsEditorComingSoon": "Ominaisuusmuokkain tulossa tulevaisuudessa"
+        },
+        "codeBlock": {
+          "filenamePlaceholder": "tiedostonimi.ts"
+        },
+        "link": {
+          "pasteLinkPlaceholder": "Liitä linkki...",
+          "applyLink": "Käytä linkkiä",
+          "openInNewWindow": "Avaa uudessa ikkunassa",
+          "removeLink": "Poista linkki"
+        }
+      },
+      "mediaPicker": {
+        "title": "Valitse kuva",
+        "description": "Valitse kuva mediakirjastosta",
+        "noImagesAvailable": "Mediakirjastosta ei löydy kuvia",
+        "upload": "Lataa"
+      }
+    }
+  }

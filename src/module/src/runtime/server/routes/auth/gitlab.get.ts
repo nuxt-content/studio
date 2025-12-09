@@ -202,6 +202,14 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
+  const moderators = process.env.STUDIO_GITLAB_MODERATORS?.split(',') || []
+  if (moderators.length > 0 && !moderators.includes(String(user.email))) {
+    throw createError({
+      statusCode: 403,
+      message: 'You are not authorized to access the studio',
+    })
+  }
+
   // Success
   const session = await useSession(event, {
     name: 'studio-session',

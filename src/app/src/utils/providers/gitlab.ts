@@ -12,11 +12,18 @@ export function createGitLabProvider(options: GitOptions): GitProviderAPI {
   const projectPath = encodeURIComponent(`${owner}/${repo}`)
   const baseURL = `${instanceUrl}/api/v4`
 
+  // GitLab has prefixed tokens for PAT and OAuth tokens:
+  // - PRIVATE-TOKEN header is used for PAT
+  // - Authorization with Bearer token is used for OAuth tokens
+  // See: https://docs.gitlab.com/security/tokens/#token-prefixes
+  // See: https://docs.gitlab.com/api/rest/authentication/#personal-project-and-group-access-tokens
+  const headers: Record<string, string> = token?.startsWith('glpat-')
+    ? { 'PRIVATE-TOKEN': token }
+    : { Authorization: `Bearer ${token}` }
+
   const $api = ofetch.create({
     baseURL: `${baseURL}/projects/${projectPath}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
   })
 
   async function fetchFile(path: string, { cached = false }: { cached?: boolean } = {}): Promise<GitFile | null> {

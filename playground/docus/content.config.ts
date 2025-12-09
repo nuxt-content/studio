@@ -39,14 +39,14 @@ const collections: Record<string, DefinedCollection> = {
     type: 'page',
     source: {
       include: '**',
-      exclude: ['index.md', '3.pages/**/*.md', 'authors/**/*.yml'],
+      exclude: ['index.md', '3.pages/**/*.md', 'authors/**/*'],
     },
     schema: createDocsSchema(),
   }),
   authors: defineCollection({
     type: 'data',
     source: {
-      include: 'authors/**/*.yml',
+      include: 'authors/**/*',
     },
     schema: createAuthorsSchema(),
   }),
