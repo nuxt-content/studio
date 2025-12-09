@@ -102,14 +102,15 @@ export const useDraftMedias = createSharedComposable((host: StudioHost, gitProvi
       if (draftItem.status === DraftStatus.Pristine) {
         continue
       }
+      const filePath = draftItem.fsPath
 
       if (draftItem.status === DraftStatus.Deleted) {
-        files.push({ path: joinURL('public', draftItem.fsPath), content: null, status: draftItem.status, encoding: 'base64' })
+        files.push({ path: filePath, content: null, status: draftItem.status, encoding: 'base64' })
         continue
       }
 
       const content = (await draftItem.modified?.raw as string).replace(/^data:\w+\/\w+;base64,/, '')
-      files.push({ path: joinURL('public', draftItem.fsPath), content, status: draftItem.status, encoding: 'base64' })
+      files.push({ path: filePath, content, status: draftItem.status, encoding: 'base64' })
     }
 
     return files

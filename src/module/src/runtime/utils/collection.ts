@@ -15,25 +15,34 @@ export function generateStemFromFsPath(path: string) {
 export function generateIdFromFsPath(path: string, collectionInfo: CollectionInfo) {
   const { fixed } = parseSourceBase(collectionInfo.source[0]!)
 
-  const pathWithoutFixed = path.substring(fixed.length)
+  const pathWithoutFixed = (fixed && fixed !== '/') ? path.substring(fixed.length) : path
 
   return join(collectionInfo.name, collectionInfo.source[0]?.prefix || '', pathWithoutFixed)
 }
 
 export function generateFsPathFromId(id: string, source: ResolvedCollectionSource) {
   const [_, ...rest] = id.split(/[/:]/)
-  const path = rest.join('/')
+  const fullPathInId = rest.join('/')
 
   const { fixed } = parseSourceBase(source)
   const normalizedFixed = withoutTrailingSlash(fixed)
+  const prefix = source.prefix ? withoutTrailingSlash(source.prefix) : ''
 
-  // If path already starts with the fixed part, return as is
-  if (normalizedFixed && path.startsWith(normalizedFixed)) {
-    return path
+  // 1. Remove prefix from the path if it exists in the ID
+  let relativePath = fullPathInId
+  if (prefix && fullPathInId.startsWith(withoutLeadingSlash(prefix))) {
+    relativePath = fullPathInId.substring(withoutLeadingSlash(prefix).length)
   }
 
-  // Otherwise, join fixed part with path
-  return join(fixed, path)
+  relativePath = withoutLeadingSlash(relativePath)
+
+  // 2. If the fixed part (source folder) is already in the path, return it as is
+  if (normalizedFixed && relativePath.startsWith(withoutLeadingSlash(normalizedFixed))) {
+    return relativePath
+  }
+
+  // 3. Otherwise, reconstruct the full path by adding the fixed part
+  return join(fixed || '', relativePath)
 }
 
 /**

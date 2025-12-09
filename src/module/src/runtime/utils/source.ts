@@ -21,28 +21,30 @@ export function getCollectionSourceById(id: string, sources: ResolvedCollectionS
   const prefixAndPath = rest.join('/')
 
   const matchedSource = sources.find((source) => {
-    const prefix = source.prefix
-    if (!prefix) {
-      return false
-    }
+    const prefix = source.prefix || ''
 
-    if (!withLeadingSlash(prefixAndPath).startsWith(prefix)) {
+    if (prefix && !withLeadingSlash(prefixAndPath).startsWith(withLeadingSlash(prefix))) {
       return false
     }
 
     let fsPath
     const [fixPart] = source.include.includes('*') ? source.include.split('*') : ['', source.include]
     const fixed = withoutTrailingSlash(fixPart || '/')
-    if (withoutLeadingSlash(fixed) === withoutLeadingSlash(prefix)) {
-      fsPath = prefixAndPath
+
+    // 1. Remove prefix from path
+    let path = prefix ? prefixAndPath.replace(prefix, '') : prefixAndPath
+    path = withoutLeadingSlash(path)
+
+    if (fixed && path.startsWith(withoutLeadingSlash(fixed))) {
+      fsPath = path
     }
     else {
-      const path = prefixAndPath.replace(prefix, '')
       fsPath = join(fixed, path)
     }
 
-    const include = minimatch(fsPath, source.include, { dot: true })
-    const exclude = source.exclude?.some(exclude => minimatch(fsPath, exclude))
+    const relativeFsPath = withoutLeadingSlash(fsPath)
+    const include = minimatch(relativeFsPath, source.include, { dot: true })
+    const exclude = source.exclude?.some(exclude => minimatch(relativeFsPath, exclude))
 
     return include && !exclude
   })

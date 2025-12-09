@@ -20,7 +20,7 @@ export default defineNuxtConfig({
       owner: 'nuxt-content',
       repo: 'studio',
       branch: 'main',
-      rootDir: 'playground/docus',
+      rootDir: 'playground/docus/content',
       private: false,
     },
   },

@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { ensure } from './utils/ensure'
-import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
+import { joinURL, withoutTrailingSlash } from 'ufo'
+import type { CollectionInfo, CollectionItemBase, DatabaseAdapter, ResolvedCollectionSource } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
 import { applyCollectionSchema, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, sanitizeDocument } from './utils/document'
@@ -43,13 +44,6 @@ function getHostStyles(): Record<string, Record<string, string>> & { css?: strin
     'body[data-studio-active][data-expand-sidebar]': {
       marginLeft: `${currentWidth}px`,
     },
-    // 'body[data-studio-active][data-expand-toolbar]': {
-    //   marginTop: '60px',
-    // },
-    // 'body[data-studio-active][data-expand-sidebar][data-expand-toolbar]': {
-    //   marginLeft: `${currentWidth}px`,
-    //   marginTop: '60px',
-    // },
   }
 }
 
@@ -89,18 +83,39 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
   }
 
   function useContentCollections(): Record<string, CollectionInfo> {
-    return Object.fromEntries(
-      Object.entries(useContent().collections).filter(([, collection]) => {
-        if (!collection.source.length || collection.source.some((source: CollectionSource) => source.repository || (source as unknown as { _custom: boolean })._custom)) {
-          return false
-        }
-        return true
-      }),
-    )
+    const allCollections = useContent().collections || {}
+    return allCollections
   }
 
   function useContentCollectionQuery(collection: string) {
     return useContent().queryCollection(collection)
+  }
+
+  // Helper to deduce fsPath from ID when source config is missing
+  function getFsPathFromId(id: string, collectionName: string, source?: ResolvedCollectionSource): string {
+    if (source) {
+      return generateFsPathFromId(id, source)
+    }
+    // Fallback: remove collection name from ID
+    const regex = new RegExp(`^${collectionName}[/:]`)
+    return id.replace(regex, '')
+  }
+
+  function stripRootDir(path: string): string {
+    if (!repository.rootDir) return path
+    const rootDir = withoutTrailingSlash(repository.rootDir)
+    if (path.startsWith(rootDir + '/')) {
+      return path.substring(rootDir.length + 1)
+    }
+    if (path === rootDir) {
+      return ''
+    }
+    return path
+  }
+
+  function prependRootDir(path: string): string {
+    if (!repository.rootDir) return path
+    return joinURL(repository.rootDir, path)
   }
 
   const host: StudioHost = {
@@ -189,13 +204,36 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
     document: {
       db: {
         get: async (fsPath: string): Promise<DatabaseItem | undefined> => {
-          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+          // Add rootDir to match collection pattern
+          const fullPath = prependRootDir(fsPath)
+          const collections = useContentCollections()
+          const collectionInfo = getCollectionByFilePath(fullPath, collections)
+
           if (!collectionInfo) {
+            // FALLBACK: Try to guess collection by ID
+            for (const [name, _] of Object.entries(collections)) {
+              // Try with fsPath first (relative) then fullPath
+              const ids = [`${name}/${fsPath}`, `${name}/${fullPath}`]
+              for (const id of ids) {
+                const item = await useContentCollectionQuery(name).where('id', '=', id).first()
+                if (item) {
+                  return { ...item, fsPath }
+                }
+              }
+            }
+
+            console.error(`[Nuxt Studio] Collection not found for fsPath: ${fsPath} (full: ${fullPath}).`)
             throw new Error(`Collection not found for fsPath: ${fsPath}`)
           }
 
-          const id = generateIdFromFsPath(fsPath, collectionInfo)
-          const item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
+          let id = generateIdFromFsPath(fullPath, collectionInfo)
+          let item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
+
+          // If not found with fullPath, try with fsPath (relative)
+          if (!item) {
+            id = generateIdFromFsPath(fsPath, collectionInfo)
+            item = await useContentCollectionQuery(collectionInfo.name).where('id', '=', id).first()
+          }
 
           // item.meta = {}
 
@@ -214,30 +252,34 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
             const documents = await useContentCollectionQuery(collection.name).all() as DatabaseItem[]
 
             return documents.map((document) => {
-              const source = getCollectionSourceById(document.id, collection.source)
-              const fsPath = generateFsPathFromId(document.id, source!)
+              const sources = (Array.isArray(collection.source) ? collection.source : [collection.source]) as ResolvedCollectionSource[]
+              const source = getCollectionSourceById(document.id, sources)
+
+              // Use fallback if source is missing (likely remote repo)
+              const fsPath = getFsPathFromId(document.id, collection.name, source)
 
               return sanitizeDocument({
                 ...document,
-                fsPath,
+                fsPath: stripRootDir(fsPath),
               })
-            })
+            }).filter(Boolean) as DatabaseItem[]
           }))
 
           return documentsByCollection.flat()
         },
         create: async (fsPath: string, content: string) => {
-          const existingDocument = await host.document.db.get(fsPath)
+          const fullPath = prependRootDir(fsPath)
+          const existingDocument = await host.document.db.get(fsPath).catch(() => null)
           if (existingDocument) {
             throw new Error(`Cannot create document with fsPath "${fsPath}": document already exists.`)
           }
 
-          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
+          const collectionInfo = getCollectionByFilePath(fullPath, useContentCollections())
           if (!collectionInfo) {
             throw new Error(`Collection not found for fsPath: ${fsPath}`)
           }
 
-          const id = generateIdFromFsPath(fsPath, collectionInfo!)
+          const id = generateIdFromFsPath(fullPath, collectionInfo!)
           const document = await generateDocumentFromContent(id, content)
           const normalizedDocument = applyCollectionSchema(id, collectionInfo, document!)
 
@@ -249,12 +291,26 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           })
         },
         upsert: async (fsPath: string, document: CollectionItemBase) => {
-          const collectionInfo = getCollectionByFilePath(fsPath, useContentCollections())
-          if (!collectionInfo) {
-            throw new Error(`Collection not found for fsPath: ${fsPath}`)
+          const fullPath = prependRootDir(fsPath)
+          const collections = useContentCollections()
+          let collectionInfo = getCollectionByFilePath(fullPath, collections)
+
+          // Fallback: try to get collection from document ID if path matching failed
+          if (!collectionInfo && document.id) {
+            try {
+              collectionInfo = getCollectionById(document.id, collections)
+            }
+            catch {
+              // ignore
+            }
           }
 
-          const id = generateIdFromFsPath(fsPath, collectionInfo)
+          if (!collectionInfo) {
+            throw new Error(`Collection not found for fsPath: ${fsPath} (full: ${fullPath})`)
+          }
+
+          // Prefer existing document ID, otherwise generate one
+          const id = document.id || generateIdFromFsPath(fullPath, collectionInfo)
 
           const normalizedDocument = applyCollectionSchema(id, collectionInfo, document)
 
@@ -262,14 +318,36 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordInsert(collectionInfo, normalizedDocument))
         },
         delete: async (fsPath: string) => {
-          const collection = getCollectionByFilePath(fsPath, useContentCollections())
-          if (!collection) {
+          const fullPath = prependRootDir(fsPath)
+          const collections = useContentCollections()
+          let collectionInfo = getCollectionByFilePath(fullPath, collections)
+
+          if (!collectionInfo) {
+            // Fallback: brute-force find collection by checking if guessed ID exists
+            for (const [name, _] of Object.entries(collections)) {
+              // Try with fsPath first then fullPath
+              const ids = [`${name}/${fsPath}`, `${name}/${fullPath}`]
+              for (const id of ids) {
+                const item = await useContentCollectionQuery(name).where('id', '=', id).first()
+                if (item) {
+                  collectionInfo = collections[name]
+                  break
+                }
+              }
+              if (collectionInfo) break
+            }
+          }
+
+          if (!collectionInfo) {
             throw new Error(`Collection not found for fsPath: ${fsPath}`)
           }
 
-          const id = generateIdFromFsPath(fsPath, collection)
+          // Try to delete using both IDs to be safe (relative fsPath is more likely to be correct in DB)
+          const ids = [generateIdFromFsPath(fsPath, collectionInfo), generateIdFromFsPath(fullPath, collectionInfo)]
 
-          await useContentDatabaseAdapter(collection.name).exec(generateRecordDeletion(collection, id))
+          for (const id of ids) {
+            await useContentDatabaseAdapter(collectionInfo.name).exec(generateRecordDeletion(collectionInfo, id))
+          }
         },
       },
       utils: {
@@ -278,23 +356,30 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         pickReservedKeys: (document: DatabaseItem) => pickReservedKeysFromDocument(document),
         removeReservedKeys: (document: DatabaseItem) => removeReservedKeysFromDocument(document),
         detectActives: () => {
-          // TODO: introduce a new convention to detect data contents [data-content-id!]
           const wrappers = document.querySelectorAll('[data-content-id]')
           return Array.from(wrappers).map((wrapper) => {
             const id = wrapper.getAttribute('data-content-id')!
             const title = id.split(/[/:]/).pop() || id
 
-            const collection = getCollectionById(id, useContentCollections())
+            let collection
+            try {
+              collection = getCollectionById(id, useContentCollections())
+            }
+            catch {
+              return null
+            }
 
-            const source = getCollectionSourceById(id, collection.source)
+            const sources = (Array.isArray(collection.source) ? collection.source : [collection.source]) as ResolvedCollectionSource[]
+            const source = getCollectionSourceById(id, sources)
 
-            const fsPath = generateFsPathFromId(id, source!)
+            // Use fallback logic
+            const fsPath = getFsPathFromId(id, collection.name, source)
 
             return {
-              fsPath,
+              fsPath: stripRootDir(fsPath),
               title,
             }
-          })
+          }).filter(Boolean) as Array<{ fsPath: string, title: string }>
         },
       },
       generate: {
@@ -363,12 +448,21 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       }
       if (element) {
         const id = element.getAttribute('data-content-id')!
-        const collection = getCollectionById(id, useContentCollections())
-        const source = getCollectionSourceById(id, collection.source)
-        const fsPath = generateFsPathFromId(id, source!)
 
-        // @ts-expect-error studio:document:edit is not defined in types
-        useNuxtApp().hooks.callHook('studio:document:edit', fsPath)
+        try {
+          const collection = getCollectionById(id, useContentCollections())
+          const sources = (Array.isArray(collection.source) ? collection.source : [collection.source]) as ResolvedCollectionSource[]
+          const source = getCollectionSourceById(id, sources)
+
+          // Use fallback logic
+          const fsPath = getFsPathFromId(id, collection.name, source)
+
+          // @ts-expect-error studio:document:edit is not defined in types
+          useNuxtApp().hooks.callHook('studio:document:edit', stripRootDir(fsPath))
+        }
+        catch (e) {
+          console.warn(`[Nuxt Studio] Cannot edit document ${id}: ${e}`)
+        }
       }
     })
     // Initialize styles
