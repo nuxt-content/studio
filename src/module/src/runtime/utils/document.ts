@@ -330,7 +330,7 @@ export async function generateDocumentFromJSONContent(id: string, content: strin
 export async function generateDocumentFromMarkdownContent(id: string, content: string, options: MarkdownParsingOptions = { compress: true }): Promise<DatabaseItem> {
   const document = await parseMarkdown(content, {
     highlight: {
-      theme: useHostMeta().syntaxHighlightTheme.value,
+      theme: useHostMeta().highlightTheme.value,
     },
     remark: {
       plugins: {

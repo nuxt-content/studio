@@ -5,17 +5,17 @@ import { kebabCase } from 'scule'
 
 interface Meta {
   components: ComponentMeta[]
-  syntaxHighlightTheme: { default: string, dark?: string, light?: string }
+  highlightTheme: { default: string, dark?: string, light?: string }
 }
 
 const defaultMeta: Meta = {
   components: [],
-  syntaxHighlightTheme: { default: 'github-light', dark: 'github-dark' },
+  highlightTheme: { default: 'github-light', dark: 'github-dark' },
 }
 
 export const useHostMeta = createSharedComposable(() => {
   const components = shallowRef<ComponentMeta[]>([])
-  const syntaxHighlightTheme = shallowRef<Meta['syntaxHighlightTheme']>()
+  const highlightTheme = shallowRef<Meta['highlightTheme']>()
 
   async function fetch() {
     // TODO: look into this approach and consider possible refactors
@@ -23,7 +23,7 @@ export const useHostMeta = createSharedComposable(() => {
       headers: { 'content-type': 'application/json' },
     }).catch(() => defaultMeta)
 
-    syntaxHighlightTheme.value = data.syntaxHighlightTheme
+    highlightTheme.value = data.highlightTheme
 
     // Markdown elements to exclude (in kebab-case)
     const markdownElements = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'p', 'li', 'ul', 'ol', 'blockquote', 'code', 'code-block', 'image', 'video', 'link', 'hr', 'img', 'pre', 'em', 'bold', 'italic', 'strike', 'strong', 'tr', 'thead', 'tbody', 'tfoot', 'th', 'td'])
@@ -91,6 +91,6 @@ export const useHostMeta = createSharedComposable(() => {
   return {
     fetch,
     components,
-    syntaxHighlightTheme,
+    highlightTheme,
   }
 })

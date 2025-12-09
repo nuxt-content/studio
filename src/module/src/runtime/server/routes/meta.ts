@@ -40,11 +40,9 @@ export default eventHandler(async (event) => {
         },
       }
     })
-  const runtimeConfig = useRuntimeConfig()
-  const { content } = runtimeConfig
+
   return {
-    content,
-    syntaxHighlightTheme: highlight?.theme || { default: 'github-light', dark: 'github-dark' },
+    highlightTheme: highlight?.theme || { default: 'github-light', dark: 'github-dark', light: 'github-light' },
     components: mappedComponents,
   }
 })

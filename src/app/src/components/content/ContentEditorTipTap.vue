@@ -74,7 +74,7 @@ watch(tiptapJSON, async (json) => {
   const cleanedTiptap = removeLastEmptyParagraph(json!)
 
   const { body, data } = await tiptapToMDC(cleanedTiptap, {
-    syntaxHighlightTheme: host.meta.getSyntaxHighlightTheme(),
+    highlightTheme: host.meta.getHighlightTheme(),
   })
 
   const compressedBody: MarkdownRoot = compressTree(body)

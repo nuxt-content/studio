@@ -4,7 +4,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { MediaItem } from './media'
 import type { Repository } from './git'
 import type { ComponentMeta } from './component'
-import type { MarkdownParsingOptions } from './content'
+import type { MarkdownParsingOptions, SyntaxHighlightTheme } from './content'
 
 export * from './file'
 export * from './item'
@@ -24,7 +24,7 @@ export interface StudioHost {
     dev: boolean
     getComponents: () => ComponentMeta[]
     defaultLocale: string
-    getSyntaxHighlightTheme: () => { default: string, dark?: string, light?: string }
+    getHighlightTheme: () => SyntaxHighlightTheme
   }
   on: {
     routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => void
