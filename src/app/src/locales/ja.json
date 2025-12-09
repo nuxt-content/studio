@@ -262,10 +262,18 @@
       }
     },
     "mediaPicker": {
-      "title": "画像を選択",
-      "description": "メディアライブラリから画像を選択してください",
-      "noImagesAvailable": "メディアライブラリに利用可能な画像がありません",
-      "upload": "アップロード"
+      "image": {
+        "title": "画像を選択",
+        "description": "メディアライブラリから画像を選択してください",
+        "notAvailable": "メディアライブラリに利用可能な画像がありません",
+        "upload": "アップロード"
+      },
+      "video": {
+        "title": "ビデオを選択",
+        "description": "メディアライブラリからビデオを選択してください",
+        "notAvailable": "メディアライブラリに利用可能なビデオがありません",
+        "upload": "アップロード"
+      }
     }
   }
 }

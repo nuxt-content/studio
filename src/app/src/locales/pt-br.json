@@ -263,10 +263,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Selecionar imagem",
-      "description": "Escolha uma imagem da sua biblioteca de mídia",
-      "noImagesAvailable": "Nenhuma imagem disponível na sua biblioteca de mídia",
-      "upload": "Enviar"
+      "image": {
+        "title": "Selecionar imagem",
+        "description": "Escolha uma imagem da sua biblioteca de mídia",
+        "notAvailable": "Nenhuma imagem disponível na sua biblioteca de mídia",
+        "upload": "Enviar"
+      },
+      "video": {
+        "title": "Selecionar vídeo",
+        "description": "Escolha um vídeo da sua biblioteca de mídia",
+        "notAvailable": "Nenhum vídeo disponível na sua biblioteca de mídia",
+        "upload": "Enviar"
+      }
     }
   }
 }

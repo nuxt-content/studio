@@ -263,10 +263,18 @@
         }
       },
       "mediaPicker": {
-        "title": "Valitse kuva",
-        "description": "Valitse kuva mediakirjastosta",
-        "noImagesAvailable": "Mediakirjastosta ei löydy kuvia",
-        "upload": "Lataa"
+        "image": {
+          "title": "Valitse kuva",
+          "description": "Valitse kuva mediakirjastosta",
+          "notAvailable": "Mediakirjastosta ei löydy kuvia",
+          "upload": "Lataa"
+        },
+        "video": {
+          "title": "Valitse video",
+          "description": "Valitse video mediakirjastosta",
+          "notAvailable": "Mediakirjastosta ei löydy videoita",
+          "upload": "Lataa"
+        }
       }
     }
   }

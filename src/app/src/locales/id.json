@@ -263,10 +263,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Pilih Gambar",
-      "description": "Pilih gambar dari pustaka media Anda",
-      "noImagesAvailable": "Tidak ada gambar yang tersedia di pustaka media Anda",
-      "upload": "Unggah"
+      "image": {
+        "title": "Pilih Gambar",
+        "description": "Pilih gambar dari pustaka media Anda",
+        "notAvailable": "Tidak ada gambar yang tersedia di pustaka media Anda",
+        "upload": "Unggah"
+      },
+      "video": {
+        "title": "Pilih Video",
+        "description": "Pilih video dari pustaka media Anda",
+        "notAvailable": "Tidak ada video yang tersedia di pustaka media Anda",
+        "upload": "Unggah"
+      }
     }
   }
 }

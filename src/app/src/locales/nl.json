@@ -263,10 +263,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Afbeelding selecteren",
-      "description": "Kies een afbeelding uit je mediabibliotheek",
-      "noImagesAvailable": "Geen afbeeldingen beschikbaar in je mediabibliotheek",
-      "upload": "Uploaden"
+      "image": {
+        "title": "Afbeelding selecteren",
+        "description": "Kies een afbeelding uit je mediabibliotheek",
+        "notAvailable": "Geen afbeeldingen beschikbaar in je mediabibliotheek",
+        "upload": "Uploaden"
+      },
+      "video": {
+        "title": "Video selecteren",
+        "description": "Kies een video uit je mediabibliotheek",
+        "notAvailable": "Geen video's beschikbaar in je mediabibliotheek",
+        "upload": "Uploaden"
+      }
     }
   }
 }

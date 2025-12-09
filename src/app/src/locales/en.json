@@ -263,10 +263,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Select Image",
-      "description": "Choose an image from your media library",
-      "noImagesAvailable": "No images available in your media library",
-      "upload": "Upload"
+      "image": {
+        "title": "Select Image",
+        "description": "Choose an image from your media library",
+        "notAvailable": "No images available in your media library",
+        "upload": "Upload"
+      },
+      "video": {
+        "title": "Select Video",
+        "description": "Choose a video from your media library",
+        "notAvailable": "No videos available in your media library",
+        "upload": "Upload"
+      }
     }
   }
 }
