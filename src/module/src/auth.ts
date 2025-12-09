@@ -10,11 +10,22 @@ export function validateAuthConfig(options: ModuleOptions): void {
   const hasGitHubAuth = options.auth?.github?.clientId && options.auth?.github?.clientSecret
   const hasGitLabAuth = options.auth?.gitlab?.applicationId && options.auth?.gitlab?.applicationSecret
   const hasGoogleAuth = options.auth?.google?.clientId && options.auth?.google?.clientSecret
+  const hasSupabaseAuth = options.auth?.supabase?.url && options.auth?.supabase?.key
   const hasGoogleModerators = (process.env.STUDIO_GOOGLE_MODERATORS?.split(',') || []).length > 0
   const hasGitToken = process.env.STUDIO_GITHUB_TOKEN || process.env.STUDIO_GITLAB_TOKEN
 
+  // Supabase Auth enabled
+  if (hasSupabaseAuth) {
+    if (!hasGitToken) {
+      logger.warn([
+        `The \`STUDIO_${providerUpperCase}_TOKEN\` environment variable is required when using Supabase provider.`,
+        `This token is used to push changes to the repository when using Supabase Auth.`,
+      ].join(' '))
+    }
+  }
+
   // Google OAuth enabled
-  if (hasGoogleAuth) {
+  else if (hasGoogleAuth) {
     // Google OAuth moderators required
     if (!hasGoogleModerators) {
       logger.error([
@@ -30,14 +41,14 @@ export function validateAuthConfig(options: ModuleOptions): void {
         `This token is used to push changes to the repository when using Google OAuth.`,
       ].join(' '))
     }
-  } // Google OAuth disabled
+  } // No custom auth, checking default providers
   else {
     const missingProviderEnv = provider === 'github' ? !hasGitHubAuth : !hasGitLabAuth
     if (missingProviderEnv) {
       logger.error([
         `In order to authenticate users, you need to set up a ${providerUpperCase} OAuth application.`,
         `Please set the \`STUDIO_${providerUpperCase}_CLIENT_ID\` and \`STUDIO_${providerUpperCase}_CLIENT_SECRET\` environment variables,`,
-        `Alternatively, you can set up a Google OAuth application and set the \`STUDIO_GOOGLE_CLIENT_ID\` and \`STUDIO_GOOGLE_CLIENT_SECRET\` environment variables alongside with \`STUDIO_${providerUpperCase}_TOKEN\` to push changes to the repository.`,
+        `Alternatively, you can set up a Google or Supabase authentication to push changes to the repository.`,
       ].join(' '))
     }
   }
