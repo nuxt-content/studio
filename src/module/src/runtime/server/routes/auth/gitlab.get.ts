@@ -1,11 +1,11 @@
 import { FetchError } from 'ofetch'
-import { getRandomValues } from 'uncrypto'
 import type { H3Event } from 'h3'
 import { eventHandler, getQuery, sendRedirect, createError, getRequestURL, setCookie, deleteCookie, getCookie, useSession } from 'h3'
 import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import type { UserSchema } from '@gitbeaker/core'
 import { useRuntimeConfig } from '#imports'
+import { generateOAuthState, validateOAuthState } from '../../../utils/auth'
 
 export interface OAuthGitLabConfig {
   /**
@@ -122,7 +122,7 @@ export default eventHandler(async (event: H3Event) => {
 
   if (!query.code) {
     // Initial authorization request (generate and store state)
-    const state = await generateState(event)
+    const state = await generateOAuthState(event)
 
     config.scope = config.scope || []
     if (!config.scope.includes('api')) {
@@ -142,31 +142,8 @@ export default eventHandler(async (event: H3Event) => {
     )
   }
 
-  // Callback with code (validate and consume state)
-  const storedState = getCookie(event, 'studio-oauth-state')
-
-  if (!storedState) {
-    throw createError({
-      statusCode: 400,
-      message: 'OAuth state cookie not found. Please try logging in again.',
-      data: {
-        hint: 'State cookie may have expired or been cleared',
-      },
-    })
-  }
-
-  if (query.state !== storedState) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid state - OAuth state mismatch',
-      data: {
-        hint: 'This may be caused by browser refresh, navigation, or expired session',
-      },
-    })
-  }
-
-  // State validated, delete the cookie
-  deleteCookie(event, 'studio-oauth-state')
+  // validate OAuth state and delete the cookie or throw an error
+  validateOAuthState(event, query.state as string)
 
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {
@@ -259,23 +236,4 @@ async function requestAccessToken(url: string, options: RequestAccessTokenOption
     }
     return { error: 'Unknown error' }
   }
-}
-
-async function generateState(event: H3Event) {
-  const newState = Array.from(getRandomValues(new Uint8Array(32)))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('')
-
-  const requestURL = getRequestURL(event)
-  // Use secure cookies over HTTPS, required for locally testing purposes
-  const isSecure = requestURL.protocol === 'https:'
-
-  setCookie(event, 'studio-oauth-state', newState, {
-    httpOnly: true,
-    secure: isSecure,
-    sameSite: 'lax',
-    maxAge: 60 * 15, // 15 minutes
-  })
-
-  return newState
 }

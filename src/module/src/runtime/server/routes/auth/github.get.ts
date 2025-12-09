@@ -4,7 +4,7 @@ import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import type { Endpoints } from '@octokit/types'
 import { useRuntimeConfig } from '#imports'
-import { handleState, requestAccessToken } from '../../../utils/auth'
+import { generateOAuthState, requestAccessToken, validateOAuthState } from '../../../utils/auth'
 
 export interface OAuthGitHubConfig {
   /**
@@ -98,9 +98,10 @@ export default eventHandler(async (event: H3Event) => {
 
   config.redirectURL = config.redirectURL || `${requestURL.protocol}//${requestURL.host}${requestURL.pathname}`
 
-  const state = await handleState(event)
-
   if (!query.code) {
+    // Initial authorization request (generate and store state)
+    const state = await generateOAuthState(event)
+
     config.scope = config.scope || []
     if (config.emailRequired && !config.scope.includes('user:email')) {
       config.scope.push('user:email')
@@ -121,16 +122,8 @@ export default eventHandler(async (event: H3Event) => {
     )
   }
 
-  if (query.state !== state) {
-    throw createError({
-      statusCode: 500,
-      message: 'Invalid state',
-      data: {
-        query,
-        state,
-      },
-    })
-  }
+  // validate OAuth state and delete the cookie or throw an error
+  validateOAuthState(event, query.state as string)
 
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {

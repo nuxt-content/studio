@@ -1,5 +1,5 @@
 import { getRandomValues } from 'uncrypto'
-import { getCookie, deleteCookie, setCookie, type H3Event } from 'h3'
+import { getCookie, deleteCookie, setCookie, type H3Event, getRequestURL, createError } from 'h3'
 import { FetchError } from 'ofetch'
 
 export interface RequestAccessTokenResponse {
@@ -44,16 +44,53 @@ export async function requestAccessToken(url: string, options: RequestAccessToke
   })
 }
 
-export async function handleState(event: H3Event) {
-  let state = getCookie(event, 'nuxt-auth-state')
-  if (state) {
-    deleteCookie(event, 'nuxt-auth-state')
-    return state
+export async function generateOAuthState(event: H3Event) {
+  const newState = getRandomBytes(32)
+
+  const requestURL = getRequestURL(event)
+  // Use secure cookies over HTTPS, required for locally testing purposes
+  const isSecure = requestURL.protocol === 'https:'
+
+  setCookie(event, 'studio-oauth-state', newState, {
+    httpOnly: true,
+    secure: isSecure,
+    sameSite: 'lax',
+    maxAge: 60 * 15, // 15 minutes
+  })
+
+  return newState
+}
+
+export function validateOAuthState(event: H3Event, receivedState: string) {
+  // Callback with code (validate and consume state)
+  const storedState = getCookie(event, 'studio-oauth-state')
+
+  if (!storedState) {
+    throw createError({
+      statusCode: 400,
+      message: 'OAuth state cookie not found. Please try logging in again.',
+      data: {
+        hint: 'State cookie may have expired or been cleared',
+      },
+    })
   }
 
-  state = encodeBase64Url(getRandomBytes(8))
-  setCookie(event, 'nuxt-auth-state', state)
-  return state
+  if (receivedState !== storedState) {
+    throw createError({
+      statusCode: 400,
+      message: 'Invalid state - OAuth state mismatch',
+      data: {
+        hint: 'This may be caused by browser refresh, navigation, or expired session',
+      },
+    })
+  }
+
+  // State validated, delete the cookie
+  deleteCookie(event, 'studio-oauth-state')
+}
+
+function getRandomBytes(size: number = 32) {
+  return encodeBase64Url(getRandomValues(new Uint8Array(size)))
 }
 
 function encodeBase64Url(input: Uint8Array): string {
@@ -61,8 +98,4 @@ function encodeBase64Url(input: Uint8Array): string {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/g, '')
-}
-
-function getRandomBytes(size: number = 32) {
-  return getRandomValues(new Uint8Array(size))
 }
