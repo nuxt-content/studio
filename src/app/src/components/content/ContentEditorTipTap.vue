@@ -171,6 +171,11 @@ const toolbarItems = computed(() => getStandardToolbarItems(t))
       :handlers="customHandlers"
       :starter-kit="{
         codeBlock: false,
+        link: {
+          HTMLAttributes: {
+            target: null,
+          },
+        },
       }"
       :extensions="[
         Frontmatter,
