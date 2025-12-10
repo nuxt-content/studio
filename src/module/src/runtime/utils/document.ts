@@ -366,6 +366,11 @@ export async function generateDocumentFromMarkdownContent(id: string, content: s
     ...document.data,
   }
 
+  // Do not need to calculate path meta information for data collections
+  if (options.collection?.type === 'data') {
+    return result as DatabaseItem
+  }
+  
   return pathMetaTransform(result as PageCollectionItemBase) as DatabaseItem
 }
 

@@ -239,7 +239,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           }
 
           const id = generateIdFromFsPath(fsPath, collectionInfo!)
-          const document = await generateDocumentFromContent(id, content)
+          const document = await generateDocumentFromContent(id, content, { collection: collectionInfo })
           const normalizedDocument = applyCollectionSchema(id, collectionInfo, document!)
 
           await host.document.db.upsert(fsPath, normalizedDocument)
@@ -299,7 +299,11 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         },
       },
       generate: {
-        documentFromContent: async (id: string, content: string, options: MarkdownParsingOptions = { compress: true }) => generateDocumentFromContent(id, content, options),
+        documentFromContent: (id: string, content: string, options: MarkdownParsingOptions = { compress: true }) => {
+          const collection = getCollectionById(id, useContentCollections())
+
+          return generateDocumentFromContent(id, content, { ...options, collection: collection })
+        },
         contentFromDocument: async (document: DatabaseItem) => generateContentFromDocument(document),
       },
     },
