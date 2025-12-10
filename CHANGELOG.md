@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.0.0-alpha.4](https://github.com/nuxt-content/studio/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-12-10)
+
+### Features
+
+* **auth:** Google OAuth ([#146](https://github.com/nuxt-content/studio/issues/146)) ([e068543](https://github.com/nuxt-content/studio/commit/e068543fd2010143ef9d17aa98c3efcf9b5e776b))
+* **i18n:** add Dutch (nl) locale ([#150](https://github.com/nuxt-content/studio/issues/150)) ([c9a11ba](https://github.com/nuxt-content/studio/commit/c9a11babaa883871314e1bfcba9a97250ef0fd21))
+* **i18n:** add Finnish (fi) locale ([#157](https://github.com/nuxt-content/studio/issues/157)) ([0a1d2d4](https://github.com/nuxt-content/studio/commit/0a1d2d4567afc8a880642a8bc32e05d78292b6b3))
+* **i18n:** add Japanese (ja) locale ([#147](https://github.com/nuxt-content/studio/issues/147)) ([fa0164e](https://github.com/nuxt-content/studio/commit/fa0164eed7079058de5ead387b955ca09c80a40c))
+* **i18n:** Add translations to TipTap editor UI ([#148](https://github.com/nuxt-content/studio/issues/148)) ([74a798e](https://github.com/nuxt-content/studio/commit/74a798e3aedc1aa134dfb88cadd9ba97b6749263))
+* **i18n:** improve Bulgarian (bg) translations ([#154](https://github.com/nuxt-content/studio/issues/154)) ([4634e9c](https://github.com/nuxt-content/studio/commit/4634e9ce988bc55d76a14db273f0e8b71735596e))
+* **preview:** use highlight options from `@nuxtjs/mdc` to highlight code snippets ([#158](https://github.com/nuxt-content/studio/issues/158)) ([55bedd4](https://github.com/nuxt-content/studio/commit/55bedd4cd714f78e5fc786eca4f6a4c9035a4b09))
+
+### Bug Fixes
+
+* **auth:** improve OAuth state token validation ([#160](https://github.com/nuxt-content/studio/issues/160)) ([9992865](https://github.com/nuxt-content/studio/commit/9992865929e7493981abccfe4cd45b1e54c2fb2d))
+* **auth:** only display detected provider on `_studio` page ([98e0fd2](https://github.com/nuxt-content/studio/commit/98e0fd2a66d797ac9887169f8c187ea3e30bfa5b))
+* **editor:** handle markdown files as `data` collection ([#153](https://github.com/nuxt-content/studio/issues/153)) ([511b2f5](https://github.com/nuxt-content/studio/commit/511b2f5fedab647c166921aefb3b2b8044a9802c))
+* **item:** do not close form on extension selection ([#161](https://github.com/nuxt-content/studio/issues/161)) ([9f17b4f](https://github.com/nuxt-content/studio/commit/9f17b4f7e2bd3ea63a603ca1633a4048c10fdbf2))
+* **item:** do not unset action in progress on extension selection ([#155](https://github.com/nuxt-content/studio/issues/155)) ([b54b0dd](https://github.com/nuxt-content/studio/commit/b54b0ddec09a55d9a7dfbed17cc4e05f3c754a68))
+* **preferences:** resolve double-toggle event conflict on debug switch ([#166](https://github.com/nuxt-content/studio/issues/166)) ([c5b69ed](https://github.com/nuxt-content/studio/commit/c5b69ed5fd49e0d63417d8e06c59bc1dfca956ac))
+* **sw:** unregister on sign out ([#164](https://github.com/nuxt-content/studio/issues/164)) ([b261da9](https://github.com/nuxt-content/studio/commit/b261da9b3fb4bb83f1db62d2d352e8ce9afe8991))
+* **tree:** autfocus input on creation ([b1e5ac3](https://github.com/nuxt-content/studio/commit/b1e5ac3771686bd1779090cef32caa230a845799))
+
 ## [1.0.0-alpha.3](https://github.com/nuxt-content/studio/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-12-03)
 
 ### Features
