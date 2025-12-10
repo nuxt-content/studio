@@ -370,7 +370,7 @@ export async function generateDocumentFromMarkdownContent(id: string, content: s
   if (options.collection?.type === 'data') {
     return result as DatabaseItem
   }
-  
+
   return pathMetaTransform(result as PageCollectionItemBase) as DatabaseItem
 }
 
