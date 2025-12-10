@@ -91,7 +91,7 @@ function closeStudio() {
       <template #debug-mode>
         <div
           class="w-full"
-          @click.stop="updatePreference('debug', !preferences.debug)"
+          @click.stop
         >
           <USwitch
             :model-value="preferences.debug"
