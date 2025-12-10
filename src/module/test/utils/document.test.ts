@@ -317,7 +317,7 @@ describe('isDocumentMatchingContent', () => {
 
     const document = {
       id: 'docs/1.getting-started/test.md',
-      title: 'Test',
+      title: '',
       body: {
         type: 'minimark',
         value: [
@@ -341,10 +341,6 @@ describe('isDocumentMatchingContent', () => {
       meta: {},
       navigation: true,
       path: '/getting-started/test',
-      seo: {
-        title: 'Test',
-        description: 'Hello',
-      },
       stem: '1.getting-started/test',
       __hash__: 'FORE7RbeCNfOhf3pzpQ6iehsHwCfTab-N64UgQZUOIg',
       fsPath: '1.getting-started/test.md',

@@ -10,7 +10,10 @@ export const pick = (obj: Record<string, unknown>, keys: string | string[]) => {
 
 export function doObjectsMatch(base: Record<string, unknown>, target: Record<string, unknown>) {
   if (typeof base !== 'object' || typeof target !== 'object') {
-    return base === target
+    const _base = (base as unknown as string) === '' ? undefined : base
+    const _target = (target as unknown as string) === '' ? undefined : target
+
+    return _base === _target
   }
   if (Array.isArray(base) && Array.isArray(target)) {
     if (base.length !== target.length) {
