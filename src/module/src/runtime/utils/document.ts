@@ -154,7 +154,13 @@ export async function isDocumentMatchingContent(content: string, document: Datab
     const { body: generatedBody, ...generatedDocumentData } = generatedDocument
     const { body: documentBody, ...documentData } = document
 
-    if (stringify(withoutLastStyles(generatedBody as MarkdownRoot)) !== stringify(withoutLastStyles(documentBody as MarkdownRoot))) {
+    const generatedBodyStringified = stringify(withoutLastStyles(generatedBody as MarkdownRoot))
+      // remove new lines because they are not significant for the comparison
+      .replace(/\n/g, '')
+    const documentBodyStringified = stringify(withoutLastStyles(documentBody as MarkdownRoot))
+      // remove new lines because they are not significant for the comparison
+      .replace(/\n/g, '')
+    if (generatedBodyStringified !== documentBodyStringified) {
       return false
     }
 
