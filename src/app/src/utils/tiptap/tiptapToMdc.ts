@@ -6,6 +6,7 @@ import { createShikiHighlighter } from '@nuxtjs/mdc/runtime/highlighter/shiki'
 import { bundledThemes, bundledLanguages as bundledLangs, createJavaScriptRegexEngine } from 'shiki'
 import { visit } from 'unist-util-visit'
 import type { SyntaxHighlightTheme } from '../../types/content'
+import { getEmojiUnicode } from '../emoji'
 
 type TiptapToMDCMap = Record<string, (node: JSONContent) => MDCRoot | MDCNode | MDCNode[]>
 
@@ -109,6 +110,9 @@ export function tiptapNodeToMDC(node: JSONContent): MDCRoot | MDCNode | MDCNode[
     return tiptapToMDCMap[node.type!](node)
   }
 
+  if (node.type === 'emoji') {
+    return { type: 'text', value: getEmojiUnicode(node.attrs?.name || '') }
+  }
   // All unknown nodes should be handled
   return {
     type: 'element',
