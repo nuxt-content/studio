@@ -300,11 +300,11 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         },
       },
       generate: {
-        documentFromContent: (id: string, content: string) => {
+        documentFromContent: async (id: string, content: string) => {
           const collection = getCollectionById(id, useContentCollections())
 
           const generateOptions = { collectionType: collection.type, compress: true }
-          return generateDocumentFromContent(id, content, generateOptions)
+          return await generateDocumentFromContent(id, content, generateOptions)
         },
         contentFromDocument: async (document: DatabaseItem) => generateContentFromDocument(document),
       },
