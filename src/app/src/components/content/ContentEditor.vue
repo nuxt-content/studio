@@ -123,19 +123,27 @@ const language = computed(() => {
         class="flex-1"
       />
       <template v-else>
-        <ContentEditorTipTap
-          v-if="preferences.editorMode === 'tiptap' && document.extension === ContentFileExtension.Markdown"
-          v-model="document"
-          :draft-item="draftItem"
-          class="flex-1"
-        />
         <ContentEditorCode
-          v-else
+          v-if="preferences.editorMode === 'code'"
           v-model="document"
           :draft-item="draftItem"
           :read-only="readOnly"
           class="flex-1"
         />
+        <template v-else>
+          <ContentEditorTipTap
+            v-if="document.extension === ContentFileExtension.Markdown"
+            v-model="document"
+            :draft-item="draftItem"
+            class="flex-1"
+          />
+          <ContentEditorForm
+            v-else
+            v-model="document"
+            :draft-item="draftItem"
+            class="flex-1"
+          />
+        </template>
       </template>
     </template>
   </div>

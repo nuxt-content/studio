@@ -18,6 +18,7 @@ export * from './component'
 export * from './config'
 export * from './media'
 export * from './content'
+export * from './form'
 
 export interface StudioHost {
   meta: {
