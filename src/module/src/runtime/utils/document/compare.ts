@@ -15,7 +15,12 @@ export async function isDocumentMatchingContent(content: string, document: Datab
     const { body: generatedBody, ...generatedDocumentData } = generatedDocument
     const { body: documentBody, ...documentData } = document
 
-    if (stringify(removeLastStylesFromTree(generatedBody as MarkdownRoot)) !== stringify(removeLastStylesFromTree(documentBody as MarkdownRoot))) {
+    const cleanedGeneratedBody = removeLastStylesFromTree(generatedBody as MarkdownRoot)
+    const cleanedDocumentBody = removeLastStylesFromTree(documentBody as MarkdownRoot)
+    // Remove new lines because they are not significant for the comparison
+    const generatedBodyStringified = stringify(cleanedGeneratedBody).replace(/\n/g, '')
+    const documentBodyStringified = stringify(cleanedDocumentBody).replace(/\n/g, '')
+    if (generatedBodyStringified !== documentBodyStringified) {
       return false
     }
 

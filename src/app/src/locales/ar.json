@@ -1,0 +1,271 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "تعديل الصفحة",
+      "retryPublish": "حاول النشر مرة أخرى",
+      "reloadApp": "إعادة تحميل التطبيق",
+      "reload": "إعادة التحميل",
+      "signOut": "تسجيل الخروج",
+      "review": "مراجعة",
+      "publish": "نشر",
+      "back": "العودة",
+      "backToEdition": "العودة للتعديل",
+      "seeChanges": "عرض التغييرات"
+    },
+    "headings": {
+      "directories": "المجلدات",
+      "files": "الملفات",
+      "media": "الوسائط",
+      "pageSettings": "إعدادات الصفحة"
+    },
+    "tooltips": {
+      "toggleStudio": "إظهار/إخفاء الاستوديو",
+      "unlinkEditor": "فصل المحرر والمعاينة",
+      "linkEditor": "ربط المحرر والمعاينة",
+      "copiedToClipboard": "تم النسخ إلى الحافظة",
+      "copyToClipboard": "نسخ",
+      "publishChanges": "نشر التغييرات",
+      "backToContent": "العودة إلي المحرر"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "حدث خطأ غير معروف"
+      }
+    },
+    "publish": {
+      "failedTitle": "فشل النشر",
+      "summary": "علي {branch} في مستودع {repo}",
+      "errorTitle": "حدث خطأ أثناء النشر لـ {providerName}",
+      "failedGeneric": "فشل نشر التغييرات"
+    },
+    "review": {
+      "title": "مراجعة التغييرات",
+      "created": "تم الإنشاء",
+      "updated": "تم التحديث",
+      "renamed": "تم إعادة التسمية",
+      "deleted": "تم الحذف"
+    },
+    "publishSuccess": {
+      "title": "تم نشر التغييرات",
+      "summary": "تم نشر {count} تغيير على {branch} في مستودع {repo} | تم نشر {count} تغييرات على {branch} في مستودع {repo}",
+      "alertTitleWaiting": "جاري الإطلاق...",
+      "alertTitleComplete": "تم الإطلاق بنجاح",
+      "alertDescWaiting": "تحتاج إلي إطلاق الموقع حتي تظهر التغييرات في الاستوديو.",
+      "alertDescComplete": "لقد تم إطلاق نسخة جديدة من موقعك. برجاء إعادة التحميل لرؤية التغييرات في الاستوديو."
+    },
+    "newVersionBanner": {
+      "title": "تم العثور علي نسخة جديدة من الموقع",
+      "description": "لقد تم إطلاق نسخة جديدة من موقعك. أعد تحميل الاستوديو لرؤية التغييرات.",
+      "reloadButton": "إعادة التحميل"
+    },
+    "footer": {
+      "developer_view": "وضع المطور",
+      "localFilesystem": "استخدام نظام الملفات المحلي",
+      "debugMode": "وضع التصحيح"
+    },
+    "alert": {
+      "mdcFormatting": "تم تطبيق التنسيق لمطابقة معيار صيغة MDC."
+    },
+    "conflict": {
+      "title": "تم اكتشاف تعارض",
+      "repository": "مستودع",
+      "branch": "فرع",
+      "file": "ملف",
+      "description": "المحتوى على {providerName} يختلف عن نسخة موقعك. تأكد من نشر أحدث تغييراتك ثم قم بتحديث الصفحة.",
+      "websiteVersion": "الموقع"
+    },
+    "nav": {
+      "content": "المحتوي",
+      "media": "الوسائط"
+    },
+    "placeholders": {
+      "commitMessage": "رسالة الكوميت",
+      "order": "#",
+      "fileName": "اسم الملف"
+    },
+    "validation": {
+      "commitRequired": "رسالة الكوميت مطلوبة",
+      "nameEmpty": "لا يمكن أن يكون الاسم فارغاً",
+      "nameEndsWithDot": "لا يمكن أن ينتهي الاسم بـ '.'",
+      "nameStartsWithSlash": "لا يمكن أن يبدأ الاسم بـ '/'",
+      "nameExists": "الاسم موجود بالفعل",
+      "prefixDigitsOnly": "البادئة يجب أن تكون نص يحتوي على أرقام فقط",
+      "prefixNonNegativeInteger": "البادئة يجب أن تكون عدد صحيح غير سالب"
+    },
+    "media": {
+      "altFilePreview": "معاينة الملف",
+      "altImagePreview": "معاينة الصورة",
+      "playAudio": "تشغيل الصوت",
+      "audioTagNotSupported": "متصفحك لا يدعم تشغيل الصوت.",
+      "playVideo": "تشغيل الفيديو",
+      "videoTagNotSupported": "متصفحك لا يدعم تشغيل الفيديو.",
+      "metaWidth": "العرض",
+      "metaHeight": "الارتفاع",
+      "metaType": "النوع",
+      "metaSize": "الحجم",
+      "fileName": "اسم الملف",
+      "publicPath": "المسار العام",
+      "providerPath": "مسار {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "عرض الإجراءات",
+      "cancel": "إلغاء",
+      "submit": "إرسال"
+    },
+    "actions": {
+      "confirmAction": "انقر مرة أخرى لـ {action}",
+      "verbs": {
+        "create": "إنشاء",
+        "delete": "حذف",
+        "rename": "إعادة تسمية",
+        "upload": "رفع",
+        "duplicate": "تكرار"
+      },
+      "labels": {
+        "createDocument": "ملف جديد",
+        "createDocumentFolder": "مجلد جديد",
+        "createMediaFolder": "مجلد وسائط جديد",
+        "renameItem": "إعادة تسمية",
+        "deleteItem": "حذف",
+        "uploadMedia": "رفع وسائط",
+        "duplicateItem": "تكرار",
+        "revertItem": "استعادة التغييرات",
+        "publishBranch": "نشر الفرع",
+        "openGitProvider": "فتح على {providerName}",
+        "switchToTipTap": "استخدام المحرر المرئي",
+        "switchToCode": "استخدام محرر الكود"
+      },
+      "tooltips": {
+        "createDocument": "إنشاء ملف جديد",
+        "createDocumentFolder": "إنشاء مجلد جديد",
+        "createMediaFolder": "إنشاء مجلد وسائط جديد",
+        "renameItem": "إعادة تسمية الملف",
+        "deleteItem": "حذف الملف",
+        "uploadMedia": "رفع وسائط",
+        "duplicateItem": "تكرار الملف",
+        "revertItem": "استعادة التغييرات",
+        "publishBranch": "نشر الفرع"
+      }
+    },
+    "items": {
+      "itemCount": "عنصر واحد | {count} عنصر"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "عنوان 1",
+        "h2": "عنوان 2",
+        "h3": "عنوان 3"
+      },
+      "styles": {
+        "bold": "عريض",
+        "italic": "مائل"
+      },
+      "lists": {
+        "bulleted": "قائمة نقطية",
+        "numbered": "قائمة مرقمة"
+      },
+      "other": {
+        "emojis": "رموز تعبيرية",
+        "blockquote": "اقتباس",
+        "code": "كود",
+        "inlineCode": "كود مضمن",
+        "link": "رابط",
+        "image": "صورة"
+      },
+      "writeSomething": "اكتب شيئاً",
+      "snippets": {
+        "title": "عنوان",
+        "item1": "عنصر 1",
+        "item2": "عنصر 2",
+        "language": "لغة",
+        "code": "كود",
+        "link": "رابط",
+        "alt": "نص بديل",
+        "src": "مصدر",
+        "value": "قيمة"
+      },
+      "docs": {
+        "path": "المسار في المشروع:",
+        "props": "الخصائص",
+        "slots": "الفتحات",
+        "type": "النوع",
+        "required": "مطلوب",
+        "default": "افتراضي"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "اكتب أو اضغط '/' للأوامر...",
+        "components": "المكونات"
+      },
+      "toolbar": {
+        "h1": "عنوان 1",
+        "h2": "عنوان 2",
+        "h3": "عنوان 3",
+        "h4": "عنوان 4",
+        "bulletList": "قائمة نقطية",
+        "orderedList": "قائمة مرقمة",
+        "blockquote": "اقتباس",
+        "codeBlock": "كتلة كود",
+        "bold": "عريض",
+        "italic": "مائل",
+        "strike": "خط في الوسط",
+        "code": "كود",
+        "headings": "العناوين"
+      },
+      "suggestion": {
+        "style": "النمط",
+        "paragraph": "فقرة",
+        "insert": "إدراج",
+        "image": "صورة",
+        "horizontalRule": "خط أفقي"
+      },
+      "drag": {
+        "turnInto": "تحويل إلى",
+        "resetFormatting": "إعادة تعيين التنسيق",
+        "duplicate": "تكرار",
+        "copyToClipboard": "نسخ إلى الحافظة",
+        "moveUp": "نقل لأعلى",
+        "moveDown": "نقل لأسفل",
+        "delete": "حذف"
+      },
+      "element": {
+        "addSlot": "إضافة فتحة",
+        "editProps": "تعديل الخصائص",
+        "delete": "حذف",
+        "prop": "خاصية",
+        "props": "خصائص",
+        "propsEditorComingSoon": "سيتم تنفيذ محرر الخصائص قريباً..."
+      },
+      "slot": {
+        "searchPlaceholder": "البحث أو إنشاء فتحة...",
+        "deleteSlot": "حذف الفتحة",
+        "noSlotsAvailable": "لا توجد فتحات محددة مسبقاً متاحة"
+      },
+      "inlineElement": {
+        "editContent": "تعديل المحتوى",
+        "editProps": "تعديل الخصائص",
+        "delete": "حذف",
+        "editContentLabel": "تعديل محتوى {name}",
+        "enterContentPlaceholder": "أدخل المحتوى...",
+        "propsEditorComingSoon": "محرر الخصائص قادم قريباً"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "الصق رابطاً...",
+        "applyLink": "تطبيق الرابط",
+        "openInNewWindow": "فتح في نافذة جديدة",
+        "removeLink": "إزالة الرابط"
+      }
+    },
+    "mediaPicker": {
+      "title": "اختر صورة",
+      "description": "اختر صورة من مكتبة الوسائط الخاصة بك",
+      "noImagesAvailable": "لا توجد صور متاحة في مكتبة الوسائط الخاصة بك",
+      "upload": "رفع"
+    }
+  }
+}
