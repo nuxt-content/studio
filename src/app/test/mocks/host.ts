@@ -71,9 +71,7 @@ export const createMockHost = (): StudioHost => ({
     },
     generate: {
       documentFromContent: vi.fn().mockImplementation(async (id: string, content: string) => {
-        const collection = getCollectionById(id, useContentCollections())
-
-        return generateDocumentFromContent(id, content, { collection: collection })
+        return generateDocumentFromContent(id, content, { collectionType: 'page', compress: true })
       }),
       contentFromDocument: vi.fn().mockImplementation(async (document: DatabaseItem) => {
         return generateContentFromDocument(document)

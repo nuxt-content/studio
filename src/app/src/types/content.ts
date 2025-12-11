@@ -1,8 +1,8 @@
-import type { CollectionInfo } from '@nuxt/content'
+import type { CollectionType } from '@nuxt/content'
 
 export interface MarkdownParsingOptions {
   compress?: boolean
-  collection?: CollectionInfo
+  collectionType?: CollectionType
 }
 
 export interface SyntaxHighlightTheme {

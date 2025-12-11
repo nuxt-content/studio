@@ -3,9 +3,9 @@ import { ensure } from './utils/ensure'
 import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdapter } from '@nuxt/content'
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
-import { applyCollectionSchema, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, sanitizeDocument } from './utils/document'
+import { applyCollectionSchema, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, sanitizeDocumentTree } from './utils/document'
 import { kebabCase } from 'scule'
-import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository, MarkdownParsingOptions } from 'nuxt-studio/app'
+import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
 import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections, useRuntimeConfig } from '#imports'
@@ -204,7 +204,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
             return undefined
           }
 
-          return sanitizeDocument({
+          return sanitizeDocumentTree({
             ...item,
             fsPath,
           })
@@ -218,7 +218,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
               const source = getCollectionSourceById(document.id, collection.source)
               const fsPath = generateFsPathFromId(document.id, source!)
 
-              return sanitizeDocument({
+              return sanitizeDocumentTree({
                 ...document,
                 fsPath,
               })
@@ -239,12 +239,13 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           }
 
           const id = generateIdFromFsPath(fsPath, collectionInfo!)
-          const document = await generateDocumentFromContent(id, content, { collection: collectionInfo })
+          const generateOptions = { collectionType: collectionInfo.type, compress: true }
+          const document = await generateDocumentFromContent(id, content, generateOptions)
           const normalizedDocument = applyCollectionSchema(id, collectionInfo, document!)
 
           await host.document.db.upsert(fsPath, normalizedDocument)
 
-          return sanitizeDocument({
+          return sanitizeDocumentTree({
             ...normalizedDocument,
             fsPath,
           })
@@ -299,10 +300,11 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         },
       },
       generate: {
-        documentFromContent: (id: string, content: string, options: MarkdownParsingOptions = { compress: true }) => {
+        documentFromContent: (id: string, content: string) => {
           const collection = getCollectionById(id, useContentCollections())
 
-          return generateDocumentFromContent(id, content, { ...options, collection: collection })
+          const generateOptions = { collectionType: collection.type, compress: true }
+          return generateDocumentFromContent(id, content, generateOptions)
         },
         contentFromDocument: async (document: DatabaseItem) => generateContentFromDocument(document),
       },
