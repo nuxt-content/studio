@@ -13,6 +13,7 @@ export enum ImageFileExtension {
   JPEG = 'jpeg',
   SVG = 'svg',
   WEBP = 'webp',
+  AVIF = 'avif',
   ICO = 'ico',
   GIF = 'gif',
 }

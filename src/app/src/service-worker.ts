@@ -15,6 +15,7 @@ const IMAGE_EXTENSIONS = [
   'jpeg',
   'svg',
   'webp',
+  'avif',
   'ico',
   'gif',
 ]
