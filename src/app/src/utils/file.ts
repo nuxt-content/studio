@@ -6,6 +6,7 @@ export const IMAGE_EXTENSIONS = [
   ImageFileExtension.JPEG,
   ImageFileExtension.SVG,
   ImageFileExtension.WEBP,
+  ImageFileExtension.AVIF,
   ImageFileExtension.ICO,
   ImageFileExtension.GIF,
 ]
