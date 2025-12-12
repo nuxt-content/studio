@@ -219,6 +219,7 @@
         "paragraph": "Absatz",
         "insert": "Einfügen",
         "image": "Bild",
+        "video": "Video",
         "horizontalRule": "Horizontale Linie"
       },
       "drag": {
@@ -262,10 +263,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Bild auswählen",
-      "description": "Wählen Sie ein Bild aus Ihrer Medienbibliothek",
-      "noImagesAvailable": "Keine Bilder in Ihrer Medienbibliothek verfügbar",
-      "upload": "Hochladen"
+      "image": {
+        "title": "Bild auswählen",
+        "description": "Wählen Sie ein Bild aus Ihrer Medienbibliothek",
+        "notAvailable": "Keine Bilder in Ihrer Medienbibliothek verfügbar",
+        "upload": "Hochladen"
+      },
+      "video": {
+        "title": "Video auswählen",
+        "description": "Wählen Sie ein Video aus Ihrer Medienbibliothek",
+        "notAvailable": "Keine Videos in Ihrer Medienbibliothek verfügbar",
+        "upload": "Hochladen"
+      }
     }
   }
 }

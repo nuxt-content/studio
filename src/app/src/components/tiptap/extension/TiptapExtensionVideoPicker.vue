@@ -18,10 +18,12 @@ const handleImageSelect = (image: TreeItem) => {
       .focus()
       .deleteRange({ from: pos, to: pos + 1 })
       .insertContent({
-        type: 'image',
+        type: 'video',
         attrs: {
           src: image.routePath,
-          alt: image.name,
+          props: {
+            src: image.routePath,
+          },
         },
       })
       .run()
@@ -49,7 +51,7 @@ const handleCancel = () => {
   <NodeViewWrapper>
     <ModalMediaPicker
       :open="isOpen"
-      type="image"
+      type="video"
       @select="handleImageSelect"
       @cancel="handleCancel"
     />
