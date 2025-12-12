@@ -1,11 +1,15 @@
-import { getAppManifest, useState, useRuntimeConfig, useCookie } from '#imports'
+import { getAppManifest, useState, useRuntimeConfig, useCookie, watch } from '#imports'
 import type { StudioUser } from 'nuxt-studio/app'
 
-export async function defineStudioActivationPlugin(onStudioActivation: (user: StudioUser) => Promise<void>) {
+export async function defineStudioActivationPlugin(
+  onStudioActivation: (user: StudioUser) => Promise<void>,
+  onStudioDeactivation: () => Promise<void>,
+) {
   const user = useState<StudioUser | null>('studio-session', () => null)
   const config = useRuntimeConfig().public.studio
   const cookie = useCookie('studio-session-check')
 
+  // Dev mode: always active
   if (config.dev) {
     return await onStudioActivation({
       provider: 'github',
@@ -17,29 +21,56 @@ export async function defineStudioActivationPlugin(onStudioActivation: (user: St
     })
   }
 
-  user.value = String(cookie.value) === 'true'
-    ? await $fetch<{ user: StudioUser }>('/__nuxt_studio/auth/session').then(session => session?.user ?? null)
-    : null
+  // Helper to fetch session and activate
+  const tryActivate = async () => {
+    if (user.value) return // Already active
 
-  let mounted = false
-  if (user.value?.email) {
-    // Disable prerendering for Studio
-    const manifest = await getAppManifest()
-    manifest.prerendered = []
+    try {
+      const session = await $fetch<{ user: StudioUser }>('/__nuxt_studio/auth/session')
+      if (session?.user) {
+        user.value = session.user
 
-    await onStudioActivation(user.value!)
-    mounted = true
+        // Disable prerendering for Studio
+        const manifest = await getAppManifest()
+        manifest.prerendered = []
+
+        await onStudioActivation(user.value)
+      }
+    }
+    catch {
+      // Session invalid
+      user.value = null
+    }
   }
-  else if (mounted) {
-    window.location.reload()
+
+  // Initial check
+  if (String(cookie.value) === 'true') {
+    await tryActivate()
   }
-  else {
-    // Listen to CMD + . to toggle the studio or redirect to the login page
+
+  // Watch for cookie changes (Reactive Logout)
+  watch(cookie, async (newValue) => {
+    if (String(newValue) !== 'true') {
+      // Logout detected
+      user.value = null
+      await onStudioDeactivation()
+    }
+    else {
+      // Login detected (optional, e.g. if logging in via modal without refresh)
+      await tryActivate()
+    }
+  })
+
+  // Keyboard shortcut listener (CMD/CTRL + .)
+  if (typeof window !== 'undefined') {
     document.addEventListener('keydown', (event) => {
-      if (event.metaKey && event.key === '.') {
-        setTimeout(() => {
-          window.location.href = config.route + '?redirect=' + encodeURIComponent(window.location.pathname)
-        })
+      if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+        // If not logged in, redirect to login
+        if (!user.value) {
+          setTimeout(() => {
+            window.location.href = config.route + '?redirect=' + encodeURIComponent(window.location.pathname)
+          })
+        }
       }
     })
   }

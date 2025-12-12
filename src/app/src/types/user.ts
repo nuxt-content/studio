@@ -6,5 +6,5 @@ export interface StudioUser {
   name: string
   avatar: string
   email: string
-  provider: GitProviderType | 'google'
+  provider: GitProviderType | 'google' | 'supabase'
 }
