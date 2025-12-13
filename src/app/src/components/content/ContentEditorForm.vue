@@ -100,7 +100,7 @@ async function setJSON(document: DatabasePageItem) {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="pt-2 pb-4 px-4">
     <FormSchemaBased
       v-model="contentJSON"
       :collection-name="collection!.name"

@@ -1,23 +1,3 @@
-<template>
-  <UFormField
-    :name="formItem.id"
-    :label="label"
-    :ui="{
-      root: 'w-full',
-      label: 'text-xs font-semibold tracking-tight',
-      container: 'mt-1',
-    }"
-  >
-    <UInput
-      :id="formItem.id"
-      v-model="model"
-      :placeholder="placeholder"
-      :type="inputType"
-      class="w-full"
-    />
-  </UFormField>
-</template>
-
 <script setup lang="ts">
 import { titleCase } from 'scule'
 import type { FormItem, FormTree } from '../../../types'
@@ -111,3 +91,22 @@ function applyValueById(tree: FormTree, id: string, value: unknown): FormTree {
   return result
 }
 </script>
+
+<template>
+  <UFormField
+    :name="formItem.id"
+    :label="label"
+    :ui="{
+      root: 'w-full mt-2',
+      label: 'text-xs font-semibold tracking-tight',
+    }"
+  >
+    <UInput
+      :id="formItem.id"
+      v-model="model"
+      :placeholder="placeholder"
+      :type="inputType"
+      class="w-full"
+    />
+  </UFormField>
+</template>

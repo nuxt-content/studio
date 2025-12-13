@@ -1,3 +1,23 @@
+<script lang="ts" setup>
+import type { FormItem, FormTree } from '../../../types'
+import type { PropType } from 'vue'
+import { computed } from 'vue'
+
+const props = defineProps({
+  formItem: {
+    type: Object as PropType<FormItem>,
+    required: true,
+  },
+})
+
+const form = defineModel({ type: Object as PropType<FormTree>, default: () => ({}) })
+
+const childrenCount = computed(() => {
+  if (!props.formItem.children) return 0
+  return Object.keys(props.formItem.children).length
+})
+</script>
+
 <template>
   <UCollapsible
     v-if="formItem.children"
@@ -46,23 +66,3 @@
     :form-item="formItem"
   />
 </template>
-
-<script lang="ts" setup>
-import type { FormItem, FormTree } from '../../../types'
-import type { PropType } from 'vue'
-import { computed } from 'vue'
-
-const props = defineProps({
-  formItem: {
-    type: Object as PropType<FormItem>,
-    required: true,
-  },
-})
-
-const form = defineModel({ type: Object as PropType<FormTree>, default: () => ({}) })
-
-const childrenCount = computed(() => {
-  if (!props.formItem.children) return 0
-  return Object.keys(props.formItem.children).length
-})
-</script>
