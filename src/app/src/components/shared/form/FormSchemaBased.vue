@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { FormTree } from '../../../types'
 import type { PropType } from 'vue'
 import type { Draft07 } from '@nuxt/content'
-import { buildFormTreeFromSchema } from '../../../utils/form'
+import { buildFormTreeFromSchema, applyValuesToFormTree } from '../../../utils/form'
 
 const props = defineProps({
   collectionName: {
@@ -16,15 +16,26 @@ const props = defineProps({
   },
 })
 
-console.log('props.schema', props.schema)
+const data = defineModel<Record<string, unknown>>({ required: true })
 
-defineModel<Record<string, unknown>>({ required: true })
+console.log('data', data.value)
 
 const formTree = computed<FormTree>(() => {
   return buildFormTreeFromSchema(props.collectionName, props.schema)
 })
 
-console.log('formTree', formTree.value)
+const formTreeWithValues = computed({
+  get: () => {
+    if (!data.value || !formTree.value) {
+      return null
+    }
+
+    return applyValuesToFormTree(formTree.value, { [props.collectionName]: data.value })
+  },
+  set: (newFormTree) => {
+    console.log('newFormTree', newFormTree)
+  },
+})
 
 // const jsonString = computed({
 //   get: () => JSON.stringify(model.value, null, 2),
@@ -43,7 +54,7 @@ console.log('formTree', formTree.value)
   <FormPanelSection
     v-for="formItem in formTree[collectionName].children"
     :key="formItem.id"
-    v-model="formTree"
+    v-model="formTreeWithValues"
     :form-item="formItem"
   />
 </template>

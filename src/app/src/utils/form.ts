@@ -1,16 +1,17 @@
 import type { Draft07, Draft07DefinitionProperty, Draft07DefinitionPropertyAnyOf, Draft07DefinitionPropertyAllOf, Draft07DefinitionPropertyOneOf } from '@nuxt/content'
 import type { FormTree, FormItem } from '../types'
 import { upperFirst } from 'scule'
+import { omit } from './object'
 
 export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormTree => {
   if (!schema || !schema.definitions || !schema.definitions[treeKey]) {
     return {}
   }
 
-  const buildFormTreeItem = (def: Draft07DefinitionProperty, id: string = `#frontmatter/${treeKey}`): FormItem | null => {
+  const buildFormTreeItem = (def: Draft07DefinitionProperty, id: string = `#${treeKey}`): FormItem | null => {
     const paths = id.split('/')
-    const itemKey = paths.pop()!
-    const level = paths.length - 1 // deduce #frontmatter
+    const itemKey = paths.pop()!.replace('#', '')
+    const level = paths.length
 
     const editor = def.$content?.editor
     if (editor?.hidden) {
@@ -139,4 +140,88 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
   return {
     [treeKey]: buildFormTreeItem(schema.definitions[treeKey] as Draft07DefinitionProperty) as FormItem,
   }
+}
+
+// Apply json to form tree values
+// Only override properties that are present in the tree
+export const applyValuesToFormTree = (tree: FormTree, override: Record<string, unknown>): FormTree => {
+  console.log('tree', tree)
+  console.log('override', override)
+  return Object.keys(tree).reduce((acc, key) => {
+    // Recursively override if found
+    if (override[key]) {
+      if (tree[key].children) {
+        return {
+          ...acc,
+          [key]: {
+            ...(omit(tree[key], ['children'])),
+            children: {
+              ...tree[key].children,
+              ...applyValuesToFormTree(tree[key].children, override[key] as Record<string, unknown>),
+            },
+          },
+        } as FormTree
+      }
+
+      return {
+        ...acc,
+        [key]: {
+          ...tree[key],
+          value: override[key],
+        },
+      } as FormTree
+    }
+    // Else recusively add empty value
+    else {
+      if (tree[key].children) {
+        return {
+          ...acc,
+          [key]: {
+            ...(omit(tree[key], ['children'])),
+            children: {
+              ...tree[key].children,
+              ...applyValuesToFormTree(tree[key].children, {}),
+            },
+          },
+        }
+      }
+
+      return {
+        ...acc,
+        [key]: {
+          ...tree[key],
+          value: '',
+        },
+
+      }
+    }
+  }, {})
+}
+
+// Recursively traverse the form tree to find the corresponding id and update the value
+export const applyValueById = (form: FormTree, id: string, value: unknown): FormTree => {
+  return Object.keys(form).reduce((acc, key) => {
+    if (form[key].id === id) {
+      return {
+        ...acc,
+        [key]: {
+          ...form[key],
+          value,
+        },
+      }
+    }
+    else if (form[key].children) {
+      return {
+        ...acc,
+        [key]: {
+          ...form[key],
+          children: applyValueById(form[key].children, id, value),
+        },
+      }
+    }
+    return {
+      ...acc,
+      [key]: form[key],
+    }
+  }, {})
 }

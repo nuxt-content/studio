@@ -1,6 +1,8 @@
-import { expect, test, describe } from 'vitest'
-import { buildFormTreeFromSchema } from '../../../src/utils/form'
+import type { FormTree } from '../../../src/types/form'
 import type { Draft07 } from '@nuxt/content'
+import { expect, test, describe } from 'vitest'
+import { buildFormTreeFromSchema, applyValueById, applyValuesToFormTree } from '../../../src/utils/form'
+import { postsSchema } from '../../mocks/schema'
 
 describe('buildFormTreeFromSchema', () => {
   test('handle array of objects with items', () => {
@@ -56,12 +58,12 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           array: {
-            id: '#frontmatter/posts/array',
+            id: '#posts/array',
             type: 'array',
             title: 'Array',
             items: {
@@ -146,22 +148,22 @@ describe('buildFormTreeFromSchema', () => {
     }
 
     expect(buildFormTreeFromSchema('pricing', schema)).toStrictEqual({ pricing: {
-      id: '#frontmatter/pricing',
+      id: '#pricing',
       title: 'Pricing',
       type: 'object',
       children: {
         plans: {
-          id: '#frontmatter/pricing/plans',
+          id: '#pricing/plans',
           title: 'Plans',
           type: 'object',
           children: {
             solo: {
-              id: '#frontmatter/pricing/plans/solo',
+              id: '#pricing/plans/solo',
               title: 'Solo',
               type: 'object',
               children: {
                 features: {
-                  id: '#frontmatter/pricing/plans/solo/features',
+                  id: '#pricing/plans/solo/features',
                   title: 'Features',
                   type: 'array',
                   items: {
@@ -212,17 +214,17 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           media: {
-            id: '#frontmatter/posts/media',
+            id: '#posts/media',
             type: 'media',
             title: 'Media',
           },
           icon: {
-            id: '#frontmatter/posts/icon',
+            id: '#posts/icon',
             type: 'icon',
             title: 'Icon',
           },
@@ -259,12 +261,12 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           string: {
-            id: '#frontmatter/posts/string',
+            id: '#posts/string',
             type: 'string',
             title: 'String',
           },
@@ -294,12 +296,12 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           select: {
-            id: '#frontmatter/posts/select',
+            id: '#posts/select',
             type: 'string',
             title: 'Select',
             options: ['value1', 'value2'],
@@ -369,12 +371,12 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           string: {
-            id: '#frontmatter/posts/string',
+            id: '#posts/string',
             type: 'string',
             title: 'String',
           },
@@ -419,22 +421,22 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           seo: {
-            id: '#frontmatter/posts/seo',
+            id: '#posts/seo',
             type: 'object',
             title: 'Seo',
             children: {
               title: {
-                id: '#frontmatter/posts/seo/title',
+                id: '#posts/seo/title',
                 type: 'string',
                 title: 'Title',
               },
               description: {
-                id: '#frontmatter/posts/seo/description',
+                id: '#posts/seo/description',
                 type: 'string',
                 title: 'Description',
               },
@@ -474,12 +476,12 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           navigation: {
-            id: '#frontmatter/posts/navigation',
+            id: '#posts/navigation',
             type: 'string',
             toggleable: true,
             title: 'Navigation',
@@ -535,28 +537,28 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           navigation: {
-            id: '#frontmatter/posts/navigation',
+            id: '#posts/navigation',
             type: 'object',
             title: 'Navigation',
             toggleable: true,
             children: {
               title: {
-                id: '#frontmatter/posts/navigation/title',
+                id: '#posts/navigation/title',
                 type: 'string',
                 title: 'Title',
               },
               description: {
-                id: '#frontmatter/posts/navigation/description',
+                id: '#posts/navigation/description',
                 type: 'string',
                 title: 'Description',
               },
               icon: {
-                id: '#frontmatter/posts/navigation/icon',
+                id: '#posts/navigation/icon',
                 type: 'string',
                 title: 'Icon',
               },
@@ -606,39 +608,309 @@ describe('buildFormTreeFromSchema', () => {
 
     expect(buildFormTreeFromSchema('posts', schema)).toStrictEqual({
       posts: {
-        id: '#frontmatter/posts',
+        id: '#posts',
         type: 'object',
         title: 'Posts',
         children: {
           hero: {
-            id: '#frontmatter/posts/hero',
+            id: '#posts/hero',
             type: 'object',
             title: 'Hero',
             children: {
               title: {
-                id: '#frontmatter/posts/hero/title',
+                id: '#posts/hero/title',
                 type: 'string',
                 title: 'Title',
               },
               description: {
-                id: '#frontmatter/posts/hero/description',
+                id: '#posts/hero/description',
                 type: 'string',
                 title: 'Description',
               },
               image: {
-                id: '#frontmatter/posts/hero/image',
+                id: '#posts/hero/image',
                 type: 'object',
                 title: 'Image',
                 children: {
                   dark: {
-                    id: '#frontmatter/posts/hero/image/dark',
+                    id: '#posts/hero/image/dark',
                     type: 'string',
                     title: 'Dark',
                   },
                   light: {
-                    id: '#frontmatter/posts/hero/image/light',
+                    id: '#posts/hero/image/light',
                     type: 'string',
                     title: 'Light',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  })
+})
+
+describe('applyValuesToFormTree', () => {
+  test('ensure all exsisting props values are applied', () => {
+    const data = {
+      title: 'Exploring the Culinary Wonders of Asia',
+      description: 'Embark on a tantalizing expedition through the diverse and enchanting flavors of Asia ',
+      image: { src: 'https://picsum.photos/id/490/640/360' },
+      authors: ['alexia-wong'],
+      badge: { label: 'Cooking' },
+    }
+
+    const form = buildFormTreeFromSchema('posts', postsSchema)
+
+    expect(applyValuesToFormTree(form, { posts: data })).toEqual({
+      posts: {
+        id: '#posts',
+        type: 'object',
+        title: 'Posts',
+        children: {
+          title: {
+            id: '#posts/title',
+            type: 'string',
+            title: 'Title',
+            value: 'Exploring the Culinary Wonders of Asia',
+          },
+          description: {
+            id: '#posts/description',
+            type: 'string',
+            title: 'Description',
+            value: 'Embark on a tantalizing expedition through the diverse and enchanting flavors of Asia ',
+          },
+          image: {
+            id: '#posts/image',
+            type: 'object',
+            title: 'Image',
+            children: {
+              src: {
+                id: '#posts/image/src',
+                type: 'string',
+                title: 'Src',
+                value: 'https://picsum.photos/id/490/640/360',
+              },
+              alt: {
+                id: '#posts/image/alt',
+                type: 'string',
+                title: 'Alt',
+                value: '',
+              },
+            },
+          },
+          authors: {
+            id: '#posts/authors',
+            type: 'array',
+            title: 'Authors',
+            value: ['alexia-wong'],
+            items: {
+              id: '#authors/items',
+              title: 'Items',
+              type: 'object',
+              children: {
+                avatar: {
+                  children: {
+                    alt: {
+                      id: '#authors/items/avatar/alt',
+                      title: 'Alt',
+                      type: 'string',
+                    },
+                    src: {
+                      id: '#authors/items/avatar/src',
+                      title: 'Src',
+                      type: 'string',
+                    },
+                  },
+                  id: '#authors/items/avatar',
+                  title: 'Avatar',
+                  type: 'object',
+                },
+                name: {
+                  id: '#authors/items/name',
+                  title: 'Name',
+                  type: 'string',
+                },
+                slug: {
+                  id: '#authors/items/slug',
+                  title: 'Slug',
+                  type: 'string',
+                },
+                to: {
+                  id: '#authors/items/to',
+                  title: 'To',
+                  type: 'string',
+                },
+              },
+            },
+          },
+          date: {
+            id: '#posts/date',
+            type: 'date',
+            title: 'Date',
+            value: '',
+          },
+          badge: {
+            id: '#posts/badge',
+            title: 'Badge',
+            type: 'object',
+            children: {
+              label: {
+                id: '#posts/badge/label',
+                title: 'Label',
+                type: 'string',
+                value: 'Cooking',
+              },
+              color: {
+                id: '#posts/badge/color',
+                title: 'Color',
+                type: 'string',
+                value: '',
+              },
+            },
+          },
+          navigation: {
+            id: '#posts/navigation',
+            title: 'Navigation',
+            type: 'object',
+            toggleable: true,
+            children: {
+              description: {
+                id: '#posts/navigation/description',
+                title: 'Description',
+                type: 'string',
+                value: '',
+              },
+              icon: {
+                id: '#posts/navigation/icon',
+                title: 'Icon',
+                type: 'string',
+                value: '',
+              },
+              title: {
+                id: '#posts/navigation/title',
+                title: 'Title',
+                type: 'string',
+                value: '',
+              },
+            },
+          },
+          seo: {
+            id: '#posts/seo',
+            title: 'Seo',
+            type: 'object',
+            children: {
+              description: {
+                id: '#posts/seo/description',
+                title: 'Description',
+                type: 'string',
+                value: '',
+              },
+              title: {
+                id: '#posts/seo/title',
+                title: 'Title',
+                type: 'string',
+                value: '',
+              },
+            },
+          },
+        },
+      },
+    })
+  })
+})
+
+describe('applyValueById', () => {
+  test('recursively traverses the object, finds the corresponding id, and updates the value', () => {
+    const form: FormTree = {
+      posts: {
+        id: '#posts',
+        type: 'object',
+        title: 'Posts',
+        children: {
+          hero: {
+            id: '#posts/hero',
+            type: 'object',
+            title: 'Hero',
+            children: {
+              title: {
+                id: '#posts/hero/title',
+                type: 'string',
+                title: 'Title',
+                value: 'My title',
+              },
+              description: {
+                id: '#posts/hero/description',
+                type: 'string',
+                title: 'Description',
+                value: 'My description',
+              },
+              image: {
+                id: '#posts/hero/image',
+                type: 'object',
+                title: 'Image',
+                children: {
+                  dark: {
+                    id: '#posts/hero/image/dark',
+                    type: 'string',
+                    title: 'Dark',
+                    value: 'My dark image',
+                  },
+                  light: {
+                    id: '#posts/hero/image/light',
+                    type: 'string',
+                    title: 'Light',
+                    value: 'My old light image',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+
+    expect(applyValueById(form, '#posts/hero/image/light', 'My new light image')).toEqual({
+      posts: {
+        id: '#posts',
+        type: 'object',
+        title: 'Posts',
+        children: {
+          hero: {
+            id: '#posts/hero',
+            type: 'object',
+            title: 'Hero',
+            children: {
+              title: {
+                id: '#posts/hero/title',
+                type: 'string',
+                title: 'Title',
+                value: 'My title',
+              },
+              description: {
+                id: '#posts/hero/description',
+                type: 'string',
+                title: 'Description',
+                value: 'My description',
+              },
+              image: {
+                id: '#posts/hero/image',
+                type: 'object',
+                title: 'Image',
+                children: {
+                  dark: {
+                    id: '#posts/hero/image/dark',
+                    type: 'string',
+                    title: 'Dark',
+                    value: 'My dark image',
+                  },
+                  light: {
+                    id: '#posts/hero/image/light',
+                    type: 'string',
+                    title: 'Light',
+                    value: 'My new light image',
                   },
                 },
               },
