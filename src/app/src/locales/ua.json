@@ -1,0 +1,271 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "Редагувати цю сторінку",
+      "retryPublish": "Повторити публікацію",
+      "reloadApp": "Перезавантажити додаток",
+      "reload": "Перезавантажити",
+      "signOut": "Вийти",
+      "review": "Переглянути",
+      "publish": "Опублікувати",
+      "back": "Назад",
+      "backToEdition": "Повернутися до редагування",
+      "seeChanges": "Подивитися зміни"
+    },
+    "headings": {
+      "directories": "Каталоги",
+      "files": "Файли",
+      "media": "Медіа",
+      "pageSettings": "Налаштування сторінки"
+    },
+    "tooltips": {
+      "toggleStudio": "Перемкнути Studio",
+      "unlinkEditor": "Від'єднати редактор і попередній перегляд",
+      "linkEditor": "З'єднати редактор і попередній перегляд",
+      "copiedToClipboard": "Скопійовано в буфер обміну",
+      "copyToClipboard": "Копіювати в буфер обміну",
+      "publishChanges": "Опублікувати зміни",
+      "backToContent": "Повернутися до вмісту"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "Сталася невідома помилка"
+      }
+    },
+    "publish": {
+      "failedTitle": "Публікація не вдалася",
+      "summary": "на {branch} репозиторію {repo}",
+      "errorTitle": "Помилка під час публікації {providerName}",
+      "failedGeneric": "Не вдалося опублікувати зміни"
+    },
+    "review": {
+      "title": "Переглянути зміни",
+      "created": "Створено",
+      "updated": "Оновлено",
+      "renamed": "Перейменовано",
+      "deleted": "Видалено"
+    },
+    "publishSuccess": {
+      "title": "Зміни опубліковано",
+      "summary": "{count} зміна опублікована на {branch} репозиторію {repo} | {count} зміни опубліковано на {branch} репозиторію {repo} | {count} змін опубліковано на {branch} репозиторію {repo}",
+      "alertTitleWaiting": "Очікування розгортання...",
+      "alertTitleComplete": "Розгортання завершено",
+      "alertDescWaiting": "Веб-сайт потрібно розгорнути, щоб зміни були видимі в Studio.",
+      "alertDescComplete": "Нова версія вашого веб-сайту розгорнута. Будь ласка, оновіть додаток, щоб побачити зміни в Studio."
+    },
+    "newVersionBanner": {
+      "title": "Виявлено нову версію веб-сайту",
+      "description": "Нова версія вашого веб-сайту розгорнута. Перезавантажте додаток, щоб побачити останні зміни.",
+      "reloadButton": "Перезавантажити"
+    },
+    "footer": {
+      "developer_view": "Режим розробника",
+      "localFilesystem": "Використовується локальна файлова система",
+      "debugMode": "Режим налагодження"
+    },
+    "alert": {
+      "mdcFormatting": "Форматування застосовано для відповідності стандарту синтаксису MDC."
+    },
+    "conflict": {
+      "title": "Виявлено конфлікт",
+      "repository": "Репозиторій",
+      "branch": "Гілка",
+      "file": "Файл",
+      "description": "Вміст на {providerName} відрізняється від версії вашого веб-сайту. Переконайтеся, що ваші останні зміни розгорнуті, і оновіть сторінку.",
+      "websiteVersion": "Веб-сайт"
+    },
+    "nav": {
+      "content": "Вміст",
+      "media": "Медіа"
+    },
+    "placeholders": {
+      "commitMessage": "Повідомлення коміту",
+      "order": "N°",
+      "fileName": "Назва файлу"
+    },
+    "validation": {
+      "commitRequired": "Повідомлення коміту обов'язкове",
+      "nameEmpty": "Назва не може бути порожньою",
+      "nameEndsWithDot": "Назва не може закінчуватися на '.'",
+      "nameStartsWithSlash": "Назва не може починатися з '/'",
+      "nameExists": "Назва вже існує",
+      "prefixDigitsOnly": "Префікс має містити лише цифри",
+      "prefixNonNegativeInteger": "Префікс має бути невід'ємним цілим числом"
+    },
+    "media": {
+      "altFilePreview": "Попередній перегляд файлу",
+      "altImagePreview": "Попередній перегляд зображення",
+      "playAudio": "Відтворити аудіо",
+      "audioTagNotSupported": "Ваш браузер не підтримує аудіо тег.",
+      "playVideo": "Відтворити відео",
+      "videoTagNotSupported": "Ваш браузер не підтримує відео тег.",
+      "metaWidth": "Ширина",
+      "metaHeight": "Висота",
+      "metaType": "Тип",
+      "metaSize": "Розмір",
+      "fileName": "Назва файлу",
+      "publicPath": "Публічний шлях",
+      "providerPath": "Шлях {providerName}",
+      "markdown": "Markdown"
+    },
+    "aria": {
+      "openActions": "Відкрити дії",
+      "cancel": "Скасувати",
+      "submit": "Підтвердити"
+    },
+    "actions": {
+      "confirmAction": "Натисніть ще раз, щоб {action}",
+      "verbs": {
+        "create": "створити",
+        "delete": "видалити",
+        "rename": "перейменувати",
+        "upload": "завантажити",
+        "duplicate": "дублювати"
+      },
+      "labels": {
+        "createDocument": "Новий файл",
+        "createDocumentFolder": "Нова папка",
+        "createMediaFolder": "Нова медіа папка",
+        "renameItem": "Перейменувати",
+        "deleteItem": "Видалити",
+        "uploadMedia": "Завантажити медіа",
+        "duplicateItem": "Дублювати",
+        "revertItem": "Скасувати зміни",
+        "publishBranch": "Опублікувати гілку",
+        "openGitProvider": "Відкрити на {providerName}",
+        "switchToTipTap": "Використовувати візуальний редактор",
+        "switchToCode": "Використовувати редактор коду"
+      },
+      "tooltips": {
+        "createDocument": "Створити новий файл",
+        "createDocumentFolder": "Створити нову папку",
+        "createMediaFolder": "Створити нову папку",
+        "renameItem": "Перейменувати файл",
+        "deleteItem": "Видалити файл",
+        "uploadMedia": "Завантажити медіа",
+        "duplicateItem": "Дублювати файл",
+        "revertItem": "Скасувати зміни",
+        "publishBranch": "Опублікувати гілку"
+      }
+    },
+    "items": {
+      "itemCount": "1 елемент | {count} елементи | {count} елементів"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "Заголовок 1",
+        "h2": "Заголовок 2",
+        "h3": "Заголовок 3"
+      },
+      "styles": {
+        "bold": "Жирний",
+        "italic": "Курсив"
+      },
+      "lists": {
+        "bulleted": "Маркований список",
+        "numbered": "Нумерований список"
+      },
+      "other": {
+        "emojis": "Емодзі",
+        "blockquote": "Цитата",
+        "code": "Код",
+        "inlineCode": "Вбудований код",
+        "link": "Посилання",
+        "image": "Зображення"
+      },
+      "writeSomething": "Напишіть щось",
+      "snippets": {
+        "title": "заголовок",
+        "item1": "Елемент 1",
+        "item2": "Елемент 2",
+        "language": "мова",
+        "code": "код",
+        "link": "посилання",
+        "alt": "alt",
+        "src": "src",
+        "value": "значення"
+      },
+      "docs": {
+        "path": "Шлях у проекті:",
+        "props": "Властивості",
+        "slots": "Слоти",
+        "type": "тип",
+        "required": "обов'язково",
+        "default": "за замовчуванням"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "Пишіть, введіть '/' для команд...",
+        "components": "Компоненти"
+      },
+      "toolbar": {
+        "h1": "Заголовок 1",
+        "h2": "Заголовок 2",
+        "h3": "Заголовок 3",
+        "h4": "Заголовок 4",
+        "bulletList": "Маркований список",
+        "orderedList": "Нумерований список",
+        "blockquote": "Цитата",
+        "codeBlock": "Блок коду",
+        "bold": "Жирний",
+        "italic": "Курсив",
+        "strike": "Закреслений",
+        "code": "Код",
+        "headings": "Заголовки"
+      },
+      "suggestion": {
+        "style": "Стиль",
+        "paragraph": "Параграф",
+        "insert": "Вставити",
+        "image": "Зображення",
+        "horizontalRule": "Горизонтальна лінія"
+      },
+      "drag": {
+        "turnInto": "Перетворити на",
+        "resetFormatting": "Скинути форматування",
+        "duplicate": "Дублювати",
+        "copyToClipboard": "Копіювати в буфер обміну",
+        "moveUp": "Перемістити вгору",
+        "moveDown": "Перемістити вниз",
+        "delete": "Видалити"
+      },
+      "element": {
+        "addSlot": "Додати слот",
+        "editProps": "Редагувати властивості",
+        "delete": "Видалити",
+        "prop": "властивість",
+        "props": "властивості",
+        "propsEditorComingSoon": "Редактор властивостей буде реалізовано найближчим часом..."
+      },
+      "slot": {
+        "searchPlaceholder": "Шукати або створити слот...",
+        "deleteSlot": "Видалити слот",
+        "noSlotsAvailable": "Немає доступних попередньо визначених слотів"
+      },
+      "inlineElement": {
+        "editContent": "Редагувати вміст",
+        "editProps": "Редагувати властивості",
+        "delete": "Видалити",
+        "editContentLabel": "Редагувати вміст {name}",
+        "enterContentPlaceholder": "Введіть вміст...",
+        "propsEditorComingSoon": "Редактор властивостей незабаром"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "Вставте посилання...",
+        "applyLink": "Застосувати посилання",
+        "openInNewWindow": "Відкрити в новому вікні",
+        "removeLink": "Видалити посилання"
+      }
+    },
+    "mediaPicker": {
+      "title": "Вибрати зображення",
+      "description": "Виберіть зображення з вашої медіа бібліотеки",
+      "noImagesAvailable": "Немає доступних зображень у вашій медіа бібліотеці",
+      "upload": "Завантажити"
+    }
+  }
+}
