@@ -145,8 +145,6 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
 // Apply json to form tree values
 // Only override properties that are present in the tree
 export const applyValuesToFormTree = (tree: FormTree, override: Record<string, unknown>): FormTree => {
-  console.log('tree', tree)
-  console.log('override', override)
   return Object.keys(tree).reduce((acc, key) => {
     // Recursively override if found
     if (override[key]) {
@@ -224,4 +222,33 @@ export const applyValueById = (form: FormTree, id: string, value: unknown): Form
       [key]: form[key],
     }
   }, {})
+}
+
+// Recursively compare form trees to find the updated item and return it
+// Updated item must a be leaf (input) of the form
+export const getUpdatedTreeItem = (original: FormTree, updated: FormTree): FormItem | null => {
+  for (const key of Object.keys(updated)) {
+    const originalItem = original[key]
+    const updatedItem = updated[key]
+
+    if (!originalItem) {
+      continue
+    }
+
+    // If both have children, recurse into them
+    if (originalItem.children && updatedItem.children) {
+      const result = getUpdatedTreeItem(originalItem.children, updatedItem.children)
+      if (result) {
+        return result
+      }
+    }
+    // If it's a leaf node, compare values
+    else if (!updatedItem.children) {
+      if (originalItem.value !== updatedItem.value) {
+        return updatedItem
+      }
+    }
+  }
+
+  return null
 }

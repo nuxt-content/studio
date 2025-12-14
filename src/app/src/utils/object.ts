@@ -47,3 +47,45 @@ export function replaceNullWithEmptyString(obj: Record<string, unknown>): Record
   }
   return obj
 }
+
+// Browse object until key is found based on path, then override value for this key
+export const applyValueByPath = (obj: Record<string, unknown>, path: string, value: unknown): Record<string, unknown> => {
+  const keys = path.split('/')
+
+  let current = obj
+  keys.forEach((key, index) => {
+    const isLeaf = index === keys.length - 1
+    if (isLeaf) {
+      // Array
+      if (Array.isArray(value) && Array.isArray(current[key])) {
+        current[key] = value
+      }
+      // Object
+      else if (typeof value === 'object' && typeof current[key] === 'object') {
+        // Merge objects
+        Object.assign(current[key] as Record<string, unknown>, value as Record<string, unknown>)
+        // Remove undefined or null keys
+        Object.keys(current[key] as Record<string, unknown>).forEach((k) => {
+          if (
+            (current[key] as Record<string, unknown>)[k] === undefined
+            || (current[key] as Record<string, unknown>)[k] === null
+          ) {
+            Reflect.deleteProperty(current[key] as Record<string, unknown>, k)
+          }
+        })
+      }
+      else {
+        // Set value directly
+        current[key] = value
+      }
+    }
+    else {
+      if (!current[key] || typeof current[key] !== 'object') {
+        current[key] = {}
+      }
+      current = current[key] as Record<string, unknown>
+    }
+  })
+
+  return obj
+}

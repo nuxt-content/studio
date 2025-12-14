@@ -3,6 +3,7 @@ import { titleCase } from 'scule'
 import type { FormItem, FormTree } from '../../../types'
 import type { PropType } from 'vue'
 import { computed, ref, watch } from 'vue'
+import { applyValueById } from '../../../utils/form'
 
 const props = defineProps({
   formItem: {
@@ -40,6 +41,10 @@ const model = ref(computeValue(props.formItem))
 
 // Sync changes back to parent form
 watch(model, (newValue) => {
+  if (newValue === props.formItem.value) {
+    return
+  }
+
   form.value = applyValueById(form.value, props.formItem.id, newValue)
 })
 
@@ -70,25 +75,6 @@ function computeValue(formItem: FormItem): unknown {
     default:
       return null
   }
-}
-
-function applyValueById(tree: FormTree, id: string, value: unknown): FormTree {
-  const result = { ...tree }
-  const paths = id.split('/').filter(Boolean)
-
-  let current: Record<string, unknown> = result
-  for (let i = 0; i < paths.length - 1; i++) {
-    const key = paths[i]
-    if (!current[key] || typeof current[key] !== 'object') {
-      current[key] = {}
-    }
-    current = current[key] as Record<string, unknown>
-  }
-
-  const lastKey = paths[paths.length - 1]
-  current[lastKey] = value
-
-  return result
 }
 </script>
 

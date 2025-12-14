@@ -1,7 +1,8 @@
-import type { FormTree } from '../../../src/types/form'
+import type { FormItem, FormTree } from '../../../src/types/form'
 import type { Draft07 } from '@nuxt/content'
 import { expect, test, describe } from 'vitest'
-import { buildFormTreeFromSchema, applyValueById, applyValuesToFormTree } from '../../../src/utils/form'
+import { buildFormTreeFromSchema, applyValueById, applyValuesToFormTree, getUpdatedTreeItem } from '../../../src/utils/form'
+import { farnabazFormTree, larbishFormTree } from '../../mocks/form'
 import { postsSchema } from '../../mocks/schema'
 
 describe('buildFormTreeFromSchema', () => {
@@ -653,7 +654,7 @@ describe('buildFormTreeFromSchema', () => {
 })
 
 describe('applyValuesToFormTree', () => {
-  test('ensure all exsisting props values are applied', () => {
+  test('ensure all exsisting props values are applied (from schema)', () => {
     const data = {
       title: 'Exploring the Culinary Wonders of Asia',
       description: 'Embark on a tantalizing expedition through the diverse and enchanting flavors of Asia ',
@@ -820,6 +821,19 @@ describe('applyValuesToFormTree', () => {
       },
     })
   })
+
+  test('ensure all exsisting props values are applied (from tree)', () => {
+    const data = {
+      avatar: {
+        src: 'https://avatars.githubusercontent.com/larbish',
+      },
+      name: 'Baptiste Leproux',
+      to: 'https://x.com/_larbish',
+      username: 'larbish',
+    }
+
+    expect(applyValuesToFormTree(farnabazFormTree, { authors: data })).toEqual(larbishFormTree)
+  })
 })
 
 describe('applyValueById', () => {
@@ -919,5 +933,41 @@ describe('applyValueById', () => {
         },
       },
     })
+  })
+})
+
+describe('getUpdatedTreeItem', () => {
+  test('finds and returns the updated leaf item in a nested form tree', () => {
+    const updatedAvatarSrc: FormItem = {
+      id: '#authors/avatar/src',
+      title: 'Src',
+      type: 'string',
+      value: 'https://avatars.githubusercontent.com/larbish',
+    }
+
+    const original: FormTree = farnabazFormTree
+    const updated: FormTree = {
+      authors: {
+        id: '#authors',
+        type: 'object',
+        title: 'Authors',
+        children: {
+          ...farnabazFormTree.authors.children,
+          avatar: {
+            ...farnabazFormTree.authors.children!.avatar,
+            children: {
+              ...farnabazFormTree.authors.children!.avatar.children,
+              src: updatedAvatarSrc,
+            },
+          },
+        },
+      },
+    }
+
+    expect(getUpdatedTreeItem(original, updated)).toEqual(updatedAvatarSrc)
+  })
+
+  test('returns null when no changes are found', () => {
+    expect(getUpdatedTreeItem(farnabazFormTree, farnabazFormTree)).toBeNull()
   })
 })

@@ -43,7 +43,7 @@ watch(() => props.draftItem.status, () => {
 })
 
 // Trigger on form changes
-watch (contentJSON, (json) => {
+watch(contentJSON, (newJSON, oldJSON) => {
   if (skipFirstUpdate.value) {
     skipFirstUpdate.value = false
     return
@@ -53,25 +53,18 @@ watch (contentJSON, (json) => {
     return
   }
 
-  // Do not trigger model updates if the document id has changed
-  // if (currentDocumentId.value !== document.value?.id) {
-  //   return
-  // }
-
-  // if (content.value === newContent) {
-  //   return
-  // }
-
-  // content.value = newContent
+  if (JSON.stringify(newJSON) === JSON.stringify(oldJSON)) {
+    return
+  }
 
   let content = ''
   switch (document.value?.extension) {
     case ContentFileExtension.JSON:
-      content = JSON.stringify(json)
+      content = JSON.stringify(newJSON)
       break
     case ContentFileExtension.YAML:
     case ContentFileExtension.YML:
-      content = jsonToYaml(json)
+      content = jsonToYaml(newJSON)
       break
   }
 
