@@ -241,8 +241,8 @@ export default defineNuxtModule<ModuleOptions>({
       config.optimizeDeps ||= {}
       config.optimizeDeps.include = [
         ...(config.optimizeDeps.include || []),
-        'debug',
-        'extend',
+        'nuxt-studio > debug',
+        'nuxt-studio > extend',
       ]
     })
 
