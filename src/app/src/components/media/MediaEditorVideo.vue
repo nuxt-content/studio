@@ -50,7 +50,6 @@ const fileName = computed(() => {
   return props.mediaItem.path || 'video'
 })
 
-
 const formattedDuration = computed(() => {
   if (!duration.value) {
     return '0s'
