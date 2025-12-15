@@ -266,6 +266,21 @@
       "description": "Scegli un'immagine dalla tua libreria media",
       "noImagesAvailable": "Nessuna immagine disponibile nella tua libreria media",
       "upload": "Carica"
+    },
+    "form": {
+      "array": {
+        "addItem": "Aggiungi {label}",
+        "deleteItem": "Elimina elemento",
+        "editItem": "Modifica elemento",
+        "unsupportedType": "Tipo di array {type} non supportato"
+      },
+      "object": {
+        "noProperties": "Nessuna proprietà definita",
+        "enterPlaceholder": "Inserisci {field}..."
+      },
+      "section": {
+        "propertyCount": "1 proprietà | {count} proprietà"
+      }
     }
   }
 }

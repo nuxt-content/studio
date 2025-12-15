@@ -266,6 +266,21 @@
       "description": "Wählen Sie ein Bild aus Ihrer Medienbibliothek",
       "noImagesAvailable": "Keine Bilder in Ihrer Medienbibliothek verfügbar",
       "upload": "Hochladen"
+    },
+    "form": {
+      "array": {
+        "addItem": "{label} hinzufügen",
+        "deleteItem": "Element löschen",
+        "editItem": "Element bearbeiten",
+        "unsupportedType": "Array-Typ {type} nicht unterstützt"
+      },
+      "object": {
+        "noProperties": "Keine Eigenschaften definiert",
+        "enterPlaceholder": "{field} eingeben..."
+      },
+      "section": {
+        "propertyCount": "1 Eigenschaft | {count} Eigenschaften"
+      }
     }
   }
 }

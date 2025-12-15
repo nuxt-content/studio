@@ -266,6 +266,21 @@
       "description": "Kies een afbeelding uit je mediabibliotheek",
       "noImagesAvailable": "Geen afbeeldingen beschikbaar in je mediabibliotheek",
       "upload": "Uploaden"
+    },
+    "form": {
+      "array": {
+        "addItem": "{label} toevoegen",
+        "deleteItem": "Item verwijderen",
+        "editItem": "Item bewerken",
+        "unsupportedType": "Array-type {type} wordt niet ondersteund"
+      },
+      "object": {
+        "noProperties": "Geen eigenschappen gedefinieerd",
+        "enterPlaceholder": "Voer {field} in..."
+      },
+      "section": {
+        "propertyCount": "1 eigenschap | {count} eigenschappen"
+      }
     }
   }
 }

@@ -266,6 +266,21 @@
       "description": "Изберете изображение от Вашата медийна библиотека",
       "noImagesAvailable": "Няма налични изображения във Вашата медийна библиотека",
       "upload": "Качване"
+    },
+    "form": {
+      "array": {
+        "addItem": "Добавяне на {label}",
+        "deleteItem": "Изтриване на елемент",
+        "editItem": "Редактиране на елемент",
+        "unsupportedType": "Типът масив {type} не се поддържа"
+      },
+      "object": {
+        "noProperties": "Няма дефинирани свойства",
+        "enterPlaceholder": "Въведете {field}..."
+      },
+      "section": {
+        "propertyCount": "1 свойство | {count} свойства"
+      }
     }
   }
 }

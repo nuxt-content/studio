@@ -266,6 +266,21 @@
       "description": "Choisissez une image depuis votre bibliothèque de médias",
       "noImagesAvailable": "Aucune image disponible dans votre bibliothèque de médias",
       "upload": "Importer"
+    },
+    "form": {
+      "array": {
+        "addItem": "Ajouter {label}",
+        "deleteItem": "Supprimer l'élément",
+        "editItem": "Modifier l'élément",
+        "unsupportedType": "Type de tableau {type} non supporté"
+      },
+      "object": {
+        "noProperties": "Aucune propriété définie",
+        "enterPlaceholder": "Saisir {field}..."
+      },
+      "section": {
+        "propertyCount": "1 propriété | {count} propriétés"
+      }
     }
   }
 }

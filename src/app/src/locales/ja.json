@@ -265,6 +265,21 @@
       "description": "メディアライブラリから画像を選択してください",
       "noImagesAvailable": "メディアライブラリに利用可能な画像がありません",
       "upload": "アップロード"
+    },
+    "form": {
+      "array": {
+        "addItem": "{label}を追加",
+        "deleteItem": "アイテムを削除",
+        "editItem": "アイテムを編集",
+        "unsupportedType": "配列タイプ {type} はサポートされていません"
+      },
+      "object": {
+        "noProperties": "プロパティが定義されていません",
+        "enterPlaceholder": "{field}を入力..."
+      },
+      "section": {
+        "propertyCount": "1 プロパティ | {count} プロパティ"
+      }
     }
   }
 }

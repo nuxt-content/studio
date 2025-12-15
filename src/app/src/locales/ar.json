@@ -266,6 +266,21 @@
       "description": "اختر صورة من مكتبة الوسائط الخاصة بك",
       "noImagesAvailable": "لا توجد صور متاحة في مكتبة الوسائط الخاصة بك",
       "upload": "رفع"
+    },
+    "form": {
+      "array": {
+        "addItem": "إضافة {label}",
+        "deleteItem": "حذف العنصر",
+        "editItem": "تعديل العنصر",
+        "unsupportedType": "نوع المصفوفة {type} غير مدعوم"
+      },
+      "object": {
+        "noProperties": "لا توجد خصائص محددة",
+        "enterPlaceholder": "أدخل {field}..."
+      },
+      "section": {
+        "propertyCount": "خاصية واحدة | {count} خصائص"
+      }
     }
   }
 }

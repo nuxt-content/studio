@@ -266,6 +266,21 @@
       "description": "تصویری از کتابخانه رسانه خود انتخاب کنید",
       "noImagesAvailable": "هیچ تصویری در کتابخانه رسانه شما موجود نیست",
       "upload": "آپلود"
+    },
+    "form": {
+      "array": {
+        "addItem": "افزودن {label}",
+        "deleteItem": "حذف آیتم",
+        "editItem": "ویرایش آیتم",
+        "unsupportedType": "نوع آرایه {type} پشتیبانی نمی‌شود"
+      },
+      "object": {
+        "noProperties": "هیچ ویژگی تعریف نشده است",
+        "enterPlaceholder": "وارد کنید {field}..."
+      },
+      "section": {
+        "propertyCount": "۱ ویژگی | {count} ویژگی"
+      }
     }
   }
 }

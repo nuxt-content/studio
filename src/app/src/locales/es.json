@@ -266,6 +266,21 @@
       "description": "Elige una imagen de tu biblioteca multimedia",
       "noImagesAvailable": "No hay imágenes disponibles en tu biblioteca multimedia",
       "upload": "Subir"
+    },
+    "form": {
+      "array": {
+        "addItem": "Agregar {label}",
+        "deleteItem": "Eliminar elemento",
+        "editItem": "Editar elemento",
+        "unsupportedType": "Tipo de array {type} no soportado"
+      },
+      "object": {
+        "noProperties": "No hay propiedades definidas",
+        "enterPlaceholder": "Ingrese {field}..."
+      },
+      "section": {
+        "propertyCount": "1 propiedad | {count} propiedades"
+      }
     }
   }
 }

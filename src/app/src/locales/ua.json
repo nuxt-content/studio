@@ -266,6 +266,21 @@
       "description": "Виберіть зображення з вашої медіа бібліотеки",
       "noImagesAvailable": "Немає доступних зображень у вашій медіа бібліотеці",
       "upload": "Завантажити"
+    },
+    "form": {
+      "array": {
+        "addItem": "Додати {label}",
+        "deleteItem": "Видалити елемент",
+        "editItem": "Редагувати елемент",
+        "unsupportedType": "Тип масиву {type} не підтримується"
+      },
+      "object": {
+        "noProperties": "Властивості не визначені",
+        "enterPlaceholder": "Введіть {field}..."
+      },
+      "section": {
+        "propertyCount": "1 властивість | {count} властивостей"
+      }
     }
   }
 }

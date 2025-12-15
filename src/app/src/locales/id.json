@@ -266,6 +266,21 @@
       "description": "Pilih gambar dari pustaka media Anda",
       "noImagesAvailable": "Tidak ada gambar yang tersedia di pustaka media Anda",
       "upload": "Unggah"
+    },
+    "form": {
+      "array": {
+        "addItem": "Tambah {label}",
+        "deleteItem": "Hapus item",
+        "editItem": "Edit item",
+        "unsupportedType": "Tipe array {type} tidak didukung"
+      },
+      "object": {
+        "noProperties": "Tidak ada properti yang ditentukan",
+        "enterPlaceholder": "Masukkan {field}..."
+      },
+      "section": {
+        "propertyCount": "1 properti | {count} properti"
+      }
     }
   }
 }
