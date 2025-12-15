@@ -20,5 +20,5 @@ export type FormItem = {
   // Not in schema, created manually by user
   custom?: boolean
   // Items for array type
-  items?: FormItem
+  arrayItemForm?: FormItem
 }

@@ -95,7 +95,7 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
           id,
           title: upperFirst(itemKey),
           type: 'array',
-          items: buildFormTreeItem(def.items, `#${itemKey}/items`)!,
+          arrayItemForm: buildFormTreeItem(def.items, `#${itemKey}/items`)!,
         }
       }
 
@@ -127,7 +127,7 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
     }
 
     if (type === 'array' && def.items) {
-      item.items = buildFormTreeItem(def.items, `#${itemKey}/items`)!
+      item.arrayItemForm = buildFormTreeItem(def.items, `#${itemKey}/items`)!
     }
 
     if (def.enum && Array.isArray(def.enum) && def.enum.length > 0) {

@@ -8,4 +8,5 @@ modules:
   - studio
   - content
   - mdc
+  - hub
 ---

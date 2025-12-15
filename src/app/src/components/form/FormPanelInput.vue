@@ -36,6 +36,8 @@ const inputType = computed(() => {
   }
 })
 
+const isArrayType = computed(() => props.formItem.type === 'array')
+
 // Initialize model value
 const model = ref(computeValue(props.formItem))
 
@@ -46,7 +48,7 @@ watch(model, (newValue) => {
   }
 
   form.value = applyValueById(form.value, props.formItem.id, newValue)
-})
+}, { deep: true })
 
 // Watch for external form item changes
 watch(() => props.formItem, (newFormItem) => {
@@ -87,7 +89,13 @@ function computeValue(formItem: FormItem): unknown {
       label: 'text-xs font-medium tracking-tight',
     }"
   >
+    <FormInputArray
+      v-if="isArrayType"
+      v-model="model"
+      :form-item="formItem.arrayItemForm"
+    />
     <UInput
+      v-else
       :id="formItem.id"
       v-model="model"
       :placeholder="placeholder"
