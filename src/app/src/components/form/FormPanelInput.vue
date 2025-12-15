@@ -62,6 +62,7 @@ function computeValue(formItem: FormItem): unknown {
 
   switch (formItem.type) {
     case 'string':
+    case 'date':
     case 'icon':
     case 'media':
     case 'file':
