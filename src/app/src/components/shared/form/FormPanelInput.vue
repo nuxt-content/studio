@@ -84,7 +84,7 @@ function computeValue(formItem: FormItem): unknown {
     :label="label"
     :ui="{
       root: 'w-full mt-2',
-      label: 'text-xs font-semibold tracking-tight',
+      label: 'text-xs font-medium tracking-tight',
     }"
   >
     <UInput

@@ -24,9 +24,7 @@ const childrenCount = computed(() => {
     class="w-full group/collapsible"
     :default-open="true"
   >
-    <div
-      class="flex items-center gap-2 w-full py-2"
-    >
+    <div class="flex items-center gap-2 w-full mt-3">
       <div class="flex items-center justify-center size-4 rounded bg-gray-100 dark:bg-gray-800 transition-colors duration-200 group-hover/collapsible:bg-gray-200 dark:group-hover/collapsible:bg-gray-700">
         <UIcon
           name="i-lucide-chevron-right"
@@ -34,7 +32,7 @@ const childrenCount = computed(() => {
         />
       </div>
       <div class="flex gap-2 items-center">
-        <span class="font-semibold text-gray-900 dark:text-gray-100 tracking-tight">
+        <span class="text-xs font-semibold text-gray-900 dark:text-gray-100 tracking-tight">
           {{ formItem.title }}
         </span>
         <UBadge
@@ -43,13 +41,13 @@ const childrenCount = computed(() => {
           size="xs"
           class="text-muted"
         >
-          {{ childrenCount }} child{{ childrenCount === 1 ? '' : 'ren' }}
+          {{ childrenCount }} propert{{ childrenCount === 1 ? 'y' : 'ies' }}
         </UBadge>
       </div>
     </div>
 
     <template #content>
-      <div class="mt-1 ml-5 pl-4 border-l border-gray-200 dark:border-gray-700/50 space-y-0.5">
+      <div class="mt-1 ml-3 pl-3 border-l border-gray-200 dark:border-gray-700/50 space-y-0.5">
         <FormPanelSection
           v-for="childKey in Object.keys(formItem.children)"
           :key="formItem.children[childKey].id"

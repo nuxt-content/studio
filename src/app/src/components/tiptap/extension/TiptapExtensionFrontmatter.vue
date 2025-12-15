@@ -1,54 +1,30 @@
 <script setup lang="ts">
 import { nodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/vue-3'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useStudio } from '../../../composables/useStudio'
-import { useMonaco } from '../../../composables/useMonaco'
-import { jsonToYaml, yamlToJson } from '../../../utils/data'
+import type { Draft07 } from '@nuxt/content'
 
 const nodeProps = defineProps(nodeViewProps)
 
-const { ui } = useStudio()
+const { host, documentTree } = useStudio()
 
-const editorRef = ref<HTMLElement>()
 const collapsed = ref(true)
-const loadingMonaco = ref(true)
 
 const textColor = computed(() => collapsed.value ? 'text-muted group-hover/header:text-default' : 'text-default')
 
-const frontmatter = computed({
+const collection = computed(() => {
+  const currentItem = documentTree.currentItem.value
+  if (!currentItem?.fsPath) return null
+  return host.collection.getByFsPath(currentItem.fsPath)
+})
+
+const frontmatterJSON = computed({
   get: () => {
-    return jsonToYaml(nodeProps.node.attrs.frontmatter)
+    return nodeProps.node.attrs.frontmatter || {}
   },
   set: (value) => {
-    return nodeProps.updateAttributes({ frontmatter: yamlToJson(value) })
+    nodeProps.updateAttributes({ frontmatter: value })
   },
-})
-
-let monaco: ReturnType<typeof useMonaco> | null = null
-watch(collapsed, async (isCollapsed) => {
-  if (isCollapsed) {
-    return
-  }
-
-  if (!monaco) {
-    monaco = useMonaco(editorRef, {
-      language: 'yaml',
-      initialContent: frontmatter.value,
-      readOnly: false,
-      colorMode: ui.colorMode,
-      onChange(value: string) {
-        frontmatter.value = value
-      },
-    })
-
-    loadingMonaco.value = false
-  }
-})
-
-watch(frontmatter, () => {
-  if (monaco) {
-    monaco.setContent(frontmatter.value || '')
-  }
 })
 </script>
 
@@ -87,13 +63,16 @@ watch(frontmatter, () => {
         v-show="!collapsed"
         :min-height="100"
         :max-height="500"
-        :initial-height="100"
+        :initial-height="270"
         class="mt-1 border-l-2 shadow-xs border-dashed border-muted bg-muted/30 overflow-hidden"
       >
-        <div
-          ref="editorRef"
-          class="w-full h-full overflow-hidden"
-        />
+        <div class="px-4 pt-2 pb-4 overflow-y-auto h-full">
+          <FormSchemaBased
+            v-model="frontmatterJSON"
+            :collection-name="collection!.name"
+            :schema="collection!.schema as Draft07"
+          />
+        </div>
       </ResizableElement>
     </div>
     <NodeViewContent />

@@ -4,7 +4,7 @@ import { useStudio } from '../../../composables/useStudio'
 import { useStudioState } from '../../../composables/useStudioState'
 import type { StudioAction } from '../../../types'
 import { StudioItemActionId, TreeStatus } from '../../../types'
-import { MEDIA_EXTENSIONS, getFileExtension } from '../../../utils/file'
+import { MEDIA_EXTENSIONS } from '../../../utils/file'
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 import { useI18n } from 'vue-i18n'
 
@@ -33,12 +33,10 @@ const extraActions = computed<DropdownMenuItem[]>(() => {
   const actions: DropdownMenuItem[] = []
 
   if (item.value.type === 'file') {
-    const fileExtension = getFileExtension(item.value.fsPath)
-    const isMarkdown = fileExtension === 'md'
     const isConflictDetected = context.activeTree.value.draft.current.value?.conflict
 
     // Add editor mode switch for markdown files
-    if (isMarkdown && !isConflictDetected) {
+    if (!isConflictDetected) {
       actions.push({
         label: preferences.value.editorMode === 'code'
           ? t('studio.actions.labels.switchToTipTap')
