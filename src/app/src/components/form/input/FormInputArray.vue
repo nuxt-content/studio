@@ -88,7 +88,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
             size="2xs"
             icon="i-lucide-trash"
             class="opacity-0 group-hover/item:opacity-100 transition-opacity"
-            aria-label="Delete item"
+            :aria-label="$t('studio.form.deleteItem')"
             @click.stop="deleteItem(item.index)"
           />
         </template>
@@ -136,7 +136,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
               size="2xs"
               :icon="activeIndex === item.index ? 'i-lucide-check' : 'i-lucide-pencil'"
               :class="{ 'font-medium': activeIndex === item.index }"
-              aria-label="Edit item"
+              :aria-label="$t('studio.form.editItem')"
               @click.stop="activeIndex === item.index ? saveStringEditing : startStringEditing(item.index, item.value)"
             />
             <UButton
@@ -144,7 +144,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
               color="neutral"
               size="2xs"
               :icon="activeIndex === item.index ? 'i-lucide-x' : 'i-lucide-trash'"
-              aria-label="Delete item"
+              :aria-label="$t('studio.form.deleteItem')"
               @click.stop="deleteItem(item.index)"
             />
           </div>
@@ -158,7 +158,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
       class="flex items-center justify-center py-2 rounded-lg border border-dashed border-muted"
     >
       <p class="text-xs text-muted">
-        Array type {{ itemsType || '' }} not supported
+        {{ $t('studio.form.array.unsupportedType', { type: itemsType || '' }) }}
       </p>
     </div>
 
@@ -175,7 +175,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
         icon="i-lucide-plus"
         @click="addItem"
       >
-        Add {{ itemsLabel.toLowerCase() }}
+        {{ $t('studio.form.array.addItem', { label: itemsLabel.toLowerCase() }) }}
       </UButton>
     </div>
   </div>

@@ -64,7 +64,7 @@ function updateValue(key: string, value: string | number) {
         class="size-5 text-muted mb-2"
       />
       <p class="text-xs text-muted">
-        No properties defined
+        {{ $t('studio.form.object.noProperties') }}
       </p>
     </div>
   </div>

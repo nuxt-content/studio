@@ -31,7 +31,7 @@ const childrenCount = computed(() => {
         variant="subtle"
         size="xs"
       >
-        {{ childrenCount }} propert{{ childrenCount === 1 ? 'y' : 'ies' }}
+        {{ $t('studio.form.section.propertyCount', childrenCount) }}
       </UBadge>
     </template>
 
