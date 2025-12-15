@@ -46,7 +46,7 @@ function updateValue(key: string, value: string | number) {
         }"
       >
         <UInput
-          :model-value="entry.value"
+          v-model="(entry.value as string | number)"
           :placeholder="entry.placeholder"
           :type="entry.type"
           class="w-full"

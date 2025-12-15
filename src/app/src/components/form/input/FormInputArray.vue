@@ -94,7 +94,7 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
         </template>
 
         <FormInputObject
-          :model-value="item.value"
+          v-model="(item.value as Record<string, unknown>)"
           :children="formItem.children"
           @update:model-value="updateObjectItem(item.index, $event)"
         />

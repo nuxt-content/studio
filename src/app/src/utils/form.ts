@@ -51,7 +51,7 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
         }
 
         // Handle multiple types with boolean
-        if (item?.type !== 'boolean' && booleanDef) {
+        if (item!.type !== 'boolean' && booleanDef) {
           item!.toggleable = true
         }
 

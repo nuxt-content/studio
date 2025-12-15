@@ -91,13 +91,13 @@ function computeValue(formItem: FormItem): unknown {
   >
     <FormInputArray
       v-if="isArrayType"
-      v-model="model"
+      v-model="(model as unknown[])"
       :form-item="formItem.arrayItemForm"
     />
     <UInput
       v-else
       :id="formItem.id"
-      v-model="model"
+      v-model="(model as string | number)"
       :placeholder="placeholder"
       :type="inputType"
       class="w-full"

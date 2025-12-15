@@ -67,7 +67,7 @@ describe('buildFormTreeFromSchema', () => {
             id: '#posts/array',
             type: 'array',
             title: 'Array',
-            items: {
+            arrayItemForm: {
               id: '#array/items',
               type: 'object',
               title: 'Items',
@@ -167,7 +167,7 @@ describe('buildFormTreeFromSchema', () => {
                   id: '#pricing/plans/solo/features',
                   title: 'Features',
                   type: 'array',
-                  items: {
+                  arrayItemForm: {
                     id: '#features/items',
                     title: 'Items',
                     type: 'string',
@@ -707,7 +707,7 @@ describe('applyValuesToFormTree', () => {
             type: 'array',
             title: 'Authors',
             value: ['alexia-wong'],
-            items: {
+            arrayItemForm: {
               id: '#authors/items',
               title: 'Items',
               type: 'object',
