@@ -6,13 +6,7 @@ import { useRuntimeConfig } from '#imports'
 
 const requiredUserFields: Array<keyof StudioUser> = ['providerId', 'accessToken', 'name', 'email', 'provider']
 
-export type SetStudioUserSessionUser = StudioUser
-
-export async function setStudioUserSession(
-  event: H3Event,
-  user: SetStudioUserSessionUser,
-  sessionData: Record<string, unknown> = {},
-) {
+export async function setStudioUserSession(event: H3Event, user: StudioUser) {
   const missingFields = requiredUserFields.filter(key => !user[key])
 
   if (missingFields.length > 0) {
@@ -28,7 +22,6 @@ export async function setStudioUserSession(
   })
 
   const payload = defu({
-    ...sessionData,
     user: {
       ...user,
     },
