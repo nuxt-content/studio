@@ -1,8 +1,9 @@
-import { eventHandler, createError, getQuery, sendRedirect, useSession, getRequestURL, getCookie, deleteCookie, setCookie, type H3Event } from 'h3'
+import { eventHandler, createError, getQuery, sendRedirect, getRequestURL, getCookie, deleteCookie, type H3Event } from 'h3'
 import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import { useRuntimeConfig } from '#imports'
 import { generateOAuthState, requestAccessToken, validateOAuthState } from '../../../utils/auth'
+import { setStudioUserSession } from '../../utils/session'
 
 export interface GoogleUser {
   sub: string
@@ -198,29 +199,17 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  // Success
-  const session = await useSession(event, {
-    name: 'studio-session',
-    password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
+  await setStudioUserSession(event, {
+    providerId: String(user.sub).toString(),
+    accessToken: repositoryToken as string,
+    name: user.name || `${user.given_name || ''} ${user.family_name || ''}`.trim(),
+    avatar: user.picture,
+    email: user.email,
+    provider: 'google',
   })
-
-  await session.update(defu({
-    user: {
-      contentUser: true,
-      providerId: String(user.sub).toString(),
-      accessToken: repositoryToken,
-      name: user.name || `${user.given_name || ''} ${user.family_name || ''}`.trim(),
-      avatar: user.picture,
-      email: user.email,
-      provider: 'google',
-    },
-  }, session.data))
 
   const redirect = decodeURIComponent(getCookie(event, 'studio-redirect') || '')
   deleteCookie(event, 'studio-redirect')
-
-  // Set a cookie to indicate that the session is active
-  setCookie(event, 'studio-session-check', 'true', { httpOnly: false })
 
   // make sure the redirect is a valid relative path (avoid also // which is not a valid URL)
   if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {

@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, addServerHandler, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, addServerHandler, addTemplate, addServerImports } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
 import { resolve } from 'node:path'
@@ -178,6 +178,17 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
     const runtime = (...args: string[]) => resolver.resolve('./runtime', ...args)
+
+    addServerImports([
+      {
+        name: 'setStudioUserSession',
+        from: runtime('./server/utils/session'),
+      },
+      {
+        name: 'clearStudioUserSession',
+        from: runtime('./server/utils/session'),
+      },
+    ])
 
     if (nuxt.options.dev === false || options.development?.sync === false) {
       options.dev = false

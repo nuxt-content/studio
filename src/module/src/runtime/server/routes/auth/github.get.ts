@@ -1,10 +1,11 @@
 import type { H3Event } from 'h3'
-import { eventHandler, getQuery, sendRedirect, createError, getRequestURL, setCookie, deleteCookie, getCookie, useSession } from 'h3'
+import { eventHandler, getQuery, sendRedirect, createError, getRequestURL, deleteCookie, getCookie } from 'h3'
 import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import type { Endpoints } from '@octokit/types'
 import { useRuntimeConfig } from '#imports'
 import { generateOAuthState, requestAccessToken, validateOAuthState } from '../../../utils/auth'
+import { setStudioUserSession } from '../../utils/session'
 
 export interface OAuthGitHubConfig {
   /**
@@ -180,29 +181,17 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  // Success
-  const session = await useSession(event, {
-    name: 'studio-session',
-    password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
+  await setStudioUserSession(event, {
+    providerId: user.id.toString(),
+    accessToken: token.access_token,
+    name: user.name || user.login,
+    avatar: user.avatar_url,
+    email: user.email!,
+    provider: 'github',
   })
-
-  await session.update(defu({
-    user: {
-      contentUser: true,
-      providerId: user.id.toString(),
-      accessToken: token.access_token,
-      name: user.name || user.login,
-      avatar: user.avatar_url,
-      email: user.email,
-      provider: 'github',
-    },
-  }, session.data))
 
   const redirect = decodeURIComponent(getCookie(event, 'studio-redirect') || '')
   deleteCookie(event, 'studio-redirect')
-
-  // Set a cookie to indicate that the session is active
-  setCookie(event, 'studio-session-check', 'true', { httpOnly: false })
 
   // make sure the redirect is a valid relative path (avoid also // which is not a valid URL)
   if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
