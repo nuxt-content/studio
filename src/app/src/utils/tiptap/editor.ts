@@ -104,6 +104,11 @@ export const getStandardSuggestionItems = (t: TFunction): EditorSuggestionMenuIt
       icon: 'i-lucide-image',
     },
     {
+      kind: 'video',
+      label: t('studio.tiptap.suggestion.video'),
+      icon: 'i-lucide-video',
+    },
+    {
       kind: 'horizontalRule',
       label: t('studio.tiptap.suggestion.horizontalRule'),
       icon: 'i-lucide-separator-horizontal',

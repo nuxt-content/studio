@@ -102,6 +102,7 @@
       "metaWidth": "عرض",
       "metaHeight": "ارتفاع",
       "metaType": "نوع",
+      "metaDuration": "مدت",
       "metaSize": "اندازه",
       "fileName": "نام فایل",
       "publicPath": "مسیر عمومی",
@@ -219,6 +220,7 @@
         "paragraph": "پاراگراف",
         "insert": "درج",
         "image": "تصویر",
+        "video": "ویدیو",
         "horizontalRule": "خط افقی"
       },
       "drag": {
@@ -262,10 +264,18 @@
       }
     },
     "mediaPicker": {
-      "title": "انتخاب تصویر",
-      "description": "تصویری از کتابخانه رسانه خود انتخاب کنید",
-      "noImagesAvailable": "هیچ تصویری در کتابخانه رسانه شما موجود نیست",
-      "upload": "آپلود"
+      "image": {
+        "title": "انتخاب تصویر",
+        "description": "تصویری از کتابخانه رسانه خود انتخاب کنید",
+        "notAvailable": "هیچ تصویری در کتابخانه رسانه شما موجود نیست",
+        "upload": "آپلود"
+      },
+      "video": {
+        "title": "انتخاب ویدیو",
+        "description": "ویدیویی از کتابخانه رسانه خود انتخاب کنید",
+        "notAvailable": "هیچ ویدیویی در کتابخانه رسانه شما موجود نیست",
+        "upload": "آپلود"
+      }
     },
     "form": {
       "array": {

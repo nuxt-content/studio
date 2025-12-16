@@ -102,6 +102,7 @@
       "metaWidth": "Szerokość",
       "metaHeight": "Wysokość",
       "metaType": "Typ",
+      "metaDuration": "Czas trwania",
       "metaSize": "Rozmiar",
       "fileName": "Nazwa pliku",
       "publicPath": "Ścieżka publiczna",
@@ -219,6 +220,7 @@
         "paragraph": "Akapit",
         "insert": "Wstaw",
         "image": "Obraz",
+        "video": "Video",
         "horizontalRule": "Linia pozioma"
       },
       "drag": {
@@ -262,10 +264,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Wybierz obraz",
-      "description": "Wybierz obraz z biblioteki mediów",
-      "noImagesAvailable": "Brak dostępnych obrazów w bibliotece mediów",
-      "upload": "Prześlij"
+      "image": {
+        "title": "Wybierz obraz",
+        "description": "Wybierz obraz z biblioteki mediów",
+        "notAvailable": "Brak dostępnych obrazów w bibliotece mediów",
+        "upload": "Prześlij"
+      },
+      "video": {
+        "title": "Wybierz wideo",
+        "description": "Wybierz wideo z biblioteki mediów",
+        "notAvailable": "Brak dostępnych wideo w bibliotece mediów",
+        "upload": "Prześlij"
+      }
     },
     "form": {
       "array": {
