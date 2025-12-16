@@ -102,6 +102,7 @@
       "metaWidth": "Largeur",
       "metaHeight": "Hauteur",
       "metaType": "Type",
+      "metaDuration": "Durée",
       "metaSize": "Taille",
       "fileName": "Nom du fichier",
       "publicPath": "Chemin public",
@@ -219,6 +220,7 @@
         "paragraph": "Paragraphe",
         "insert": "Insérer",
         "image": "Image",
+        "video": "Vidéo",
         "horizontalRule": "Ligne horizontale"
       },
       "drag": {
@@ -262,10 +264,18 @@
       }
     },
     "mediaPicker": {
-      "title": "Sélectionner une image",
-      "description": "Choisissez une image depuis votre bibliothèque de médias",
-      "noImagesAvailable": "Aucune image disponible dans votre bibliothèque de médias",
-      "upload": "Importer"
+      "image": {
+        "title": "Sélectionner une image",
+        "description": "Choisissez une image depuis votre bibliothèque de médias",
+        "notAvailable": "Aucune image disponible dans votre bibliothèque de médias",
+        "upload": "Importer"
+      },
+      "video": {
+        "title": "Sélectionner une vidéo",
+        "description": "Choisissez une vidéo depuis votre bibliothèque de médias",
+        "notAvailable": "Aucune vidéo disponible dans votre bibliothèque de médias",
+        "upload": "Importer"
+      }
     },
     "form": {
       "array": {

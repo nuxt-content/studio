@@ -102,6 +102,7 @@
       "metaWidth": "宽度",
       "metaHeight": "高度",
       "metaType": "类型",
+      "metaDuration": "时长",
       "metaSize": "大小",
       "fileName": "文件名",
       "publicPath": "公共路径",
@@ -219,6 +220,7 @@
         "paragraph": "段落",
         "insert": "插入",
         "image": "图片",
+        "video": "视频",
         "horizontalRule": "水平线"
       },
       "drag": {
@@ -262,10 +264,18 @@
       }
     },
     "mediaPicker": {
-      "title": "选择图片",
-      "description": "从媒体库中选择一张图片",
-      "noImagesAvailable": "媒体库中没有可用图片",
-      "upload": "上传"
+      "image": {
+        "title": "选择图片",
+        "description": "从媒体库中选择一张图片",
+        "notAvailable": "媒体库中没有可用图片",
+        "upload": "上传"
+      },
+      "video": {
+        "title": "选择视频",
+        "description": "从媒体库中选择一个视频",
+        "notAvailable": "媒体库中没有可用视频",
+        "upload": "上传"
+      }
     },
     "form": {
       "array": {

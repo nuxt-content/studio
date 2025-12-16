@@ -9,7 +9,7 @@ const DraftStatus = {
   Pristine: 'pristine'
 }
 
-const IMAGE_EXTENSIONS = [
+const MEDIA_EXTENSIONS = [
   'png',
   'jpg',
   'jpeg',
@@ -18,6 +18,18 @@ const IMAGE_EXTENSIONS = [
   'avif',
   'ico',
   'gif',
+  'mp4',
+  'mov',
+  'avi',
+  'mkv',
+  'webm',
+  'ogg',
+  'mp3',
+  'wav',
+  'aac',
+  'm4a',
+  'm4v',
+  'm4b',
 ]
 
 function extractImagePath(url) {
@@ -30,7 +42,7 @@ function extractImagePath(url) {
     return url.searchParams.get('url') || null
   }
 
-  if (IMAGE_EXTENSIONS.includes(pathname.split('.').pop())) {
+  if (MEDIA_EXTENSIONS.includes(pathname.split('.').pop())) {
     return pathname
   }
 
