@@ -32,7 +32,8 @@ const isAudio = computed(() => isAudioFile(props.mediaItem?.path || ''))
     />
     <MediaEditorVideo
       v-else-if="isVideo"
-      :src="mediaItem.path!"
+      :media-item="mediaItem"
+      :remote-file="remoteFile"
     />
     <MediaEditorAudio
       v-else-if="isAudio"

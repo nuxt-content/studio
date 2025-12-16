@@ -102,6 +102,7 @@
       "metaWidth": "Breedte",
       "metaHeight": "Hoogte",
       "metaType": "Type",
+      "metaDuration": "Duur",
       "metaSize": "Grootte",
       "fileName": "Bestandsnaam",
       "publicPath": "Publiek pad",

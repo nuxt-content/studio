@@ -101,6 +101,7 @@
       "metaWidth": "幅",
       "metaHeight": "高さ",
       "metaType": "タイプ",
+      "metaDuration": "再生時間",
       "metaSize": "サイズ",
       "fileName": "ファイル名",
       "publicPath": "公開パス",

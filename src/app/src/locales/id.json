@@ -102,6 +102,7 @@
       "metaWidth": "Lebar",
       "metaHeight": "Tinggi",
       "metaType": "Tipe",
+      "metaDuration": "Durasi",
       "metaSize": "Ukuran",
       "fileName": "Nama berkas",
       "publicPath": "Path publik",

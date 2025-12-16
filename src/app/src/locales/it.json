@@ -102,6 +102,7 @@
       "metaWidth": "Larghezza",
       "metaHeight": "Altezza",
       "metaType": "Tipo",
+      "metaDuration": "Durata",
       "metaSize": "Dimensione",
       "fileName": "Nome file",
       "publicPath": "Percorso pubblico",

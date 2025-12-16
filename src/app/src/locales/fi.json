@@ -102,6 +102,7 @@
         "metaWidth": "Leveys",
         "metaHeight": "Korkeus",
         "metaType": "Tyyppi",
+      "metaDuration": "Kesto",
         "metaSize": "Koko",
         "fileName": "Tiedostonimi",
         "publicPath": "Julkinen polky",

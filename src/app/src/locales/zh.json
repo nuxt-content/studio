@@ -102,6 +102,7 @@
       "metaWidth": "宽度",
       "metaHeight": "高度",
       "metaType": "类型",
+      "metaDuration": "时长",
       "metaSize": "大小",
       "fileName": "文件名",
       "publicPath": "公共路径",
