@@ -1,73 +1,59 @@
 # Nuxt Studio
 
-[![npm version](https://img.shields.io/npm/v/nuxt-studio/alpha.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/nuxt-studio)
-[![npm downloads](https://img.shields.io/npm/dm/nuxt-studio.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npm.chart.dev/nuxt-studio)
-[![License](https://img.shields.io/npm/l/nuxt-studio.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/nuxt-studio)
-
----
-
-## ⚠️ Alpha Version
-
-> **Current Status: Alpha Testing**
->
-> Nuxt Studio is currently in **alpha** and now includes both the Monaco code editor and the new **TipTap visual editor** for Markdown content. This phase focuses on testing and stabilizing core functionality:
->
-> - ✅ File operations (create, edit, delete, rename)
-> - ✅ Content editing with Monaco code editor
-> - ✅ **NEW:** Visual editing with TipTap editor for Markdown
-> - ✅ Media management and uploads
-> - ✅ GitHub authentication and publishing workflow
->
->
-> The TipTap visual editor provides a WYSIWYG editing experience for Markdown content, including support for MDC components, with seamless conversion between visual and code modes.
->
-> Read the [announcement blog post](https://content.nuxt.com/blog/studio-module-alpha) for more details.
-
----
+![npm version](https://img.shields.io/npm/v/nuxt-studio/alpha.svg?style=flat\&colorA=020420\&colorB=EEEEEE)![npm downloads](https://img.shields.io/npm/dm/nuxt-studio.svg?style=flat\&colorA=020420\&colorB=EEEEEE)![License](https://img.shields.io/npm/l/nuxt-studio.svg?style=flat\&colorA=020420\&colorB=EEEEEE)
 
 Visual edition in production for your [Nuxt Content](https://content.nuxt.com) website.
 
-Originally offered as a standalone premium platform at https://nuxt.studio, Studio has evolved into a free, open-source, and self-hostable Nuxt module. Enable your entire team to edit website content right in production.
+Originally offered as a standalone premium platform at <https://nuxt.studio>, Studio has evolved into a free, open-source, and self-hostable Nuxt module. Enable your entire team to edit website content right in production.
 
-**Current Features (Alpha):**
+**Current Features** `BETA`
 
 - 💻 **Monaco Code Editor** - Code editor for enhanced Markdown with MDC syntax, YAML, and JSON
-- ✨ **TipTap Visual Editor** - Markdown editor with MDC component support
+- ✨ **TipTap Visual Editor** - WYSIWYG Markdown editor with MDC component support (default mode)
+- 📝 **Form-based Editor** - Edit YAML/JSON files and frontmatter with auto-generated forms based on collection schemas
 - 🔄 **Real-time Preview** - See your changes instantly on your production website
-- 🔐 **GitHub Authentication** - Secure OAuth-based login with GitHub
+- 🔐 **Multi-provider Authentication** - Secure OAuth-based login with GitHub, GitLab, and Google
 - 📝 **File Management** - Create, edit, delete, and rename content files (`content/` directory)
-- 🖼️ **Media Management** - Centralized media library for all your assets (`public/` directory) with visual media picker
+- 🖼️ **Media Management** - Centralized media library with support for JPEG, PNG, GIF, WebP, AVIF, SVG, and more
 - 🌳 **Git Integration** - Commit changes directly from your production website and just wait your CI/CD pipeline to deploy your changes
 - 🚀 **Development Mode** - Directly edit your content files and media files in your local filesystem using the module interface
+- 🌍 **16 Languages** - Full i18n support (AR, BG, DE, EN, ES, FA, FI, FR, ID, IT, JA, NL, PL, PT-BR, UA, ZH)
 
 **Coming in Beta:**
-- 📝 **Frontmatter Form Editor** - Edit frontmatter metadata with auto-generated forms based on collection schemas
+
 - 🎨 **Vue Component Props Editor** - Visual interface for editing Vue component props and slots
-- 🔐 **Google OAuth Authentication** - Secure OAuth-based login with Google
 
 **Future Features:**
+
 - 📂 **Collections view** - View and manage your content collections in a unified interface
 - 🖼️ **Media optimization** - Optimize your media files in the editor
 - 🤖 **AI Content Assistant** — Receive smart, AI-powered suggestions to enhance your content creation flow
 - 💡 **Community-driven Features** — Have an idea? [Share your suggestions](https://github.com/nuxt-content/studio/discussions) to shape the future of Nuxt Studio
 
 ### Resources
+
 - [📖 Documentation](https://content.nuxt.com/docs/studio/setup)
 - [🎮 Live Demo](https://docus.dev/admin)
 
 ## Quick Setup
-
-> **Note**: This alpha release provides both a Monaco code editor and a TipTap visual WYSIWYG editor for Markdown content. You can switch between them at any time.
 
 ### 1. Install
 
 Install the module in your Nuxt application:
 
 ```bash
-npx nuxi module add nuxt-studio@alpha
+npx nuxi module add nuxt-studio@beta
 ```
 
-### 2. Configure
+### 2. Dev Mode
+
+🚀 **That's all you need to enable Studio locally!**
+
+Run your Nuxt app and navigate to `/_studio` to start editing. Any file changes will be synchronized in real time with the file system.
+
+> **Note**: The publish system is only available in production mode. Use your classical workflow (IDE, CLI, GitHub Desktop...) to publish your changes locally.
+
+### 3. Configure Production
 
 Add it to your `nuxt.config.ts` and configure your repository:
 
@@ -93,35 +79,15 @@ export default defineNuxtConfig({
 })
 ```
 
-### 3. Dev Mode
-
-🚀 **That's all you need to enable Studio locally!**
-
-Run your Nuxt app and navigate to `/_studio` to start editing. Any file changes will be synchronized in real time with the file system.
-
-> **Note**: The publish system is only available in production mode. Use your classical workflow (IDE, CLI, GitHub Desktop...) to publish your changes locally.
-
 ### 4. Production Mode
 
 To enable publishing directly from your production website, you need to configure OAuth authentication.
 
-#### Create a GitHub OAuth App
+#### Choose your Oauth provider
 
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Click **"New OAuth App"**
-3. Fill in the application details:
-   - **Application name**: Your App Name
-   - **Homepage URL**: Your website homepage URL
-   - **Authorization callback URL**: `${YOUR_WEBSITE_URL}/_studio/auth/github`
-4. Copy the **Client ID** and generate a **Client Secret**
-5. Add them to your deployment environment variables:
-
-```bash
-STUDIO_GITHUB_CLIENT_ID=your_github_client_id
-STUDIO_GITHUB_CLIENT_SECRET=your_github_client_secret
-```
-
-> **Note**: GitLab is also supported. See the [providers documentation](https://content.nuxt.com/docs/studio/providers) for setup instructions.
+::tip{to="https://content.nuxt.com/docs/studio/providers"}
+Browse the official documentation to configure the provider you want to use.
+::
 
 #### Deployment
 
@@ -162,9 +128,13 @@ export default defineNuxtConfig({
 ```
 
 ## Contributing
-You must clone the repository and create a local GitHub OAuth App (pointing to `http://localhost:3000` as callback URL).
 
-Set your GitHub OAuth credentials in the `.env` file.
+You can start contributing by cloning the repository and using the playground in dev mode (set `dev` option to `true`).
+
+::note
+#default
+If you want to contribute with production mode you must create a local GitHub OAuth App (pointing to `http://localhost:3000` as callback URL).
+::
 
 ### Development Setup
 
@@ -189,7 +159,7 @@ pnpm dev:app
 
 ### Project Structure
 
-```
+```text
 studio/
 ├── src/
 │   ├── app/           # Studio editor Vue app
@@ -200,6 +170,15 @@ studio/
 ```
 
 ### Testing
+
+You can run a global command to test all needed check at once.
+
+```bash
+# Global verify running all needed commands
+pnpm verify
+```
+
+Or run them one by one.
 
 ```bash
 # Run tests
@@ -215,30 +194,32 @@ pnpm lint
 ## Roadmap
 
 ### ✅ Phase 1 - Alpha (Current)
+
 - [x] Monaco code editor
-- [x] TipTap visual editor with MDC support
-- [x] Editor mode switching (code ↔ visual)
+- [x] TipTap visual editor with MDC support (default mode)
+- [x] Editor mode switching (code ↔ visual/form)
+- [x] Form-based editor for YAML/JSON and frontmatter (schema-based)
 - [x] File operations (create, edit, delete, rename)
 - [x] Media management with visual picker
 - [x] Enhanced component slot editing
 - [x] GitHub authentication
 - [x] GitLab provider support
-- [x] Development mode (**experimental**)
+- [x] Google OAuth authentication
+- [x] Development mode
 - [x] Git integration
 - [x] Real-time preview
-- [x] Google OAuth authentication
+- [x] Internationalization (16 languages)
 
 ### 🚧 Phase 2 - Beta (In Development)
-- [ ] Frontmatter edition as form (schema-based)
-- [ ] YAML and JSON edition as form (schema-based)
+
 - [ ] Vue Component props editor (visual interface)
 
 ### 🔮 Future
 
-- [ ] Other provider support
 - [ ] Advanced conflict resolution
 - [ ] Pull request generation (from a branch to the main one)
 - [ ] AI-powered content suggestions
+- [ ] Media optimization
 
 ## Links
 
