@@ -6,7 +6,7 @@ import { defu } from 'defu'
 import type { UserSchema } from '@gitbeaker/core'
 import { useRuntimeConfig } from '#imports'
 import { generateOAuthState, validateOAuthState } from '../../../utils/auth'
-import { setStudioUserSession } from '../../utils/session'
+import { setInternalStudioUserSession } from '../../utils/session'
 
 export interface OAuthGitLabConfig {
   /**
@@ -84,6 +84,9 @@ interface RequestAccessTokenOptions {
 }
 
 export default eventHandler(async (event: H3Event) => {
+  /**
+   * OAuth provider validation
+   */
   const studioConfig = useRuntimeConfig(event).studio
   const instanceUrl = studioConfig?.auth?.gitlab?.instanceUrl || 'https://gitlab.com'
 
@@ -146,6 +149,17 @@ export default eventHandler(async (event: H3Event) => {
   // validate OAuth state and delete the cookie or throw an error
   validateOAuthState(event, query.state as string)
 
+  // TODO: Use a generic STUDIO_GIT_TOKEN for all Git providers
+  if (studioConfig.repository.provider !== 'gitlab') {
+    throw createError({
+      statusCode: 500,
+      message: 'GitLab Oauth provider only supports GitLab repository provider',
+    })
+  }
+
+  /**
+   * Git provider token validation
+   */
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {
       grant_type: 'authorization_code',
@@ -188,7 +202,7 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  await setStudioUserSession(event, {
+  await setInternalStudioUserSession(event, {
     providerId: user.id.toString(),
     accessToken: token.access_token as string,
     name: user.name || user.username,

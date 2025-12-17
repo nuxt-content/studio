@@ -5,7 +5,7 @@ import { defu } from 'defu'
 import type { Endpoints } from '@octokit/types'
 import { useRuntimeConfig } from '#imports'
 import { generateOAuthState, requestAccessToken, validateOAuthState } from '../../../utils/auth'
-import { setStudioUserSession } from '../../utils/session'
+import { setInternalStudioUserSession } from '../../utils/session'
 
 export interface OAuthGitHubConfig {
   /**
@@ -65,6 +65,9 @@ export interface OAuthGitHubConfig {
 }
 
 export default eventHandler(async (event: H3Event) => {
+  /**
+   * OAuth provider validation
+   */
   const studioConfig = useRuntimeConfig(event).studio
   const config = defu(studioConfig?.auth?.github, {
     clientId: process.env.STUDIO_GITHUB_CLIENT_ID,
@@ -126,6 +129,17 @@ export default eventHandler(async (event: H3Event) => {
   // validate OAuth state and delete the cookie or throw an error
   validateOAuthState(event, query.state as string)
 
+  // TODO: Use a generic STUDIO_GIT_TOKEN for all Git providers
+  if (studioConfig.repository.provider !== 'github') {
+    throw createError({
+      statusCode: 500,
+      message: 'GitHub Oauth provider only supports GitHub repository provider',
+    })
+  }
+
+  /**
+   * Git provider validation
+   */
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {
       grant_type: 'authorization_code',
@@ -181,7 +195,7 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  await setStudioUserSession(event, {
+  await setInternalStudioUserSession(event, {
     providerId: user.id.toString(),
     accessToken: token.access_token,
     name: user.name || user.login,

@@ -1,12 +1,43 @@
 import type { H3Event } from 'h3'
 import { createError, deleteCookie, setCookie, useSession } from 'h3'
 import { defu } from 'defu'
-import type { StudioUser } from 'nuxt-studio/app'
+import type { StudioUser, GitProviderType } from 'nuxt-studio/app'
 import { useRuntimeConfig } from '#imports'
 
-const requiredUserFields: Array<keyof StudioUser> = ['providerId', 'accessToken', 'name', 'email', 'provider']
+interface StudioUserSession {
+  name: string
+  email: string
+  providerId?: string
+  avatar?: string
+}
 
-export async function setStudioUserSession(event: H3Event, user: StudioUser) {
+const requiredUserFields: Array<keyof StudioUser> = ['name', 'email']
+
+export async function setStudioUserSession(event: H3Event, userSession: StudioUserSession) {
+  const config = useRuntimeConfig().public
+  const provider = config.studio.repository.provider as GitProviderType
+  const accessToken
+    = provider === 'github'
+      ? process.env.STUDIO_GITHUB_TOKEN
+      : provider === 'gitlab'
+        ? process.env.STUDIO_GITLAB_TOKEN
+        : null
+
+  if (!accessToken) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: `Missing access token for ${provider} Git provider`,
+    })
+  }
+
+  await setInternalStudioUserSession(event, {
+    ...userSession,
+    provider,
+    accessToken,
+  })
+}
+
+export async function setInternalStudioUserSession(event: H3Event, user: StudioUser) {
   const missingFields = requiredUserFields.filter(key => !user[key])
 
   if (missingFields.length > 0) {

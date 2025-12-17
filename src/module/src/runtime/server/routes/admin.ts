@@ -1,5 +1,5 @@
 import { eventHandler, getQuery, setCookie, sendRedirect } from 'h3'
-import { useRuntimeConfig } from '#imports'
+import { createError } from '#imports'
 
 export default eventHandler((event) => {
   const { redirect } = getQuery(event)
@@ -9,25 +9,22 @@ export default eventHandler((event) => {
     })
   }
 
-  // Automatically redirect to the configured provider's OAuth endpoint
-  const config = useRuntimeConfig(event)
+  // Detect providers based on configured environment variables
+  const hasGithub = process.env.STUDIO_GITHUB_CLIENT_ID && 'github'
+  const hasGitlab = process.env.STUDIO_GITLAB_APPLICATION_ID && 'gitlab'
+  const hasGoogle = process.env.STUDIO_GOOGLE_CLIENT_ID && 'google'
 
-  // Directly redirect to the provider's OAuth endpoint if the Google auth is not enabled
-  if (!process.env.STUDIO_GOOGLE_CLIENT_ID) {
-    const provider = config.public.studio?.repository?.provider || 'github'
-
-    return sendRedirect(event, `/__nuxt_studio/auth/${provider}`)
+  const providers = [hasGithub, hasGitlab, hasGoogle].filter(Boolean)
+  if (providers.length === 0) {
+    throw createError({
+      statusCode: 404,
+      message: 'No authentication provider found',
+    })
   }
 
-  // Directly redirect to the Google auth endpoint if no other authentication provider is configured
-  if (!process.env.STUDIO_GITHUB_CLIENT_ID && !process.env.STUDIO_GITLAB_APPLICATION_ID) {
-    return sendRedirect(event, '/__nuxt_studio/auth/google')
+  if (providers.length === 1) {
+    return sendRedirect(event, `/__nuxt_studio/auth/${providers[0]}`)
   }
-
-  // Build provider buttons based on configured environment variables
-  const hasGithub = !!process.env.STUDIO_GITHUB_CLIENT_ID
-  const hasGitlab = !!process.env.STUDIO_GITLAB_APPLICATION_ID
-  const hasGoogle = !!process.env.STUDIO_GOOGLE_CLIENT_ID
 
   const githubButton = hasGithub
     ? `<a href="#" class="provider-btn github" data-provider="github">

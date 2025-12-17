@@ -3,7 +3,7 @@ import { withQuery } from 'ufo'
 import { defu } from 'defu'
 import { useRuntimeConfig } from '#imports'
 import { generateOAuthState, requestAccessToken, validateOAuthState } from '../../../utils/auth'
-import { setStudioUserSession } from '../../utils/session'
+import { setInternalStudioUserSession } from '../../utils/session'
 
 export interface GoogleUser {
   sub: string
@@ -71,6 +71,9 @@ export interface OAuthGoogleConfig {
 }
 
 export default eventHandler(async (event: H3Event) => {
+  /**
+   * OAuth provider validation
+   */
   const studioConfig = useRuntimeConfig(event).studio
   const config = defu(studioConfig?.auth?.google, {
     clientId: process.env.STUDIO_GOOGLE_CLIENT_ID,
@@ -101,25 +104,6 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  // Automatically redirect to the configured provider's OAuth endpoint
-  const provider = studioConfig?.repository?.provider || 'github'
-  if (provider === 'github' && !process.env.STUDIO_GITHUB_TOKEN) {
-    throw createError({
-      statusCode: 500,
-      message: '`STUDIO_GITHUB_TOKEN` is not set. Google authenticated users cannot push changes to the repository without a valid GitHub token.',
-    })
-  }
-  if (provider === 'gitlab' && !process.env.STUDIO_GITLAB_TOKEN) {
-    throw createError({
-      statusCode: 500,
-      message: '`STUDIO_GITLAB_TOKEN` is not set. Google authenticated users cannot push changes to the repository without a valid GitLab token.',
-    })
-  }
-
-  const repositoryToken = provider === 'github'
-    ? process.env.STUDIO_GITHUB_TOKEN
-    : process.env.STUDIO_GITLAB_TOKEN
-
   const requestURL = getRequestURL(event)
 
   config.redirectURL = config.redirectURL || `${requestURL.protocol}//${requestURL.host}${requestURL.pathname}`
@@ -145,6 +129,27 @@ export default eventHandler(async (event: H3Event) => {
 
   // validate OAuth state and delete the cookie or throw an error
   validateOAuthState(event, query.state as string)
+
+  /**
+   * Git provider token validation
+   */
+  const provider = studioConfig?.repository.provider
+  if (provider === 'github' && !process.env.STUDIO_GITHUB_TOKEN) {
+    throw createError({
+      statusCode: 500,
+      message: '`STUDIO_GITHUB_TOKEN` is not set. Google authenticated users cannot push changes to the repository without a valid GitHub token.',
+    })
+  }
+  if (provider === 'gitlab' && !process.env.STUDIO_GITLAB_TOKEN) {
+    throw createError({
+      statusCode: 500,
+      message: '`STUDIO_GITLAB_TOKEN` is not set. Google authenticated users cannot push changes to the repository without a valid GitLab token.',
+    })
+  }
+
+  const repositoryToken = provider === 'github'
+    ? process.env.STUDIO_GITHUB_TOKEN
+    : process.env.STUDIO_GITLAB_TOKEN
 
   const token = await requestAccessToken(config.tokenURL as string, {
     body: {
@@ -199,7 +204,7 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  await setStudioUserSession(event, {
+  await setInternalStudioUserSession(event, {
     providerId: String(user.sub).toString(),
     accessToken: repositoryToken as string,
     name: user.name || `${user.given_name || ''} ${user.family_name || ''}`.trim(),
