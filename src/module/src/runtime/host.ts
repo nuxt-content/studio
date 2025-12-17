@@ -4,7 +4,7 @@ import type { CollectionInfo, CollectionItemBase, CollectionSource, DatabaseAdap
 import type { ContentDatabaseAdapter } from '../types/content'
 import { getCollectionByFilePath, generateIdFromFsPath, generateRecordDeletion, generateRecordInsert, generateFsPathFromId, getCollectionById } from './utils/collection'
 import { applyCollectionSchema, isDocumentMatchingContent, generateDocumentFromContent, generateContentFromDocument, areDocumentsEqual, pickReservedKeysFromDocument, removeReservedKeysFromDocument, sanitizeDocumentTree } from './utils/document'
-import { kebabCase } from 'scule'
+import { getHostStyles, getSidebarWidth, adjustFixedElements } from './utils/sidebar'
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
@@ -14,44 +14,9 @@ import { publicAssetsStorage } from '#build/studio-public-assets'
 import { useHostMeta } from './composables/useMeta'
 import { generateIdFromFsPath as generateMediaIdFromFsPath } from './utils/media'
 import { getCollectionSourceById } from './utils/source'
+import { kebabCase } from 'scule'
 
 const serviceWorkerVersion = 'v0.0.3'
-
-function getSidebarWidth(): number {
-  let sidebarWidth = 440
-  // Try to get width from localStorage if available
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const savedWidth = localStorage.getItem('studio-sidebar-width')
-    if (savedWidth) {
-      const width = Number.parseInt(savedWidth, 10)
-      if (!Number.isNaN(width)) {
-        sidebarWidth = width
-        return width
-      }
-    }
-  }
-  return sidebarWidth
-}
-
-// TODO: Move styles and these logics out of host (Maybe have a injectCSS util in host)
-function getHostStyles(): Record<string, Record<string, string>> & { css?: string } {
-  const currentWidth = getSidebarWidth()
-  return {
-    'body[data-studio-active]': {
-      transition: 'margin 0.2s ease',
-    },
-    'body[data-studio-active][data-expand-sidebar]': {
-      marginLeft: `${currentWidth}px`,
-    },
-    // 'body[data-studio-active][data-expand-toolbar]': {
-    //   marginTop: '60px',
-    // },
-    // 'body[data-studio-active][data-expand-sidebar][data-expand-toolbar]': {
-    //   marginLeft: `${currentWidth}px`,
-    //   marginTop: '60px',
-    // },
-  }
-}
 
 function getLocalColorMode(): 'light' | 'dark' {
   return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
@@ -170,10 +135,10 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       updateStyles: () => {
         const hostStyles = getHostStyles()
         const styles: string = Object.keys(hostStyles).map((selector) => {
-          if (selector === 'css') return hostStyles.css || ''
-          const styleText = Object.entries(hostStyles[selector] as Record<string, string>).map(([key, value]) => `${kebabCase(key)}: ${value}`).join(';')
+          const styleText = Object.entries(hostStyles[selector]!).map(([key, value]) => `${kebabCase(key)}: ${value}`).join(';')
           return `${selector} { ${styleText} }`
         }).join('')
+
         let styleElement = document.querySelector('[data-studio-style]')
         if (!styleElement) {
           styleElement = document.createElement('style')
@@ -181,6 +146,9 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           document.head.appendChild(styleElement)
         }
         styleElement.textContent = styles
+
+        const isSidebarExpanded = document.body.hasAttribute('data-expand-sidebar')
+        adjustFixedElements(isSidebarExpanded ? getSidebarWidth() : 0)
       },
     },
     repository,
