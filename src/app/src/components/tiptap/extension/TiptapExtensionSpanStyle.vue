@@ -53,7 +53,10 @@ onBeforeUnmount(() => {
       :class="props.node.attrs.class || undefined"
       class="inline-flex border-b rounded-sm"
     >
-      <NodeViewContent as="span" class="outline-none" />
+      <NodeViewContent
+        as="span"
+        class="outline-none"
+      />
     </span>
 
     <UPopover
@@ -131,4 +134,3 @@ onBeforeUnmount(() => {
     </UPopover>
   </NodeViewWrapper>
 </template>
-

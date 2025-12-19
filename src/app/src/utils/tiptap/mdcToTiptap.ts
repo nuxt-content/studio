@@ -33,7 +33,7 @@ const mdcToTiptapMap: MDCToTipTapMap = {
   template: node => createTemplateNode(node as MDCElement),
   pre: node => createPreNode(node as MDCElement),
   p: node => createParagraphNode(node as MDCElement),
-  span: node => {
+  span: (node) => {
     const spanStyle = (node as MDCElement).props?.style
     const spanClass = (node as MDCElement).props?.class || (node as MDCElement).props?.className
     const spanAttrs = {
@@ -133,7 +133,7 @@ export function mdcNodeToTiptap(node: MDCRoot | MDCNode, parent?: MDCNode): JSON
 
 /* Create nodes methods */
 export function createMark(node: MDCNode, mark: string, accumulatedMarks: { type: string, attrs?: object }[] = []): JSONContent[] {
-  let attrs = { ...(node as MDCElement).props }
+  const attrs = { ...(node as MDCElement).props }
 
   // Link attributes
   if (mark === 'link' && attrs.href) {

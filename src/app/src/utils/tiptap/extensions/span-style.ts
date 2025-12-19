@@ -3,7 +3,6 @@ import type { JSONContent } from '@tiptap/vue-3'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import type { Node as ProseMirrorNode, NodeType } from '@tiptap/pm/model'
 import type { EditorState, Transaction } from '@tiptap/pm/state'
-// @ts-expect-error virtual vue typing is provided by vue shim
 import TiptapExtensionSpanStyle from '../../../components/tiptap/extension/TiptapExtensionSpanStyle.vue'
 
 export interface SpanStyleAttrs {
@@ -141,4 +140,3 @@ export const SpanStyle = Node.create<SpanStyleAttrs>({
     return VueNodeViewRenderer(TiptapExtensionSpanStyle)
   },
 })
-
