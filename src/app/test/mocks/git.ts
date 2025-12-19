@@ -1,8 +1,8 @@
 import { vi } from 'vitest'
 import type { GithubFile } from '../../src/types/git'
+import type { useGitProvider } from '../../src/composables/useGitProvider'
 
-export const createMockGit = (remoteFile?: GithubFile) => ({
-  provider: 'github',
+export const createMockGit = (remoteFile?: GithubFile): ReturnType<typeof useGitProvider> => ({
   name: 'GitHub',
   icon: 'i-simple-icons:github',
   api: {
@@ -11,7 +11,7 @@ export const createMockGit = (remoteFile?: GithubFile) => ({
     getRepositoryUrl: vi.fn().mockReturnValue('https://github.com/owner/repo'),
     getBranchUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/tree/main'),
     getCommitUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/commit/abc123'),
-    getContentRootDirUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/tree/main/content'),
+    getFileUrl: vi.fn().mockReturnValue('https://github.com/owner/repo/blob/main/content/document.md'),
     getRepositoryInfo: vi.fn().mockReturnValue({ owner: 'owner', repo: 'repo', branch: 'main', provider: 'github' }),
   },
 })
