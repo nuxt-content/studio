@@ -11,11 +11,6 @@ const styleValue = ref('')
 const classValue = ref('')
 
 const active = computed(() => props.editor?.isActive('span-style'))
-const disabled = computed(() => {
-  if (!props.editor?.isEditable) return true
-  const { selection } = props.editor.state
-  return selection.empty && !props.editor.isActive('span-style')
-})
 
 let currentEditor: Editor | undefined
 let selectionListener: (() => void) | undefined
@@ -30,6 +25,7 @@ watch(
   () => props.editor,
   (editor) => {
     if (!editor) return
+
     if (currentEditor && selectionListener) {
       currentEditor.off('selectionUpdate', selectionListener)
     }
@@ -82,7 +78,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   <UPopover
     v-model:open="open"
     :portal="false"
-    :ui="{ base: 'z-[9998]', content: 'p-3 w-64 z-[9999]' }"
+    :ui="{ content: 'w-64 p-0.5' }"
   >
     <UButton
       icon="i-lucide-paintbrush"
@@ -92,60 +88,53 @@ const handleKeyDown = (event: KeyboardEvent) => {
       active-variant="soft"
       size="sm"
       :active="active"
-      :disabled="disabled"
       :class="[open && 'bg-elevated']"
       :title="$t('studio.tiptap.spanStyle.label')"
     />
 
     <template #content>
-      <div class="flex flex-col gap-2">
-        <UFormField
+      <div class="flex flex-col gap-0.5">
+        <UInput
+          v-model="styleValue"
+          autofocus
+          variant="none"
           name="style"
-          :label="$t('studio.tiptap.spanStyle.styleLabel')"
-        >
-          <UInput
-            v-model="styleValue"
-            variant="outline"
-            size="sm"
-            autofocus
-            :placeholder="$t('studio.tiptap.spanStyle.stylePlaceholder')"
-            @keydown="handleKeyDown"
-          />
-        </UFormField>
+          leading-icon="i-lucide-brush"
+          :placeholder="$t('studio.tiptap.spanStyle.stylePlaceholder')"
+          @keydown="handleKeyDown"
+        />
 
-        <UFormField
+        <UInput
+          v-model="classValue"
+          variant="none"
           name="class"
-          :label="$t('studio.tiptap.spanStyle.classLabel')"
-        >
-          <UInput
-            v-model="classValue"
-            variant="outline"
-            size="sm"
-            :placeholder="$t('studio.tiptap.spanStyle.classPlaceholder')"
-            @keydown="handleKeyDown"
-          />
-        </UFormField>
+          leading-icon="i-lucide-tag"
+          :placeholder="$t('studio.tiptap.spanStyle.classPlaceholder')"
+          @keydown="handleKeyDown"
+        />
 
-        <div class="flex items-center justify-end gap-2">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            :disabled="!styleValue && !classValue && !active"
-            :title="$t('studio.tiptap.spanStyle.remove')"
-            @click="removeSpanStyle"
-          >
-            {{ $t('studio.tiptap.spanStyle.remove') }}
-          </UButton>
-          <UButton
-            color="primary"
-            size="sm"
-            :disabled="!styleValue && !classValue"
-            :title="$t('studio.tiptap.spanStyle.apply')"
-            @click="applySpanStyle"
-          >
-            {{ $t('studio.tiptap.spanStyle.apply') }}
-          </UButton>
+        <USeparator />
+
+        <div class="flex items-center justify-end gap-0.5 px-1 py-0.5">
+          <UTooltip :text="$t('studio.tiptap.spanStyle.apply')">
+            <UButton
+              icon="i-lucide-corner-down-left"
+              variant="ghost"
+              size="sm"
+              @click="applySpanStyle"
+            />
+          </UTooltip>
+
+          <UTooltip :text="$t('studio.tiptap.spanStyle.remove')">
+            <UButton
+              icon="i-lucide-trash"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              :disabled="!active"
+              @click="removeSpanStyle"
+            />
+          </UTooltip>
         </div>
       </div>
     </template>

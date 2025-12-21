@@ -264,11 +264,11 @@
       },
       "spanStyle": {
         "label": "Span style",
-        "styleLabel": "Inline style",
-        "stylePlaceholder": "e.g. color: tomato; font-weight: 600;",
-        "classLabel": "Classes",
-        "classPlaceholder": "Space separated classes",
+        "stylePlaceholder": "Styles: e.g. color: tomato; font-weight: 600;",
+        "classPlaceholder": "Classes: space separated",
         "apply": "Apply",
+        "applyStyles": "Apply styles",
+        "applyClasses": "Apply classes",
         "remove": "Remove"
       }
     },
