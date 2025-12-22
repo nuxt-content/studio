@@ -4,7 +4,6 @@ import { NodeViewWrapper, NodeViewContent, nodeViewProps } from '@tiptap/vue-3'
 
 const props = defineProps(nodeViewProps)
 
-console.log(props.node)
 const isInside = computed(() => props.selected)
 const label = computed(() => props.node.attrs.value || props.node.attrs.defaultValue || '')
 
