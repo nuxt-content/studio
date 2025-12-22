@@ -446,8 +446,6 @@ const hideProp = (prop: FormItem, isNuxtUIComponent: boolean) => {
     return false
   }
 
-  console.log('key', key)
-
   if (HIDDEN_PROPS.includes(key)) {
     return true
   }
