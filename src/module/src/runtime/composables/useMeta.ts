@@ -92,6 +92,17 @@ export const useHostMeta = createSharedComposable(() => {
       })
     }
 
+    // For Nuxt UI components, merge callout props into shortcut components (tip, warning, note, caution)
+    const calloutComponent = processedComponents.get('callout')
+    if (calloutComponent?.meta?.props && calloutComponent.nuxtUI) {
+      for (const shortcutName of ['tip', 'warning', 'note', 'caution']) {
+        const shortcut = processedComponents.get(shortcutName)
+        if (shortcut?.nuxtUI) {
+          shortcut.meta.props = [...shortcut.meta.props, ...calloutComponent.meta.props]
+        }
+      }
+    }
+
     components.value = Array.from(processedComponents.values())
   }
 

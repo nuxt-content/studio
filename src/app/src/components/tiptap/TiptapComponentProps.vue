@@ -25,22 +25,9 @@ const { host } = useStudio()
 const formTree = ref<FormTree>({})
 const nestedForm = ref<{ key: string, type: 'array' | 'object' } | null>(null)
 
-// Get component metadata
 const componentTag = computed(() => props.node?.attrs?.tag || props.node?.type?.name)
 const componentName = computed(() => pascalCase(componentTag.value))
-
-// Get component metadata from host meta
-const componentMeta = computed(() => {
-  const meta = host.meta.getComponents().find(c => kebabCase(c.name) === kebabCase(componentTag.value))
-
-  // Add callout props to all shortcuts (tip, warning, note, caution)
-  if (meta?.nuxtUI && ['tip', 'warning', 'note', 'caution'].includes(meta.name)) {
-    const calloutMeta = host.meta.getComponents().find(c => kebabCase(c.name) === kebabCase('callout'))
-    meta.meta.props.push(...(calloutMeta?.meta.props || []))
-  }
-
-  return meta
-})
+const componentMeta = computed(() => host.meta.getComponents().find(c => kebabCase(c.name) === kebabCase(componentTag.value)))
 
 onMounted(() => {
   const tree = componentMeta.value ? buildFormTreeFromProps(unref(props.node), componentMeta.value) : {}

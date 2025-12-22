@@ -214,26 +214,31 @@ export const buildFormTreeFromProps = (node: ProseMirrorNode, componentMeta: Com
 const buildPropItem = (componentId: string, prop: PropertyMeta, nodeProps: Record<string, unknown>, level = 0, parent?: FormItem): FormItem => {
   const key = prop.name
   const title = upperFirst(prop.name)
-  let defaultValue: string | boolean | number | object | unknown[] | null = prop.tags?.find(tag => tag.name === 'defaultValue')?.text || ''
+  const defaultValue: string | boolean | number | object | unknown[] | null = prop.tags?.find(tag => tag.name === 'defaultValue')?.text || ''
 
   const { type, options } = computeTypeAndOptions(componentId, key, prop, level)
 
   // Format key based on type
   const formattedKey = ['string', 'icon'].includes(type) ? key : `:${key}`
-  const id = parent?.id ? `${parent?.id}/${formattedKey}` : `${componentId}/${formattedKey}`
-  const nodeValue = parent?.type === 'object' && parent?.value ? (parent.value as Record<string, unknown>)[key] : nodeProps[key] || nodeProps[`:${key}`]
-  let value = typeof nodeValue === 'string' ? convertStringToValue(nodeValue, type) : nodeValue
+  const id = parent?.id
+    ? `${parent?.id}/${formattedKey}`
+    : `${componentId}/${formattedKey}`
 
-  if (!defaultValue) {
-    defaultValue = generateDefault(type, level)
-  }
-  else {
-    defaultValue = typeof defaultValue === 'string' && defaultValue !== '' ? convertStringToValue(defaultValue, type) : defaultValue
-  }
+  // Get node value: from parent object, direct prop, or interpreted prop (`:key`)
+  const nodeValue = (parent?.type === 'object' && parent?.value)
+    ? (parent.value as Record<string, unknown>)[key]
+    : nodeProps[key] ?? nodeProps[`:${key}`]
 
-  if (!value) {
-    value = defaultValue
-  }
+  // Resolve default value
+  const resolvedDefault = defaultValue !== undefined && defaultValue !== null
+    ? (typeof defaultValue === 'string' ? convertStringToValue(defaultValue, type) : defaultValue)
+    : generateDefault(type, level)
+
+  // Convert string values and fallback to default
+  const value = (typeof nodeValue === 'string'
+    ? convertStringToValue(nodeValue, type)
+    : nodeValue)
+  ?? resolvedDefault
 
   const propItem: FormItem = {
     id,
@@ -242,7 +247,7 @@ const buildPropItem = (componentId: string, prop: PropertyMeta, nodeProps: Recor
     value,
     type,
     custom: false,
-    default: defaultValue,
+    default: resolvedDefault,
   }
 
   // Handle array items schema
