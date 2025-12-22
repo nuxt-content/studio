@@ -11,18 +11,18 @@ const isPopoverOpen = ref(false)
 const valueAttr = ref('')
 const defaultValueAttr = ref('')
 
-const syncAttributes = () => {
-  valueAttr.value = props.node.attrs.value || ''
-  defaultValueAttr.value = props.node.attrs.defaultValue || ''
-}
-
 watch(
   () => [props.node.attrs.value, props.node.attrs.defaultValue],
   () => syncAttributes(),
   { immediate: true },
 )
 
-const applyBinding = () => {
+function syncAttributes() {
+  valueAttr.value = props.node.attrs.value || ''
+  defaultValueAttr.value = props.node.attrs.defaultValue || ''
+}
+
+function applyBinding() {
   const attrs = {
     value: valueAttr.value.trim() || undefined,
     defaultValue: defaultValueAttr.value.trim() || undefined,
@@ -31,14 +31,14 @@ const applyBinding = () => {
   isPopoverOpen.value = false
 }
 
-const removeBinding = () => {
+function removeBinding() {
   props.editor.chain().focus().unsetBinding().run()
   valueAttr.value = ''
   defaultValueAttr.value = ''
   isPopoverOpen.value = false
 }
 
-const handleKeyDown = (event) => {
+function handleKeyDown(event) {
   if (event.key === 'Enter') {
     event.preventDefault()
     applyBinding()
