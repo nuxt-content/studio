@@ -267,8 +267,6 @@
         "stylePlaceholder": "Stilar: t.d. color: tomato; font-weight: 600;",
         "classPlaceholder": "Klassar: skilde med mellomrom",
         "apply": "Bruk",
-        "applyStyles": "Bruk stilar",
-        "applyClasses": "Bruk klassar",
         "remove": "Fjern"
       }
     },

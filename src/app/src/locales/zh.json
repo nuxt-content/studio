@@ -267,8 +267,6 @@
         "stylePlaceholder": "样式：例如 color: tomato; font-weight: 600;",
         "classPlaceholder": "类：用空格分隔",
         "apply": "应用",
-        "applyStyles": "应用样式",
-        "applyClasses": "应用类",
         "remove": "移除"
       }
     },

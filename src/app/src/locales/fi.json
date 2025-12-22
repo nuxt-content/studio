@@ -267,8 +267,6 @@
           "stylePlaceholder": "Tyylit: esim. color: tomato; font-weight: 600;",
           "classPlaceholder": "Luokat: välilyönnillä erotettuna",
           "apply": "Käytä",
-          "applyStyles": "Käytä tyylejä",
-          "applyClasses": "Käytä luokkia",
           "remove": "Poista"
         }
       },

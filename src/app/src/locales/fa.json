@@ -267,8 +267,6 @@
         "stylePlaceholder": "سبک‌ها: مثلاً color: tomato; font-weight: 600;",
         "classPlaceholder": "کلاس‌ها: با فاصله جدا شده",
         "apply": "اعمال",
-        "applyStyles": "اعمال سبک‌ها",
-        "applyClasses": "اعمال کلاس‌ها",
         "remove": "حذف"
       }
     },

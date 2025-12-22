@@ -267,8 +267,6 @@
         "stylePlaceholder": "Style: np. color: tomato; font-weight: 600;",
         "classPlaceholder": "Klasy: oddzielone spacjami",
         "apply": "Zastosuj",
-        "applyStyles": "Zastosuj style",
-        "applyClasses": "Zastosuj klasy",
         "remove": "Usuń"
       }
     },

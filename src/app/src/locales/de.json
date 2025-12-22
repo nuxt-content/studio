@@ -267,8 +267,6 @@
         "stylePlaceholder": "Stile: z.B. color: tomato; font-weight: 600;",
         "classPlaceholder": "Klassen: durch Leerzeichen getrennt",
         "apply": "Anwenden",
-        "applyStyles": "Stile anwenden",
-        "applyClasses": "Klassen anwenden",
         "remove": "Entfernen"
       }
     },

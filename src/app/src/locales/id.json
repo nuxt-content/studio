@@ -267,8 +267,6 @@
         "stylePlaceholder": "Gaya: contoh color: tomato; font-weight: 600;",
         "classPlaceholder": "Kelas: dipisah spasi",
         "apply": "Terapkan",
-        "applyStyles": "Terapkan gaya",
-        "applyClasses": "Terapkan kelas",
         "remove": "Hapus"
       }
     },

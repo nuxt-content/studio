@@ -261,6 +261,13 @@
         "applyLink": "套用連結",
         "openInNewWindow": "在新視窗開啟",
         "removeLink": "移除連結"
+      },
+      "spanStyle": {
+        "label": "Span 樣式",
+        "stylePlaceholder": "樣式：例如 color: tomato; font-weight: 600;",
+        "classPlaceholder": "類別：以空格分隔",
+        "apply": "套用",
+        "remove": "移除"
       }
     },
     "mediaPicker": {
