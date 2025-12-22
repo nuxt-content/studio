@@ -2,9 +2,9 @@ import { expect, test, describe } from 'vitest'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { JSType } from 'untyped'
 import type { PropertyMeta } from 'vue-component-meta'
-import { buildFormTreeFromProps, convertStringToArray, convertStringToValue } from '../../../src/utils/tiptap/props'
-import { buttonPropsSchema, iconPropsSchema } from '../../mocks/props'
-import type { ComponentMeta } from '../../../src/types/component'
+import { buildFormTreeFromProps, convertStringToArray, convertStringToValue } from '../../../../src/utils/tiptap/props'
+import { buttonPropsSchema, iconPropsSchema } from '../../../mocks/props'
+import type { ComponentMeta } from '../../../../src/types/component'
 
 describe('props', () => {
   describe('convertStringToArray', () => {

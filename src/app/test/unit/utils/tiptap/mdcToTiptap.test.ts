@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest'
-import { createMark } from '../../../src/utils/tiptap/mdcToTiptap'
+import { createMark } from '../../../../src/utils/tiptap/mdcToTiptap'
 import type { MDCElement } from '@nuxtjs/mdc'
 
 describe('marks', () => {
@@ -145,6 +145,7 @@ describe('marks', () => {
     }])
   })
 
+  // TODO: check inline components
   // test('createMark: create mark nodes (italic, bold...) should handle handle inline component', () => {
   //   const mark = 'italic'
   //   const node: MDCElement = {
