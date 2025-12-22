@@ -15,12 +15,6 @@ const active = computed(() => props.editor?.isActive('span-style'))
 let currentEditor: Editor | undefined
 let selectionListener: (() => void) | undefined
 
-const syncAttributes = () => {
-  const attrs = props.editor.getAttributes('span-style')
-  styleValue.value = attrs?.style || ''
-  classValue.value = attrs?.class || ''
-}
-
 watch(
   () => props.editor,
   (editor) => {
@@ -44,7 +38,13 @@ onBeforeUnmount(() => {
   }
 })
 
-const applySpanStyle = () => {
+function syncAttributes() {
+  const attrs = props.editor.getAttributes('span-style')
+  styleValue.value = attrs?.style || ''
+  classValue.value = attrs?.class || ''
+}
+
+function applySpanStyle() {
   const attrs = {
     style: styleValue.value.trim() || undefined,
     class: classValue.value.trim() || undefined,
@@ -59,14 +59,14 @@ const applySpanStyle = () => {
   open.value = false
 }
 
-const removeSpanStyle = () => {
+function removeSpanStyle() {
   props.editor.chain().focus().unsetSpanStyle().run()
   styleValue.value = ''
   classValue.value = ''
   open.value = false
 }
 
-const handleKeyDown = (event: KeyboardEvent) => {
+function handleKeyDown(event: KeyboardEvent) {
   if (event.key === 'Enter') {
     event.preventDefault()
     applySpanStyle()
