@@ -251,7 +251,7 @@
           "delete": "Poista",
           "editContentLabel": "Muokkaa {name} sisältöä",
           "enterContentPlaceholder": "Lisää sisältöä...",
-          "propsEditorComingSoon": "Ominaisuusmuokkain tulossa tulevaisuudessa"
+          "apply": "Käytä"
         },
         "codeBlock": {
           "filenamePlaceholder": "tiedostonimi.ts"
@@ -268,6 +268,10 @@
           "classPlaceholder": "Luokat: välilyönnillä erotettuna",
           "apply": "Käytä",
           "remove": "Poista"
+        },
+        "binding": {
+          "variablePlaceholder": "Muuttujan nimi",
+          "defaultValuePlaceholder": "Oletusarvo"
         }
       },
       "mediaPicker": {

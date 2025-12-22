@@ -250,7 +250,7 @@
         "delete": "削除",
         "editContentLabel": "{name} のコンテンツを編集",
         "enterContentPlaceholder": "コンテンツを入力してください...",
-        "propsEditorComingSoon": "プロパティエディタはまもなく実装されます"
+        "apply": "適用"
       },
       "codeBlock": {
         "filenamePlaceholder": "filename.js"
@@ -267,6 +267,10 @@
         "classPlaceholder": "クラス: スペース区切り",
         "apply": "適用",
         "remove": "削除"
+      },
+      "binding": {
+        "variablePlaceholder": "変数名",
+        "defaultValuePlaceholder": "デフォルト値"
       }
     },
     "mediaPicker": {

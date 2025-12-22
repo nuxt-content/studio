@@ -251,7 +251,7 @@
         "delete": "Hapus",
         "editContentLabel": "Sunting konten {name}",
         "enterContentPlaceholder": "Masukkan konten...",
-        "propsEditorComingSoon": "Editor properti akan segera hadir"
+        "apply": "Terapkan"
       },
       "codeBlock": {
         "filenamePlaceholder": "namaberkas.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Kelas: dipisah spasi",
         "apply": "Terapkan",
         "remove": "Hapus"
+      },
+      "binding": {
+        "variablePlaceholder": "Nama variabel",
+        "defaultValuePlaceholder": "Nilai default"
       }
     },
     "mediaPicker": {

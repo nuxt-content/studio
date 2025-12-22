@@ -251,7 +251,7 @@
         "delete": "Slett",
         "editContentLabel": "Rediger innhold for {name}",
         "enterContentPlaceholder": "Skriv inn innhold …",
-        "propsEditorComingSoon": "Egenskapseditor kommer snart"
+        "apply": "Bruk"
       },
       "codeBlock": {
         "filenamePlaceholder": "filnavn.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Klasser: atskilt med mellomrom",
         "apply": "Bruk",
         "remove": "Fjern"
+      },
+      "binding": {
+        "variablePlaceholder": "Variabelnavn",
+        "defaultValuePlaceholder": "Standardverdi"
       }
     },
     "mediaPicker": {

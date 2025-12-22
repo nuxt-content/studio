@@ -1,8 +1,10 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { NodeViewWrapper, NodeViewContent, nodeViewProps } from '@tiptap/vue-3'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps(nodeViewProps)
+const { t } = useI18n()
 
 const isInside = computed(() => props.selected)
 const label = computed(() => props.node.attrs.value || props.node.attrs.defaultValue || '')
@@ -82,16 +84,16 @@ function handleKeyDown(event) {
             autofocus
             variant="none"
             name="value"
-            leading-icon="i-lucide-type"
-            placeholder="value"
+            leading-icon="i-lucide-braces"
+            :placeholder="t('studio.tiptap.binding.variablePlaceholder')"
             @keydown="handleKeyDown"
           />
           <UInput
             v-model="defaultValueAttr"
             variant="none"
             name="defaultValue"
-            leading-icon="i-lucide-ellipsis"
-            placeholder="default value"
+            leading-icon="i-lucide-text-cursor-input"
+            :placeholder="t('studio.tiptap.binding.defaultValuePlaceholder')"
             @keydown="handleKeyDown"
           />
           <USeparator />

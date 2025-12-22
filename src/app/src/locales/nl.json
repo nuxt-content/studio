@@ -251,7 +251,7 @@
         "delete": "Verwijderen",
         "editContentLabel": "Bewerk {name}-inhoud",
         "enterContentPlaceholder": "Voer inhoud in...",
-        "propsEditorComingSoon": "Eigenschappen-editor komt binnenkort"
+        "apply": "Toepassen"
       },
       "codeBlock": {
         "filenamePlaceholder": "bestandsnaam.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Klassen: gescheiden door spaties",
         "apply": "Toepassen",
         "remove": "Verwijderen"
+      },
+      "binding": {
+        "variablePlaceholder": "Variabelenaam",
+        "defaultValuePlaceholder": "Standaardwaarde"
       }
     },
     "mediaPicker": {

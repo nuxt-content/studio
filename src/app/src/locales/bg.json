@@ -251,7 +251,7 @@
         "delete": "Изтриване",
         "editContentLabel": "Редактиране съдържанието на {name}",
         "enterContentPlaceholder": "Въведете съдържание...",
-        "propsEditorComingSoon": "Редакторът на свойства скоро ще бъде достъпен"
+        "apply": "Приложи"
       },
       "codeBlock": {
         "filenamePlaceholder": "ime-na-fail.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Класове: разделени с интервали",
         "apply": "Приложи",
         "remove": "Премахни"
+      },
+      "binding": {
+        "variablePlaceholder": "Име на променливата",
+        "defaultValuePlaceholder": "Стойност по подразбиране"
       }
     },
     "mediaPicker": {

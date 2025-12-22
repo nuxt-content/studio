@@ -251,7 +251,7 @@
         "delete": "Eliminar",
         "editContentLabel": "Editar contenido de {name}",
         "enterContentPlaceholder": "Ingresar contenido...",
-        "propsEditorComingSoon": "El editor de propiedades estará disponible pronto"
+        "apply": "Aplicar"
       },
       "codeBlock": {
         "filenamePlaceholder": "nombrearchivo.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Clases: separadas por espacios",
         "apply": "Aplicar",
         "remove": "Eliminar"
+      },
+      "binding": {
+        "variablePlaceholder": "Nombre de variable",
+        "defaultValuePlaceholder": "Valor por defecto"
       }
     },
     "mediaPicker": {

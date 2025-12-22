@@ -251,7 +251,7 @@
         "delete": "Slett",
         "editContentLabel": "Rediger innhald for {name}",
         "enterContentPlaceholder": "Skriv inn innhald …",
-        "propsEditorComingSoon": "Eigenskapar-redigerar kjem snart"
+        "apply": "Bruk"
       },
       "codeBlock": {
         "filenamePlaceholder": "filnamn.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "Klassar: skilde med mellomrom",
         "apply": "Bruk",
         "remove": "Fjern"
+      },
+      "binding": {
+        "variablePlaceholder": "Variabelnamn",
+        "defaultValuePlaceholder": "Standardverdi"
       }
     },
     "mediaPicker": {

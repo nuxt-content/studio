@@ -250,7 +250,7 @@
         "delete": "Видалити",
         "editContentLabel": "Редагувати вміст {name}",
         "enterContentPlaceholder": "Введіть вміст...",
-        "propsEditorComingSoon": "Редактор властивостей незабаром"
+        "apply": "Застосувати"
       },
       "codeBlock": {
         "filenamePlaceholder": "filename.js"
@@ -267,6 +267,10 @@
         "classPlaceholder": "Класи: розділені пробілами",
         "apply": "Застосувати",
         "remove": "Видалити"
+      },
+      "binding": {
+        "variablePlaceholder": "Назва змінної",
+        "defaultValuePlaceholder": "Значення за замовчуванням"
       }
     },
     "mediaPicker": {

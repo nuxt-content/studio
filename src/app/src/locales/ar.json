@@ -250,7 +250,7 @@
         "delete": "حذف",
         "editContentLabel": "تعديل محتوى {name}",
         "enterContentPlaceholder": "أدخل المحتوى...",
-        "propsEditorComingSoon": "محرر الخصائص قادم قريباً"
+        "apply": "تطبيق"
       },
       "codeBlock": {
         "filenamePlaceholder": "filename.js"
@@ -267,6 +267,10 @@
         "classPlaceholder": "الفئات: مفصولة بمسافات",
         "apply": "تطبيق",
         "remove": "إزالة"
+      },
+      "binding": {
+        "variablePlaceholder": "اسم المتغير",
+        "defaultValuePlaceholder": "القيمة الافتراضية"
       }
     },
     "mediaPicker": {

@@ -251,7 +251,7 @@
         "delete": "حذف",
         "editContentLabel": "ویرایش محتوای {name}",
         "enterContentPlaceholder": "محتوا را وارد کنید...",
-        "propsEditorComingSoon": "ویرایشگر ویژگی‌ها به‌زودی در دسترس خواهد بود"
+        "apply": "اعمال"
       },
       "codeBlock": {
         "filenamePlaceholder": "نام-فایل.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "کلاس‌ها: با فاصله جدا شده",
         "apply": "اعمال",
         "remove": "حذف"
+      },
+      "binding": {
+        "variablePlaceholder": "نام متغیر",
+        "defaultValuePlaceholder": "مقدار پیش‌فرض"
       }
     },
     "mediaPicker": {

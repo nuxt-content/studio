@@ -251,7 +251,7 @@
         "delete": "删除",
         "editContentLabel": "编辑 {name} 内容",
         "enterContentPlaceholder": "输入内容...",
-        "propsEditorComingSoon": "属性编辑器即将上线"
+        "apply": "应用"
       },
       "codeBlock": {
         "filenamePlaceholder": "filename.js"
@@ -268,6 +268,10 @@
         "classPlaceholder": "类：用空格分隔",
         "apply": "应用",
         "remove": "移除"
+      },
+      "binding": {
+        "variablePlaceholder": "变量名",
+        "defaultValuePlaceholder": "默认值"
       }
     },
     "mediaPicker": {
