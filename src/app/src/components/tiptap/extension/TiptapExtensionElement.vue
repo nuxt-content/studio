@@ -89,10 +89,9 @@ function addSlot(name: string) {
   editor.view.focus()
 }
 
-// TODO: Implement props editor component and use this function
-// function _updateProps(props: Record<string, unknown>) {
-//   nodeProps.updateAttributes({ props })
-// }
+function updateComponentProps(props: Record<string, unknown>) {
+  nodeProps.updateAttributes({ props })
+}
 </script>
 
 <template>
@@ -169,11 +168,10 @@ function addSlot(name: string) {
             </UTooltip>
 
             <template #content>
-              <UCard>
-                <div class="text-xs text-muted">
-                  {{ $t('studio.tiptap.element.propsEditorComingSoon') }}
-                </div>
-              </UCard>
+              <TiptapComponentProps
+                :node="node"
+                :update-props="updateComponentProps"
+              />
             </template>
           </UPopover>
 

@@ -3,6 +3,7 @@ import type { ComponentData } from 'nuxt-component-meta'
 export interface ComponentMeta {
   name: string
   path: string
+  nuxtUI?: boolean
   meta: {
     props: ComponentData['meta']['props']
     slots: ComponentData['meta']['slots']

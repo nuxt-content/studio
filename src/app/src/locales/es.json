@@ -267,8 +267,6 @@
         "stylePlaceholder": "Estilos: ej. color: tomato; font-weight: 600;",
         "classPlaceholder": "Clases: separadas por espacios",
         "apply": "Aplicar",
-        "applyStyles": "Aplicar estilos",
-        "applyClasses": "Aplicar clases",
         "remove": "Eliminar"
       }
     },

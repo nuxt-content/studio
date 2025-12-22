@@ -73,32 +73,34 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
   <div>
     <!-- Array of Objects -->
     <template v-if="itemsType === 'object'">
-      <Collapsible
-        v-for="item in items"
-        :key="item.index"
-        :open="activeIndex === item.index"
-        :label="item.label"
-        class="group/item"
-        @update:open="(open: boolean) => activeIndex = open ? item.index : null"
-      >
-        <template #actions>
-          <UButton
-            variant="ghost"
-            color="neutral"
-            size="2xs"
-            icon="i-lucide-trash"
-            class="opacity-0 group-hover/item:opacity-100 transition-opacity"
-            :aria-label="$t('studio.form.deleteItem')"
-            @click.stop="deleteItem(item.index)"
-          />
-        </template>
+      <div class="flex flex-col gap-2">
+        <Collapsible
+          v-for="item in items"
+          :key="item.index"
+          :open="activeIndex === item.index"
+          :label="item.label"
+          class="group/item"
+          @update:open="(open: boolean) => activeIndex = open ? item.index : null"
+        >
+          <template #actions>
+            <UButton
+              variant="ghost"
+              color="neutral"
+              size="2xs"
+              icon="i-lucide-trash"
+              class="opacity-0 group-hover/item:opacity-100 transition-opacity"
+              :aria-label="$t('studio.form.deleteItem')"
+              @click.stop="deleteItem(item.index)"
+            />
+          </template>
 
-        <FormInputObject
-          v-model="(item.value as Record<string, unknown>)"
-          :children="formItem.children"
-          @update:model-value="updateObjectItem(item.index, $event)"
-        />
-      </Collapsible>
+          <FormInputObject
+            v-model="(item.value as Record<string, unknown>)"
+            :children="formItem.children"
+            @update:model-value="updateObjectItem(item.index, $event)"
+          />
+        </Collapsible>
+      </div>
     </template>
 
     <!-- Array of Strings -->

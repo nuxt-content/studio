@@ -30,15 +30,22 @@ export const useHostMeta = createSharedComposable(() => {
 
     const renamedComponents: ComponentMeta[] = []
 
+    // Clean Nuxt UI components name
     for (const component of (data.components || [])) {
-      // Remove "Prose" prefix
       let name = component.name
-      if (component.name.startsWith('Prose')) {
-        name = name.slice(5)
-      }
 
-      if (component.path.endsWith('.d.vue.ts')) {
-        name = name.slice(0, -4)
+      const nuxtUI = component.path.includes('@nuxt/ui')
+      if (nuxtUI) {
+        component.nuxtUI = true
+
+        // Remove "Prose" prefix
+        if (component.name.startsWith('Prose')) {
+          name = name.slice(5)
+        }
+
+        if (component.path.endsWith('.d.vue.ts')) {
+          name = name.slice(0, -4)
+        }
       }
 
       renamedComponents.push({
@@ -51,7 +58,7 @@ export const useHostMeta = createSharedComposable(() => {
 
     for (const component of renamedComponents) {
       // Remove duplicated U-prefixed components
-      if (component.name.startsWith('U')) {
+      if (component.nuxtUI && component.name.startsWith('U')) {
         const nameWithoutU = component.name.slice(1)
         if (renamedComponents.find(c => c.name === nameWithoutU)) continue
       }
@@ -83,6 +90,17 @@ export const useHostMeta = createSharedComposable(() => {
         ...component,
         name: kebabName,
       })
+    }
+
+    // For Nuxt UI components, merge callout props into shortcut components (tip, warning, note, caution)
+    const calloutComponent = processedComponents.get('callout')
+    if (calloutComponent?.meta?.props && calloutComponent.nuxtUI) {
+      for (const shortcutName of ['tip', 'warning', 'note', 'caution']) {
+        const shortcut = processedComponents.get(shortcutName)
+        if (shortcut?.nuxtUI) {
+          shortcut.meta.props = [...shortcut.meta.props, ...calloutComponent.meta.props]
+        }
+      }
     }
 
     components.value = Array.from(processedComponents.values())

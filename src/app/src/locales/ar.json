@@ -266,8 +266,6 @@
         "stylePlaceholder": "الأنماط: مثال color: tomato; font-weight: 600;",
         "classPlaceholder": "الفئات: مفصولة بمسافات",
         "apply": "تطبيق",
-        "applyStyles": "تطبيق الأنماط",
-        "applyClasses": "تطبيق الفئات",
         "remove": "إزالة"
       }
     },
