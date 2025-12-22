@@ -33,7 +33,7 @@ export function validateAuthConfig(options: ModuleOptions): void {
   } // Google OAuth disabled
   else {
     const missingProviderEnv = provider === 'github' ? !hasGitHubAuth : !hasGitLabAuth
-    if (missingProviderEnv) {
+    if (missingProviderEnv && !hasGitToken) {
       logger.error([
         `In order to authenticate users, you need to set up a ${providerUpperCase} OAuth application.`,
         `Please set the \`STUDIO_${providerUpperCase}_CLIENT_ID\` and \`STUDIO_${providerUpperCase}_CLIENT_SECRET\` environment variables,`,
