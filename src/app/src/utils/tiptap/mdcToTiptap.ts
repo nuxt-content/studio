@@ -2,6 +2,7 @@ import type { JSONContent } from '@tiptap/vue-3'
 import { isEmpty } from '../../utils/object'
 import type { MDCNode, MDCElement, MDCText, MDCComment, MDCRoot } from '@nuxtjs/mdc'
 import { EMOJI_REGEXP, getEmojiUnicode } from '../emoji'
+import { isValidAttr } from './props'
 
 type MDCToTipTapMap = Record<string, (node: MDCRoot | MDCNode) => JSONContent>
 
@@ -11,14 +12,6 @@ const tagToMark: Record<string, string> = {
   del: 'strike',
   code: 'code',
   a: 'link',
-}
-
-const isValidAttr = (value?: string | null) => {
-  if (!value) return false
-  const trimmed = String(value).trim()
-  if (!trimmed) return false
-  const lower = trimmed.toLowerCase()
-  return lower !== 'null' && lower !== 'undefined'
 }
 
 const mdcToTiptapMap: MDCToTipTapMap = {

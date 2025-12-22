@@ -7,6 +7,7 @@ import { bundledThemes, bundledLanguages as bundledLangs, createJavaScriptRegexE
 import { visit } from 'unist-util-visit'
 import type { SyntaxHighlightTheme } from '../../types/content'
 import { getEmojiUnicode } from '../emoji'
+import { cleanSpanProps, normalizeProps } from './props'
 
 type TiptapToMDCMap = Record<string, (node: JSONContent) => MDCRoot | MDCNode | MDCNode[]>
 
@@ -19,21 +20,6 @@ const markToTag: Record<string, string> = {
   italic: 'em',
   strike: 'del',
   code: 'code',
-}
-
-const isValidAttr = (value?: string | null) => {
-  if (!value) return false
-  const trimmed = String(value).trim()
-  if (!trimmed) return false
-  const lower = trimmed.toLowerCase()
-  return lower !== 'null' && lower !== 'undefined'
-}
-
-const cleanSpanProps = (attrs?: Record<string, unknown> | null) => {
-  const props: Record<string, string> = {}
-  if (isValidAttr(attrs?.style as string)) props.style = String(attrs!.style).trim()
-  if (isValidAttr((attrs as Record<string, unknown>)?.class as string)) props.class = String((attrs as Record<string, unknown>).class).trim()
-  return props
 }
 
 const tiptapToMDCMap: TiptapToMDCMap = {
@@ -410,20 +396,6 @@ function unwrapDefaultSlot(content: JSONContent[]): JSONContent[] {
     return content[0].content || []
   }
   return content
-}
-
-/**
- * Process and normalize element props, converting className to class
- */
-function normalizeProps(nodeProps: Record<string, unknown>, extraProps: object): Array<[string, string]> {
-  return Object.entries({ ...nodeProps, ...extraProps })
-    .map(([key, value]) => {
-      if (key === 'className') {
-        return ['class', typeof value === 'string' ? value : (value as Array<string>).join(' ')] as [string, string]
-      }
-      return [key.trim(), String(value).trim()] as [string, string]
-    })
-    .filter(([key]) => Boolean(String(key).trim()))
 }
 
 /**
