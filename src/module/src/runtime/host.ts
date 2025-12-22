@@ -8,7 +8,7 @@ import { getHostStyles, getSidebarWidth, adjustFixedElements } from './utils/sid
 import type { StudioHost, StudioUser, DatabaseItem, MediaItem, Repository } from 'nuxt-studio/app'
 import type { RouteLocationNormalized, Router } from 'vue-router'
 // @ts-expect-error queryCollection is not defined in .nuxt/imports.d.ts
-import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections, useRuntimeConfig } from '#imports'
+import { clearError, getAppManifest, queryCollection, queryCollectionItemSurroundings, queryCollectionNavigation, queryCollectionSearchSections, useRuntimeConfig, useAppConfig } from '#imports'
 import { collections } from '#content/preview'
 import { publicAssetsStorage } from '#build/studio-public-assets'
 import { useHostMeta } from './composables/useMeta'
@@ -28,6 +28,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
 
   const isMounted = ref(false)
   const meta = useHostMeta()
+  const appConfig = useAppConfig()
 
   function useNuxtApp() {
     return window.useNuxtApp!()
@@ -74,6 +75,9 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
       getComponents: () => meta.components.value,
       defaultLocale: useRuntimeConfig().public.studio.i18n?.defaultLocale || 'en',
       getHighlightTheme: () => meta.highlightTheme.value!,
+    },
+    config: {
+      studio: appConfig.studio || {},
     },
     on: {
       routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => {

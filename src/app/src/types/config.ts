@@ -14,3 +14,25 @@ export interface StudioLocation {
   feature: StudioFeature
   fsPath: string
 }
+
+export interface StudioUI {
+  header: {
+    root: string
+  }
+  footer: {
+    root: string
+    text: string
+    userMenuButton: string
+    debugSwitchContainer: string
+    debugSwitch: {
+      root: string
+      wrapper: string
+    }
+    actions: string
+  }
+  layout: {
+    sidebar: string
+    monaco: string
+    body: string
+  }
+}

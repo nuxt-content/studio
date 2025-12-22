@@ -86,6 +86,42 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
     },
   ) as VueElementConstructor
 
+  const originalConnectedCallback = NuxtStudio.prototype.connectedCallback
+  NuxtStudio.prototype.connectedCallback = function () {
+    originalConnectedCallback.call(this)
+    const shadowRoot = this.shadowRoot
+    if (!shadowRoot) return
+
+    const syncStyles = () => {
+      const headStyles = document.head.querySelectorAll('style, link[rel="stylesheet"]')
+      headStyles.forEach((node) => {
+        const clonedNode = node.cloneNode(true) as HTMLElement
+        if (clonedNode.hasAttribute('data-vite-dev-id') && clonedNode.getAttribute('data-vite-dev-id')?.includes('nuxt-studio')) {
+          return
+        }
+
+        shadowRoot.appendChild(clonedNode)
+      })
+    }
+    syncStyles()
+    const observer = new MutationObserver((mutations) => {
+      let shouldSync = false
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeName === 'STYLE' || (node.nodeName === 'LINK' && (node as HTMLLinkElement).rel === 'stylesheet')) {
+            shouldSync = true
+            break
+          }
+        }
+      }
+      if (shouldSync) {
+        syncStyles()
+      }
+    })
+
+    observer.observe(document.head, { childList: true, subtree: true })
+  }
+
   customElements.define('nuxt-studio', NuxtStudio)
 }
 

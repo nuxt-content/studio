@@ -2,6 +2,7 @@
 import AppHeader from './AppHeader.vue'
 import AppFooter from './AppFooter.vue'
 import { useSidebar } from '../composables/useSidebar'
+import { useStudioUI } from '../composables/useStudioUI'
 
 defineProps<{
   title?: string
@@ -9,6 +10,8 @@ defineProps<{
 }>()
 
 const { sidebarStyle } = useSidebar()
+
+const { ui } = useStudioUI('layout')
 
 function onBeforeEnter(el: Element) {
   const element = el as HTMLElement
@@ -49,17 +52,17 @@ function onLeave(el: Element, done: () => void) {
   >
     <div
       v-if="open"
-      class="fixed top-0 bottom-0 left-0 border-r border-default flex flex-col max-w-full bg-default"
+      :class="ui.sidebar"
       :style="sidebarStyle"
     >
       <!-- This is needed for the Monaco editor to be able to position the portal correctly -->
-      <div class="monaco-editor">
+      <div :class="ui.monaco">
         <div id="monaco-portal" />
       </div>
 
       <AppHeader />
 
-      <div class="flex-1 overflow-y-auto relative">
+      <div :class="ui.body">
         <slot />
       </div>
 

@@ -6,6 +6,7 @@ import type { Repository } from './git'
 import type { ComponentMeta } from './component'
 import type { MarkdownParsingOptions, SyntaxHighlightTheme } from './content'
 import type { CollectionInfo } from '@nuxt/content'
+import type { StudioUI } from './config'
 
 export * from './file'
 export * from './item'
@@ -27,6 +28,11 @@ export interface StudioHost {
     getComponents: () => ComponentMeta[]
     defaultLocale: string
     getHighlightTheme: () => SyntaxHighlightTheme
+  }
+  config: {
+    studio: {
+      ui: StudioUI
+    }
   }
   on: {
     routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => void

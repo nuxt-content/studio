@@ -3,9 +3,10 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStudio } from '../composables/useStudio'
 import { useStudioState } from '../composables/useStudioState'
+import { useStudioUI } from '../composables/useStudioUI'
 import type { DropdownMenuItem } from '@nuxt/ui/runtime/components/DropdownMenu.vue.d.ts'
 
-const { ui, host, gitProvider } = useStudio()
+const { ui: studioUI, host, gitProvider } = useStudio()
 const { devMode, preferences, updatePreference, unsetActiveLocation } = useStudioState()
 const user = host.user.get()
 const { t } = useI18n()
@@ -55,17 +56,17 @@ const syncTooltipText = computed(() => {
 
 function closeStudio() {
   unsetActiveLocation()
-  ui.close()
+  studioUI.close()
 }
+
+const { ui } = useStudioUI('footer')
 </script>
 
 <template>
-  <div
-    class="bg-muted/50 border-default border-t-[0.5px] flex items-center justify-between gap-1.5 px-2 py-2"
-  >
+  <div :class="ui.root">
     <span
       v-if="devMode"
-      class="ml-2 text-xs text-muted"
+      :class="ui.text"
     >
       {{ $t('studio.footer.localFilesystem') }}
     </span>
@@ -90,14 +91,14 @@ function closeStudio() {
       </template> -->
       <template #debug-mode>
         <div
-          class="w-full"
+          :class="ui.debugSwitchContainer"
           @click.stop
         >
           <USwitch
             :model-value="preferences.debug"
             :label="$t('studio.footer.debugMode')"
             size="xs"
-            :ui="{ root: 'w-full flex-row-reverse justify-between', wrapper: 'ms-0' }"
+            :ui="ui.debugSwitch"
             @update:model-value="updatePreference('debug', $event)"
           />
         </div>
@@ -107,12 +108,12 @@ function closeStudio() {
         variant="ghost"
         size="sm"
         :avatar="{ src: user?.avatar, alt: user?.name, size: '2xs' }"
-        class="px-2 py-1 font-medium"
+        :class="ui.userMenuButton"
         :label="user?.name"
       />
     </UDropdownMenu>
 
-    <div class="flex items-center">
+    <div :class="ui.actions">
       <UTooltip
         :text="syncTooltipText"
         :delay-duration="0"
