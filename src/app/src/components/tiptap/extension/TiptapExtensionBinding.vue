@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { NodeViewWrapper, NodeViewContent, nodeViewProps } from '@tiptap/vue-3'
 import { useI18n } from 'vue-i18n'
@@ -40,7 +40,7 @@ function removeBinding() {
   isPopoverOpen.value = false
 }
 
-function handleKeyDown(event) {
+function handleKeyDown(event: KeyboardEvent) {
   if (event.key === 'Enter') {
     event.preventDefault()
     applyBinding()
