@@ -20,6 +20,7 @@ const createAuthorsSchema = () => z.object({
   to: z.string(),
   username: z.string(),
   role: z.enum(['creator', 'maintainer', 'contributor']).default('contributor'),
+  birthDate: z.date(),
   isOpenSourceLover: z.boolean().default(true),
   modules: z.array(z.string()),
 })

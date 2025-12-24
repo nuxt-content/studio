@@ -4,6 +4,7 @@ avatar:
 to: https://x.com/atinux
 username: atinux
 role: creator
+birthDate: 1992-11-23
 isOpenSourceLover: true
 modules:
   - hub

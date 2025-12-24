@@ -6,6 +6,12 @@ const roleConfig: Record<string, { color: 'warning' | 'info' | 'success', icon: 
   maintainer: { color: 'info', icon: 'i-lucide-shield-check' },
   contributor: { color: 'success', icon: 'i-lucide-git-pull-request' },
 }
+
+function formatDate(date: string | Date | undefined): string {
+  if (!date) return ''
+  const d = new Date(date)
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
 </script>
 
 <template>
@@ -64,6 +70,16 @@ const roleConfig: Record<string, { color: 'warning' | 'info' | 'success', icon: 
               />
               {{ author.role }}
             </UBadge>
+            <span
+              v-if="author.birthDate"
+              class="text-xs text-dimmed flex items-center gap-1"
+            >
+              <UIcon
+                name="i-lucide-cake"
+                class="size-3"
+              />
+              {{ formatDate(author.birthDate) }}
+            </span>
           </div>
 
           <div

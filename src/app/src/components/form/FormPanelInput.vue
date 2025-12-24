@@ -6,6 +6,7 @@ import { computed, ref, watch } from 'vue'
 import { applyValueById } from '../../utils/form'
 import FormInputArray from './input/FormInputArray.vue'
 import InputBoolean from './input/InputBoolean.vue'
+import InputDate from './input/InputDate.vue'
 import InputText from './input/InputText.vue'
 
 const props = defineProps({
@@ -22,12 +23,8 @@ const label = computed(() => titleCase(props.formItem.title))
 const typeComponentMap: Partial<Record<FormInputsTypes, Component>> = {
   array: FormInputArray,
   boolean: InputBoolean,
+  date: InputDate,
   string: InputText,
-  // number: InputText,
-  // date: InputText,
-  // icon: InputText,
-  // media: InputText,
-  // file: InputText,
 }
 
 const inputComponentName = computed(() => typeComponentMap[props.formItem.type] ?? InputText)

@@ -5,6 +5,7 @@ avatar:
 to: https://x.com/farnabaz
 username: farnabaz
 role: maintainer
+birthDate: 1990-08-10
 isOpenSourceLover: true
 modules:
   - studio
