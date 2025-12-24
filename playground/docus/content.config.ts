@@ -30,6 +30,20 @@ const collections: Record<string, DefinedCollection> = {
       prefix: '/',
     },
   }),
+  datas: defineCollection({
+    type: 'data',
+    source: {
+      include: '4.datas/**/*.md',
+      prefix: '/',
+    },
+    schema: z.object({
+      title: z.string().nonempty(),
+      link: z.string().nonempty(),
+      icon: z.string().nonempty().editor({ input: 'icon' }),
+      image: z.string().nonempty().editor({ input: 'media' }),
+      order: z.number(),
+    }),
+  }),
   landing: defineCollection({
     type: 'page',
     source: {
@@ -40,7 +54,7 @@ const collections: Record<string, DefinedCollection> = {
     type: 'page',
     source: {
       include: '**',
-      exclude: ['index.md', '3.pages/**/*.md', 'authors/**/*'],
+      exclude: ['index.md', '3.pages/**/*.md', 'authors/**/*', '4.datas/**/*.md'],
     },
     schema: createDocsSchema(),
   }),
