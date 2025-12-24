@@ -24,7 +24,7 @@ function formatDate(date: string | Date | undefined): string {
       >
         <UBadge
           v-if="author.isOpenSourceLover"
-          color="success"
+          color="primary"
           size="sm"
           class="absolute -top-2 -right-2 z-10"
           title="Open Source Lover"
@@ -36,12 +36,23 @@ function formatDate(date: string | Date | undefined): string {
         </UBadge>
 
         <div class="flex flex-col items-center text-center gap-4">
-          <UAvatar
-            :src="author.avatar?.src"
-            :alt="author.avatar?.alt || author.name"
-            size="3xl"
-            class="ring-4 ring-muted group-hover:ring-primary/30 transition-all duration-200"
-          />
+          <div class="relative">
+            <UAvatar
+              :src="author.avatar?.src"
+              :alt="author.avatar?.alt || author.name"
+              size="3xl"
+              class="ring-4 ring-muted group-hover:ring-primary/30 transition-all duration-200"
+            />
+            <div
+              v-if="author.icon"
+              class="absolute -bottom-2 -left-2 size-7 flex items-center justify-center bg-elevated rounded-full ring-2 ring-default"
+            >
+              <UIcon
+                :name="author.icon"
+                class="size-4 text-primary"
+              />
+            </div>
+          </div>
 
           <div class="flex flex-col items-center gap-2">
             <NuxtLink
@@ -100,7 +111,7 @@ function formatDate(date: string | Date | undefined): string {
           <UButton
             :to="author.to"
             target="_blank"
-            variant="soft"
+            variant="subtle"
             color="neutral"
             size="sm"
             trailing-icon="i-lucide-external-link"

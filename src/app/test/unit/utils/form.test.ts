@@ -234,6 +234,47 @@ describe('buildFormTreeFromSchema', () => {
     })
   })
 
+  test('handle iconLibraries from editor options for icon input', () => {
+    const schema: Draft07 = {
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      $ref: '#/definitions/authors',
+      definitions: {
+        authors: {
+          type: 'object',
+          properties: {
+            icon: {
+              type: 'string',
+              $content: {
+                editor: {
+                  input: 'icon',
+                  iconLibraries: ['lucide', 'simple-icons'],
+                },
+              },
+            },
+          },
+          additionalProperties: false,
+          required: [],
+        },
+      },
+    }
+
+    expect(buildFormTreeFromSchema('authors', schema)).toStrictEqual({
+      authors: {
+        id: '#authors',
+        type: 'object',
+        title: 'Authors',
+        children: {
+          icon: {
+            id: '#authors/icon',
+            type: 'icon',
+            title: 'Icon',
+            options: ['lucide', 'simple-icons'],
+          },
+        },
+      },
+    })
+  })
+
   test('hide field if set in editor metas', () => {
     const schema: Draft07 = {
       $schema: 'http://json-schema.org/draft-07/schema#',

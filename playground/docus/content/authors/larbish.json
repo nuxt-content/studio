@@ -8,6 +8,7 @@
   "role": "contributor",
   "order": 3,
   "birthDate": "1993-09-03",
+  "icon": "i-lucide-palette",
   "isOpenSourceLover": true,
   "modules": [
     "studio",

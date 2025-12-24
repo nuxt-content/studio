@@ -7,6 +7,7 @@ username: farnabaz
 role: maintainer
 order: 2
 birthDate: 1990-08-10
+icon: i-lucide-code
 isOpenSourceLover: true
 modules:
   - studio

@@ -7,6 +7,7 @@ import { applyValueById } from '../../utils/form'
 import FormInputArray from './input/FormInputArray.vue'
 import InputBoolean from './input/InputBoolean.vue'
 import InputDate from './input/InputDate.vue'
+import InputIcon from './input/InputIcon.vue'
 import InputNumber from './input/InputNumber.vue'
 import InputText from './input/InputText.vue'
 
@@ -25,6 +26,7 @@ const typeComponentMap: Partial<Record<FormInputsTypes, Component>> = {
   array: FormInputArray,
   boolean: InputBoolean,
   date: InputDate,
+  icon: InputIcon,
   number: InputNumber,
   string: InputText,
 }
@@ -82,7 +84,7 @@ function computeValue(formItem: FormItem): unknown {
     :label="label"
     :ui="{
       root: 'w-full mt-2',
-      label: 'text-xs font-medium tracking-tight',
+      label: 'text-xs font-semibold tracking-tight',
     }"
   >
     <component
