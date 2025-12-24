@@ -82,11 +82,11 @@ async function setJSON(document: DatabasePageItem) {
 
   switch (document.extension) {
     case ContentFileExtension.JSON:
-      contentJSON.value = JSON.parse(generatedContent)
+      contentJSON.value = generatedContent ? JSON.parse(generatedContent) : {}
       break
     case ContentFileExtension.YAML:
     case ContentFileExtension.YML:
-      contentJSON.value = yamlToJson(generatedContent)!
+      contentJSON.value = yamlToJson(generatedContent) ?? {}
       break
   }
 }

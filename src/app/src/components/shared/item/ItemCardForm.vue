@@ -9,7 +9,7 @@ import type {
   ExtensionConfig,
   CreateFolderParams,
 } from '../../../types'
-import { StudioItemActionId } from '../../../types'
+import { ContentFileExtension, StudioItemActionId } from '../../../types'
 import { joinURL, withLeadingSlash, withoutLeadingSlash } from 'ufo'
 import { useStudio } from '../../../composables/useStudio'
 import { parseName, getFileExtension, CONTENT_EXTENSIONS, MEDIA_EXTENSIONS } from '../../../utils/file'
@@ -140,6 +140,20 @@ const routePath = computed(() => {
   return withLeadingSlash(joinURL(props.parentItem.routePath!, parseName(routePath).name))
 })
 
+function getInitialContent(extension: string, title: string): string {
+  // TODO: improve initial content based on collection schema
+  switch (extension) {
+    case ContentFileExtension.JSON:
+      return JSON.stringify({}, null, 2)
+    case ContentFileExtension.YAML:
+    case ContentFileExtension.YML:
+      return ''
+    case ContentFileExtension.Markdown:
+    default:
+      return `# ${title} file`
+  }
+}
+
 const displayInfo = computed(() => {
   if (isDirectory.value) {
     const itemCount = props.renamedItem?.children?.length || 0
@@ -211,7 +225,7 @@ async function onSubmit() {
     case StudioItemActionId.CreateDocument:
       params = {
         fsPath: newFsPath,
-        content: `# ${upperFirst(state.name)} file`,
+        content: getInitialContent(state.extension!, upperFirst(state.name)),
       }
       break
     case StudioItemActionId.RenameItem:
