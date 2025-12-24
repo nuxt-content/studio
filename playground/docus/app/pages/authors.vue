@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data: authors } = await useAsyncData('authors-list', () => queryCollection('authors').all())
+const { data: authors } = await useAsyncData('authors-list', () => queryCollection('authors').order('order', 'ASC').all())
 
 const roleConfig: Record<string, { color: 'warning' | 'info' | 'success', icon: string }> = {
   creator: { color: 'warning', icon: 'i-lucide-crown' },

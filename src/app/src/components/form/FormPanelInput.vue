@@ -7,6 +7,7 @@ import { applyValueById } from '../../utils/form'
 import FormInputArray from './input/FormInputArray.vue'
 import InputBoolean from './input/InputBoolean.vue'
 import InputDate from './input/InputDate.vue'
+import InputNumber from './input/InputNumber.vue'
 import InputText from './input/InputText.vue'
 
 const props = defineProps({
@@ -24,6 +25,7 @@ const typeComponentMap: Partial<Record<FormInputsTypes, Component>> = {
   array: FormInputArray,
   boolean: InputBoolean,
   date: InputDate,
+  number: InputNumber,
   string: InputText,
 }
 
