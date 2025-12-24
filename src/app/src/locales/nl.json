@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 eigenschap | {count} eigenschappen"
+      },
+      "media": {
+        "placeholder": "Relatief pad of publieke URL...",
+        "searchPlaceholder": "Afbeeldingen zoeken...",
+        "noImagesFound": "Geen afbeeldingen gevonden",
+        "noImagesAvailable": "Geen afbeeldingen beschikbaar",
+        "imageCount": "{count} van {total} afbeelding | {count} van {total} afbeeldingen"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "Iconen zoeken...",
+        "noIconsFound": "Geen iconen gevonden",
+        "searchHint": "Typ minimaal 2 tekens om te zoeken",
+        "libraries": "Bibliotheken:",
+        "allLibraries": "Alle"
+      },
+      "text": {
+        "placeholder": "Voer tekst in...",
+        "selectPlaceholder": "Selecteer een optie..."
+      },
+      "date": {
+        "selectDate": "Selecteer datum"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

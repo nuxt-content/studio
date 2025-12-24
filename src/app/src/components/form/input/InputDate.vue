@@ -52,7 +52,7 @@ const dateValue = computed<DateValue | undefined>({
           variant="link"
           size="xs"
           icon="i-lucide-calendar"
-          aria-label="Select a date"
+          :aria-label="$t('studio.form.date.selectDate')"
           class="px-0"
         />
 

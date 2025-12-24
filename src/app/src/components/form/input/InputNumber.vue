@@ -16,7 +16,7 @@ const model = defineModel<number>({ default: 0 })
   <UInput
     v-model="model"
     type="number"
-    placeholder="0"
+    :placeholder="$t('studio.form.number.placeholder')"
     size="xs"
     class="w-full"
   />

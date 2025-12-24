@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 個屬性 | {count} 個屬性"
+      },
+      "media": {
+        "placeholder": "相對路徑或公開URL...",
+        "searchPlaceholder": "搜尋圖片...",
+        "noImagesFound": "找不到圖片",
+        "noImagesAvailable": "沒有可用的圖片",
+        "imageCount": "{total}張圖片中的{count}張"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "搜尋圖示...",
+        "noIconsFound": "找不到圖示",
+        "searchHint": "輸入至少2個字元進行搜尋",
+        "libraries": "圖示庫:",
+        "allLibraries": "全部"
+      },
+      "text": {
+        "placeholder": "輸入文字...",
+        "selectPlaceholder": "選擇一個選項..."
+      },
+      "date": {
+        "selectDate": "選擇日期"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

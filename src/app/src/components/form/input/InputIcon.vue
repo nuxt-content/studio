@@ -79,7 +79,7 @@ function selectIcon(icon: string) {
 
     <UInput
       v-model="model"
-      placeholder="i-lucide-icon"
+      :placeholder="$t('studio.form.icon.placeholder')"
       size="xs"
       class="flex-1"
     >
@@ -97,7 +97,7 @@ function selectIcon(icon: string) {
             <div class="p-3 w-72">
               <UInput
                 v-model="search"
-                placeholder="Search icons..."
+                :placeholder="$t('studio.form.icon.searchPlaceholder')"
                 size="xs"
                 icon="i-lucide-search"
                 autofocus
@@ -138,18 +138,18 @@ function selectIcon(icon: string) {
                 v-else-if="search.length >= 2"
                 class="text-xs text-muted text-center py-4"
               >
-                No icons found
+                {{ $t('studio.form.icon.noIconsFound') }}
               </p>
 
               <p
                 v-else
                 class="text-xs text-muted text-center py-4"
               >
-                Type at least 2 characters to search
+                {{ $t('studio.form.icon.searchHint') }}
               </p>
 
               <p class="text-xs text-dimmed mt-2">
-                Libraries: {{ iconLibraries === 'all' ? 'All' : iconLibraries.join(', ') }}
+                {{ $t('studio.form.icon.libraries') }} {{ iconLibraries === 'all' ? $t('studio.form.icon.allLibraries') : iconLibraries.join(', ') }}
               </p>
             </div>
           </template>

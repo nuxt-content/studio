@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 eigenskap | {count} eigenskapar"
+      },
+      "media": {
+        "placeholder": "Relativ sti eller offentleg URL...",
+        "searchPlaceholder": "Søk etter bilete...",
+        "noImagesFound": "Ingen bilete funne",
+        "noImagesAvailable": "Ingen bilete tilgjengelege",
+        "imageCount": "{count} av {total} bilete"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "Søk etter ikon...",
+        "noIconsFound": "Ingen ikon funne",
+        "searchHint": "Skriv minst 2 teikn for å søkje",
+        "libraries": "Bibliotek:",
+        "allLibraries": "Alle"
+      },
+      "text": {
+        "placeholder": "Skriv inn tekst...",
+        "selectPlaceholder": "Vel eit alternativ..."
+      },
+      "date": {
+        "selectDate": "Vel dato"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

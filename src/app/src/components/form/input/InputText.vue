@@ -28,14 +28,14 @@ const selectItems = computed(() => {
     v-if="hasOptions"
     v-model="(model as string)"
     :items="selectItems"
-    placeholder="Select an option..."
+    :placeholder="$t('studio.form.text.selectPlaceholder')"
     size="xs"
     class="w-full"
   />
   <UInput
     v-else
     v-model="model"
-    placeholder="Enter text..."
+    :placeholder="$t('studio.form.text.placeholder')"
     size="xs"
     class="w-full"
   />

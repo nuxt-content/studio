@@ -82,7 +82,7 @@ function selectMedia(media: TreeItem) {
 
     <UInput
       v-model="model"
-      placeholder="Enter relative path or Public URL..."
+      :placeholder="$t('studio.form.media.placeholder')"
       size="xs"
       class="flex-1"
     >
@@ -100,7 +100,7 @@ function selectMedia(media: TreeItem) {
             <div class="p-3 w-80">
               <UInput
                 v-model="search"
-                placeholder="Search images..."
+                :placeholder="$t('studio.form.media.searchPlaceholder')"
                 size="xs"
                 icon="i-lucide-search"
                 autofocus
@@ -116,7 +116,7 @@ function selectMedia(media: TreeItem) {
                   class="size-8 mx-auto mb-2 text-muted"
                 />
                 <p class="text-xs text-muted">
-                  {{ search ? 'No images found' : 'No images available' }}
+                  {{ search ? $t('studio.form.media.noImagesFound') : $t('studio.form.media.noImagesAvailable') }}
                 </p>
               </div>
 
@@ -150,7 +150,7 @@ function selectMedia(media: TreeItem) {
                 v-if="mediaFiles.length > 0"
                 class="text-xs text-dimmed mt-1"
               >
-                {{ mediaFiles.length }} of {{ allMediaFiles.length }} image{{ allMediaFiles.length !== 1 ? 's' : '' }}
+                {{ $t('studio.form.media.imageCount', { count: mediaFiles.length, total: allMediaFiles.length }, allMediaFiles.length) }}
               </p>
             </div>
           </template>

@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 property | {count} properties"
+      },
+      "media": {
+        "placeholder": "Enter relative path or Public URL...",
+        "searchPlaceholder": "Search images...",
+        "noImagesFound": "No images found",
+        "noImagesAvailable": "No images available",
+        "imageCount": "{count} of {total} image | {count} of {total} images"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "Search icons...",
+        "noIconsFound": "No icons found",
+        "searchHint": "Type at least 2 characters to search",
+        "libraries": "Libraries:",
+        "allLibraries": "All"
+      },
+      "text": {
+        "placeholder": "Enter text...",
+        "selectPlaceholder": "Select an option..."
+      },
+      "date": {
+        "selectDate": "Select a date"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

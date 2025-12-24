@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 properti | {count} properti"
+      },
+      "media": {
+        "placeholder": "Path relatif atau URL publik...",
+        "searchPlaceholder": "Cari gambar...",
+        "noImagesFound": "Gambar tidak ditemukan",
+        "noImagesAvailable": "Tidak ada gambar tersedia",
+        "imageCount": "{count} dari {total} gambar"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "Cari ikon...",
+        "noIconsFound": "Ikon tidak ditemukan",
+        "searchHint": "Ketik minimal 2 karakter untuk mencari",
+        "libraries": "Pustaka:",
+        "allLibraries": "Semua"
+      },
+      "text": {
+        "placeholder": "Masukkan teks...",
+        "selectPlaceholder": "Pilih opsi..."
+      },
+      "date": {
+        "selectDate": "Pilih tanggal"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }
