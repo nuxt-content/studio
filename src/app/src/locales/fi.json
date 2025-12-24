@@ -301,6 +301,31 @@
         },
         "section": {
           "propertyCount": "1 ominaisuus | {count} ominaisuutta"
+        },
+        "media": {
+          "placeholder": "Suhteellinen polku tai julkinen URL...",
+          "searchPlaceholder": "Etsi kuvia...",
+          "noImagesFound": "Kuvia ei löytynyt",
+          "noImagesAvailable": "Kuvia ei saatavilla",
+          "imageCount": "{count} / {total} kuva | {count} / {total} kuvaa"
+        },
+        "icon": {
+          "placeholder": "i-lucide-icon",
+          "searchPlaceholder": "Etsi kuvakkeita...",
+          "noIconsFound": "Kuvakkeita ei löytynyt",
+          "searchHint": "Kirjoita vähintään 2 merkkiä hakeaksesi",
+          "libraries": "Kirjastot:",
+          "allLibraries": "Kaikki"
+        },
+        "text": {
+          "placeholder": "Syötä teksti...",
+          "selectPlaceholder": "Valitse vaihtoehto..."
+        },
+        "date": {
+          "selectDate": "Valitse päivämäärä"
+        },
+        "number": {
+          "placeholder": "0"
         }
       }
     }

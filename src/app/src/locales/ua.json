@@ -300,6 +300,31 @@
       },
       "section": {
         "propertyCount": "1 властивість | {count} властивостей"
+      },
+      "media": {
+        "placeholder": "Відносний шлях або публічна URL...",
+        "searchPlaceholder": "Пошук зображень...",
+        "noImagesFound": "Зображень не знайдено",
+        "noImagesAvailable": "Немає доступних зображень",
+        "imageCount": "{count} з {total} зображення | {count} з {total} зображень"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "Пошук іконок...",
+        "noIconsFound": "Іконок не знайдено",
+        "searchHint": "Введіть щонайменше 2 символи для пошуку",
+        "libraries": "Бібліотеки:",
+        "allLibraries": "Усі"
+      },
+      "text": {
+        "placeholder": "Введіть текст...",
+        "selectPlaceholder": "Оберіть опцію..."
+      },
+      "date": {
+        "selectDate": "Оберіть дату"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

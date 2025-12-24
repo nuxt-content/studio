@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "۱ ویژگی | {count} ویژگی"
+      },
+      "media": {
+        "placeholder": "مسیر نسبی یا URL عمومی...",
+        "searchPlaceholder": "جستجوی تصاویر...",
+        "noImagesFound": "تصویری یافت نشد",
+        "noImagesAvailable": "تصویری در دسترس نیست",
+        "imageCount": "{count} از {total} تصویر"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "جستجوی آیکون‌ها...",
+        "noIconsFound": "آیکونی یافت نشد",
+        "searchHint": "حداقل ۲ کاراکتر برای جستجو وارد کنید",
+        "libraries": "کتابخانه‌ها:",
+        "allLibraries": "همه"
+      },
+      "text": {
+        "placeholder": "متن را وارد کنید...",
+        "selectPlaceholder": "یک گزینه انتخاب کنید..."
+      },
+      "date": {
+        "selectDate": "انتخاب تاریخ"
+      },
+      "number": {
+        "placeholder": "۰"
       }
     }
   }

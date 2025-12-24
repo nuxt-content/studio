@@ -301,6 +301,31 @@
       },
       "section": {
         "propertyCount": "1 个属性 | {count} 个属性"
+      },
+      "media": {
+        "placeholder": "相对路径或公共URL...",
+        "searchPlaceholder": "搜索图片...",
+        "noImagesFound": "未找到图片",
+        "noImagesAvailable": "没有可用的图片",
+        "imageCount": "{total}张图片中的{count}张"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "搜索图标...",
+        "noIconsFound": "未找到图标",
+        "searchHint": "输入至少2个字符进行搜索",
+        "libraries": "图标库:",
+        "allLibraries": "全部"
+      },
+      "text": {
+        "placeholder": "输入文本...",
+        "selectPlaceholder": "选择一个选项..."
+      },
+      "date": {
+        "selectDate": "选择日期"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

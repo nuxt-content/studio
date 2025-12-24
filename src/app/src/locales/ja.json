@@ -300,6 +300,31 @@
       },
       "section": {
         "propertyCount": "1 プロパティ | {count} プロパティ"
+      },
+      "media": {
+        "placeholder": "相対パスまたは公開URL...",
+        "searchPlaceholder": "画像を検索...",
+        "noImagesFound": "画像が見つかりません",
+        "noImagesAvailable": "利用可能な画像がありません",
+        "imageCount": "{total}件中{count}件の画像"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "アイコンを検索...",
+        "noIconsFound": "アイコンが見つかりません",
+        "searchHint": "検索するには2文字以上入力してください",
+        "libraries": "ライブラリ:",
+        "allLibraries": "すべて"
+      },
+      "text": {
+        "placeholder": "テキストを入力...",
+        "selectPlaceholder": "オプションを選択..."
+      },
+      "date": {
+        "selectDate": "日付を選択"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

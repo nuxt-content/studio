@@ -300,6 +300,31 @@
       },
       "section": {
         "propertyCount": "خاصية واحدة | {count} خصائص"
+      },
+      "media": {
+        "placeholder": "مسار نسبي أو رابط عام...",
+        "searchPlaceholder": "بحث عن الصور...",
+        "noImagesFound": "لم يتم العثور على صور",
+        "noImagesAvailable": "لا توجد صور متاحة",
+        "imageCount": "{count} من {total} صورة | {count} من {total} صور"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "بحث عن الأيقونات...",
+        "noIconsFound": "لم يتم العثور على أيقونات",
+        "searchHint": "اكتب حرفين على الأقل للبحث",
+        "libraries": "المكتبات:",
+        "allLibraries": "الكل"
+      },
+      "text": {
+        "placeholder": "أدخل النص...",
+        "selectPlaceholder": "اختر خياراً..."
+      },
+      "date": {
+        "selectDate": "اختر تاريخاً"
+      },
+      "number": {
+        "placeholder": "0"
       }
     }
   }

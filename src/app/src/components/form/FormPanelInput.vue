@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { titleCase } from 'scule'
-import type { FormItem, FormTree } from '../../types'
-import type { PropType } from 'vue'
+import type { FormItem, FormTree, FormInputsTypes } from '../../types'
+import type { Component, PropType } from 'vue'
 import { computed, ref, watch } from 'vue'
 import { applyValueById } from '../../utils/form'
+import FormInputArray from './input/FormInputArray.vue'
+import InputBoolean from './input/InputBoolean.vue'
+import InputDate from './input/InputDate.vue'
+import InputIcon from './input/InputIcon.vue'
+import InputMedia from './input/InputMedia.vue'
+import InputNumber from './input/InputNumber.vue'
+import InputText from './input/InputText.vue'
 
 const props = defineProps({
   formItem: {
@@ -16,27 +23,21 @@ const form = defineModel({ type: Object as PropType<FormTree>, default: () => ({
 
 const label = computed(() => titleCase(props.formItem.title))
 
-const placeholder = computed(() => {
-  switch (props.formItem.type) {
-    case 'string':
-      return `Enter ${props.formItem.title.toLowerCase()}...`
-    case 'number':
-      return '0'
-    default:
-      return ''
-  }
-})
+const typeComponentMap: Partial<Record<FormInputsTypes, Component>> = {
+  array: FormInputArray,
+  boolean: InputBoolean,
+  date: InputDate,
+  icon: InputIcon,
+  media: InputMedia,
+  number: InputNumber,
+  string: InputText,
+}
 
-const inputType = computed(() => {
-  switch (props.formItem.type) {
-    case 'number':
-      return 'number'
-    default:
-      return 'text'
-  }
-})
+const inputComponentName = computed(() => typeComponentMap[props.formItem.type] ?? InputText)
 
-const isArrayType = computed(() => props.formItem.type === 'array')
+const inputFormItem = computed(() => {
+  return props.formItem.type === 'array' ? props.formItem.arrayItemForm : props.formItem
+})
 
 // Initialize model value
 const model = ref(computeValue(props.formItem))
@@ -56,9 +57,7 @@ watch(() => props.formItem, (newFormItem) => {
 }, { deep: true })
 
 function computeValue(formItem: FormItem): unknown {
-  if (formItem.value !== undefined) {
-    return formItem.value
-  }
+  const value = formItem.value
 
   switch (formItem.type) {
     case 'string':
@@ -66,17 +65,17 @@ function computeValue(formItem: FormItem): unknown {
     case 'icon':
     case 'media':
     case 'file':
-      return ''
+      return typeof value === 'string' ? value : ''
     case 'boolean':
-      return false
+      return typeof value === 'boolean' ? value : false
     case 'number':
-      return 0
+      return typeof value === 'number' ? value : 0
     case 'array':
-      return []
+      return Array.isArray(value) ? value : []
     case 'object':
-      return {}
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {}
     default:
-      return null
+      return value ?? null
   }
 }
 </script>
@@ -87,22 +86,13 @@ function computeValue(formItem: FormItem): unknown {
     :label="label"
     :ui="{
       root: 'w-full mt-2',
-      label: 'text-xs font-medium tracking-tight',
+      label: 'text-xs font-semibold tracking-tight',
     }"
   >
-    <FormInputArray
-      v-if="isArrayType"
-      v-model="(model as unknown[])"
-      :form-item="formItem.arrayItemForm"
-    />
-    <UInput
-      v-else
-      :id="formItem.id"
-      v-model="(model as string | number)"
-      :placeholder="placeholder"
-      :type="inputType"
-      size="xs"
-      class="w-full"
+    <component
+      :is="inputComponentName"
+      v-model="model"
+      :form-item="inputFormItem"
     />
   </UFormField>
 </template>

@@ -1,8 +1,13 @@
 name: Sébastien Chopin
 avatar:
-  src: https://avatars.githubusercontent.com/u/904724?v=4
+  src: /atinux.jpeg
 to: https://x.com/atinux
 username: atinux
+role: creator
+order: 1
+birthDate: 1992-11-23
+icon: i-lucide-rocket
+isOpenSourceLover: true
 modules:
   - hub
   - ui

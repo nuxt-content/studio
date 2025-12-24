@@ -111,8 +111,8 @@ function updateObjectItem(index: number, value: Record<string, unknown>) {
           :key="item.label"
           variant="subtle"
           color="neutral"
-          size="sm"
-          class="group/badge flex items-center gap-3 px-2 py-1 min-w-0"
+          size="xs"
+          class="min-w-0"
         >
           <UInput
             v-if="activeIndex === item.index"

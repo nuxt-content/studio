@@ -112,6 +112,9 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
       if (def.enum && Array.isArray(def.enum) && def.enum.length > 0) {
         item.options = def.enum as string[]
       }
+      else if (editor?.iconLibraries && Array.isArray(editor.iconLibraries)) {
+        item.options = editor.iconLibraries
+      }
 
       return item
     }
@@ -132,6 +135,10 @@ export const buildFormTreeFromSchema = (treeKey: string, schema: Draft07): FormT
 
     if (def.enum && Array.isArray(def.enum) && def.enum.length > 0) {
       item.options = def.enum as string[]
+    }
+    // Pass iconLibraries from editor options for icon inputs
+    else if (editor?.iconLibraries && Array.isArray(editor.iconLibraries)) {
+      item.options = editor.iconLibraries as string[]
     }
 
     return item
