@@ -19,6 +19,7 @@ const createAuthorsSchema = () => z.object({
   }),
   to: z.string(),
   username: z.string(),
+  isOpenSourceLover: z.boolean().default(true),
   modules: z.array(z.string()),
 })
 

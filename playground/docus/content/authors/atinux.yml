@@ -3,6 +3,7 @@ avatar:
   src: https://avatars.githubusercontent.com/u/904724?v=4
 to: https://x.com/atinux
 username: atinux
+isOpenSourceLover: true
 modules:
   - hub
   - ui

@@ -5,6 +5,7 @@
   },
   "to": "https://x.com/_larbish",
   "username": "larbish",
+  "isOpenSourceLover": true,
   "modules": [
     "studio",
     "content",
