@@ -62,85 +62,99 @@ function selectIcon(icon: string) {
 </script>
 
 <template>
-  <UInput
-    v-model="model"
-    placeholder="i-lucide-icon"
-    size="xs"
-    class="w-full"
-  >
-    <template #trailing>
-      <UPopover v-model:open="popoverOpen">
-        <UButton
-          size="xs"
-          color="neutral"
-          variant="none"
-          icon="i-lucide-search"
-          class="cursor-pointer"
-        />
+  <div class="flex items-center gap-1">
+    <div class="flex items-center justify-center size-6 bg-accented rounded shrink-0">
+      <UIcon
+        v-if="model"
+        :name="model"
+        size="xs"
+      />
+      <UIcon
+        v-else
+        name="i-lucide-image"
+        class="text-dimmed"
+        size="xs"
+      />
+    </div>
 
-        <template #content>
-          <div class="p-3 w-72">
-            <UInput
-              v-model="search"
-              placeholder="Search icons..."
-              size="xs"
-              icon="i-lucide-search"
-              autofocus
-              class="mb-3 w-full"
-            />
+    <UInput
+      v-model="model"
+      placeholder="i-lucide-icon"
+      size="xs"
+      class="flex-1"
+    >
+      <template #trailing>
+        <UPopover v-model:open="popoverOpen">
+          <UButton
+            size="xs"
+            color="neutral"
+            variant="none"
+            icon="i-lucide-search"
+            class="cursor-pointer"
+          />
 
-            <div
-              v-if="isLoading"
-              class="flex items-center justify-center py-4"
-            >
-              <UIcon
-                name="i-lucide-loader-2"
-                class="size-5 animate-spin text-muted"
+          <template #content>
+            <div class="p-3 w-72">
+              <UInput
+                v-model="search"
+                placeholder="Search icons..."
+                size="xs"
+                icon="i-lucide-search"
+                autofocus
+                class="mb-3 w-full"
               />
-            </div>
 
-            <div
-              v-else-if="icons.length > 0"
-              class="grid grid-cols-6 gap-1.5 max-h-48 overflow-y-auto"
-            >
-              <UTooltip
-                v-for="icon in icons"
-                :key="icon"
-                :text="icon"
+              <div
+                v-if="isLoading"
+                class="flex items-center justify-center py-4"
               >
-                <button
-                  type="button"
-                  class="flex items-center justify-center size-8 rounded-md bg-muted hover:bg-accented transition-colors"
-                  @click="selectIcon(icon)"
+                <UIcon
+                  name="i-lucide-loader-2"
+                  class="size-5 animate-spin text-muted"
+                />
+              </div>
+
+              <div
+                v-else-if="icons.length > 0"
+                class="grid grid-cols-6 gap-1.5 max-h-48 overflow-y-auto"
+              >
+                <UTooltip
+                  v-for="icon in icons"
+                  :key="icon"
+                  :text="icon"
                 >
-                  <UIcon
-                    :name="`i-${icon.replace(':', '-')}`"
-                    class="size-4"
+                  <UButton
+                    size="xs"
+                    color="neutral"
+                    variant="soft"
+                    :icon="`i-${icon.replace(':', '-')}`"
+                    class="flex items-center justify-center"
+                    @click="selectIcon(icon)"
                   />
-                </button>
-              </UTooltip>
+                </UTooltip>
+              </div>
+
+              <p
+                v-else-if="search.length >= 2"
+                class="text-xs text-muted text-center py-4"
+              >
+                No icons found
+              </p>
+
+              <p
+                v-else
+                class="text-xs text-muted text-center py-4"
+              >
+                Type at least 2 characters to search
+              </p>
+
+              <p class="text-xs text-dimmed mt-2">
+                Libraries: {{ iconLibraries === 'all' ? 'All' : iconLibraries.join(', ') }}
+              </p>
             </div>
-
-            <p
-              v-else-if="search.length >= 2"
-              class="text-xs text-muted text-center py-4"
-            >
-              No icons found
-            </p>
-
-            <p
-              v-else
-              class="text-xs text-muted text-center py-4"
-            >
-              Type at least 2 characters to search
-            </p>
-
-            <p class="text-xs text-dimmed mt-2">
-              Libraries: {{ iconLibraries === 'all' ? 'All' : iconLibraries.join(', ') }}
-            </p>
-          </div>
-        </template>
-      </UPopover>
-    </template>
-  </UInput>
+          </template>
+        </UPopover>
+      </template>
+    </UInput>
+  </div>
 </template>
