@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { data: page } = await useAsyncData('authors-page', () => queryCollection('pages').first())
+
 const { data: authors } = await useAsyncData('authors-list', () => queryCollection('authors').order('order', 'ASC').all())
 
 const roleConfig: Record<string, { color: 'warning' | 'info' | 'success', icon: string }> = {
@@ -15,7 +17,11 @@ function formatDate(date: string | Date | undefined): string {
 </script>
 
 <template>
-  <UContainer class="py-12">
+  <UContainer>
+    <ContentRenderer
+      v-if="page"
+      :value="page"
+    />
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <UCard
         v-for="author in authors"
