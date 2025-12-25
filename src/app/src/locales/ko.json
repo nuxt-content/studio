@@ -1,0 +1,332 @@
+{
+  "studio": {
+    "buttons": {
+      "edit": "페이지 편집하기",
+      "retryPublish": "배포 재시도",
+      "reloadApp": "앱 새로고침",
+      "reload": "새로고침",
+      "signOut": "로그아웃",
+      "review": "리뷰",
+      "publish": "배포",
+      "back": "뒤로",
+      "backToEdition": "편집으로 돌아가기",
+      "seeChanges": "변경사항 보기"
+    },
+    "headings": {
+      "directories": "디렉토리",
+      "files": "파일",
+      "media": "미디어",
+      "pageSettings": "페이지 설정"
+    },
+    "tooltips": {
+      "toggleStudio": "스튜디오 토글",
+      "unlinkEditor": "에디터 연결해제",
+      "linkEditor": "에디터 연결",
+      "copiedToClipboard": "클립보드에 복사됨",
+      "copyToClipboard": "클립보드에 복사하기",
+      "publishChanges": "변경 사항 배포하기",
+      "backToContent": "콘텐츠로 돌아가기"
+    },
+    "notifications": {
+      "error": {
+        "unknown": "알 수 없는 오류가 발생했습니다"
+      }
+    },
+    "publish": {
+      "failedTitle": "배포 실패했습니다",
+      "summary": "{repo} 저장소의 {branch} 브랜치",
+      "errorTitle": "{providerName} 배포 중 오류가 발생했습니다",
+      "failedGeneric": "변경 사항 배포에 실패했습니다"
+    },
+    "review": {
+      "title": "변경 사항 검토",
+      "created": "생성",
+      "updated": "업데이트",
+      "renamed": "이름 변경",
+      "deleted": "삭제"
+    },
+    "publishSuccess": {
+      "title": "변경 사항이 배포되었습니다",
+      "summary": "{repo} 저장소의 {branch} 브랜치에 {count}개의 변경 사항이 배포되었습니다",
+      "alertTitleWaiting": "배포 대기 중입니다...",
+      "alertTitleComplete": "배포가 완료되었습니다",
+      "alertDescWaiting": "변경 사항이 스튜디오에 표시되려면 웹사이트를 배포해야 합니다.",
+      "alertDescComplete": "웹사이트의 새 버전이 배포되었습니다. 스튜디오에서 변경 사항을 보려면 앱을 새로고침하세요."
+    },
+    "newVersionBanner": {
+      "title": "새 웹사이트 버전이 감지되었습니다",
+      "description": "웹사이트의 새 버전이 배포되었습니다. 최신 변경 사항을 보려면 앱을 새로고침하세요.",
+      "reloadButton": "새로고침"
+    },
+    "footer": {
+      "developer_view": "개발자 보기",
+      "localFilesystem": "로컬 파일시스템 사용 중",
+      "debugMode": "디버그 모드"
+    },
+    "alert": {
+      "mdcFormatting": "MDC 구문 표준에 맞추기 위해 서식이 적용되었습니다."
+    },
+    "conflict": {
+      "title": "콘텐츠 충돌이 감지되었습니다",
+      "repository": "저장소",
+      "branch": "브랜치",
+      "file": "파일",
+      "description": "{providerName}의 콘텐츠가 웹사이트 버전과 다릅니다. 최신 변경 사항이 배포되었는지 확인하고 페이지를 새로고침하세요.",
+      "websiteVersion": "웹사이트"
+    },
+    "nav": {
+      "content": "콘텐츠",
+      "media": "미디어"
+    },
+    "placeholders": {
+      "commitMessage": "커밋 메시지",
+      "order": "순서",
+      "fileName": "파일 이름"
+    },
+    "validation": {
+      "commitRequired": "커밋 메시지는 필수입니다",
+      "nameEmpty": "이름을 입력해주세요",
+      "nameEndsWithDot": "이름은 '.'으로 끝날 수 없습니다",
+      "nameStartsWithSlash": "이름은 '/'으로 시작할 수 없습니다",
+      "nameExists": "이미 존재하는 이름입니다",
+      "prefixDigitsOnly": "접두사는 숫자만 포함하는 문자열이어야 합니다",
+      "prefixNonNegativeInteger": "접두사는 양수 또는 0이어야 합니다"
+    },
+    "media": {
+      "altFilePreview": "파일 미리보기",
+      "altImagePreview": "이미지 미리보기",
+      "playAudio": "오디오 재생",
+      "audioTagNotSupported": "브라우저가 오디오 태그를 지원하지 않습니다.",
+      "playVideo": "비디오 재생",
+      "videoTagNotSupported": "브라우저가 비디오 태그를 지원하지 않습니다.",
+      "metaWidth": "너비",
+      "metaHeight": "높이",
+      "metaType": "유형",
+      "metaDuration": "재생 시간",
+      "metaSize": "크기",
+      "fileName": "파일 이름",
+      "publicPath": "공개 경로",
+      "providerPath": "{providerName} 경로",
+      "markdown": "마크다운"
+    },
+    "aria": {
+      "openActions": "작업 열기",
+      "cancel": "취소",
+      "submit": "제출"
+    },
+    "actions": {
+      "confirmAction": "{action}을 실행하려면 다시 클릭하세요",
+      "verbs": {
+        "create": "생성하기",
+        "delete": "삭제하기",
+        "rename": "이름 변경하기",
+        "upload": "업로드하기",
+        "duplicate": "복제하기"
+      },
+      "labels": {
+        "createDocument": "새 파일",
+        "createDocumentFolder": "새 폴더",
+        "createMediaFolder": "새 미디어 폴더",
+        "renameItem": "이름 변경",
+        "deleteItem": "삭제",
+        "uploadMedia": "미디어 업로드",
+        "duplicateItem": "복제",
+        "revertItem": "변경 사항 되돌리기",
+        "publishBranch": "브랜치 배포",
+        "openGitProvider": "{providerName}에서 열기",
+        "switchToTipTap": "시각적 에디터 사용",
+        "switchToCode": "코드 에디터 사용"
+      },
+      "tooltips": {
+        "createDocument": "새 파일 생성",
+        "createDocumentFolder": "새 폴더 생성",
+        "createMediaFolder": "새 폴더 생성",
+        "renameItem": "파일 이름 변경",
+        "deleteItem": "파일 삭제",
+        "uploadMedia": "미디어 업로드",
+        "duplicateItem": "파일 복제",
+        "revertItem": "변경 사항 되돌리기",
+        "publishBranch": "브랜치 배포"
+      }
+    },
+    "items": {
+      "itemCount": "1개 항목 | {count}개 항목"
+    },
+    "monaco": {
+      "headings": {
+        "h1": "제목 1",
+        "h2": "제목 2",
+        "h3": "제목 3"
+      },
+      "styles": {
+        "bold": "굵게",
+        "italic": "기울임"
+      },
+      "lists": {
+        "bulleted": "글머리 기호 목록",
+        "numbered": "번호 매기기 목록"
+      },
+      "other": {
+        "emojis": "이모지",
+        "blockquote": "인용구",
+        "code": "코드 블록",
+        "inlineCode": "인라인 코드",
+        "link": "링크",
+        "image": "이미지"
+      },
+      "writeSomething": "무엇이든 써보세요",
+      "snippets": {
+        "title": "제목",
+        "item1": "항목 1",
+        "item2": "항목 2",
+        "language": "언어",
+        "code": "코드",
+        "link": "링크",
+        "alt": "대체 텍스트",
+        "src": "소스",
+        "value": "값"
+      },
+      "docs": {
+        "path": "프로젝트 내 경로:",
+        "props": "속성",
+        "slots": "슬롯",
+        "type": "유형",
+        "required": "필수",
+        "default": "기본값"
+      }
+    },
+    "tiptap": {
+      "editor": {
+        "placeholder": "무엇이든 써보세요. 명령어는 '/'를 입력하세요...",
+        "components": "컴포넌트"
+      },
+      "toolbar": {
+        "h1": "제목 1",
+        "h2": "제목 2",
+        "h3": "제목 3",
+        "h4": "제목 4",
+        "bulletList": "글머리 기호 목록",
+        "orderedList": "번호 매기기 목록",
+        "blockquote": "인용구",
+        "codeBlock": "코드 블록",
+        "bold": "굵게",
+        "italic": "기울임",
+        "strike": "취소선",
+        "code": "코드",
+        "headings": "제목"
+      },
+      "suggestion": {
+        "style": "스타일",
+        "paragraph": "단락",
+        "insert": "삽입",
+        "image": "이미지",
+        "video": "비디오",
+        "horizontalRule": "수평선"
+      },
+      "drag": {
+        "turnInto": "변환",
+        "resetFormatting": "서식 초기화",
+        "duplicate": "복제",
+        "copyToClipboard": "클립보드에 복사",
+        "moveUp": "위로 이동",
+        "moveDown": "아래로 이동",
+        "delete": "삭제"
+      },
+      "element": {
+        "addSlot": "슬롯 추가",
+        "editProps": "속성 편집",
+        "delete": "삭제",
+        "prop": "속성",
+        "props": "속성",
+        "propsEditorComingSoon": "속성 에디터가 곧 구현될 예정입니다..."
+      },
+      "slot": {
+        "searchPlaceholder": "슬롯 검색 또는 생성...",
+        "deleteSlot": "슬롯 삭제",
+        "noSlotsAvailable": "사전 정의된 슬롯이 없습니다"
+      },
+      "inlineElement": {
+        "editContent": "콘텐츠 편집",
+        "editProps": "속성 편집",
+        "delete": "삭제",
+        "editContentLabel": "{name} 콘텐츠 편집",
+        "enterContentPlaceholder": "콘텐츠 입력...",
+        "apply": "적용"
+      },
+      "codeBlock": {
+        "filenamePlaceholder": "filename.js"
+      },
+      "link": {
+        "pasteLinkPlaceholder": "링크 붙여넣기...",
+        "applyLink": "링크 적용",
+        "openInNewWindow": "새 창에서 열기",
+        "removeLink": "링크 제거"
+      },
+      "spanStyle": {
+        "label": "스팬 스타일",
+        "stylePlaceholder": "스타일: 예) color: tomato; font-weight: 600;",
+        "classPlaceholder": "클래스: 공백으로 구분",
+        "apply": "적용",
+        "remove": "제거"
+      },
+      "binding": {
+        "variablePlaceholder": "변수 이름",
+        "defaultValuePlaceholder": "기본값"
+      }
+    },
+    "mediaPicker": {
+      "image": {
+        "title": "이미지 선택",
+        "description": "미디어 라이브러리에서 이미지를 선택하세요",
+        "notAvailable": "미디어 라이브러리에 사용 가능한 이미지가 없습니다",
+        "upload": "업로드"
+      },
+      "video": {
+        "title": "비디오 선택",
+        "description": "미디어 라이브러리에서 비디오를 선택하세요",
+        "notAvailable": "미디어 라이브러리에 사용 가능한 비디오가 없습니다",
+        "upload": "업로드"
+      }
+    },
+    "form": {
+      "array": {
+        "addItem": "{label} 추가",
+        "deleteItem": "항목 삭제",
+        "editItem": "항목 편집",
+        "unsupportedType": "배열 유형 {type}은(는) 지원되지 않습니다"
+      },
+      "object": {
+        "noProperties": "정의된 속성이 없습니다",
+        "enterPlaceholder": "{field} 입력..."
+      },
+      "section": {
+        "propertyCount": "1개 속성 | {count}개 속성"
+      },
+      "media": {
+        "placeholder": "상대 경로 또는 공개 URL...",
+        "searchPlaceholder": "이미지 검색...",
+        "noImagesFound": "이미지를 찾을 수 없습니다",
+        "noImagesAvailable": "사용 가능한 이미지가 없습니다",
+        "imageCount": "{total}개 중 {count}개 이미지"
+      },
+      "icon": {
+        "placeholder": "i-lucide-icon",
+        "searchPlaceholder": "아이콘 검색...",
+        "noIconsFound": "아이콘을 찾을 수 없습니다",
+        "searchHint": "검색하려면 최소 2자 이상 입력하세요",
+        "libraries": "라이브러리:",
+        "allLibraries": "전체"
+      },
+      "text": {
+        "placeholder": "텍스트 입력...",
+        "selectPlaceholder": "옵션 선택..."
+      },
+      "date": {
+        "selectDate": "날짜 선택"
+      },
+      "number": {
+        "placeholder": "0"
+      }
+    }
+  }
+}
