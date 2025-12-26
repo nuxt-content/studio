@@ -3,10 +3,12 @@ import { useStudio } from './composables/useStudio'
 import { watch, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStudioState } from './composables/useStudioState'
+import * as locales from '@nuxt/ui/locale'
 
 const { host, ui, isReady, context } = useStudio()
 const { location } = useStudioState()
 const router = useRouter()
+const { locale } = useI18n()
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore defineShortcuts is auto-imported
@@ -79,7 +81,7 @@ router.beforeEach((to, from) => {
 
 <template>
   <div :class="ui.colorMode.value">
-    <UApp :portal="appPortal">
+    <UApp :portal="appPortal" :locale="locales[locale] ?? locales.en">
       <AppLayout :open="ui.isOpen.value">
         <RouterView v-slot="{ Component }">
           <Transition
