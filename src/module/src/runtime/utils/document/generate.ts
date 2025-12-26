@@ -81,8 +81,9 @@ export async function generateDocumentFromJSONContent(id: string, content: strin
 }
 
 export async function generateDocumentFromMarkdownContent(id: string, content: string, options: MarkdownParsingOptions = { compress: true }): Promise<DatabaseItem> {
+  const markdownConfig = useHostMeta().markdownConfig.value
   const document = await parseMarkdown(content, {
-    contentHeading: options.collectionType === 'page',
+    contentHeading: markdownConfig?.contentHeading !== false ? options.collectionType === 'page' : false,
     highlight: {
       theme: useHostMeta().highlightTheme.value,
     },

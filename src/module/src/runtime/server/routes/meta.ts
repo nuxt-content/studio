@@ -14,10 +14,11 @@ interface NuxtComponentMeta {
 }
 
 export default eventHandler(async (event) => {
+  const config = useRuntimeConfig()
   if (!import.meta.dev) {
     const session = await useSession(event, {
       name: 'studio-session',
-      password: useRuntimeConfig(event).studio?.auth?.sessionSecret,
+      password: config.studio?.auth?.sessionSecret,
     })
 
     if (!session?.data?.user) {
@@ -42,6 +43,7 @@ export default eventHandler(async (event) => {
     })
 
   return {
+    markdownConfig: config.studio.markdown || {},
     highlightTheme: highlight?.theme || { default: 'github-light', dark: 'github-dark', light: 'github-light' },
     components: mappedComponents,
   }
