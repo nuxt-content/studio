@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import HeaderMain from './header/HeaderMain.vue'
 import HeaderReview from './header/HeaderReview.vue'
 import HeaderSuccess from './header/HeaderSuccess.vue'
+import { useStudioUI } from '../composables/useStudioUI'
 
 const route = useRoute()
 
@@ -16,10 +17,12 @@ const currentHeader = computed(() => {
   }
   return HeaderMain
 })
+
+const { ui } = useStudioUI('header')
 </script>
 
 <template>
-  <div class="bg-muted/50 border-default border-b-[0.5px] pr-4 gap-1.5 flex items-center justify-between px-4 h-[45px]">
+  <div :class="ui.root">
     <component :is="currentHeader" />
   </div>
 </template>

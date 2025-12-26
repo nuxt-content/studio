@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, addServerHandler, addTemplate, addServerImports } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, extendViteConfig, addServerHandler, addTemplate, addServerImports, addTypeTemplate } from '@nuxt/kit'
 import { createHash } from 'node:crypto'
 import { defu } from 'defu'
 import { resolve } from 'node:path'
@@ -8,6 +8,28 @@ import { getAssetsStorageDevTemplate, getAssetsStorageTemplate } from './templat
 import { version } from '../../../package.json'
 import { setupDevMode } from './dev'
 import { validateAuthConfig } from './auth'
+
+const studioUI = {
+  header: {
+    root: 'bg-muted/50 border-default border-b-[0.5px] pr-4 gap-1.5 flex items-center justify-between px-4 h-[45px]',
+  },
+  footer: {
+    root: 'bg-muted/50 border-default border-t-[0.5px] flex items-center justify-between gap-1.5 px-2 py-2',
+    text: 'ml-2 text-xs text-muted',
+    userMenuButton: 'px-2 py-1 font-medium',
+    debugSwitchContainer: 'w-full',
+    debugSwitch: {
+      root: 'w-full flex-row-reverse justify-between',
+      wrapper: 'ms-0',
+    },
+    actions: 'flex items-center',
+  },
+  layout: {
+    sidebar: 'fixed top-0 bottom-0 left-0 border-r border-default flex flex-col max-w-full bg-default',
+    monaco: 'monaco-editor',
+    body: 'flex-1 overflow-y-auto relative',
+  },
+}
 
 interface BaseRepository {
   /**
@@ -197,6 +219,37 @@ export default defineNuxtModule<ModuleOptions>({
     if (!nuxt.options.dev && !nuxt.options._prepare) {
       validateAuthConfig(options)
     }
+
+    // Initialize AppConfig with Studio defaults
+    nuxt.options.appConfig.studio = defu(nuxt.options.appConfig.studio || {}, {
+      ui: studioUI,
+    })
+
+    // Register type definitions
+    addTypeTemplate({
+      filename: 'types/studio-ui.d.ts',
+      getContents: () => `
+import type { StudioUI } from 'nuxt-studio/app'
+
+type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+
+declare module '@nuxt/schema' {
+  interface AppConfigInput {
+    studio?: {
+      ui?: DeepPartial<StudioUI>
+    }
+  }
+
+  interface AppConfig {
+    studio: {
+      ui: StudioUI
+    }
+  }
+}
+
+export {}
+      `,
+    })
 
     // Enable checkoutOutdatedBuildInterval to detect new deployments
     nuxt.options.experimental = nuxt.options.experimental || {}

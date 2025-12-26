@@ -2,6 +2,8 @@
 @import "@nuxt/ui";
 @plugin "@tailwindcss/typography";
 
+@source "../../../../module/src/**/*.ts";
+
 @source "../../**";
 
 @source inline('ring-orange-200 hover:ring-orange-300 hover:dark:ring-orange-700');
