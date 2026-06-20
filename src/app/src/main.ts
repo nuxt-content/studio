@@ -6,6 +6,8 @@ import { createHead } from '@unhead/vue/client'
 import { generateColors, tailwindColors } from './utils/colors'
 import { convertPropertyToVar } from './utils/styles'
 import { createI18n } from 'vue-i18n'
+import en from './locales/en.json'
+import { setStudioI18nGlobal, type StudioI18nGlobal } from './utils/studioI18n'
 import App from './app.vue'
 import Content from './pages/content.vue'
 import Media from './pages/media.vue'
@@ -66,9 +68,12 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
           fallbackLocale: 'en',
           globalInjection: true,
           pluralRules: i18nPluralizationRulesMap,
+          messages: {
+            en,
+          },
         })
 
-        app.provide('i18n', i18n)
+        setStudioI18nGlobal(i18n.global as StudioI18nGlobal)
 
         app.use(i18n)
 
