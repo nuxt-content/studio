@@ -1,23 +1,27 @@
 import type { DefinedCollection } from '@nuxt/content'
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 
-const createDocsSchema = () => z.object({
-  layout: z.string().optional(),
-  links: z.array(z.object({
-    label: z.string(),
-    icon: z.string(),
-    to: z.string(),
-    target: z.string().optional(),
-  })).optional(),
+const createPageSchema = () => z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
 })
 
 const collections: Record<string, DefinedCollection> = {
-  docs: defineCollection({
+  docs_en: defineCollection({
     type: 'page',
     source: {
-      include: '**',
+      include: 'en/**',
+      prefix: '',
     },
-    schema: createDocsSchema(),
+    schema: createPageSchema(),
+  }),
+  docs_fr: defineCollection({
+    type: 'page',
+    source: {
+      include: 'fr/**',
+      prefix: '/fr',
+    },
+    schema: createPageSchema(),
   }),
 }
 
