@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "name": "nuxt-studio-playground-minimal-i18n",
+  "scripts": {
+    "dev": "nuxt dev"
+  },
+  "dependencies": {
+    "@nuxtjs/i18n": "^10.4.0",
+    "better-sqlite3": "^12.10.0",
+    "nuxt": "^4.4.8",
+    "nuxt-studio": "workspace:*"
+  }
+}
