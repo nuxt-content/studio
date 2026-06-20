@@ -30,6 +30,7 @@
   ],
   "main": "./dist/module/module.mjs",
   "scripts": {
+    "prepare": "pnpm run dev:prepare && pnpm run prepack",
     "prepack": "nuxt-module-build build src/module; vite build src/app",
     "dev": "pnpm run dev:prepare && STUDIO_DEV_SERVER=http://localhost:5151 nuxi dev playground/docus",
     "dev:minimal": "pnpm run dev:prepare && STUDIO_DEV_SERVER=http://localhost:5151 nuxt dev playground/minimal",
