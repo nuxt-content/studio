@@ -62,3 +62,11 @@ export type CommandKey = typeof COMMAND_KEYS[number]
 export interface CommandConfig {
   exclude?: CommandKey[]
 }
+
+export interface SuggestionConfig {
+  /**
+   * Maximum number of items shown in the TipTap slash menu without a search query.
+   * @default 200
+   */
+  limit?: number
+}

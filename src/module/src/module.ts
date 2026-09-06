@@ -7,7 +7,7 @@ import { setupDevMode } from './dev'
 import { validateAuthConfig } from './auth'
 import { setExternalMediaStorage, setDefaultMediaStorage } from './medias'
 import { setAIFeature } from './ai'
-import type { CommandConfig } from '../../app/src/types/editor'
+import type { CommandConfig, SuggestionConfig } from '../../app/src/types/editor'
 
 const logger = useLogger('nuxt-studio')
 
@@ -60,6 +60,10 @@ interface EditorOptions {
    * @example ['material-symbols', 'lucide']
    */
   iconLibraries?: string[]
+  /**
+   * TipTap slash menu suggestion settings.
+   */
+  suggestion?: SuggestionConfig
 }
 
 interface MediaUploadOptions {
@@ -447,6 +451,9 @@ export default defineNuxtModule<ModuleOptions>({
         groups: undefined,
         ungrouped: 'include',
       },
+      suggestion: {
+        limit: 200,
+      },
     },
     media: {
       external: false,
@@ -546,6 +553,7 @@ export default defineNuxtModule<ModuleOptions>({
       git: { commit: { messagePrefix: options.git?.commit?.messagePrefix ?? '' } },
       iconLibraries: editorOptions?.iconLibraries,
       commands: { exclude: [], ...editorOptions?.commands },
+      suggestion: { limit: 200, ...editorOptions?.suggestion },
     }
 
     // Studio runtime config

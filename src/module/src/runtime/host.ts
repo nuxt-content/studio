@@ -104,6 +104,7 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
           },
         },
         commands: studioConfig.commands ?? { exclude: [] },
+        suggestion: studioConfig.suggestion ?? { limit: 200 },
         iconLibraries: studioConfig.iconLibraries,
         get highlightTheme() { return meta.highlightTheme.value! },
         get markdown() { return meta.markdownConfig.value },

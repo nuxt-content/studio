@@ -4,7 +4,7 @@ import type { DatabaseItem } from './database'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { MediaItem, MediaConfig } from './media'
 import type { Repository } from './git'
-import type { ComponentMeta, CommandConfig } from './editor'
+import type { ComponentMeta, CommandConfig, SuggestionConfig } from './editor'
 import type { MarkdownParsingOptions, SyntaxHighlightTheme } from './content'
 import type { CollectionInfo } from '@nuxt/content'
 
@@ -48,6 +48,7 @@ export interface StudioHost {
         getGroups: (fallbackLabel: string) => Array<{ label: string, components: ComponentMeta[] }>
       }
       commands: CommandConfig
+      suggestion: SuggestionConfig
       iconLibraries?: string[]
       highlightTheme: SyntaxHighlightTheme
       markdown?: { contentHeading?: boolean }

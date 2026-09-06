@@ -229,6 +229,7 @@ watch(() => `${document.value?.id}-${props.draftItem.version}-${props.draftItem.
       <UEditorSuggestionMenu
         :editor="editor"
         :items="suggestionItems"
+        :limit="host.meta.editor.suggestion.limit"
       />
 
       <UEditorEmojiMenu
