@@ -610,6 +610,86 @@ Hello world
     const result = await isDocumentMatchingContent(markdownContent, document)
     expect(result).toBe(true)
   })
+
+  it('should be true when a bare fence is compared against a stored `language: text` artifact', async () => {
+    const markdownContent = '```\nassets/\n  icons/\n    my-logo.svg\n```\n'
+
+    const document = {
+      id: 'content:test.md',
+      extension: ContentFileExtension.Markdown,
+      stem: 'test',
+      meta: {},
+      body: {
+        nodes: [['pre', { language: 'text' }, ['code', { __ignoreMap: '' }, 'assets/\n  icons/\n    my-logo.svg']]],
+        frontmatter: {},
+        meta: {},
+      },
+    } as unknown as DatabaseItem
+
+    const result = await isDocumentMatchingContent(markdownContent, document)
+    expect(result).toBe(true)
+  })
+
+  it('should be true when a bare fence is compared against a legacy MDC document with `language: text`', async () => {
+    const markdownContent = '```\nassets/\n  icons/\n    my-logo.svg\n```\n'
+
+    const document = {
+      id: 'content:test.md',
+      extension: ContentFileExtension.Markdown,
+      stem: 'test',
+      meta: {},
+      body: {
+        type: 'root',
+        children: [{
+          type: 'element',
+          tag: 'pre',
+          props: { code: 'assets/\n  icons/\n    my-logo.svg\n', language: 'text' },
+          children: [],
+        }],
+      },
+    } as unknown as DatabaseItem
+
+    const result = await isDocumentMatchingContent(markdownContent, document)
+    expect(result).toBe(true)
+  })
+
+  it('should be true when an explicit ```text fence is compared against a stored body with no language', async () => {
+    const markdownContent = '```text\nassets/\n```\n'
+
+    const document = {
+      id: 'content:test.md',
+      extension: ContentFileExtension.Markdown,
+      stem: 'test',
+      meta: {},
+      body: {
+        nodes: [['pre', {}, ['code', { __ignoreMap: '' }, 'assets/']]],
+        frontmatter: {},
+        meta: {},
+      },
+    } as unknown as DatabaseItem
+
+    const result = await isDocumentMatchingContent(markdownContent, document)
+    expect(result).toBe(true)
+  })
+
+  it('should be false when the fence language genuinely differs', async () => {
+    const markdownContent = '```ts\nconst a = 1\n```\n'
+
+    const document = {
+      id: 'content:test.md',
+      extension: ContentFileExtension.Markdown,
+      stem: 'test',
+      meta: {},
+      body: {
+        nodes: [['pre', { language: 'js' }, ['code', { __ignoreMap: '' }, 'const a = 1']]],
+        frontmatter: {},
+        meta: {},
+      },
+    } as unknown as DatabaseItem
+
+    const result = await isDocumentMatchingContent(markdownContent, document)
+    expect(result).toBe(false)
+  })
 })
 
 describe('sanitizeDocumentTree', () => {

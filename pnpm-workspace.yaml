@@ -5,7 +5,7 @@ packages:
 
 overrides:
   "@nuxt/content": "^3.15.2"
-  "comark": "^0.6.2"
+  "comark": "https://pkg.pr.new/comark@398"
   "minimark": "^0.2.0"
   "unimport": "5.6.0"
   "remark-mdc": "^3.11.0"

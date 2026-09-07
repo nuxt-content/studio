@@ -9,7 +9,7 @@ const isEditable = computed(() => nodeProps.editor.isEditable)
 const languages = ['diff', 'json', 'js', 'ts', 'css', 'bash', 'html', 'md', 'yaml', 'vue', 'mdc', 'sql', 'text']
 
 const selectedLanguage = computed({
-  get: () => nodeProps.node.attrs.language,
+  get: () => nodeProps.node.attrs.language || 'text',
   set: language => nodeProps.updateAttributes({ language }),
 })
 

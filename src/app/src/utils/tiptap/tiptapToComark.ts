@@ -391,30 +391,6 @@ function createLinkElement(node: JSONContent): ElementNode {
   return ['a', linkProps, ...children] as ElementNode
 }
 
-/**
- * Renders a MarkdownNode to an inline markdown string.
- * Used to pre-render nested marks inside `del` nodes, because the comark library's
- * `del` handler uses textContent() which strips all nested markup.
- */
-function renderComarkNodeToInline(node: MarkdownNode): string {
-  if (typeof node === 'string') return node
-  if (!Array.isArray(node)) return ''
-  const [tag, attrs, ...children] = node as ElementNode
-  if (tag === null) return ''
-  const inner = children.map(renderComarkNodeToInline).join('')
-  switch (tag) {
-    case 'strong': return `**${inner}**`
-    case 'em': return `*${inner}*`
-    case 'code': return `\`${inner}\``
-    case 'del': return `~~${inner}~~`
-    case 'a': {
-      const href = (attrs as Record<string, string>).href || ''
-      return `[${inner}](${href})`
-    }
-    default: return inner
-  }
-}
-
 function createTextElement(node: JSONContent): MarkdownNode | MarkdownNode[] {
   const prefix = node.text?.match(/^\s+/)?.[0] || ''
   const suffix = node.text?.match(/\s+$/)?.[0] || ''
@@ -450,10 +426,6 @@ function createTextElement(node: JSONContent): MarkdownNode | MarkdownNode[] {
     }
     const markTag = markToTag[mark.type as string]
     if (markTag) {
-      // del handler in comark uses textContent() which strips nested markup — pre-render to inline markdown
-      if (markTag === 'del' && Array.isArray(acc)) {
-        return ['del', {}, renderComarkNodeToInline(acc as ElementNode)] as ElementNode
-      }
       // code marks: convert 'language' back to 'lang' (comark's inline code attribute name)
       if (markTag === 'code') {
         const codeAttrs: Record<string, unknown> = {}

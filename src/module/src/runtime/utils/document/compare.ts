@@ -1,4 +1,4 @@
-import type { Node as MarkdownNode, MarkdownDocument } from 'comark'
+import type { Node as MarkdownNode, MarkdownDocument, ElementNodeAttributes } from 'comark'
 import type { DatabaseItem } from 'nuxt-studio/app'
 import { ContentFileExtension } from '../../types/content'
 import { doObjectsMatch } from '../object'
@@ -38,12 +38,42 @@ function unwrapLeadingDefaultSlot(children: MarkdownNode[]): MarkdownNode[] {
   return [...(first.slice(2) as MarkdownNode[]), ...rest]
 }
 
+/**
+ * Strip the `language: 'text'` artifact from a bare ``` fence.
+ */
+function stripTextLanguageArtifact(attrs: ElementNodeAttributes, children: MarkdownNode[]): { attrs: ElementNodeAttributes, children: MarkdownNode[] } {
+  if (attrs.language !== 'text') return { attrs, children }
+
+  const nextAttrs = { ...attrs }
+  delete nextAttrs.language
+
+  const nextChildren = children.map((child, index) => {
+    if (index !== 0 || !Array.isArray(child)) return child
+    const [childTag, childAttrs, ...rest] = child as [string, Record<string, unknown>, ...MarkdownNode[]]
+    if (childTag !== 'code' || typeof childAttrs?.class !== 'string') return child
+    const remaining = childAttrs.class.split(/\s+/).filter(cls => cls && cls !== 'language-text')
+    const nextChildAttrs = { ...childAttrs }
+    if (remaining.length) nextChildAttrs.class = remaining.join(' ')
+    else delete nextChildAttrs.class
+    return [childTag, nextChildAttrs, ...rest] as MarkdownNode
+  })
+
+  return { attrs: nextAttrs, children: nextChildren }
+}
+
 function normalizeNode(node: MarkdownNode): MarkdownNode {
   if (typeof node === 'string') return node
   if (!Array.isArray(node)) return node
 
-  const [tag, attrs, ...children] = node
+  const [tag] = node
+  let [, attrs, ...children] = node
   if (tag === null) return node // comment
+
+  if (tag === 'pre') {
+    const stripped = stripTextLanguageArtifact(attrs, children as MarkdownNode[])
+    attrs = stripped.attrs
+    children = stripped.children
+  }
 
   const sortedAttrs = attrs && typeof attrs === 'object'
     ? Object.fromEntries(Object.entries(attrs as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)))

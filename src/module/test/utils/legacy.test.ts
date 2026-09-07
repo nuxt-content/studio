@@ -952,4 +952,19 @@ describe('mdc → comark code block', () => {
     const pre = tree.nodes[0] as [string, Record<string, unknown>, ...unknown[]]
     expect((pre[2] as [string, object, string])[2]).toBe('const a = 1\nconsole.log(a)')
   })
+
+  it('renders a stored `language: text` artifact as an explicit ```text fence', async () => {
+    const tree = comarkTreeFromLegacyDocument(legacyDocument({
+      type: 'root',
+      children: [{
+        type: 'element',
+        tag: 'pre',
+        props: { code: 'assets/\n  icons/\n    my-logo.svg\n', language: 'text' },
+        children: [],
+      }],
+    }))!
+
+    const markdown = await renderMarkdown(tree)
+    expect(markdown).toContain('```text\nassets/\n  icons/\n    my-logo.svg\n```')
+  })
 })

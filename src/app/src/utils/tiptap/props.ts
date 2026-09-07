@@ -220,7 +220,7 @@ export const buildFormTreeFromProps = (node: ProseMirrorNode, componentMeta: Com
       }
     }
 
-    const formattedKey = typeof value !== 'string' ? `:${key}` : key
+    const formattedKey = typeof value !== 'string' ? `:${stripBindingPrefix(key)}` : key
     formTree[formattedKey] = {
       id: `${componentId}/${formattedKey}`,
       key: formattedKey,

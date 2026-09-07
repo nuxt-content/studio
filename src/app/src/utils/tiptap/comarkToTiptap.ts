@@ -323,7 +323,7 @@ function createTemplateNode(node: ElementNode): JSONContent {
 
 function createPreNode(node: ElementNode): JSONContent {
   const nodeAttrs = getAttrs(node)
-  const language = nodeAttrs.language || 'text'
+  const language = nodeAttrs.language ?? null
   const filename = nodeAttrs.filename
   const rawCode = nodeAttrs.code as string | undefined
 
