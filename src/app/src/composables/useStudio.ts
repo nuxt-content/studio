@@ -4,7 +4,7 @@ import { useUI } from './useUI'
 import { useContext } from './useContext'
 import { useDraftDocuments } from './useDraftDocuments'
 import { useDraftMedias } from './useDraftMedias'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useTree } from './useTree'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { GitOptions, DatabaseItem } from '../types'
@@ -45,7 +45,15 @@ export const useStudio = createSharedComposable(() => {
   const aiContextTree = ai.enabled ? useTree(StudioFeature.AI, host, draftDocuments) : undefined
   const context = useContext(host, gitProvider, documentTree, mediaTree, aiContextTree)
 
-  ui.setLocale(host.meta.defaultLocale)
+  watch(() => host.meta.defaultLocale, (locale) => {
+    ui.setLocale(locale)
+  }, { immediate: true })
+
+  watch(ui.isOpen, (open) => {
+    if (open) {
+      ui.setLocale(host.meta.defaultLocale)
+    }
+  })
 
   host.on.mounted(async () => {
     host.app.registerServiceWorker()
@@ -61,6 +69,7 @@ export const useStudio = createSharedComposable(() => {
     isReady.value = true
 
     host.on.routeChange(async (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
+      ui.setLocale(host.meta.defaultLocale)
       if (ui.isOpen.value && preferences.value.syncEditorAndRoute) {
         if (context.activeTree.value.currentItem.value.routePath === to.path) {
           return

@@ -6,6 +6,8 @@ import { createHead } from '@unhead/vue/client'
 import { generateColors, tailwindColors } from './utils/colors'
 import { convertPropertyToVar } from './utils/styles'
 import { createI18n } from 'vue-i18n'
+import en from './locales/en.json'
+import { setStudioI18nGlobal, type StudioI18nGlobal } from './utils/studioI18n'
 import App from './app.vue'
 import Content from './pages/content.vue'
 import Media from './pages/media.vue'
@@ -68,7 +70,9 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
           pluralRules: i18nPluralizationRulesMap,
         })
 
-        app.provide('i18n', i18n)
+        // Load after createI18n so the instance stays a valid Vue plugin for typecheck.
+        i18n.global.setLocaleMessage('en', en)
+        setStudioI18nGlobal(i18n.global as StudioI18nGlobal)
 
         app.use(i18n)
 

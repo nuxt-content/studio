@@ -1,7 +1,8 @@
 import { createSharedComposable } from './createSharedComposable'
-import { getCurrentInstance, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import type { StudioHost } from '../types'
 import { useSidebar } from './useSidebar'
+import { getStudioI18nGlobal } from '../utils/studioI18n'
 
 export const useUI = createSharedComposable((host: StudioHost) => {
   const sidebar = useSidebar()
@@ -22,14 +23,20 @@ export const useUI = createSharedComposable((host: StudioHost) => {
   })
 
   function setLocale(locale: string) {
-    const currentVueInstance = getCurrentInstance()
-    if (currentVueInstance) {
-      import(`../locales/${locale}.json`).then((locales) => {
-        const i18n = currentVueInstance.appContext.provides.i18n.global
-        i18n.locale.value = locale
-        i18n.setLocaleMessage(locale, locales.default)
-      })
+    const i18n = getStudioI18nGlobal()
+    if (!i18n) {
+      return
     }
+
+    if (i18n.availableLocales.includes(locale)) {
+      i18n.locale.value = locale
+      return
+    }
+
+    import(`../locales/${locale}.json`).then((locales) => {
+      i18n.setLocaleMessage(locale, locales.default)
+      i18n.locale.value = locale
+    })
   }
 
   return {
