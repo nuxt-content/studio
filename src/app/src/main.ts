@@ -68,11 +68,10 @@ if (typeof window !== 'undefined' && 'customElements' in window) {
           fallbackLocale: 'en',
           globalInjection: true,
           pluralRules: i18nPluralizationRulesMap,
-          messages: {
-            en,
-          },
         })
 
+        // Load after createI18n so the instance stays a valid Vue plugin for typecheck.
+        i18n.global.setLocaleMessage('en', en)
         setStudioI18nGlobal(i18n.global as StudioI18nGlobal)
 
         app.use(i18n)

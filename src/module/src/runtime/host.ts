@@ -24,6 +24,20 @@ function getLocalColorMode(): 'light' | 'dark' {
   return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 }
 
+function getHostI18nLocale(): string | undefined {
+  try {
+    const i18n = window.useNuxtApp?.()?.$i18n as { locale?: string | { value?: string } } | undefined
+    if (typeof i18n?.locale === 'string' && i18n.locale) {
+      return i18n.locale
+    }
+    const locale = i18n?.locale && typeof i18n.locale === 'object' ? i18n.locale.value : undefined
+    return typeof locale === 'string' && locale ? locale : undefined
+  }
+  catch {
+    return undefined
+  }
+}
+
 export function useStudioHost(user: StudioUser, repository: Repository): StudioHost {
   let localDatabaseAdapter: ContentDatabaseAdapter | null = null
   let colorMode = getLocalColorMode()
@@ -108,7 +122,9 @@ export function useStudioHost(user: StudioUser, repository: Repository): StudioH
         get highlightTheme() { return meta.highlightTheme.value! },
         get markdown() { return meta.markdownConfig.value },
       },
-      defaultLocale: studioConfig.i18n?.defaultLocale || 'en',
+      get defaultLocale() {
+        return studioConfig.i18n?.defaultLocale || getHostI18nLocale() || 'en'
+      },
     },
     on: {
       routeChange: (fn: (to: RouteLocationNormalized, from: RouteLocationNormalized) => void) => {
